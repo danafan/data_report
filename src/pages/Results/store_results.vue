@@ -1,15 +1,13 @@
 <template>
 	<div>
-		<el-card>
-			<el-tabs v-model="activeTab">
-				<el-tab-pane label="业绩分析" name="performance_analysis" style="padding-top: 10px">
-					<PerformanceAnalysis/>
-				</el-tab-pane>
-				<el-tab-pane label="每日业绩" name="daily_performance" style="padding-top: 10px">
-					<DailyPerformance/>
-				</el-tab-pane>
-			</el-tabs>
-		</el-card>
+		<el-tabs v-model="activeTab">
+			<el-tab-pane label="业绩分析" name="performance_analysis" style="padding-top: 10px">
+				<PerformanceAnalysis/>
+			</el-tab-pane>
+			<el-tab-pane label="每日业绩" name="daily_performance" style="padding-top: 10px">
+				<DailyPerformance/>
+			</el-tab-pane>
+		</el-tabs>
 	</div>
 </template>
 <style lang="less" scoped>

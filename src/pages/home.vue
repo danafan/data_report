@@ -47,10 +47,12 @@
 				<div class="breadcrumb">{{crumb}}</div>
 			</el-header>
 			<el-main class="main">
-				<keep-alive>
-					<router-view v-if="$route.meta.keepAlive"></router-view>
-				</keep-alive>
-				<router-view v-if="!$route.meta.keepAlive"></router-view>
+				<el-card class="el_card">
+					<keep-alive>
+						<router-view v-if="$route.meta.keepAlive"></router-view>
+					</keep-alive>
+					<router-view v-if="!$route.meta.keepAlive"></router-view>
+				</el-card>
 			</el-main>
 		</el-container>
 	</el-container>
@@ -127,8 +129,10 @@
 	}
 	.main{
 		background: #ECEFF8;
-		height: 100%;
-		overflow-y: scroll;
+		.el_card{
+			height: 100%;
+			overflow-y: scroll;
+		}
 	}
 }
 </style>
