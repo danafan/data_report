@@ -1,10 +1,10 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab">
-			<el-tab-pane label="业绩分析" name="performance_analysis" style="padding-top: 10px">
+			<el-tab-pane label="业绩分析（运营）" lazy name="performance_analysis" style="padding-top: 10px">
 				<PerformanceAnalysis/>
 			</el-tab-pane>
-			<el-tab-pane label="每日业绩" name="daily_performance" style="padding-top: 10px">
+			<el-tab-pane label="每日业绩" lazy name="daily_performance" style="padding-top: 10px">
 				<DailyPerformance/>
 			</el-tab-pane>
 		</el-tabs>
@@ -19,7 +19,7 @@
 	export default{
 		data(){
 			return{
-				activeTab:'performance_analysis'
+				activeTab:'daily_performance'
 			}
 		},
 		components:{

@@ -5,16 +5,16 @@ import { Message } from 'element-ui';
 export default {
   post(path, params={}){
     let target = {};
-    let admin_id = localStorage.getItem("admin_admin_id");
-    let secret_key = localStorage.getItem("admin_secret_key");
-    let login_token = localStorage.getItem("admin_token");
-    let timestamp = ((new Date()).getTime()/1000).toString().split('.')[0];
-    if(!!admin_id){
-      target.admin_id = admin_id;
-      target.login_token = login_token;
-      target.timestamp = timestamp;
-      target.random = Math.random();
-    }
+    // let admin_id = localStorage.getItem("admin_admin_id");
+    // let secret_key = localStorage.getItem("admin_secret_key");
+    // let login_token = localStorage.getItem("admin_token");
+    // let timestamp = ((new Date()).getTime()/1000).toString().split('.')[0];
+    // if(!!admin_id){
+    //   target.admin_id = admin_id;
+    //   target.login_token = login_token;
+    //   target.timestamp = timestamp;
+    //   target.random = Math.random();
+    // }
     Object.assign(params, target);
     let form = new FormData();
     let obj = {};
@@ -28,7 +28,7 @@ export default {
       obj[b] = val;
       form.append(b, val);
     }
-    obj.secret_key = secret_key;
+    // obj.secret_key = secret_key;
     let str = "";
     for(var i in obj){
       if(i != 'sign_protocol' && i != 'file' && i != 'feedback_material'){
@@ -43,16 +43,16 @@ export default {
    },
    get(path, params={}){
     let target = {};
-    let admin_id = localStorage.getItem("admin_admin_id");
-    let secret_key = localStorage.getItem("admin_secret_key");
-    let login_token = localStorage.getItem("admin_token");
-    let timestamp = ((new Date()).getTime()/1000).toString().split('.')[0];
-    if(!!admin_id){
-      target.admin_id = admin_id;
-      target.login_token = login_token;
-      target.timestamp = timestamp;
-      target.random = Math.random();
-    }
+    // let admin_id = localStorage.getItem("admin_admin_id");
+    // let secret_key = localStorage.getItem("admin_secret_key");
+    // let login_token = localStorage.getItem("admin_token");
+    // let timestamp = ((new Date()).getTime()/1000).toString().split('.')[0];
+    // if(!!admin_id){
+    //   target.admin_id = admin_id;
+    //   target.login_token = login_token;
+    //   target.timestamp = timestamp;
+    //   target.random = Math.random();
+    // }
     Object.assign(params, target);
     let arr = [];
     let str = '';
@@ -68,7 +68,8 @@ export default {
       Message({message:'参数不能包含特殊字符（#、%、¥）等',type:'warning'})
       return false;
     }
-    let secret = `secret_key=${secret_key}`;
+    // let secret = `secret_key=${secret_key}`;
+    let secret = '`secret_key=${secret_key}`';
     let sign = md5(str + secret);
     str = str + `sign=${sign}`
     if(!!str){
