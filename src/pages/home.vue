@@ -1,40 +1,8 @@
 <template>
-	<div class="box">
-		<el-container style="height:100%">
-			<el-aside>
-				<div class="gxk">德儿网络数据中心</div>
-				<el-menu
-				:default-active="activeIndex"
-				background-color="#363D66"
-				text-color="#ffffff"
-				active-text-color="#ffffff"
-				:unique-opened="true"
-				:router="true"
-				@select="handleSelect"
-				>
-				<el-submenu index="0">
-					<template slot="title">
-						<i class="el-icon-s-platform"></i>
-						<span>业务参考</span>
-					</template>
-					<el-menu-item-group>     
-						<el-menu-item index="/store_data">店铺日数据</el-menu-item>
-					</el-menu-item-group>
-				</el-submenu>
-				<el-submenu index="1">
-					<template slot="title">
-						<i class="el-icon-s-data"></i>
-						<span>业绩指标</span>
-					</template>
-					<el-menu-item-group>     
-						<el-menu-item index="/store_results">店铺业绩</el-menu-item>
-						<el-menu-item index="/run_weekly">运营周报</el-menu-item>
-					</el-menu-item-group>
-				</el-submenu>
-			</el-menu>
-		</el-aside>
-		<el-container>
+	<div>
+		<el-container class="box">
 			<el-header class="header">
+				<div class="gxk">德儿网络数据中心</div>
 				<div class="user_set">
 					<img class="message_icon" src="../static/message_icon.png">
 					<div class="header_text">消息</div>
@@ -44,8 +12,45 @@
 					<div class="line"></div>
 					<div class="header_text exit" @click="exit">退出</div>
 				</div>
-				<div class="breadcrumb">{{crumb}}</div>
 			</el-header>
+			<el-container class="content_box">
+				<div class="left_box">
+					<el-menu
+					@select="handleSelect" 
+					:router="true" 
+					:unique-opened="true" 
+					:collapse="isCollapse" 
+					:default-active="activeIndex"
+					background-color="#363D66"
+					text-color="#ffffff"
+					active-text-color="#ffffff"
+					:collapse-transition="false"
+					>
+					<div class="dd" :class="{'start_dd':isCollapse}">
+						<i class="el-icon-s-unfold collapse_icon" v-if="isCollapse" @click="isCollapse = !isCollapse"></i>
+						<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
+					</div>
+					<el-submenu index="0">
+						<template slot="title">
+							<i class="el-icon-s-platform"></i>
+							<span>业务参考</span>
+						</template>
+						<el-menu-item-group>     
+							<el-menu-item index="/store_data">店铺日数据</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
+					<el-submenu index="1">
+						<template slot="title">
+							<i class="el-icon-s-data"></i>
+							<span>业绩指标</span>
+						</template>
+						<el-menu-item-group>     
+							<el-menu-item index="/store_results">店铺业绩</el-menu-item>
+							<el-menu-item index="/run_weekly">运营周报</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
+				</el-menu>
+			</div>
 			<el-main class="main">
 				<el-card class="el_card">
 					<keep-alive>
@@ -65,24 +70,17 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
-	.el-aside{
-		background:#363D66;
-		width: 256px !important;
-	}
-	.gxk{
-		background: #363D66;
-		width: 256px;
-		height: 120px;
-		display:flex;
-		align-items: center;
-		justify-content: center;
-		font-size: 18px;
-		color: #fff;
-	}
 	.header{
-		width: 100%;
-		height: 128px !important;
 		background:#fff !important;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		.gxk{
+			margin-left: 20px;
+			font-size: 18px;
+			color: #333;
+			font-weight: 600;
+		}
 		.user_set{
 			border-bottom: 1px solid #ECEFF8;
 			height: 64px;
@@ -113,13 +111,6 @@
 				color: #333333;
 			}
 		}
-		.breadcrumb{
-			height: 64px;
-			line-height: 64px;
-			font-size: 18px;
-			color: #333333;
-			font-weight:600;
-		}
 	}
 	.is-active {
 		background:#008DFF !important;
@@ -127,11 +118,45 @@
 	.el-menu{
 		border: none !important;
 	}
-	.main{
-		background: #ECEFF8;
-		.el_card{
+	.content_box{
+		height: 600px;
+		.left_box{
+			background: #363D66;
+			display: flex;
+			flex-direction: column;
 			height: 100%;
-			overflow-y: scroll;
+			.dd{
+				height: 35px;
+				display: flex;
+				align-items: flex-end;
+				justify-content: flex-end;
+				padding-right: 18px;
+				.collapse_icon{
+					color: #fff;
+					font-size:20px;
+				}
+			}
+			.start_dd{
+				justify-content: flex-start;
+				padding-left: 24px;
+			}
+		}
+		.main{
+			background: #ECEFF8;
+			height: 100%;
+			.el_card{
+				height: 100%;
+				overflow-y: scroll;
+			}
+			.el_card::-webkit-scrollbar {
+				display: none; 
+			}
+			.demo {
+				scrollbar-width: none; 
+				-ms-overflow-style: none; 
+				overflow-x: auto;
+				overflow-y: hidden;
+			}
 		}
 	}
 }
@@ -141,6 +166,7 @@
 	export default{
 		data(){
 			return{
+				isCollapse:false,
 				activeIndex:"",
 				crumb:""
 			}

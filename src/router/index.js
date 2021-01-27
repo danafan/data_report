@@ -1,7 +1,6 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
-// const login = resolve=>require(['@/pages/Login/login'],resolve)
 const home = resolve=>require(['@/pages/home'],resolve)
 //业务参考
 const store_data = resolve=>require(['@/pages/Business/store_data'],resolve)
@@ -12,10 +11,6 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
-  // {
-  //   path: '/login',
-  //   component: login,
-  // },
   {
     path: '/home',
     component: home,
