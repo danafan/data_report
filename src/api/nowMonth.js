@@ -8,11 +8,23 @@ export function getMonthStartDate(){
 	var monthStartDate = new Date(nowYear, nowMonth, 1); 
 	return formatDate(monthStartDate); 
 }
+//获得本月
+export function getCurrentMonth(){ 
+	var currentMonth = new Date(nowYear, nowMonth, 1); 
+	var myyear = currentMonth.getFullYear(); 
+	var mymonth = currentMonth.getMonth()+2; 
+	if(mymonth < 10){ 
+		mymonth = "0" + mymonth; 
+	} 
+	return (myyear+"-"+mymonth);
+}
 //获得当前日期
 export function getCurrentDate(){
 	var day1 = new Date();
- 	day1.setTime(day1.getTime()-24*60*60*1000); 
 	var currentDate = new Date(day1);
+ 	if(currentDate.getDate() > 1){
+ 		day1.setTime(day1.getTime()-24*60*60*1000); 
+ 	}
 	return formatDate(currentDate); 
 }
 
@@ -27,7 +39,7 @@ export function getLastMonthEndDate(month_num){
 	return formatDate(lastMonthEndDate); 
 }
 //格式化日期
-function formatDate(date) { 
+function formatDate(date,is_current) { 
 	var myyear = date.getFullYear(); 
 	var mymonth = date.getMonth()+1; 
 	var myweekday = date.getDate(); 

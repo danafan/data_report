@@ -20,9 +20,9 @@
       }
     },
     created(){
-      // this.$router.push('/store_results');
+      this.$router.push('/performance');
       //获取code
-      this.GetCode();
+      // this.GetCode();
     },
     methods: {
       //获取code

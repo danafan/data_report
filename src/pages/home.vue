@@ -47,6 +47,7 @@
 						<el-menu-item-group>     
 							<el-menu-item index="/store_results">店铺业绩</el-menu-item>
 							<el-menu-item index="/run_weekly">运营周报</el-menu-item>
+							<el-menu-item index="/performance">个人绩效</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
 				</el-menu>

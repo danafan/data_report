@@ -1,5 +1,10 @@
 <template>
 	<div>
+		<!-- <div id="printTest" >
+			<p>明月照于山间</p>
+			<p>清风来于江上 </p>
+		</div>
+		<button v-print="'#printTest'">打印</button> --> 
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="发货日期:" style="margin-right: 20px">
 				<el-date-picker
@@ -247,6 +252,7 @@
 					display: flex;
 					flex-direction: column;
 					justify-content: center;
+					align-items: center;
 					color: #333333;
 					overflow: hidden;
 					text-overflow: ellipsis;
