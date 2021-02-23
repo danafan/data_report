@@ -10,6 +10,10 @@ let path = {
 	ajaxUser:'common/ajaxUser',										//查询所有用户
 	kpiDetail:'kpi/detail',											//kpi详情
 	addKpi:'kpi/add',												//添加kpi
+	feedBack:'kpi/feedback',										//提交反馈
+	editKpi:'kpi/edit',												//编辑kpi		
+	confirmKpi:'kpi/confirm',										//确认kpi
+	passKpi:'kpi/pass',												//通过kpi					
 }				
 export default{
 	//获取用户id
@@ -48,9 +52,33 @@ export default{
 	kpiDetail(params){
 		return http.get(path.kpiDetail, params)
 	},
-	//添加kpi
-	addKpi(params){
+	//添加kpi（get）
+	addKpiGet(params){
 		return http.get(path.addKpi, params)
+	},
+	//添加kpi（post）
+	addKpiPost(params){
+		return http.post(path.addKpi, params)
+	},
+	//提交反馈
+	feedBack(params){
+		return http.post(path.feedBack, params)
+	},
+	//编辑kpi（get）
+	editKpiGet(params){
+		return http.get(path.editKpi, params)
+	},
+	//编辑kpi（post）
+	editKpiPost(params){
+		return http.post(path.editKpi, params)
+	},
+	//确认kpi
+	confirmKpi(params){
+		return http.post(path.confirmKpi, params)
+	},
+	//通过kpi
+	passKpi(params){
+		return http.post(path.passKpi, params)
 	},
 }
 
