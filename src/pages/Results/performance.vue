@@ -24,6 +24,13 @@
 		</el-form-item>
 	</el-form>
 	<div class="table_setting">
+		<!-- <div id="printTest" class="print_box">
+			<div class="print_item" v-for='item in 13'>
+				<p>明月照于山间</p>
+				<p>清风来于江上 </p>
+			</div>
+		</div>
+		<button v-print="'#printTest'">打印</button>  -->
 		<el-button type="primary" plain size="small" @click="downLoad">打印<i class="el-icon-printer el-icon--right"></i></el-button>
 	</div>
 	<el-table :data="dataObj.data" size="small" stripe style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -96,7 +103,7 @@
 						<el-input class="rule-input-edit" v-model="item.project" :readonly="is_readonly" type="textarea" autosize placeholder="输入考核项目"></el-input>
 					</div>
 					<div class="column_item min_width">
-						<el-input class="rule-input-edit widget_input" type="number" v-model="item.weight" :readonly="is_readonly"></el-input>
+						<el-input class="rule-input-edit widget_input" type="number" v-model="item.weight" @input="weightChange" :readonly="is_readonly"></el-input>
 						<div class="bai">%</div>
 					</div>
 					<div class="column_item max_width">
@@ -106,7 +113,7 @@
 						<el-input class="rule-input-edit" v-model="item.criteria" :readonly="is_readonly" type="textarea" autosize placeholder="输入评分标准"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_score">
-						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" placeholder="输入得分"></el-input>
+						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" @input="inputChange" placeholder="输入得分"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_setting">
 						<el-button type="text" size="small" @click="addItem('1',index)">插入</el-button>
@@ -133,7 +140,7 @@
 						<el-input class="rule-input-edit" v-model="item.project" :readonly="is_readonly" type="textarea" autosize placeholder="输入考核项目"></el-input>
 					</div>
 					<div class="column_item min_width">
-						<el-input class="rule-input-edit widget_input" type="number" v-model="item.weight" :readonly="is_readonly"></el-input>
+						<el-input class="rule-input-edit widget_input" type="number" v-model="item.weight" @input="weightChange" :readonly="is_readonly"></el-input>
 						<div class="bai">%</div>
 					</div>
 					<div class="column_item max_width">
@@ -143,7 +150,7 @@
 						<el-input class="rule-input-edit" v-model="item.criteria" :readonly="is_readonly" type="textarea" autosize placeholder="输入评分标准"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_score">
-						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" placeholder="输入得分"></el-input>
+						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" @input="inputChange" placeholder="输入得分"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_setting">
 						<el-button type="text" size="small" @click="addItem('2',index)">插入</el-button>
@@ -170,7 +177,7 @@
 						<el-input class="rule-input-edit" v-model="item.project" :readonly="is_readonly" type="textarea" autosize placeholder="输入考核项目"></el-input>
 					</div>
 					<div class="column_item min_width">
-						<el-input class="rule-input-edit widget_input" type="number" v-model="item.weight" :readonly="is_readonly"></el-input>
+						<el-input class="rule-input-edit widget_input" type="number" v-model="item.weight" @input="weightChange" :readonly="is_readonly"></el-input>
 						<div class="bai">%</div>
 					</div>
 					<div class="column_item max_width">
@@ -180,7 +187,7 @@
 						<el-input class="rule-input-edit" v-model="item.criteria" :readonly="is_readonly" type="textarea" autosize placeholder="输入评分标准"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_score">
-						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" placeholder="输入得分"></el-input>
+						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" @input="inputChange" placeholder="输入得分"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_setting">
 						<el-button type="text" size="small" @click="addItem('3',index)">插入</el-button>
@@ -377,6 +384,17 @@
 /deep/ input[type='number'] {
 	-moz-appearance: textfield !important;
 }
+.print_box{
+	border: 1px solid red;
+	width:100%;
+	display: flex;
+	flex-wrap: wrap;
+	.print_item{
+		border: 1px solid red;
+		width:220px;
+		height: 1000px;
+	}
+}
 </style>
 <script>
 	import {getCurrentMonth} from '../../api/nowMonth.js'
@@ -492,7 +510,7 @@
 						this.action = res.data.data.action;
 						this.bonus_items = res.data.data.bonus_items;
 						this.user_info = res.data.data.info;
-						this.is_score = this.user_info.status == 4&&this.dialog_type == '4'?true:false;
+						this.is_score = (this.user_info.status == 4&&this.dialog_type == '4')||(this.user_info.status == 5&&this.dialog_type == '2')?true:false;
 						this.is_score_readonly = this.user_info.status == 4?false:true;
 						this.assessment_id = res.data.data.copyer[0].ding_user_id;
 						this.cc_people_ids = [];
@@ -731,6 +749,52 @@
 					}
 				}
 			},
+			//监听权重
+			weightChange(value){
+				if(parseFloat(value) > 100 || parseFloat(value) < 0){
+					this.$message.warning('单项权重值不能低于0或高于100！');
+					return;
+				}else if(value != '' && parseFloat(value) != 0 && !this.judgmentMoney.test(parseFloat(value))){
+					this.$message.warning('请输入正确的权重值，最多保留两位小数！');
+					return;
+				}
+			},
+			//监听评分
+			inputChange(value){
+				if(parseFloat(value) > 100 || parseFloat(value) < 0){
+					this.$message.warning('单项考核分数不能低于0或高于100！');
+					return;
+				}else if(value != '' && parseFloat(value) != 0 && !this.judgmentMoney.test(parseFloat(value))){
+					this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
+					return;
+				}else {
+					//计算总分
+					this.computeTotal();
+				}
+			},
+			//计算总分
+			computeTotal(){
+				var achievement_total_scores = 0;
+				var action_total_scores = 0;
+				var bonus_items_total_scores = 0;
+				for(var i = 0;i < this.achievement.length;i ++){
+					if(this.achievement[i].score && (parseFloat(this.achievement[i].score) >= 0 && parseFloat(this.achievement[i].score) <= 100)){
+						achievement_total_scores += (parseFloat(this.achievement[i].score)*this.achievement[i].weight*0.01);
+					}
+				}
+				for(var i = 0;i < this.action.length;i ++){
+					if(this.action[i].score && (parseFloat(this.action[i].score) >= 0 && parseFloat(this.action[i].score) <= 100)){
+						action_total_scores += parseFloat(this.action[i].score)*this.action[i].weight*0.01;
+					}
+				}
+				for(var i = 0;i < this.bonus_items.length;i ++){
+					if(this.bonus_items[i].score && (parseFloat(this.bonus_items[i].score) >= 0 && parseFloat(this.bonus_items[i].score) <= 100)){
+						bonus_items_total_scores += parseFloat(this.bonus_items[i].score)*this.bonus_items[i].weight*0.01;
+					}
+				}
+				let total_score = achievement_total_scores*0.9 + action_total_scores*0.1 + bonus_items_total_scores;
+				this.user_info.score = Math.round(total_score * 100) / 100;
+			},
 			//评分
 			scores(){
 				var achievement_scores = [];
@@ -743,6 +807,9 @@
 							id:this.achievement[i].id
 						}
 						achievement_scores.push(obj);
+					}else if(!this.judgmentMoney.test(parseFloat(this.achievement[i].score))){
+						this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
+						return;
 					}else if(parseFloat(this.achievement[i].score) > 100){
 						this.$message.warning('单项考核分数不能低于0或高于100！');
 						return;
@@ -755,13 +822,19 @@
 					}
 				}
 				for(var i = 0;i < this.action.length;i ++){
-					if(this.action[i].score){
+					if(this.action[i].score && (parseFloat(this.action[i].score) >= 0 && parseFloat(this.action[i].score) <= 100)){
 						let obj = {
 							score:this.action[i].score,
 							id:this.action[i].id
 						}
 						action_scores.push(obj);
-					}else if(this.action[i].score > 100 || this.action[i].score < 0){
+					}else if(!this.judgmentMoney.test(parseFloat(this.action[i].score))){
+						this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
+						return;
+					}else if(parseFloat(this.action[i].score) > 100){
+						this.$message.warning('单项考核分数不能低于0或高于100！');
+						return;
+					}else if(parseFloat(this.action[i].score) < 0){
 						this.$message.warning('单项考核分数不能低于0或高于100！');
 						return;
 					}else{
@@ -770,13 +843,19 @@
 					}
 				}
 				for(var i = 0;i < this.bonus_items.length;i ++){
-					if(this.bonus_items[i].score){
+					if(this.bonus_items[i].score && (parseFloat(this.bonus_items[i].score) >= 0 && parseFloat(this.bonus_items[i].score) <= 100)){
 						let obj = {
 							score:this.bonus_items[i].score,
 							id:this.bonus_items[i].id
 						}
 						bonus_items_scores.push(obj);
-					}else if(this.bonus_items[i].score > 100 || this.bonus_items[i].score < 0){
+					}else if(!this.judgmentMoney.test(parseFloat(this.bonus_items[i].score))){
+						this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
+						return;
+					}else if(parseFloat(this.bonus_items[i].score) > 100){
+						this.$message.warning('单项考核分数不能低于0或高于100！');
+						return;
+					}else if(parseFloat(this.bonus_items[i].score) < 0){
 						this.$message.warning('单项考核分数不能低于0或高于100！');
 						return;
 					}else{
@@ -784,18 +863,33 @@
 						return;
 					}
 				}
-				console.log(scores);
-					// resource.addKpiPost(req).then(res => {
-					// 	if(res.data.code == 1){
-					// 		this.$message.success('添加成功');
-					// 		this.show_progress = false;
-					// 		//获取列表数据
-					// 		this.getData();
-					// 	}else{
-					// 		this.$message.warning(res.data.msg);
-					// 	}
-					// })
-				},
+				let scores_arr = [...achievement_scores,...action_scores,...bonus_items_scores];
+				let req = {
+					scores:JSON.stringify(scores_arr),
+					id:this.user_info.kpi_id
+				}
+				this.$confirm(`「${this.user_info.ding_user_name}」的总分数为${this.user_info.score}分，确认提交?`, '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					resource.scoreKpi(req).then(res => {
+						if(res.data.code == 1){
+							this.$message.success('完成评分');
+							this.show_progress = false;
+							//获取列表数据
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
+				});
+			},
 			//提交反馈
 			submitFeedBack(){
 				if(this.feedback == ''){

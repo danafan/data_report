@@ -13,7 +13,8 @@ let path = {
 	feedBack:'kpi/feedback',										//提交反馈
 	editKpi:'kpi/edit',												//编辑kpi		
 	confirmKpi:'kpi/confirm',										//确认kpi
-	passKpi:'kpi/pass',												//通过kpi					
+	passKpi:'kpi/pass',												//通过kpi	
+	scoreKpi:'kpi/score',											//评分			
 }				
 export default{
 	//获取用户id
@@ -79,6 +80,10 @@ export default{
 	//通过kpi
 	passKpi(params){
 		return http.post(path.passKpi, params)
+	},
+	//评分
+	scoreKpi(params){
+		return http.post(path.scoreKpi, params)
 	},
 }
 
