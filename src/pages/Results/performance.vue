@@ -20,18 +20,11 @@
 			</el-select>
 		</el-form-item>
 		<el-form-item>
-			<el-button type="primary" @click="getData">搜索</el-button>
+			<el-button type="primary" @click="search">搜索</el-button>
 		</el-form-item>
 	</el-form>
 	<div class="table_setting">
-		<!-- <div id="printTest" class="print_box">
-			<div class="print_item" v-for='item in 13'>
-				<p>明月照于山间</p>
-				<p>清风来于江上 </p>
-			</div>
-		</div>
-		<button v-print="'#printTest'">打印</button>  -->
-		<el-button type="primary" plain size="small" @click="downLoad">打印<i class="el-icon-printer el-icon--right"></i></el-button>
+		<el-button type="primary" plain size="small" @click="printPreview">打印<i class="el-icon-printer el-icon--right"></i></el-button>
 	</div>
 	<el-table :data="dataObj.data" size="small" stripe style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 		<el-table-column prop="kpi_id" label="序号" align="center">
@@ -256,6 +249,219 @@
 	<el-button size="small" type="primary" @click="passKpi" v-if="user_info.type == '2' && user_info.status == '2'">通过</el-button>
 </div>
 </el-dialog>
+<!-- 打印弹框 -->
+<el-dialog width="60%" title="打印预览" :visible.sync="show_print">
+	<div id="printTest" class="print_box">
+		<div class="print_item">
+			<div class="time_title">2019年11月</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">姓名</div>
+				<div class="common_div big_width">于晶晶</div>
+				<div class="common_div center_width">岗位</div>
+				<div class="common_div big_width">培训主管</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">序号</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目</div>
+					<div class="weight_width">权重</div>
+				</div>
+				<div class="common_div center_width">指标要求</div>
+				<div class="common_div big_width">评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+		</div>
+		<div class="print_item">
+			<div class="time_title">2019年11月</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">姓名</div>
+				<div class="common_div big_width">于晶晶</div>
+				<div class="common_div center_width">岗位</div>
+				<div class="common_div big_width">培训主管</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">序号</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目</div>
+					<div class="weight_width">权重</div>
+				</div>
+				<div class="common_div center_width">指标要求</div>
+				<div class="common_div big_width">评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+		</div><div class="print_item">
+			<div class="time_title">2019年11月</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">姓名</div>
+				<div class="common_div big_width">于晶晶</div>
+				<div class="common_div center_width">岗位</div>
+				<div class="common_div big_width">培训主管</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">序号</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目</div>
+					<div class="weight_width">权重</div>
+				</div>
+				<div class="common_div center_width">指标要求</div>
+				<div class="common_div big_width">评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+		</div><div class="print_item">
+			<div class="time_title">2019年11月</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">姓名</div>
+				<div class="common_div big_width">于晶晶</div>
+				<div class="common_div center_width">岗位</div>
+				<div class="common_div big_width">培训主管</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">序号</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目</div>
+					<div class="weight_width">权重</div>
+				</div>
+				<div class="common_div center_width">指标要求</div>
+				<div class="common_div big_width">评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+		</div><div class="print_item">
+			<div class="time_title">2019年11月</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">姓名</div>
+				<div class="common_div big_width">于晶晶</div>
+				<div class="common_div center_width">岗位</div>
+				<div class="common_div big_width">培训主管</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">序号</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目</div>
+					<div class="weight_width">权重</div>
+				</div>
+				<div class="common_div center_width">指标要求</div>
+				<div class="common_div big_width">评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+			<div class="user_info_box">
+				<div class="common_div small_width">1</div>
+				<div class="common_div big_width">
+					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
+					<div class="weight_width">100%</div>
+				</div>
+				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
+				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
+			</div>
+		</div>
+	</div>
+	<div slot="footer" class="dialog-footer">
+		<el-button size="small" @click="show_print = false">取消</el-button>
+		<el-button size="small" type="primary" v-print="printObj">打印</el-button>
+	</div>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -385,16 +591,58 @@
 	-moz-appearance: textfield !important;
 }
 .print_box{
-	border: 1px solid red;
-	width:100%;
+	width:794px;
+	// height: 1123px;
 	display: flex;
+	justify-content: space-between;
 	flex-wrap: wrap;
 	.print_item{
-		border: 1px solid red;
-		width:220px;
-		height: 1000px;
+		margin-bottom: 10px;
+		border-top: 1px solid #333;
+		width:48%;
+		font-size:14px;
+		color: #333;
+		.common_div{
+			min-height: 30px;
+			border-right: 1px solid #333;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.time_title{
+			border-bottom: 1px solid #333;
+			border-right: 1px solid #333;
+			border-left: 1px solid #333;
+			height: 26px;
+			line-height: 26px;
+			text-align:center;
+		}
+		.user_info_box{
+			border-bottom: 1px solid #333;
+			border-left: 1px solid #333;
+			display: flex;
+			.small_width{
+				width:50px;
+			}
+			.center_width{
+				width:80px;
+			}
+			.big_width{
+				flex:1;
+				display: flex;
+				.kpi_item{
+					flex:1;
+					height: 100%;
+				}
+				.weight_width{
+					width:38px;
+					text-align:center;
+				}
+			}
+		}
 	}
 }
+
 </style>
 <script>
 	import {getCurrentMonth} from '../../api/nowMonth.js'
@@ -447,15 +695,28 @@
 				cc_people_ids:[],					//选中的抄送人id列表
 				feedback:"",						//反馈内容
 				feedback_readonly:false,			//反馈只读
-			}
-		},
-		created(){
+				show_print:false,					//打印预览显示
+				printObj: {
+              		id: "printTest",//打印区域 Dom ID
+              		popTitle: '打印页面标题文字',
+              		extraCss: 'https://www.google.com,https://www.google.com',
+              		extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>,<style> #printTest { height: auto !important} .print_item{min-height:500px;margin-bottom:20px;} <style>'  ,//  可以传进去  style tag 标签；注意要逗号分隔   解决特定区域不显示问题；
+              	}
+              }
+          },
+          created(){
 			//获取列表数据
 			this.getData();
 			//获取所有用户
 			this.getUserList();
 		},
 		methods:{
+			//搜索
+			search(){
+				this.req.page = 1;
+				//获取列表数据
+				this.getData();
+			},
 			//获取列表数据
 			getData(){
 				resource.kpiList(this.req).then(res => {
@@ -952,8 +1213,8 @@
 				}
 			},
 			//打印
-			downLoad(){
-
+			printPreview(){
+				this.show_print = true;
 			},
 			//分页
 			handleSizeChange(val) {

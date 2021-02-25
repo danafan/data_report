@@ -4,6 +4,7 @@ import router from './router'
 import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
  import Print from 'vue-print-nb'
+ // import Print from '@/lib/print'
 
 Vue.use(ElementUI);
 Vue.use(Print);
