@@ -14,7 +14,8 @@ let path = {
 	editKpi:'kpi/edit',												//编辑kpi		
 	confirmKpi:'kpi/confirm',										//确认kpi
 	passKpi:'kpi/pass',												//通过kpi	
-	scoreKpi:'kpi/score',											//评分			
+	scoreKpi:'kpi/score',											//评分	
+	exportKpi:'kpi/export',											//获取打印列表
 }				
 export default{
 	//获取用户id
@@ -84,6 +85,10 @@ export default{
 	//评分
 	scoreKpi(params){
 		return http.post(path.scoreKpi, params)
+	},
+	//获取打印列表
+	exportKpi(params){
+		return http.get(path.exportKpi, params)
 	},
 }
 

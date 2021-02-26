@@ -26,6 +26,7 @@
 	<div class="table_setting">
 		<el-button type="primary" plain size="small" @click="printPreview">打印<i class="el-icon-printer el-icon--right"></i></el-button>
 	</div>
+	<div id="dd"></div>
 	<el-table :data="dataObj.data" size="small" stripe style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 		<el-table-column prop="kpi_id" label="序号" align="center">
 		</el-table-column>
@@ -153,7 +154,7 @@
 			</div>
 		</div>
 		<div class="performance_item border_bottom">
-			<div class="item_label font_weight">加分项</div>
+			<div class="item_label font_weight">加减项</div>
 			<div class="item_content">
 				<div class="content_row border_bottom">
 					<div class="column_item min_width font_weight">序号</div>
@@ -170,8 +171,7 @@
 						<el-input class="rule-input-edit" v-model="item.project" :readonly="is_readonly" type="textarea" autosize placeholder="输入考核项目"></el-input>
 					</div>
 					<div class="column_item min_width">
-						<el-input class="rule-input-edit widget_input" type="number" v-model="item.weight" @input="weightChange" :readonly="is_readonly"></el-input>
-						<div class="bai">%</div>
+						无
 					</div>
 					<div class="column_item max_width">
 						<el-input class="rule-input-edit" v-model="item.requirements" :readonly="is_readonly" type="textarea" autosize placeholder="输入指标要求"></el-input>
@@ -180,7 +180,7 @@
 						<el-input class="rule-input-edit" v-model="item.criteria" :readonly="is_readonly" type="textarea" autosize placeholder="输入评分标准"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_score">
-						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" @input="inputChange" placeholder="输入得分"></el-input>
+						<el-input class="rule-input-edit" type="number" v-model="item.score" :readonly="is_score_readonly" @input="scoreInputChange" placeholder="输入得分"></el-input>
 					</div>
 					<div class="column_item min_width" v-if="is_setting">
 						<el-button type="text" size="small" @click="addItem('3',index)">插入</el-button>
@@ -251,212 +251,36 @@
 </el-dialog>
 <!-- 打印弹框 -->
 <el-dialog width="60%" title="打印预览" :visible.sync="show_print">
-	<div id="printTest" class="print_box">
-		<div class="print_item">
-			<div class="time_title">2019年11月</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">姓名</div>
-				<div class="common_div big_width">于晶晶</div>
-				<div class="common_div center_width">岗位</div>
-				<div class="common_div big_width">培训主管</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">序号</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目</div>
-					<div class="weight_width">权重</div>
+	<div style="height: 500px;overflow-y: scroll">
+		<div id="printTest" class="print_box">
+			<div class="page_box" v-for="item in print_page">
+				<div class="print_item" v-for="i in item.arr">
+					<div class="time_title">{{i.info.date}}</div>
+					<div class="user_info_box">
+						<div class="common_div small_width">姓名</div>
+						<div class="common_div big_width">{{i.info.ding_user_name}}</div>
+						<div class="common_div center_width">岗位</div>
+						<div class="common_div big_width">{{i.info.position}}</div>
+					</div>
+					<div class="user_info_box">
+						<div class="common_div small_width">序号</div>
+						<div class="common_div big_width">
+							考核项目
+						</div>
+						<div class="common_div center_width">指标要求</div>
+						<div class="common_div big_width">评分标准</div>
+					</div>
+					<div class="user_info_box" v-for="(i_item,index) in i.achievement">
+						<div class="common_div small_width">{{index + 1}}</div>
+						<div class="common_div big_width">{{i_item.project}}</div>
+						<div class="common_div center_width">{{i_item.requirements}}</div>
+						<div class="common_div big_width">{{i_item.criteria}}</div>
+					</div>
 				</div>
-				<div class="common_div center_width">指标要求</div>
-				<div class="common_div big_width">评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-		</div>
-		<div class="print_item">
-			<div class="time_title">2019年11月</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">姓名</div>
-				<div class="common_div big_width">于晶晶</div>
-				<div class="common_div center_width">岗位</div>
-				<div class="common_div big_width">培训主管</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">序号</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目</div>
-					<div class="weight_width">权重</div>
-				</div>
-				<div class="common_div center_width">指标要求</div>
-				<div class="common_div big_width">评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-		</div><div class="print_item">
-			<div class="time_title">2019年11月</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">姓名</div>
-				<div class="common_div big_width">于晶晶</div>
-				<div class="common_div center_width">岗位</div>
-				<div class="common_div big_width">培训主管</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">序号</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目</div>
-					<div class="weight_width">权重</div>
-				</div>
-				<div class="common_div center_width">指标要求</div>
-				<div class="common_div big_width">评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-		</div><div class="print_item">
-			<div class="time_title">2019年11月</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">姓名</div>
-				<div class="common_div big_width">于晶晶</div>
-				<div class="common_div center_width">岗位</div>
-				<div class="common_div big_width">培训主管</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">序号</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目</div>
-					<div class="weight_width">权重</div>
-				</div>
-				<div class="common_div center_width">指标要求</div>
-				<div class="common_div big_width">评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-		</div><div class="print_item">
-			<div class="time_title">2019年11月</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">姓名</div>
-				<div class="common_div big_width">于晶晶</div>
-				<div class="common_div center_width">岗位</div>
-				<div class="common_div big_width">培训主管</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">序号</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目</div>
-					<div class="weight_width">权重</div>
-				</div>
-				<div class="common_div center_width">指标要求</div>
-				<div class="common_div big_width">评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
-			</div>
-			<div class="user_info_box">
-				<div class="common_div small_width">1</div>
-				<div class="common_div big_width">
-					<div class="common_div kpi_item">考核项目考核项目考核项目考核项目考核项目考核项目</div>
-					<div class="weight_width">100%</div>
-				</div>
-				<div class="common_div center_width">指标要求指标要求指标要求指标要求指标要求指标要求指标要求</div>
-				<div class="common_div big_width">评分标准评分标准评分标准评分标准评分标准评分标准</div>
 			</div>
 		</div>
 	</div>
+	
 	<div slot="footer" class="dialog-footer">
 		<el-button size="small" @click="show_print = false">取消</el-button>
 		<el-button size="small" type="primary" v-print="printObj">打印</el-button>
@@ -591,13 +415,16 @@
 	-moz-appearance: textfield !important;
 }
 .print_box{
-	width:794px;
-	// height: 1123px;
-	display: flex;
-	justify-content: space-between;
-	flex-wrap: wrap;
+	.page_box{
+		margin-bottom: 80px;
+		width:794px;
+		height: 1123px;
+		display: flex;
+		justify-content: space-between;
+		flex-wrap: wrap;
+	}
 	.print_item{
-		margin-bottom: 10px;
+		margin-bottom: 20px;
 		border-top: 1px solid #333;
 		width:48%;
 		font-size:14px;
@@ -608,6 +435,8 @@
 			display: flex;
 			align-items: center;
 			justify-content: center;
+			word-break:break-all;
+			word-wrap: break-word;
 		}
 		.time_title{
 			border-bottom: 1px solid #333;
@@ -629,20 +458,10 @@
 			}
 			.big_width{
 				flex:1;
-				display: flex;
-				.kpi_item{
-					flex:1;
-					height: 100%;
-				}
-				.weight_width{
-					width:38px;
-					text-align:center;
-				}
 			}
 		}
 	}
 }
-
 </style>
 <script>
 	import {getCurrentMonth} from '../../api/nowMonth.js'
@@ -700,8 +519,9 @@
               		id: "printTest",//打印区域 Dom ID
               		popTitle: '打印页面标题文字',
               		extraCss: 'https://www.google.com,https://www.google.com',
-              		extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>,<style> #printTest { height: auto !important} .print_item{min-height:500px;margin-bottom:20px;} <style>'  ,//  可以传进去  style tag 标签；注意要逗号分隔   解决特定区域不显示问题；
-              	}
+              		extraHead: '<meta http-equiv="Content-Language"content="zh-cn"/>,<style> #printTest { height: auto !important} .print_item{margin-bottom:20px} <style>'  ,//  可以传进去  style tag 标签；注意要逗号分隔   解决特定区域不显示问题；
+              	},
+              	print_page:[],						//打印的所有页
               }
           },
           created(){
@@ -850,7 +670,13 @@
 						this.achievement.push(pushObj1);
 						let pushObj2 = JSON.parse(JSON.stringify(obj));
 						this.action.push(pushObj2);
-						let pushObj3 = JSON.parse(JSON.stringify(obj));
+						let objs = {
+							criteria: '',
+							project: '',
+							requirements: '',
+							weight: '100'
+						}
+						let pushObj3 = JSON.parse(JSON.stringify(objs));
 						this.bonus_items.push(pushObj3);
 					}else{
 						this.$message.warning(res.data.msg);
@@ -903,7 +729,6 @@
 				}else{
 					var achievement_total = 0;			//业绩绩效总权重
 					var action_total = 0;				//行为考核总权重
-					var bonus_items_total = 0;			//加分项总权重
 					//业绩绩效
 					for(var i = 0;i < this.achievement.length;i ++){
 						if(this.achievement[i].project == '' || this.achievement[i].weight == '' || this.achievement[i].requirements == '' || this.achievement[i].criteria == ''){
@@ -935,23 +760,18 @@
 					//加分项
 					var unnull_bonus_items = 0;	//不为空的条数
 					for(var i = 0;i < this.bonus_items.length;i ++){
-						if(this.bonus_items[i].project != '' && this.bonus_items[i].weight != '' && this.bonus_items[i].requirements != '' && this.bonus_items[i].criteria != ''){
+						if(this.bonus_items[i].project != '' && this.bonus_items[i].requirements != '' && this.bonus_items[i].criteria != ''){
 							unnull_bonus_items += 1;
 							delete this.bonus_items[i].score;
 							delete this.bonus_items[i].type;
-							bonus_items_total += parseFloat(this.bonus_items[i].weight);
 						}
 					}
 					if(unnull_bonus_items > 0){
 						for(var i = 0;i < this.bonus_items.length;i ++){
-							if(this.bonus_items[i].project == '' || this.bonus_items[i].weight == '' || this.bonus_items[i].requirements == '' || this.bonus_items[i].criteria == ''){
+							if(this.bonus_items[i].project == '' || this.bonus_items[i].requirements == '' || this.bonus_items[i].criteria == ''){
 								this.$message.warning('加分项内有未完善的考核项！');
 								return;
 							}
-						}
-						if(bonus_items_total != 100){
-							this.$message.warning('加分项权重总和必须是100%！');
-							return;
 						}
 					}
 					//审批人
@@ -1033,6 +853,16 @@
 					this.computeTotal();
 				}
 			},
+			//监听加减项评分
+			scoreInputChange(value){
+				if(value != '' && parseFloat(value) != 0 && !this.judgmentMoney.test(parseFloat(value))){
+					this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
+					return;
+				}else {
+					//计算总分
+					this.computeTotal();
+				}
+			},
 			//计算总分
 			computeTotal(){
 				var achievement_total_scores = 0;
@@ -1049,10 +879,11 @@
 					}
 				}
 				for(var i = 0;i < this.bonus_items.length;i ++){
-					if(this.bonus_items[i].score && (parseFloat(this.bonus_items[i].score) >= 0 && parseFloat(this.bonus_items[i].score) <= 100)){
-						bonus_items_total_scores += parseFloat(this.bonus_items[i].score)*this.bonus_items[i].weight*0.01;
+					if(this.bonus_items[i].score){
+						bonus_items_total_scores += parseFloat(this.bonus_items[i].score);
 					}
 				}
+				console.log(bonus_items_total_scores)
 				let total_score = achievement_total_scores*0.9 + action_total_scores*0.1 + bonus_items_total_scores;
 				this.user_info.score = Math.round(total_score * 100) / 100;
 			},
@@ -1072,10 +903,10 @@
 						this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
 						return;
 					}else if(parseFloat(this.achievement[i].score) > 100){
-						this.$message.warning('单项考核分数不能低于0或高于100！');
+						this.$message.warning('单项考核分数不能高于100！');
 						return;
 					}else if(parseFloat(this.achievement[i].score) < 0){
-						this.$message.warning('单项考核分数不能低于0或高于100！');
+						this.$message.warning('单项考核分数不能低于0！');
 						return;
 					}else{
 						this.$message.warning('业绩绩效内有未完成的评分！');
@@ -1093,10 +924,10 @@
 						this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
 						return;
 					}else if(parseFloat(this.action[i].score) > 100){
-						this.$message.warning('单项考核分数不能低于0或高于100！');
+						this.$message.warning('单项考核分数不能高于100！');
 						return;
 					}else if(parseFloat(this.action[i].score) < 0){
-						this.$message.warning('单项考核分数不能低于0或高于100！');
+						this.$message.warning('单项考核分数不能低于0！');
 						return;
 					}else{
 						this.$message.warning('行为考核内有未完成的评分！');
@@ -1104,23 +935,17 @@
 					}
 				}
 				for(var i = 0;i < this.bonus_items.length;i ++){
-					if(this.bonus_items[i].score && (parseFloat(this.bonus_items[i].score) >= 0 && parseFloat(this.bonus_items[i].score) <= 100)){
+					if(this.bonus_items[i].score){
 						let obj = {
 							score:this.bonus_items[i].score,
 							id:this.bonus_items[i].id
 						}
 						bonus_items_scores.push(obj);
-					}else if(!this.judgmentMoney.test(parseFloat(this.bonus_items[i].score))){
+					}else if(this.bonus_items[i].score && !this.judgmentMoney.test(parseFloat(this.bonus_items[i].score))){
 						this.$message.warning('请输入正确的分数格式，最多保留两位小数！');
 						return;
-					}else if(parseFloat(this.bonus_items[i].score) > 100){
-						this.$message.warning('单项考核分数不能低于0或高于100！');
-						return;
-					}else if(parseFloat(this.bonus_items[i].score) < 0){
-						this.$message.warning('单项考核分数不能低于0或高于100！');
-						return;
 					}else{
-						this.$message.warning('加分项内有未完成的评分！');
+						this.$message.warning('加减项内有未完成的评分！');
 						return;
 					}
 				}
@@ -1214,7 +1039,67 @@
 			},
 			//打印
 			printPreview(){
-				this.show_print = true;
+				this.print_page = [];
+				resource.exportKpi({month:this.req.date}).then(res => {
+					if(res.data.code == 1){
+						var list = res.data.data;
+						var height_list = [];
+						var group_list = [];
+						list.map(item => {
+							var item_height = 56;
+							item.achievement.map((i,index) => {
+								let ele_item = '<div style="border:1px solid red;display:flex;width:382px"><div  style="flex:1;min-height:30px;word-wrap: break-word;word-break:break-all;">'+ i.project +'</div><div style="width:80px;min-height:30px;word-wrap: break-word;word-break:break-all;">'+ i.requirements +'</div><div style="flex:1;min-height:30px;word-wrap: break-word;word-break:break-all;">'+ i.criteria +'</div></div>';
+								let node = document.createElement('div');
+								node.style.width = '382px';
+								node.innerHTML = ele_item;
+								document.body.appendChild(node);
+								let height_str = global.getComputedStyle(node).height;
+								let height = parseFloat(height_str.split('p')[0]);
+								item_height += height;
+								document.body.removeChild(node);
+							});
+							let obj = {
+								kpi_id:item.info.kpi_id,
+								height:item_height
+							}
+							height_list.push(obj)
+						}) 
+						for(var i=0;i<height_list.length;i+=2){
+							let group_item = height_list.slice(i,i+2);
+							let item_list = list.slice(i,i+2);
+							let max_height = Math.max.apply(Math, group_item.map(function(o) {return o.height}));
+							let obj = {
+								item_list:item_list,
+								max_height:max_height
+							}
+							group_list.push(obj);
+						}
+						var ooo = {
+							max_height:0,
+							arr:[]
+						}
+						group_list.map(item => {
+							if(item.max_height + ooo.max_height <= 1000){
+								ooo.max_height += item.max_height;
+								ooo.arr = [...ooo.arr,...item.item_list];
+							}else{
+								this.print_page.push(ooo);
+								ooo = {
+									max_height:0,
+									arr:[]
+								}
+								ooo.max_height += item.max_height;
+								ooo.arr = [...ooo.arr,...item.item_list];
+							}
+						})
+						if(ooo.max_height <= 1000){
+							this.print_page.push(ooo);
+						}
+						this.show_print = true;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//分页
 			handleSizeChange(val) {
