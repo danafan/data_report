@@ -50,6 +50,15 @@
 							<el-menu-item index="/performance">个人绩效</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
+					<el-submenu index="2">
+						<template slot="title">
+							<i class="el-icon-s-data"></i>
+							<span>系统管理</span>
+						</template>
+						<el-menu-item-group>     
+							<el-menu-item index="/permssions_index">权限管理</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
 				</el-menu>
 			</div>
 			<el-main class="main">
@@ -174,8 +183,9 @@
 		},
 		created(){
 			let tab = sessionStorage.getItem("tab");
+			console.log(tab)
 			if(!tab){
-				this.activeIndex = '/store_results';
+				this.activeIndex = '/permissions';
 			}else{
 				this.activeIndex = tab;
 			}

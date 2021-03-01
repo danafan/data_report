@@ -24,7 +24,7 @@
 		</el-form-item>
 	</el-form>
 	<div class="table_setting">
-		<el-button type="primary" plain size="small" @click="printPreview">打印<i class="el-icon-printer el-icon--right"></i></el-button>
+		<el-button type="primary" plain size="small" @click="printPreview('')">打印<i class="el-icon-printer el-icon--right"></i></el-button>
 	</div>
 	<div id="dd"></div>
 	<el-table :data="dataObj.data" size="small" stripe style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -52,7 +52,7 @@
 				<el-button type="text" size="small" v-if="isShow('2',scope.row.type,scope.row.status)" @click="editItem(scope.row.kpi_id)">编辑</el-button>
 				<el-button type="text" size="small" v-if="isShow('3',scope.row.type,scope.row.status)" @click="kpiDetail('2',scope.row.kpi_id)">查看</el-button>
 				<el-button type="text" size="small" v-if="isShow('4',scope.row.type,scope.row.status)" @click="kpiDetail('4',scope.row.kpi_id)">评分</el-button>
-				<el-button type="text" size="small" v-if="isShow('5',scope.row.type,scope.row.status)">打印</el-button>
+				<el-button type="text" size="small" v-if="isShow('5',scope.row.type,scope.row.status)" @click="printPreview(scope.row.kpi_id)">打印</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -250,7 +250,9 @@
 </div>
 </el-dialog>
 <!-- 打印弹框 -->
-<el-dialog width="60%" title="打印预览" :visible.sync="show_print">
+<el-dialog width="60%" title="提示" :visible.sync="show_print">
+	<div>本次打印人数：{{export_length}}人</div>
+	<div style="margin-bottom: 10px">预计使用纸张：{{print_page.length}}张</div>
 	<div style="height: 500px;overflow-y: scroll">
 		<div id="printTest" class="print_box">
 			<div class="page_box" v-for="item in print_page">
@@ -265,14 +267,18 @@
 					<div class="user_info_box">
 						<div class="common_div small_width">序号</div>
 						<div class="common_div big_width">
-							考核项目
+							<div class="project_content">考核项目</div>
+							<div class="weight">权重</div>
 						</div>
 						<div class="common_div center_width">指标要求</div>
 						<div class="common_div big_width">评分标准</div>
 					</div>
 					<div class="user_info_box" v-for="(i_item,index) in i.achievement">
 						<div class="common_div small_width">{{index + 1}}</div>
-						<div class="common_div big_width">{{i_item.project}}</div>
+						<div class="common_div big_width">
+							<div class="project_content">{{i_item.project}}</div>
+							<div class="weight">{{i_item.weight}}%</div>
+						</div>
 						<div class="common_div center_width">{{i_item.requirements}}</div>
 						<div class="common_div big_width">{{i_item.criteria}}</div>
 					</div>
@@ -333,7 +339,7 @@
 					justify-content: center;
 				}
 				.min_width{
-					width:120px;
+					width:80px;
 				}
 				.max_width{
 					flex: 1;
@@ -426,7 +432,7 @@
 	.print_item{
 		margin-bottom: 20px;
 		border-top: 1px solid #333;
-		width:48%;
+		width:390px;
 		font-size:14px;
 		color: #333;
 		.common_div{
@@ -458,6 +464,21 @@
 			}
 			.big_width{
 				flex:1;
+				display:flex;
+				.project_content{
+					border-right:1px solid #333;
+					height: 100%;
+					flex:1;
+					display:flex;
+					align-items: center;
+					justify-content: center;
+				}
+				.weight{
+					width:36px;
+					display:flex;
+					align-items: center;
+					justify-content: center;
+				}
 			}
 		}
 	}
@@ -515,6 +536,7 @@
 				feedback:"",						//反馈内容
 				feedback_readonly:false,			//反馈只读
 				show_print:false,					//打印预览显示
+				export_length:0,					//打印总人数
 				printObj: {
               		id: "printTest",//打印区域 Dom ID
               		popTitle: '打印页面标题文字',
@@ -697,7 +719,13 @@
 				}else if(type == '2'){
 					this.action.splice(index+1, 0, obj);
 				}else if(type == '3'){
-					this.bonus_items.splice(index+1, 0, obj);
+					let objs = {
+						criteria: '',
+						project: '',
+						requirements: '',
+						weight: '100'
+					}
+					this.bonus_items.splice(index+1, 0, objs);
 				}
 			},
 			//删除某一考核项的子项
@@ -1038,11 +1066,17 @@
 				}
 			},
 			//打印
-			printPreview(){
+			printPreview(kpi_id){
 				this.print_page = [];
-				resource.exportKpi({month:this.req.date}).then(res => {
+				let req = {
+					id:kpi_id,
+					month:this.req.date
+				}
+				console.log(req)
+				resource.exportKpi(req).then(res => {
 					if(res.data.code == 1){
 						var list = res.data.data;
+						this.export_length = list.length;
 						var height_list = [];
 						var group_list = [];
 						list.map(item => {
@@ -1078,8 +1112,8 @@
 							max_height:0,
 							arr:[]
 						}
-						group_list.map(item => {
-							if(item.max_height + ooo.max_height <= 1000){
+						group_list.map((item,index) => {
+							if(item.max_height + ooo.max_height <= 960){
 								ooo.max_height += item.max_height;
 								ooo.arr = [...ooo.arr,...item.item_list];
 							}else{
@@ -1092,7 +1126,7 @@
 								ooo.arr = [...ooo.arr,...item.item_list];
 							}
 						})
-						if(ooo.max_height <= 1000){
+						if(ooo.max_height <= 960){
 							this.print_page.push(ooo);
 						}
 						this.show_print = true;

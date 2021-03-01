@@ -16,6 +16,9 @@ let path = {
 	passKpi:'kpi/pass',												//通过kpi	
 	scoreKpi:'kpi/score',											//评分	
 	exportKpi:'kpi/export',											//获取打印列表
+	userList:'user/list',											//权限用户列表
+	userInfo:'user/info',											//获取用户详情
+	userSet:'user/set',												//用户设置
 }				
 export default{
 	//获取用户id
@@ -89,6 +92,22 @@ export default{
 	//获取打印列表
 	exportKpi(params){
 		return http.get(path.exportKpi, params)
+	},
+	//权限用户列表
+	userList(params){
+		return http.get(path.userList, params)
+	},
+	// 用户详情
+	userInfo(params){
+		return http.get(path.userInfo, params)
+	},
+	//用户设置(get)
+	userSetGet(params){
+		return http.get(path.userSet, params)
+	},
+	//用户设置(post)
+	userSetPost(params){
+		return http.post(path.userSet, params)
 	},
 }
 

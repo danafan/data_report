@@ -20,7 +20,8 @@
       }
     },
     created(){
-      this.$router.push('/performance');
+      this.$router.push('/permssions_index');
+      // this.$router.push('/performance');
       //获取code
       // this.GetCode();
     },

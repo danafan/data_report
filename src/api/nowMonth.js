@@ -12,7 +12,7 @@ export function getMonthStartDate(){
 export function getCurrentMonth(){ 
 	var currentMonth = new Date(nowYear, nowMonth, 1); 
 	var myyear = currentMonth.getFullYear(); 
-	var mymonth = currentMonth.getMonth()+2; 
+	var mymonth = currentMonth.getMonth()+1; 
 	if(mymonth < 10){ 
 		mymonth = "0" + mymonth; 
 	} 
