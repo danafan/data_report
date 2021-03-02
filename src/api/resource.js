@@ -19,6 +19,9 @@ let path = {
 	userList:'user/list',											//权限用户列表
 	userInfo:'user/info',											//获取用户详情
 	userSet:'user/set',												//用户设置
+	menuRoleList:'menurole/list',									//获取权限列表
+	addMenuRole:'menurole/add',										//新增访问权限
+	editMenuRole:'menurole/edit',									//编辑访问权限
 }				
 export default{
 	//获取用户id
@@ -108,6 +111,18 @@ export default{
 	//用户设置(post)
 	userSetPost(params){
 		return http.post(path.userSet, params)
+	},
+	//获取权限列表
+	menuRoleList(params){
+		return http.get(path.menuRoleList, params)
+	},
+	//新增访问权限
+	addMenuRole(params){
+		return http.post(path.addMenuRole, params)
+	},
+	//编辑访问权限
+	editMenuRole(params){
+		return http.post(path.editMenuRole, params)
 	},
 }
 
