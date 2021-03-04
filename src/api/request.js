@@ -6,7 +6,7 @@ export default {
   post(path, params={}){
     let target = {};
     // target.user_id = '2819';  //张阳
-    target.user_id = '2751';  //hrbp
+    target.admin_id = '2751';  //hrbp
     // target.user_id = '2743';  //汪淑燕
     // let admin_id = localStorage.getItem("admin_admin_id");
     // let secret_key = localStorage.getItem("admin_secret_key");
@@ -47,7 +47,7 @@ export default {
    get(path, params={}){
     let target = {};
     // target.user_id = '2819';  //张阳
-    target.user_id = '2751';  //hrbp
+    target.admin_id = '2751';  //hrbp
     // target.user_id = '2743';  //汪淑燕
     // let admin_id = localStorage.getItem("admin_admin_id");
     // let secret_key = localStorage.getItem("admin_secret_key");

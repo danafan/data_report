@@ -10,6 +10,8 @@ const run_weekly = resolve=>require(['@/pages/Results/run_weekly'],resolve)
 const performance = resolve=>require(['@/pages/Results/performance'],resolve)
 //权限
 const permssions_index = resolve=>require(['@/pages/Permissions/permissions_index'],resolve)
+const role_user = resolve=>require(['@/pages/Permissions/PermissionTabs/role_user'],resolve)
+const data_role_user = resolve=>require(['@/pages/Permissions/PermissionTabs/data_role_user'],resolve)
 Vue.use(Router)
 
 const router = new Router({
@@ -22,7 +24,11 @@ const router = new Router({
     { path: '/store_results',name:"店铺业绩", component: store_results},
     { path: '/run_weekly',name:"运营周报", component: run_weekly},
     { path: '/performance',name:"个人绩效", component: performance},
-    { path: '/permssions_index',name:"权限管理", component: permssions_index},
+    { path: '/permssions_index',name:"权限管理", component: permssions_index,meta: {
+      keepAlive: true,  
+    }},
+    { path: '/role_user',name:"角色人员", component: role_user},
+    { path: '/data_role_user',name:"数据权限人员", component: data_role_user},
     ]
   }
   ]

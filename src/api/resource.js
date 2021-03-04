@@ -22,7 +22,22 @@ let path = {
 	menuRoleList:'menurole/list',									//获取权限列表
 	addMenuRole:'menurole/add',										//新增访问权限
 	editMenuRole:'menurole/edit',									//编辑访问权限
-}				
+	menuRoleInfo:'menurole/info',									//角色详情
+	menuRoleDel:'menurole/del',										//删除角色
+	menuRoleUsers:'menurole/users',									//角色对应用户列表
+	menuRoleSetting:'menurole/set',									//用户设置
+	menuRoleUsrInfo:'menurole/useinfo',								//用户详情
+	moveUser:'menurole/moveuser',									//删除角色下的用户
+	dataRoleList:'datarole/list',									//数据权限列表
+	addDataRole:'datarole/add',										//新增数据角色
+	editDataRole:'datarole/edit',									//编辑数据角色
+	delDataRole:'datarole/del',										//删除数据角色
+	dataRoleInfo:'datarole/info',									//角色详情
+	dataRoleUser:'datarole/users',									//数据角色对应用户列表
+	setDataRole:'datarole/set',										//数据角色用户设置
+	dataRoleUseInfo:'datarole/useinfo',								//数据权限用户详情
+	dataRoleMoveUser:'datarole/moveuser',							//数据权限删除用户
+}					
 export default{
 	//获取用户id
 	login(params){
@@ -116,13 +131,97 @@ export default{
 	menuRoleList(params){
 		return http.get(path.menuRoleList, params)
 	},
-	//新增访问权限
-	addMenuRole(params){
+	//新增访问权限(get)
+	addMenuRoleGet(params){
+		return http.get(path.addMenuRole, params)
+	},
+	//新增访问权限(post)
+	addMenuRolePost(params){
 		return http.post(path.addMenuRole, params)
 	},
-	//编辑访问权限
-	editMenuRole(params){
+	//编辑访问权限(get)
+	editMenuRoleGet(params){
+		return http.get(path.editMenuRole, params)
+	},
+	//编辑访问权限(post)
+	editMenuRolePost(params){
 		return http.post(path.editMenuRole, params)
+	},
+	//角色详情
+	menuRoleInfo(params){
+		return http.get(path.menuRoleInfo, params)
+	},
+	//删除角色
+	menuRoleDel(params){
+		return http.post(path.menuRoleDel, params)
+	},
+	//角色用户列表
+	menuRoleUsers(params){
+		return http.get(path.menuRoleUsers, params)
+	},
+	//设置用户（get）
+	menuRoleSettingGet(params){
+		return http.get(path.menuRoleSetting, params)
+	},
+	//设置用户（post）
+	menuRoleSettingPost(params){
+		return http.post(path.menuRoleSetting, params)
+	},
+	//用户详情
+	menuRoleUsrInfo(params){
+		return http.get(path.menuRoleUsrInfo, params)
+	},
+	//删除角色下的用户
+	moveUser(params){
+		return http.post(path.moveUser, params)
+	},
+	//数据权限角色列表
+	dataRoleList(params){
+		return http.get(path.dataRoleList, params)
+	},
+	//新增数据权限（get）
+	addDataRoleGet(params){
+		return http.get(path.addDataRole, params)
+	},
+	//新增数据权限（post）
+	addDataRolePost(params){
+		return http.post(path.addDataRole, params)
+	},
+	//编辑数据角色（get）
+	editDataRoleGet(params){
+		return http.get(path.editDataRole, params)
+	},
+	//编辑数据角色（post）
+	editDataRolePost(params){
+		return http.post(path.editDataRole, params)
+	},
+	//删除数据角色
+	delDataRole(params){
+		return http.post(path.delDataRole, params)
+	},
+	//数据权限详情
+	dataRoleInfo(params){
+		return http.get(path.dataRoleInfo, params)
+	},
+	//数据角色对应用户列表
+	dataRoleUser(params){
+		return http.get(path.dataRoleUser, params)
+	},
+	//数据权限用户设置(get)
+	setDataRoleGet(params){
+		return http.get(path.setDataRole, params)
+	},
+	//数据权限用户设置(post)
+	setDataRolePost(params){
+		return http.post(path.setDataRole, params)
+	},
+	//数据权限用户详情
+	dataRoleUseInfo(params){
+		return http.get(path.dataRoleUseInfo, params)
+	},
+	//用户权限删除用户
+	dataRoleMoveUser(params){
+		return http.post(path.dataRoleMoveUser, params)
 	},
 }
 
