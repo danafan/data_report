@@ -6,16 +6,6 @@ let path = {
 	ajaxViewStore:'Common/ajaxViewShop',							//店铺列表
 	performanceReport:'PerformanceReport/index',					//业绩分析
 	dayAnalysis:'PerformanceReport/DayAnalysis',					//每日业绩
-	kpiList:'kpi/list',												//绩效考核列表
-	ajaxUser:'common/ajaxUser',										//查询所有用户
-	kpiDetail:'kpi/detail',											//kpi详情
-	addKpi:'kpi/add',												//添加kpi
-	feedBack:'kpi/feedback',										//提交反馈
-	editKpi:'kpi/edit',												//编辑kpi		
-	confirmKpi:'kpi/confirm',										//确认kpi
-	passKpi:'kpi/pass',												//通过kpi	
-	scoreKpi:'kpi/score',											//评分	
-	exportKpi:'kpi/export',											//获取打印列表
 	userList:'user/list',											//权限用户列表
 	userInfo:'user/info',											//获取用户详情
 	userSet:'user/set',												//用户设置
@@ -37,6 +27,15 @@ let path = {
 	setDataRole:'datarole/set',										//数据角色用户设置
 	dataRoleUseInfo:'datarole/useinfo',								//数据权限用户详情
 	dataRoleMoveUser:'datarole/moveuser',							//数据权限删除用户
+	accessList:'access/accesslist',									//权限列表
+	getMainMenus:'access/getmainmenus',								//获取菜单列表
+	getController:'access/getcontrollers',							//获取所有控制器
+	getMethods:'access/getmethods',									//控制器下所有方法列表
+	ajaxAccess:'access/ajaxaccess',									//选择权限按钮列表
+	addAccess:'access/add',											//添加权限
+	getAccessInfo:'access/getinfo',									//权限信息获取
+	delAccess:'access/del',											//删除权限
+	editAccess:'access/edit',										//编辑权限
 }					
 export default{
 	//获取用户id
@@ -62,54 +61,6 @@ export default{
 	//每日业绩
 	dayAnalysis(params){
 		return http.get(path.dayAnalysis, params)
-	},
-	//绩效考核列表
-	kpiList(params){
-		return http.get(path.kpiList, params)
-	},
-	//查询所有用户
-	ajaxUser(params){
-		return http.get(path.ajaxUser, params)
-	},
-	//查看kpi详情
-	kpiDetail(params){
-		return http.get(path.kpiDetail, params)
-	},
-	//添加kpi（get）
-	addKpiGet(params){
-		return http.get(path.addKpi, params)
-	},
-	//添加kpi（post）
-	addKpiPost(params){
-		return http.post(path.addKpi, params)
-	},
-	//提交反馈
-	feedBack(params){
-		return http.post(path.feedBack, params)
-	},
-	//编辑kpi（get）
-	editKpiGet(params){
-		return http.get(path.editKpi, params)
-	},
-	//编辑kpi（post）
-	editKpiPost(params){
-		return http.post(path.editKpi, params)
-	},
-	//确认kpi
-	confirmKpi(params){
-		return http.post(path.confirmKpi, params)
-	},
-	//通过kpi
-	passKpi(params){
-		return http.post(path.passKpi, params)
-	},
-	//评分
-	scoreKpi(params){
-		return http.post(path.scoreKpi, params)
-	},
-	//获取打印列表
-	exportKpi(params){
-		return http.get(path.exportKpi, params)
 	},
 	//权限用户列表
 	userList(params){
@@ -222,6 +173,42 @@ export default{
 	//用户权限删除用户
 	dataRoleMoveUser(params){
 		return http.post(path.dataRoleMoveUser, params)
+	},
+	//权限列表
+	accessList(params){
+		return http.get(path.accessList, params)
+	},
+	//获取菜单列表
+	getMainMenus(params){
+		return http.get(path.getMainMenus, params)
+	},
+	//获取所有控制器
+	getControllers(params){
+		return http.get(path.getController, params)
+	},
+	//控制器下所有方法列表
+	getMethods(params){
+		return http.get(path.getMethods, params)
+	},
+	//选择权限按钮列表
+	ajaxAccess(params){
+		return http.get(path.ajaxAccess, params)
+	},
+	//添加权限
+	addAccess(params){
+		return http.post(path.addAccess, params)
+	},
+	//权限信息获取
+	getAccessInfo(params){
+		return http.get(path.getAccessInfo, params)
+	},
+	//删除权限
+	delAccess(params){
+		return http.post(path.delAccess, params)
+	},
+	//编辑权限
+	editAccess(params){
+		return http.post(path.editAccess, params)
 	},
 }
 

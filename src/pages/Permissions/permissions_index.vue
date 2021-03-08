@@ -10,6 +10,9 @@
 			<el-tab-pane label="数据权限" lazy name="data_permssion" class="tab_pane_box">
 				<DataPermssion/>
 			</el-tab-pane>
+			<el-tab-pane label="叫啥名呢" lazy name="management" class="tab_pane_box">
+				<Management/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -22,6 +25,7 @@
 	import PermssionSetting from './PermissionTabs/permssion_setting.vue'
 	import AccessPermssion from './PermissionTabs/access_permssion.vue'
 	import DataPermssion from './PermissionTabs/data_permssion.vue'
+	import Management from './PermissionTabs/management.vue'
 	export default{
 		data(){
 			return{
@@ -31,7 +35,8 @@
 		components:{
 			PermssionSetting,
 			AccessPermssion,
-			DataPermssion
+			DataPermssion,
+			Management
 		}
 	}
 </script>

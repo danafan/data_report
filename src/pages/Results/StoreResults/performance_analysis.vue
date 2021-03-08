@@ -120,7 +120,7 @@
 		</el-card>
 	</div>
 	<div class="table_setting">
-		<el-button type="primary" size="small">店铺自定义列表</el-button>
+		<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
 		<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<!-- 表格 -->
@@ -154,14 +154,14 @@
 	<div class="data_null" v-if="show_null && data_list.length == 0">暂无数据</div>
 	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_custom">
 		<div class="select_box">
-			<div class="select_item" v-for="(item,index) in label_list" :key="index">
-				<el-checkbox v-model="item.is_show">{{item.title}}</el-checkbox>
-			</div>
+			<el-checkbox-group v-model="selected_ids">
+				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+			</el-checkbox-group>
 		</div>
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="Restore">恢复默认</el-button>
 			<el-button size="small" @click="show_custom = false">取消</el-button>
-			<el-button size="small" type="primary" @click="Save">保存</el-button>
+			<el-button size="small" type="primary" @click="GetData">保存</el-button>
 		</div>
 	</el-dialog>
 </div>
@@ -340,6 +340,8 @@
 				ygz_gxmyl:{},						//预估值-贡献毛益率
 				label_list:[],						//表格数据（左侧表头）
 				data_list:[],						//表格数据（后面内容）
+				view_row:[],						//自定义列的内容
+				selected_ids:[],					//选中的自定义列的id
 				show_null:false,					//默认不显示空提示
 				default_data_list:[],				//表格数据（默认排序用）
 				show_custom:false,					//是否显示自定义弹框
@@ -410,7 +412,8 @@
 					dept_id:this.select_department_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					start_time:this.start_time,
-					end_time:this.end_time
+					end_time:this.end_time,
+					row_ids:this.selected_ids.join(',')
 				}
 				resource.performanceReport(req).then(res => {
 					if(res.data.code == 1){
@@ -425,6 +428,8 @@
 						})
 						this.label_list = data.shop_table_list.title_names;
 						this.data_list = data.shop_table_list.list;
+						this.view_row = data.view_row;
+						this.selected_ids = data.selected_ids;
 						this.show_null = true;
 						this.default_data_list = JSON.stringify(data.shop_table_list.list);
 					}else{
@@ -471,11 +476,10 @@
 			},
 			//恢复默认
 			Restore(){
-
-			},
-			//保存
-			Save(){
-
+				this.selected_ids = [];
+				this.view_row.map(item => {
+					this.selected_ids.push(item.row_id)
+				})
 			}
 			
 		}
