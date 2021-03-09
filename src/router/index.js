@@ -23,7 +23,7 @@ const router = new Router({
     { path: '/store_results',name:"店铺业绩", component: store_results},
     { path: '/run_weekly',name:"运营周报", component: run_weekly},
     { path: '/permssions_index',name:"权限管理", component: permssions_index,meta: {
-      keepAlive: true,  
+      keepAlive: false,  
     }},
     { path: '/role_user',name:"角色人员", component: role_user},
     { path: '/data_role_user',name:"数据权限人员", component: data_role_user},
@@ -37,6 +37,26 @@ router.beforeEach(function (to, from, next) {
   sessionStorage.setItem("tab",path);
   next()
 })
+// router.beforeEach((to,from,next)=>{
+//   if(to.matched.some(res=>res.meta.isLogin)){//判断是否需要登录
+//     if (sessionStorage['username']) {
+//       next();
+//     }else{
+//       next({
+//         path:"/login",
+//         query:{
+//           redirect:to.fullPath
+//         }
+//       });
+//     }
+//   }else{
+//     next()
+//   }
+// });
+
+
+
+
 const originalPush = Router.prototype.push
 Router.prototype.push = function push (location) {
   return originalPush.call(this, location).catch(err => err)

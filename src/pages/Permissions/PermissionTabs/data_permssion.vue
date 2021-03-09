@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-button type="primary" size="small" @click="addRole">添加</el-button>
+		<el-button type="primary" size="small" @click="addRole" v-if="dataObj.button_list.add == '1'">添加</el-button>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%;margin-top: 15px" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="data_role_id" label="编号" width="120" align="center"></el-table-column>
 			<el-table-column prop="data_role_name" label="数据权限名" align="center"></el-table-column>
@@ -15,9 +15,9 @@
 			<el-table-column prop="ding_user_name" label="创建人" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="editFun(scope.row.data_role_id)">编辑</el-button>
-					<el-button type="text" size="small" @click="getDetail(scope.row.data_role_id)">查看</el-button>
-					<el-button type="text" size="small" @click="deleteFun(scope.row.data_role_id)">删除</el-button>
+					<el-button type="text" size="small" @click="editFun(scope.row.data_role_id)" v-if="dataObj.button_list.edit == '1'">编辑</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.data_role_id)" v-if="dataObj.button_list.detail == '1'">查看</el-button>
+					<el-button type="text" size="small" @click="deleteFun(scope.row.data_role_id)" v-if="dataObj.button_list.del == '1'">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -109,7 +109,12 @@
 					page:1,
 					pagesize:10
 				},
-				dataObj:{},				//数据
+				dataObj:{button_list:{
+					add: 1,
+					del: 1,
+					detail: 1,
+					edit: 1
+				}},				//数据
 				menu_list:[],						//功能列表（角色用）
 				props:{
 					label: 'dept_name',

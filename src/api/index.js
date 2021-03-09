@@ -30,6 +30,12 @@ function endLoading() {
 
 instance.interceptors.request.use(
   config => {
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IjE1MzU5NDE0NTEwNjU0MDEwIiwiaXNzIjoiYWRtaW4iLCJpYXQiOjE2MTUyODI0NjgsImV4cCI6MTYxNTI4OTY2OCwibmJmIjoxNjE1MjgyNDY4LCJzdWIiOiJEYXRhQ2VudGVyIiwianRpIjoiZGU0NzJhMjljNGM0MzY0OTk3ZTEyMGZkOGUzOWU5ODYifQ.0l0vtH0y2hM-3OLhpVQl_b6DIeO8v6icFKlJNbAZnKI";
+    config.headers.Token = token;
+
+    // if(localStorage.getItem('token')){
+    //     config.headers.Token = localStorage.getItem('token');
+    // }
     startLoading();
     return config
   },error => {
@@ -40,7 +46,7 @@ instance.interceptors.response.use(response => {
   endLoading()
   switch (response.data.code) {
     case 10000:
-    sessionStorage.clear();
+    localStorage.clear();
     router.replace("/login");
   }
   return response;

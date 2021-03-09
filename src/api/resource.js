@@ -1,6 +1,8 @@
 import http from './request.js'
 let path = {	
 	login:'login',													//获取用户id
+	quit:'quit',													//推出
+	getMenu:'access/mymenu',										//获取所有菜单列表
 	jsapi:'jsapi',													//获取用户权限
 	ajaxViewDept:'Common/ajaxViewDept',								//部门列表
 	ajaxViewStore:'Common/ajaxViewShop',							//店铺列表
@@ -41,6 +43,14 @@ export default{
 	//获取用户id
 	login(params){
 		return http.post(path.login, params)
+	},
+	//用户推出
+	quit(params){
+		return http.post(path.quit, params)
+	},
+	//获取所有菜单列表
+	getMenu(params){
+		return http.get(path.getMenu, params)
 	},
 	//获取用户权限
 	jsapi(params){

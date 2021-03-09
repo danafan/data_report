@@ -1,17 +1,11 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab">
-			<el-tab-pane label="权限配置" lazy name="permssion_setting" class="tab_pane_box">
-					<PermssionSetting/>
-			</el-tab-pane>
-			<el-tab-pane label="访问权限" lazy name="access_permssion" class="tab_pane_box">
-				<AccessPermssion/>
-			</el-tab-pane>
-			<el-tab-pane label="数据权限" lazy name="data_permssion" class="tab_pane_box">
-				<DataPermssion/>
-			</el-tab-pane>
-			<el-tab-pane label="叫啥名呢" lazy name="management" class="tab_pane_box">
-				<Management/>
+			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+				<PermssionSetting v-if="item.web_url == 'permssion_setting'"/>
+				<AccessPermssion v-if="item.web_url == 'access_permssion'"/>
+				<DataPermssion v-if="item.web_url == 'data_permssion'"/>
+				<Management v-if="item.web_url == 'management'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -29,7 +23,27 @@
 	export default{
 		data(){
 			return{
-				activeTab:'permssion_setting'
+				activeTab:"",
+				menu_list:[]
+			}
+		},
+		created(){
+			let menu_list = this.$store.state.menu_list;
+			this.forMenuList(menu_list,'permssions_index');
+		},
+		methods:{
+			forMenuList(arr, web_url) {
+				for (let obj of arr) {
+					if (obj.web_url == web_url) {
+						this.menu_list = obj.list;
+						this.activeTab = this.menu_list[0].web_url;
+						return;
+					}else{
+						if('list' in obj){
+							this.forMenuList(obj.list,'permssions_index')
+						}
+					}
+				}
 			}
 		},
 		components:{

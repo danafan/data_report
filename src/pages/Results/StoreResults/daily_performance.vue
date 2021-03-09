@@ -38,7 +38,7 @@
 	</el-form>
 	<div class="table_setting">
 		<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<!-- 表格 -->
 	<div class="table_container" v-show="data_list.length > 0">
@@ -244,7 +244,8 @@
 				show_null:false,					//默认不显示空提示
 				default_data_list:[],				//表格数据（备用）
 				view_table_list:[],					//折线图列表
-				show_custom:false
+				show_custom:false,
+				button_list:{}
 			}
 		},
 		created(){
@@ -317,6 +318,7 @@
 				}
 				resource.dayAnalysis(req).then(res => {
 					if(res.data.code == 1){
+						this.show_custom = false;
 						let data = res.data.data;
 						data.shop_table_list.title_names[0].map(item => {
 							item.show_sort = false;		//是否显示排序标签
@@ -326,6 +328,7 @@
 						this.data_list = data.shop_table_list.list;
 						this.view_row = data.view_row;
 						this.selected_ids = data.selected_ids;
+						this.button_list = data.button_list;
 						this.show_null = true;
 						this.default_data_list = JSON.stringify(data.shop_table_list.list);
 						this.view_table_list = data.view_table_list;	//折线图

@@ -121,7 +121,7 @@
 	</div>
 	<div class="table_setting">
 		<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<!-- 表格 -->
 	<div class="table_container" v-if="data_list.length > 0">
@@ -345,6 +345,7 @@
 				show_null:false,					//默认不显示空提示
 				default_data_list:[],				//表格数据（默认排序用）
 				show_custom:false,					//是否显示自定义弹框
+				button_list:{},						//按钮权限
 			}
 		},
 		created(){
@@ -417,6 +418,7 @@
 				}
 				resource.performanceReport(req).then(res => {
 					if(res.data.code == 1){
+						this.show_custom = false;
 						let data = res.data.data;
 						this.xssryg = data.top.xssryg;
 						this.yxfyyg = data.top.yxfyyg;
@@ -430,6 +432,7 @@
 						this.data_list = data.shop_table_list.list;
 						this.view_row = data.view_row;
 						this.selected_ids = data.selected_ids;
+						this.button_list = data.button_list;
 						this.show_null = true;
 						this.default_data_list = JSON.stringify(data.shop_table_list.list);
 					}else{

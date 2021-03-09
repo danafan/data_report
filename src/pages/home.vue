@@ -8,7 +8,7 @@
 					<div class="header_text">消息</div>
 					<div class="line"></div>
 					<img class="admin_logo" src="../static/admin_logo.png">
-					<div class="header_text">admin</div>
+					<div class="header_text">{{ding_user_name}}</div>
 					<div class="line"></div>
 					<div class="header_text exit" @click="exit">退出</div>
 				</div>
@@ -30,32 +30,13 @@
 						<i class="el-icon-s-unfold collapse_icon" v-if="isCollapse" @click="isCollapse = !isCollapse"></i>
 						<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
 					</div>
-					<el-submenu index="0">
+					<el-submenu :index="index.toString()" v-for="(item,index) in menu_list">
 						<template slot="title">
-							<i class="el-icon-s-platform"></i>
-							<span>业务参考</span>
+							<i :class="`el-icon-${item.icon}`"></i>
+							<span>{{item.menu_name}}</span>
 						</template>
 						<el-menu-item-group>     
-							<el-menu-item index="/store_data">店铺日数据</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
-					<el-submenu index="1">
-						<template slot="title">
-							<i class="el-icon-s-data"></i>
-							<span>业绩指标</span>
-						</template>
-						<el-menu-item-group>     
-							<el-menu-item index="/store_results">店铺业绩</el-menu-item>
-							<el-menu-item index="/run_weekly">运营周报</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
-					<el-submenu index="2">
-						<template slot="title">
-							<i class="el-icon-s-data"></i>
-							<span>系统管理</span>
-						</template>
-						<el-menu-item-group>     
-							<el-menu-item index="/permssions_index">权限管理</el-menu-item>
+							<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
 				</el-menu>
@@ -171,39 +152,55 @@
 }
 </style>
 <script>
-	// import resource from '../../api/resource.js'
+	import resource from '../api/resource.js'
 	export default{
 		data(){
 			return{
 				isCollapse:false,
 				activeIndex:"",
-				crumb:""
+				ding_user_name:""
 			}
 		},
-		created(){
+		mounted(){
+			this.ding_user_name = localStorage.getItem('ding_user_name');
+			//获取菜单列表
+			this.getMenuList();
 			let tab = sessionStorage.getItem("tab");
-			console.log(tab)
 			if(!tab){
-				this.activeIndex = '/permissions';
+				this.activeIndex = '/home';
 			}else{
 				this.activeIndex = tab;
 			}
-			this.crumb = this.$route.name;
 		},	
+		computed:{
+			menu_list(){
+				return this.$store.state.menu_list;
+			}
+		},
 		watch:{
 			$route(n){
-				this.crumb = n.name;
 				this.handleSelect(n.path);
 			}
 		},
 		methods:{
+			//获取菜单列表
+			getMenuList(){
+				resource.getMenu().then(res => {
+					if(res.data.code == 1){
+						let menu_list = res.data.data;
+						this.$store.commit('menuList',menu_list);
+            		}else{
+            			this.$message.warning(res.data.msg);
+            		}
+            	})
+            },
 			//切换导航
 			handleSelect(index){
 				this.activeIndex = index;
 			},
 			//点击退出
 			exit(){
-				this.$confirm('确认退出当前账户?', '提示', {
+				this.$confirm('当前退出没啥用哦！', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'

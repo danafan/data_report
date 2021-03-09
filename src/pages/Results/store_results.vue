@@ -1,11 +1,9 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab">
-			<el-tab-pane label="业绩分析（运营）" lazy name="performance_analysis" class="tab_pane_box">
-					<PerformanceAnalysis/>
-			</el-tab-pane>
-			<el-tab-pane label="每日业绩" lazy name="daily_performance" class="tab_pane_box">
-				<DailyPerformance/>
+			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+				<PerformanceAnalysis v-if="item.web_url == 'performance_analysis'"/>
+				<DailyPerformance v-if="item.web_url == 'daily_performance'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -21,7 +19,28 @@
 	export default{
 		data(){
 			return{
-				activeTab:'performance_analysis'
+				activeTab:"",
+				menu_list:[]
+			}
+		},
+		created(){
+			console.log("asd1")
+			let menu_list = this.$store.state.menu_list;
+			this.forMenuList(menu_list,'store_results');
+		},
+		methods:{
+			forMenuList(arr, web_url) {
+				for (let obj of arr) {
+					if (obj.web_url == web_url) {
+						this.menu_list = obj.list;
+						this.activeTab = this.menu_list[0].web_url;
+						return;
+					}else{
+						if('list' in obj){
+							this.forMenuList(obj.list,'store_results')
+						}
+					}
+				}
 			}
 		},
 		components:{

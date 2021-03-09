@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-button type="primary" size="small" @click="addAccess">添加</el-button>
+		<el-button type="primary" size="small" @click="addAccess" v-if="dataObj.button_list.add == '1'">添加</el-button>
 		<el-table :data="dataObj.data" size="small" border style="width: 100%;margin-top: 15px" align="center" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column width="150" prop="access_name" label="名称" align="center">
 			</el-table-column>
@@ -10,8 +10,8 @@
 			</el-table-column>
 			<el-table-column width="150" label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="edior(scope.row.id)">编辑</el-button>
-					<el-button type="text" size="small" @click="deleteIs(scope.row.id)">删除</el-button>
+					<el-button type="text" size="small" @click="edior(scope.row.id)" v-if="dataObj.button_list.edit == '1'">编辑</el-button>
+					<el-button type="text" size="small" @click="deleteIs(scope.row.id)" v-if="dataObj.button_list.del == '1'">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -89,7 +89,11 @@
 	export default{
 		data(){
 			return{
-				dataObj:{},				//列表
+				dataObj:{button_list:{
+					add: 1,
+					del: 1,
+					edit: 1
+				}},				//列表
 				menuList: [],			//所属菜单数据格式
 				props:{
 					expandTrigger: 'hover',

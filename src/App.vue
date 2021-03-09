@@ -20,8 +20,7 @@
       }
     },
     created(){
-      this.$router.push('/permssions_index');
-      // this.$router.push('/performance');
+      this.$router.push('/home');
       //获取code
       // this.GetCode();
     },
@@ -48,27 +47,28 @@
       GetUserId(code){
         resource.login({code:code}).then(res => {
           if(res.data.code == 1){
-            let user_id = res.data.data.user_id;
+            let token = res.data.data.token;
+            localStorage.setItem('token',token);
             let ding_user_name = res.data.data.ding_user_name;
+            localStorage.setItem('ding_user_name',ding_user_name);
             let ding_user_id = res.data.data.ding_user_id;
-            watermark.set(ding_user_name,ding_user_id)
-            //获取用户权限
-            this.GetUserApi(user_id);
+            watermark.set(ding_user_name,ding_user_id);
+            this.$router.push('/home');
           }else{
             this.$message.warning(res.data.msg);
           }
         })
       },
       //获取用户权限
-      GetUserApi(user_id){
-        resource.jsapi({ding_user_id:user_id}).then(res => {
-          if(res.data.code == 1){
-           this.$router.push('/store_results');
-          }else{
-            this.$message.warning(res.data.msg);
-          }
-        })
-      },
+      // GetUserApi(user_id){
+      //   resource.jsapi({ding_user_id:user_id}).then(res => {
+      //     if(res.data.code == 1){
+      //      this.$router.push('/store_results');
+      //     }else{
+      //       this.$message.warning(res.data.msg);
+      //     }
+      //   })
+      // },
       //单独页面刷新
       reload () {
         this.isRouterAlive = false
