@@ -3,7 +3,7 @@
 		<div class="top_setting">
 			<el-form :inline="true" size="small" class="demo-form-inline">
 				<el-form-item label="搜索：">
-					<el-input style="width:300px" v-model="req.search" clearable placeholder="部门名称/员工工号/员工名称"></el-input>
+					<el-input style="width:300px" v-model="req.search" clearable placeholder="部门名称/员工工号/员工名称" @keyup.enter.native="search"></el-input>
 				</el-form-item>
 				<el-form-item>
 					<el-button type="primary" size="small" @click="search">搜索</el-button>
@@ -110,9 +110,13 @@
 	justify-content: space-between;
 }
 .detail_item{
-	height: 30px;
 	display:flex;
-	align-items: center;
+	.item_label{
+		width:80px;
+	}
+	.item_val{
+		flex:1;
+	}
 }
 </style>
 <script>

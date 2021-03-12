@@ -5,6 +5,9 @@
 				<PerformanceAnalysis v-if="item.web_url == 'performance_analysis'"/>
 				<DailyPerformance v-if="item.web_url == 'daily_performance'"/>
 			</el-tab-pane>
+			<!-- <el-tab-pane label="鱼塘分析" lazy name="item.web_url" class="tab_pane_box" >
+				<FishPonds/>
+			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>
@@ -16,6 +19,7 @@
 <script>
 	import PerformanceAnalysis from './StoreResults/performance_analysis.vue'
 	import DailyPerformance from './StoreResults/daily_performance.vue'
+	import FishPonds from './StoreResults/fish_ponds.vue'
 	export default{
 		data(){
 			return{
@@ -24,7 +28,6 @@
 			}
 		},
 		created(){
-			console.log("asd1")
 			let menu_list = this.$store.state.menu_list;
 			this.forMenuList(menu_list,'store_results');
 		},
@@ -45,7 +48,8 @@
 		},
 		components:{
 			PerformanceAnalysis,
-			DailyPerformance
+			DailyPerformance,
+			FishPonds
 		}
 	}
 </script>

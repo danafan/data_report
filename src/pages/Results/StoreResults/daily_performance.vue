@@ -27,7 +27,7 @@
 			</el-select>
 		</el-form-item>
 		<el-form-item>
-			<el-checkbox v-model="is_assessment" border size="small">考核店铺</el-checkbox>
+			<el-checkbox v-model="is_assessment" true-label="1" false-label="0" border size="small">考核店铺</el-checkbox>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="GetData">搜索</el-button>
@@ -85,7 +85,7 @@
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="Restore">恢复默认</el-button>
 			<el-button size="small" @click="show_custom = false">取消</el-button>
-			<el-button size="small" type="primary" @click="GetData">保存</el-button>
+			<el-button size="small" type="primary" @click="GetData('1')">保存</el-button>
 		</div>
 	</el-dialog>
 </div>
@@ -231,7 +231,7 @@
 				date:[getMonthStartDate(),getCurrentDate()],//发货时间
 				start_time:getMonthStartDate(),		//开始时间
 				end_time:getCurrentDate(),			//结束时间
-				is_assessment:false,				//考核店铺
+				is_assessment:'0',				//考核店铺
 				dept_list: [],						//部门列表	
 				select_department_ids:[],			//选中的部门id列表
 				store_list: [],						//店铺列表	
@@ -308,13 +308,16 @@
 				})
 			},
 			//获取信息
-			GetData(){
+			GetData(is_save){
 				let req = {
 					dept_id:this.select_department_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					start_time:this.start_time,
 					end_time:this.end_time,
-					row_ids:this.selected_ids.join(',')
+					audit_flag:this.is_assessment
+				}
+				if(is_save == '1'){
+					req.row_ids = this.selected_ids.join(',')
 				}
 				resource.dayAnalysis(req).then(res => {
 					if(res.data.code == 1){

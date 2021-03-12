@@ -8,7 +8,7 @@
 			<el-table-column prop="shop_ids" show-overflow-tooltip label="对应店铺" align="center"></el-table-column>
 			<el-table-column label="权限人数" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="$router.push('/data_role_user?role_id=' + scope.row.data_role_id)">{{scope.row.num}}</el-button>
+					<el-button type="text" size="small" @click="roleUser(scope.row.data_role_id)">{{scope.row.num}}</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_time" label="创建时间" align="center"></el-table-column>
@@ -224,6 +224,9 @@
 				if(this.name == ''){
 					this.$message.warning('请输入数据权限名称!');
 					return;
+				}else if(this.name.length > 20){
+					this.$message.warning('权限名称不能超过20个字!');
+					return;
 				}
 				let req = {
 					name:this.name,
@@ -254,6 +257,11 @@
 						}
 					});
 				}
+			},
+			//查看用户列表
+			roleUser(menu_role_id){
+				this.$store.commit('checkPerTab','data_permssion');
+				this.$router.push('/data_role_user?role_id=' + menu_role_id);
 			},
 			//分页
 			handleSizeChange(val) {

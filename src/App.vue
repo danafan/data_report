@@ -59,16 +59,6 @@
           }
         })
       },
-      //获取用户权限
-      // GetUserApi(user_id){
-      //   resource.jsapi({ding_user_id:user_id}).then(res => {
-      //     if(res.data.code == 1){
-      //      this.$router.push('/store_results');
-      //     }else{
-      //       this.$message.warning(res.data.msg);
-      //     }
-      //   })
-      // },
       //单独页面刷新
       reload () {
         this.isRouterAlive = false

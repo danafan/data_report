@@ -36,7 +36,7 @@
 				for (let obj of arr) {
 					if (obj.web_url == web_url) {
 						this.menu_list = obj.list;
-						this.activeTab = this.menu_list[0].web_url;
+						this.activeTab = this.$store.state.permissions_tab != ''?this.$store.state.permissions_tab:this.menu_list[0].web_url;
 						return;
 					}else{
 						if('list' in obj){

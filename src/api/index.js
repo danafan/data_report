@@ -30,7 +30,7 @@ function endLoading() {
 
 instance.interceptors.request.use(
   config => {
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IjE1MzU5NDE0NTEwNjU0MDEwIiwiaXNzIjoiYWRtaW4iLCJpYXQiOjE2MTUyODI0NjgsImV4cCI6MTYxNTI4OTY2OCwibmJmIjoxNjE1MjgyNDY4LCJzdWIiOiJEYXRhQ2VudGVyIiwianRpIjoiZGU0NzJhMjljNGM0MzY0OTk3ZTEyMGZkOGUzOWU5ODYifQ.0l0vtH0y2hM-3OLhpVQl_b6DIeO8v6icFKlJNbAZnKI";
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IjE1MzU5NDE0NTEwNjU0MDEwIiwiaXNzIjoiYWRtaW4iLCJpYXQiOjE2MTU1NDE3MDMsImV4cCI6MTYxNTU1NjEwMywibmJmIjoxNjE1NTQxNzAzLCJzdWIiOiJEYXRhQ2VudGVyIiwianRpIjoiNDFhY2E4ZGNkYjNiOGRiMjE5YThlM2IwOTQ5Njc0NTIifQ.2WXNdqoCNQpsIJ977h9wboisKUWCc3zDaUc-HROgpUg";
     config.headers.Token = token;
 
     // if(localStorage.getItem('token')){
@@ -40,8 +40,8 @@ instance.interceptors.request.use(
     return config
   },error => {
     endLoading()
-   return Promise.reject(error)
- })
+    return Promise.reject(error)
+  })
 instance.interceptors.response.use(response => {
   endLoading()
   switch (response.data.code) {

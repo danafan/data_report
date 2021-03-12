@@ -6,7 +6,7 @@
 			<el-table-column prop="menu_role_name" label="角色名称" align="center"></el-table-column>
 			<el-table-column label="角色人员" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="$router.push('/role_user?role_id=' + scope.row.menu_role_id)">{{scope.row.num}}</el-button>
+					<el-button type="text" size="small" @click="roleUser(scope.row.menu_role_id)">{{scope.row.num}}</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column prop="remark" show-overflow-tooltip label="角色备注" align="center"></el-table-column>
@@ -243,6 +243,9 @@
 				if(this.name == ''){
 					this.$message.warning('请输入角色名称!');
 					return;
+				}else if(this.name.length > 20){
+					this.$message.warning('角色名称不能超过20个字!');
+					return;
 				}else if(this.remark == ''){
 					this.$message.warning('请输入备注!');
 					return;
@@ -277,6 +280,11 @@
 						}
 					});
 				}
+			},
+			//查看用户列表
+			roleUser(menu_role_id){
+				this.$store.commit('checkPerTab','access_permssion');
+				this.$router.push('/role_user?role_id=' + menu_role_id);
 			},
 			//分页
 			handleSizeChange(val) {

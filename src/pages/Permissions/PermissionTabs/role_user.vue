@@ -219,12 +219,12 @@
 			handleSizeChange(val) {
 				this.req.pagesize = val;
 				//获取列表
-				this.getData();
+				this.userList();
 			},
 			handleCurrentChange(val) {
 				this.req.page = val;
 				//获取列表
-				this.getData();
+				this.userList();
 			},
 		}
 	}

@@ -8,6 +8,7 @@ let path = {
 	ajaxViewStore:'Common/ajaxViewShop',							//店铺列表
 	performanceReport:'PerformanceReport/index',					//业绩分析
 	dayAnalysis:'PerformanceReport/DayAnalysis',					//每日业绩
+	fishList:'fish/list',											//鱼塘分析报表
 	userList:'user/list',											//权限用户列表
 	userInfo:'user/info',											//获取用户详情
 	userSet:'user/set',												//用户设置
@@ -71,6 +72,10 @@ export default{
 	//每日业绩
 	dayAnalysis(params){
 		return http.get(path.dayAnalysis, params)
+	},
+	//鱼塘分析报表
+	fishList(params){
+		return http.get(path.fishList, params)
 	},
 	//权限用户列表
 	userList(params){
