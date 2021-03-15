@@ -1,11 +1,17 @@
 var now = new Date(); 				//当前日期  
+var nowDay = now.getDate(); 		//当前日 
 var nowMonth = now.getMonth(); 		//当前月 
 var nowYear = now.getYear(); 		//当前年 
 nowYear += (nowYear < 2000) ? 1900 : 0; 
 
 //获得本月的开始日期 
-export function getMonthStartDate(){ 
-	var monthStartDate = new Date(nowYear, nowMonth, 1); 
+export function getMonthStartDate(){
+	var monthStartDate; 
+	if(nowDay == 1){
+		monthStartDate = new Date(nowYear, nowMonth - 1, 1);
+	}else{
+		monthStartDate = new Date(nowYear, nowMonth, 1);
+	}
 	return formatDate(monthStartDate); 
 }
 //获得本月
@@ -18,13 +24,11 @@ export function getCurrentMonth(){
 	} 
 	return (myyear+"-"+mymonth);
 }
-//获得当前日期
+//获得昨日日期（包括上月末日期）
 export function getCurrentDate(){
 	var day1 = new Date();
+	day1.setTime(day1.getTime()-24*60*60*1000);
 	var currentDate = new Date(day1);
- 	if(currentDate.getDate() > 1){
- 		day1.setTime(day1.getTime()-24*60*60*1000); 
- 	}
 	return formatDate(currentDate); 
 }
 

@@ -2,6 +2,7 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 const home = resolve=>require(['@/pages/home'],resolve)
+const welcome = resolve=>require(['@/pages/welcome'],resolve)
 //业务参考
 const store_data = resolve=>require(['@/pages/Business/store_data'],resolve)
 //业绩指标
@@ -19,12 +20,11 @@ const router = new Router({
     path: '/home',
     component: home,
     children:[
+    { path: '/welcome',name:"欢迎页面", component: welcome},
     { path: '/store_data',name:"店铺日数据", component: store_data},
     { path: '/store_results',name:"店铺业绩", component: store_results},
     { path: '/run_weekly',name:"运营周报", component: run_weekly},
-    { path: '/permssions_index',name:"权限管理", component: permssions_index,meta: {
-      keepAlive: false,  
-    }},
+    { path: '/permssions_index',name:"权限管理", component: permssions_index},
     { path: '/role_user',name:"角色人员", component: role_user},
     { path: '/data_role_user',name:"数据权限人员", component: data_role_user},
     ]
@@ -32,11 +32,11 @@ const router = new Router({
   ]
 })
 // 路由跳转前的钩子
-router.beforeEach(function (to, from, next) {
-  let path = to.fullPath;
-  sessionStorage.setItem("tab",path);
-  next()
-})
+// router.beforeEach(function (to, from, next) {
+//   let path = to.fullPath;
+//   sessionStorage.setItem("tab",path);
+//   next()
+// })
 // router.beforeEach((to,from,next)=>{
 //   if(to.matched.some(res=>res.meta.isLogin)){//判断是否需要登录
 //     if (sessionStorage['username']) {

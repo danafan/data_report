@@ -323,9 +323,11 @@
 					if(res.data.code == 1){
 						this.show_custom = false;
 						let data = res.data.data;
-						data.shop_table_list.title_names[0].map(item => {
-							item.show_sort = false;		//是否显示排序标签
-						})
+						if(data.shop_table_list.title_names.length > 0){
+							data.shop_table_list.title_names[0].map(item => {
+							 item.show_sort = false;		//是否显示排序标签
+							})
+						}
 						this.label_list = data.shop_table_list.title_names[0];
 						this.total_list = data.shop_table_list.title_names[1];
 						this.data_list = data.shop_table_list.list;

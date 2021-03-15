@@ -4,10 +4,8 @@
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<PerformanceAnalysis v-if="item.web_url == 'performance_analysis'"/>
 				<DailyPerformance v-if="item.web_url == 'daily_performance'"/>
+				<FishPonds v-if="item.web_url == 'fish_ponds'"/>
 			</el-tab-pane>
-			<!-- <el-tab-pane label="鱼塘分析" lazy name="item.web_url" class="tab_pane_box" >
-				<FishPonds/>
-			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>

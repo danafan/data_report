@@ -6,6 +6,7 @@ let path = {
 	jsapi:'jsapi',													//获取用户权限
 	ajaxViewDept:'Common/ajaxViewDept',								//部门列表
 	ajaxViewStore:'Common/ajaxViewShop',							//店铺列表
+	ajaxCpfl:'ajaxCpfl',											//商品品类列表
 	performanceReport:'PerformanceReport/index',					//业绩分析
 	dayAnalysis:'PerformanceReport/DayAnalysis',					//每日业绩
 	fishList:'fish/list',											//鱼塘分析报表
@@ -64,6 +65,10 @@ export default{
 	//店铺列表
 	ajaxViewStore(params){
 		return http.get(path.ajaxViewStore, params)
+	},
+	//品类列表
+	ajaxCpfl(params){
+		return http.get(path.ajaxCpfl, params)
 	},
 	//业绩分析
 	performanceReport(params){

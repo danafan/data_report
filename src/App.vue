@@ -20,7 +20,7 @@
       }
     },
     created(){
-      this.$router.push('/home');
+      this.$router.push('/welcome');
       //获取code
       // this.GetCode();
     },
@@ -53,7 +53,7 @@
             localStorage.setItem('ding_user_name',ding_user_name);
             let ding_user_id = res.data.data.ding_user_id;
             watermark.set(ding_user_name,ding_user_id);
-            this.$router.push('/home');
+            this.$router.push('/welcome');
           }else{
             this.$message.warning(res.data.msg);
           }

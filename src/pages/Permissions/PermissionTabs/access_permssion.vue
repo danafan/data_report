@@ -6,7 +6,8 @@
 			<el-table-column prop="menu_role_name" label="角色名称" align="center"></el-table-column>
 			<el-table-column label="角色人员" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="roleUser(scope.row.menu_role_id)">{{scope.row.num}}</el-button>
+					<el-button type="text" size="small" @click="roleUser(scope.row.menu_role_id)" v-if="dataObj.button_list.view == '1'">{{scope.row.num}}</el-button>
+					<span v-else>{{scope.row.num}}</span>
 				</template>
 			</el-table-column>
 			<el-table-column prop="remark" show-overflow-tooltip label="角色备注" align="center"></el-table-column>

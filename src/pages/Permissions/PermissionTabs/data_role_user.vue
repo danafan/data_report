@@ -12,9 +12,9 @@
 			<el-table-column prop="ding_user_name" label="姓名" align="center"></el-table-column><el-table-column prop="data_role_name" label="数据权限" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="settingFun(scope.row.user_id)">设置</el-button>
-					<el-button type="text" size="small" @click="getDetail(scope.row.user_id)">查看</el-button>
-					<el-button type="text" size="small" @click="deleteFun(scope.row.user_id)">删除</el-button>
+					<el-button type="text" size="small" @click="settingFun(scope.row.user_id)" v-if="dataObj.button_list.setting == '1'">设置</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.user_id)" v-if="dataObj.button_list.detail == '1'">查看</el-button>
+					<el-button type="text" size="small" @click="deleteFun(scope.row.user_id)" v-if="dataObj.button_list.del == '1'">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>

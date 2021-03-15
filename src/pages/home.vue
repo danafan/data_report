@@ -165,12 +165,12 @@
 			this.ding_user_name = localStorage.getItem('ding_user_name');
 			//获取菜单列表
 			this.getMenuList();
-			let tab = sessionStorage.getItem("tab");
-			if(!tab){
-				this.activeIndex = '/home';
-			}else{
-				this.activeIndex = tab;
-			}
+			// let tab = sessionStorage.getItem("tab");
+			// if(!tab){
+			// 	this.activeIndex = '/welcome';
+			// }else{
+			// 	this.activeIndex = tab;
+			// }
 		},	
 		computed:{
 			menu_list(){

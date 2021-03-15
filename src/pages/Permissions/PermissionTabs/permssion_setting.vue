@@ -9,7 +9,7 @@
 					<el-button type="primary" size="small" @click="search">搜索</el-button>
 				</el-form-item>
 			</el-form>
-			<el-button type="primary" size="small" @click="settingFun('1')">批量设置角色</el-button>
+			<el-button type="primary" size="small" @click="settingFun('1')" v-if="dataObj.button_list.setting == '1'">批量设置角色</el-button>
 		</div>
 		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column type="selection" width="55"></el-table-column>

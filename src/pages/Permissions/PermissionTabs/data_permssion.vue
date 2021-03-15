@@ -8,7 +8,8 @@
 			<el-table-column prop="shop_ids" show-overflow-tooltip label="对应店铺" align="center"></el-table-column>
 			<el-table-column label="权限人数" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="roleUser(scope.row.data_role_id)">{{scope.row.num}}</el-button>
+					<el-button type="text" size="small" @click="roleUser(scope.row.data_role_id)" v-if="dataObj.button_list.view == '1'">{{scope.row.num}}</el-button>
+					<span v-else>{{scope.row.num}}</span>
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_time" label="创建时间" align="center"></el-table-column>
