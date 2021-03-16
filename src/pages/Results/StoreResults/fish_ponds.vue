@@ -76,7 +76,7 @@
 			color: #8a8a8a;
 		}
 		.active_tab_item{
-			background:#FD7B08;
+			background:#008DFF;
 			color: #fff;
 		}
 	}
@@ -85,22 +85,22 @@
 		width: 100%;
 		display: flex;
 		.single_date{
-			width:70%;
-			height: 300px;
+			min-width:70%;
+			min-height: 300px;
 		}
 		.single_total{
-			width:30%;
-			height: 300px;
+			min-width:30%;
+			min-height: 300px;
 		}
 	}
 	.accounted{
 		margin-bottom: 50px;
-		width: 100%;
-		height: 600px;
+		min-width: 100%;
+		min-height: 600px;
 	}
 	.over_state{
-		width: 100%;
-		height: 600px;
+		min-width: 100%;
+		min-height: 600px;
 	}
 }
 </style>
@@ -144,6 +144,13 @@
 				cate_name_list:[],							//品类列表
 				select_cate_names:[],						//选中的品类列表
 				tab_index:'1',								//表格导航
+				single_dateChart:null,						//每日鱼塘单量
+				single_totalChart:null,						//累计鱼塘单量
+				money_dateChart:null,						//每日鱼塘金额
+				money_totalChart:null,						//累计鱼塘金额
+				accountedChart:null,						//各店铺鱼塘单量占比
+				amountChart:null,							//各店铺鱼塘金额占比
+				over_stateChart:null,						//鱼塘目标完成情况
 			}
 		},
 		created(){
@@ -164,6 +171,17 @@
 				this.start_time = n && n.length> 0?n[0]:"";
 				this.end_time = n && n.length> 0?n[1]:"";
 			},
+			tab_index:function(n){
+				this.$nextTick(() => {
+					this.single_dateChart.resize();
+					this.single_totalChart.resize();
+					this.money_dateChart.resize();
+					this.money_totalChart.resize();
+					this.accountedChart.resize();
+					this.amountChart.resize();
+					this.over_stateChart.resize();
+				})
+			}
 		},
 		methods:{
         	//部门列表
@@ -251,17 +269,16 @@
 							ytwcl:[]
 						};							//鱼塘目标完成情况
 						//每日鱼塘单量
-						let day_ytdl_list = res.data.data.day_ytdl_list; 
-						day_ytdl_list.map(item => {
+						let day_ytdl_list = res.data.data.day_ytdl_list;
+						day_ytdl_list.map((item,index) => {
 							day_ytdl_obj.fkrq.push(item.fkrq);		//付款日期
 							day_ytdl_obj.ytdl.push(item.ytdl);		//鱼塘单量
 							day_ytdl_obj.sjdl.push(item.sjdl);		//实际单量
 							day_ytdl_obj.ytmbz.push(item.ytmbz);	//鱼塘目标值
 						});
 						var single_date = document.getElementById('single_date');
-						single_date.style.width = (single_date.parentNode.parentNode.clientWidth)*0.7 + 'px';
-						var single_dateChart = echarts.init(single_date);
-						single_dateChart.setOption({
+						this.single_dateChart = echarts.init(single_date);
+						this.single_dateChart.setOption({
 							title: {
 								text: '每日鱼塘单量'
 							},
@@ -287,7 +304,7 @@
 								},
 								borderColor:"rgba(0,0,0,0.7)",
 							},
-							color:['#CBDC46','#ED9A30', '#408A28'],
+							color:['#5AD8A6','#F6BD16', '#5B8FF9'],
 							legend: {
 								data: ['鱼塘单量', '实际单量', '鱼塘目标值']
 							},
@@ -316,7 +333,7 @@
 							{
 								name: '实际单量',
 								type: 'line',
-								stack: '1',
+								stack: '2',
 								lineStyle: { 
 									 width:3.6
 								},
@@ -325,7 +342,7 @@
 							{
 								name: '鱼塘目标值',
 								type: 'line',
-								stack: '1',
+								stack: '3',
 								lineStyle: { 
 									 width:3.6
 								},
@@ -339,12 +356,12 @@
 						total_ljytdl_obj.total_dl = total_ljytdl_list[0].total_dl;	//总单量
 						total_ljytdl_obj.ytmbz = total_ljytdl_list[0].ytmbz;	//鱼塘目标值
 						var single_total = document.getElementById('single_total');
-						single_total.style.width = (single_total.parentNode.parentNode.clientWidth)*0.3 + 'px';
-						var single_totalChart = echarts.init(single_total);
-						single_totalChart.setOption({
+						this.single_totalChart = echarts.init(single_total);
+						this.single_totalChart.setOption({
 							title: {
 								text: '累计鱼塘单量',
 								subtext:`总单量：${total_ljytdl_obj.total_dl}万`,
+								itemGap:38,
 								subtextStyle:{
 									color:"#DE5636"
 								} 
@@ -373,9 +390,14 @@
 									type: 'shadow'        
 								}
 							},
-							color:['#CBDC46','#ED9A30'],
+							color:['#5AD8A6','#F6BD16'],
+							grid:{
+								top:'30%'
+							},
 							legend: {
-								data: ['鱼塘单量', '实际单量']
+								data: ['鱼塘单量', '实际单量'],
+								top:"10%",
+								left:0
 							},
 							xAxis: [{
 								type: 'category',
@@ -422,9 +444,8 @@
 							day_ytje_obj.ytje.push(item.ytje);		//鱼塘金额
 						});
 						var money_date = document.getElementById('money_date');
-						money_date.style.width = (money_date.parentNode.parentNode.clientWidth)*0.7 + 'px';
-						var money_dateChart = echarts.init(money_date);
-						money_dateChart.setOption({
+						this.money_dateChart = echarts.init(money_date);
+						this.money_dateChart.setOption({
 							title: {
 								text: '每日鱼塘金额'
 							},
@@ -449,7 +470,7 @@
 								},
 								borderColor:"rgba(0,0,0,0.7)",
 							},
-							color:['#CBDC46','#ED9A30'],
+							color:['#5AD8A6','#F6BD16'],
 							legend: {
 								data: ['鱼塘金额', '实际金额']
 							},
@@ -493,12 +514,12 @@
 						total_ljytje_obj.sjje.push(total_ljytje_list.sjje);	//实际金额
 						total_ljytje_obj.total_je = total_ljytje_list.total_je;	//总金额
 						var money_total = document.getElementById('money_total');
-						money_total.style.width = (money_total.parentNode.parentNode.clientWidth)*0.3 + 'px';
-						var single_totalChart = echarts.init(money_total);
-						single_totalChart.setOption({
+						this.money_totalChart = echarts.init(money_total);
+						this.money_totalChart.setOption({
 							title: {
 								text: '累计鱼塘金额',
 								subtext:`总金额：${total_ljytje_obj.total_je}万`,
+								itemGap:38,
 								subtextStyle:{
 									color:"#DE5636"
 								} 
@@ -526,9 +547,14 @@
 									type: 'shadow'        
 								}
 							},
-							color:['#CBDC46','#ED9A30'],
+							color:['#5AD8A6','#F6BD16'],
+							grid:{
+								top:'30%'
+							},
 							legend: {
-								data: ['鱼塘金额', '实际金额']
+								data: ['鱼塘金额', '实际金额'],
+								top:"10%",
+								left:0
 							},
 							xAxis: [{
 								type: 'category',
@@ -576,9 +602,8 @@
 							shop_ytdlzb_obj.ytdlzb.push(item.ytdlzb);	//鱼塘店铺占比
 						}); 
 						var accounted = document.getElementById('accounted');
-						accounted.style.width = accounted.parentNode.parentNode.clientWidth + 'px';
-						var accountedChart = echarts.init(accounted);
-						accountedChart.setOption({
+						this.accountedChart = echarts.init(accounted);
+						this.accountedChart.setOption({
 							title: {
 								text: '各店铺鱼塘单量占比'
 							},
@@ -606,7 +631,7 @@
 									type: 'shadow'        
 								}
 							},
-							color:['#CBDC46','#ED9A30', '#408A28'],
+							color:['#5AD8A6','#F6BD16', '#5B8FF9'],
 							legend: {
 								data: ['鱼塘单量', '实际单量', '鱼塘单量占比']
 							},
@@ -674,9 +699,8 @@
 							shop_ytjezb_obj.ytjezb.push(item.ytjezb);	//鱼塘金额占比
 						}); 
 						var amount = document.getElementById('amount');
-						amount.style.width = amount.parentNode.parentNode.clientWidth + 'px';
-						var amountChart = echarts.init(amount);
-						amountChart.setOption({
+						this.amountChart = echarts.init(amount);
+						this.amountChart.setOption({
 							title: {
 								text: '各店铺鱼塘金额占比'
 							},
@@ -704,7 +728,7 @@
 									type: 'shadow'        
 								}
 							},
-							color:['#CBDC46','#ED9A30', '#408A28'],
+							color:['#5AD8A6','#F6BD16', '#5B8FF9'],
 							legend: {
 								data: ['鱼塘金额', '实际金额', '鱼塘金额占比']
 							},
@@ -770,9 +794,8 @@
 							shop_target_obj.ytwcl.push(item.ytwcl);		//鱼塘完成率
 						})
 						var over_state = document.getElementById('over_state');
-						over_state.style.width = over_state.parentNode.parentNode.clientWidth + 'px';
-						var over_stateChart = echarts.init(over_state);
-						over_stateChart.setOption({
+						this.over_stateChart = echarts.init(over_state);
+						this.over_stateChart.setOption({
 							title: {
 								text: '鱼塘目标完成情况'
 							},
@@ -800,7 +823,7 @@
 									type: 'shadow'        
 								}
 							},
-							color:['#44A422','#CBDD46', '#DE5636'],
+							color:['#5AD8A6','#F6BD16', '#5B8FF9'],
 							legend: {
 								data: ['鱼塘目标值', '鱼塘单量', '鱼塘完成率']
 							},
@@ -859,6 +882,16 @@
 								data: shop_target_obj.ytwcl
 							}]
 						});
+						var _this = this;
+						window.addEventListener('resize',() => {
+							_this.single_dateChart.resize();
+							_this.single_totalChart.resize();
+							_this.money_dateChart.resize();
+							_this.money_totalChart.resize();
+							_this.accountedChart.resize();
+							_this.amountChart.resize();
+							_this.over_stateChart.resize();
+						})
 					}else{
 						this.$message.warning(res.data.msg);
 					}

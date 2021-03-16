@@ -59,8 +59,8 @@
 <!-- 查看 -->
 <el-dialog title="基本信息" width="30%" :visible.sync="show_detail">
 	<div class="detail_item">
-		<div class="item_label">编号：</div>
-		<div class="item_val">{{user_detail.user_id}}</div>
+		<div class="item_label">工号：</div>
+		<div class="item_val">{{user_detail.job_no}}</div>
 	</div>
 	<div class="detail_item">
 		<div class="item_label">所属部门：</div>

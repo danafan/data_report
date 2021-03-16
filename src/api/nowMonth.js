@@ -43,7 +43,7 @@ export function getLastMonthEndDate(month_num){
 	return formatDate(lastMonthEndDate); 
 }
 //格式化日期
-function formatDate(date,is_current) { 
+function formatDate(date) { 
 	var myyear = date.getFullYear(); 
 	var mymonth = date.getMonth()+1; 
 	var myweekday = date.getDate(); 

@@ -398,7 +398,9 @@
 									},
 									series: series_data
 								})
-
+								window.addEventListener('resize',function(){
+									myChart.resize();
+								})
 							})
 						}
 					}else{

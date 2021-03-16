@@ -285,15 +285,6 @@
 	font-size:18px;
 	color: #D9D9D9;
 }
-//修改默认显示弹框
-.select_box{
-	display: flex;
-	flex-wrap: wrap;
-	.select_item{
-		margin-bottom: 8px;
-		width:33%;
-	}
-}
 </style>
 <script>
 	import resource from '../../../api/resource.js'

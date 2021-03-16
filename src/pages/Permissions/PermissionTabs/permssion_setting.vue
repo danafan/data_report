@@ -70,8 +70,8 @@
 	<!-- 查看 -->
 	<el-dialog title="成员详情" width="30%" :visible.sync="show_detail">
 		<div class="detail_item">
-			<div class="item_label">成员账号：</div>
-			<div class="item_val">{{user_detail.ding_user_id}}</div>
+			<div class="item_label">工号：</div>
+			<div class="item_val">{{user_detail.job_no}}</div>
 		</div>
 		<div class="detail_item">
 			<div class="item_label">职务名称：</div>
@@ -129,7 +129,9 @@
 					pagesize:10,
 					page:1
 				},
-				dataObj:{},				//列表数据,
+				dataObj:{button_list:{
+					setting:'0'
+				}},				//列表数据,
 				select_user_ids:[],		//选中的用户id列表
 				show_setting:false,		//设置弹框
 				menu_list:[],			//访问权限
