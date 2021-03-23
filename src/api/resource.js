@@ -40,6 +40,15 @@ let path = {
 	getAccessInfo:'access/getinfo',									//权限信息获取
 	delAccess:'access/del',											//删除权限
 	editAccess:'access/edit',										//编辑权限
+	trialList:'buffer/triallist',									//试销管理列表
+	trialTry:'trial/try',											//试
+	trialReplenish:'trial/replenish',								//补
+	trialStop:'trial/stop',											//停
+	trialClear:'trial/clear',										//清
+	ajaxPl:'Common/ajaxPl',											//产品分类（筛选条件）
+	ajaxGys:'Common/ajaxGys',										//供应商列表
+	ajaxGyshh:'Common/ajaxGyshh',									//供应商货号
+	ajaxKsbm:'Common/ajaxKsbm',										//款式编码
 }					
 export default{
 	//获取用户id
@@ -229,6 +238,42 @@ export default{
 	//编辑权限
 	editAccess(params){
 		return http.post(path.editAccess, params)
+	},
+	//试销管理列表
+	trialList(params){
+		return http.get(path.trialList, params)
+	},
+	//试
+	trialTry(params){
+		return http.post(path.trialTry, params)
+	},
+	//补
+	trialReplenish(params){
+		return http.post(path.trialReplenish, params)
+	},
+	//停
+	trialStop(params){
+		return http.post(path.trialStop, params)
+	},
+	//清
+	trialClear(params){
+		return http.post(path.trialClear, params)
+	},
+	//产品分类
+	ajaxPl(params){
+		return http.get(path.ajaxPl, params)
+	},
+	//供应商列表
+	ajaxGys(params){
+		return http.get(path.ajaxGys, params)
+	},
+	//供应商货号
+	ajaxGyshh(params){
+		return http.get(path.ajaxGyshh, params)
+	},
+	//产品编码
+	ajaxKsbm(params){
+		return http.get(path.ajaxKsbm, params)
 	},
 }
 

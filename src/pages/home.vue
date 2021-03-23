@@ -39,10 +39,21 @@
 							<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
+					<!-- 缓冲机制 -->
+					<el-submenu index="999">
+						<template slot="title">
+							<i class="el-icon-s-marketing"></i>
+							<span>缓冲机制</span>
+						</template>
+						<el-menu-item-group>     
+							<el-menu-item index="/test_market">试销管理</el-menu-item>
+						</el-menu-item-group>
+					</el-submenu>
 				</el-menu>
 			</div>
 			<el-main class="main">
-				<el-card class="el_card">
+				<img class="welcome_icon" src="../static/welcome_img.png" v-if="show_welcome">
+				<el-card class="el_card" v-else>
 					<keep-alive>
 						<router-view v-if="$route.meta.keepAlive"></router-view>
 					</keep-alive>
@@ -141,11 +152,9 @@
 			.el_card::-webkit-scrollbar {
 				display: none; 
 			}
-			.demo {
-				scrollbar-width: none; 
-				-ms-overflow-style: none; 
-				overflow-x: auto;
-				overflow-y: hidden;
+			.welcome_icon{
+				width: 100%;
+				height: 100%;
 			}
 		}
 	}
@@ -157,20 +166,16 @@
 		data(){
 			return{
 				isCollapse:false,
+				show_welcome:true,
 				activeIndex:"",
 				ding_user_name:""
 			}
 		},
 		mounted(){
 			this.ding_user_name = localStorage.getItem('ding_user_name');
+			this.$router.push('/test_market')
 			//获取菜单列表
-			this.getMenuList();
-			// let tab = sessionStorage.getItem("tab");
-			// if(!tab){
-			// 	this.activeIndex = '/welcome';
-			// }else{
-			// 	this.activeIndex = tab;
-			// }
+			// this.getMenuList();
 		},	
 		computed:{
 			menu_list(){
@@ -179,7 +184,12 @@
 		},
 		watch:{
 			$route(n){
-				this.handleSelect(n.path);
+				if(n.path != '/home'){
+					this.show_welcome = false;
+				}else{
+					this.$router.push('/test_market')
+					// this.show_welcome = true;
+				};
 			}
 		},
 		methods:{
@@ -189,11 +199,11 @@
 					if(res.data.code == 1){
 						let menu_list = res.data.data;
 						this.$store.commit('menuList',menu_list);
-            		}else{
-            			this.$message.warning(res.data.msg);
-            		}
-            	})
-            },
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//切换导航
 			handleSelect(index){
 				this.activeIndex = index;

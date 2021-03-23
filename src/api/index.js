@@ -30,7 +30,7 @@ function endLoading() {
 
 instance.interceptors.request.use(
   config => {
-    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IjE1MzU5NDE0NTEwNjU0MDEwIiwiaXNzIjoiYWRtaW4iLCJpYXQiOjE2MTU4ODQ1OTcsImV4cCI6MTYxNTg5ODk5NywibmJmIjoxNjE1ODg0NTk3LCJzdWIiOiJEYXRhQ2VudGVyIiwianRpIjoiOGU3N2JjNDQzZjY3NWIwNmZlMTY1NWY2ODhlMDNiY2MifQ.SanS0Uw3I6_v9vDxwbve3bf1zhC2LOXgT-3uyhWdEZc";
+    let token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhZG1pbl9pZCI6IjE1MzU5NDE0NTEwNjU0MDEwIiwiaXNzIjoiYWRtaW4iLCJpYXQiOjE2MTYxMTY2MjQsImV4cCI6MTYxNjEzMTAyNCwibmJmIjoxNjE2MTE2NjI0LCJzdWIiOiJEYXRhQ2VudGVyIiwianRpIjoiODFkNGU3NGQ2NGM5ZDE3Y2QzMTM5NWI2ZjdjZjQyZDIifQ.vxSRZH1TI3cnoPkfrv-A-J0O4_EVdfoVGdQBjlaWU_o";
     config.headers.Token = token;
 
     // if(localStorage.getItem('token')){

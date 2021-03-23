@@ -15,9 +15,9 @@
 			<el-table-column prop="ding_user_name" label="创建人" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="editFun(scope.row.menu_role_id)" v-if="dataObj.button_list.edit == '1'">编辑</el-button>
-					<el-button type="text" size="small" @click="getDetail(scope.row.menu_role_id)" v-if="dataObj.button_list.detail == '1'">查看</el-button>
-					<el-button type="text" size="small" @click="deleteFun(scope.row.menu_role_id)" v-if="dataObj.button_list.del == '1'">删除</el-button>
+					<el-button type="text" size="small" @click="editFun(scope.row.menu_role_id)" v-if="dataObj.button_list.edit == '1' && scope.row.is_disable == '0'">编辑</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.menu_role_id)" v-if="dataObj.button_list.detail == '1' && scope.row.is_disable == '0'">查看</el-button>
+					<el-button type="text" size="small" @click="deleteFun(scope.row.menu_role_id)" v-if="dataObj.button_list.del == '1' && scope.row.is_disable == '0'">删除</el-button>
 				</template>
 			</el-table-column>
 		</el-table>

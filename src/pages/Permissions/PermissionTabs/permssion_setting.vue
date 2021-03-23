@@ -12,7 +12,7 @@
 			<el-button type="primary" size="small" @click="settingFun('1')" v-if="dataObj.button_list.setting == '1'">批量设置角色</el-button>
 		</div>
 		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column type="selection" width="55"></el-table-column>
+			<el-table-column type="selection" width="55" :selectable='selectEnable'></el-table-column>
 			<el-table-column prop="job_no" label="工号" width="120" align="center"></el-table-column>
 			<el-table-column prop="dept_name" show-overflow-tooltip label="所属部门" align="center"></el-table-column>
 			<el-table-column prop="position" show-overflow-tooltip label="岗位名称" align="center"></el-table-column>
@@ -26,7 +26,7 @@
 			<el-table-column prop="data_role_name" label="数据权限" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="settingFun('2',scope.row.user_id)" v-if="dataObj.button_list.setting == '1'">设置</el-button>
+					<el-button type="text" size="small" @click="settingFun('2',scope.row.user_id)" v-if="dataObj.button_list.setting == '1' && scope.row.is_self == '0'">设置</el-button>
 					<el-button type="text" size="small" @click="getDetail(scope.row.user_id)" v-if="dataObj.button_list.detail == '1'">查看</el-button>
 				</template>
 			</el-table-column>
@@ -151,6 +151,14 @@
 			this.userList();
 		},
 		methods:{
+			//处理表格自己不能选中自己批量设置
+			selectEnable(row){
+				if(row.is_self == 0){
+					return true;
+				}else{
+					return false;
+				};
+			},
 			//搜索
 			search(){
 				this.req.page = 1;
