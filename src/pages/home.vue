@@ -47,6 +47,7 @@
 						</template>
 						<el-menu-item-group>     
 							<el-menu-item index="/test_market">试销管理</el-menu-item>
+							<el-menu-item index="/supplement">补货管理</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
 				</el-menu>
@@ -173,7 +174,7 @@
 		},
 		mounted(){
 			this.ding_user_name = localStorage.getItem('ding_user_name');
-			this.$router.push('/test_market')
+			this.$router.push('/supplement')
 			//获取菜单列表
 			// this.getMenuList();
 		},	
@@ -187,7 +188,7 @@
 				if(n.path != '/home'){
 					this.show_welcome = false;
 				}else{
-					this.$router.push('/test_market')
+					this.$router.push('/supplement')
 					// this.show_welcome = true;
 				};
 			}

@@ -215,7 +215,7 @@
 			//产品编码
 			this.ajaxKsbm();
 			//获取列表
-			this.getList();
+			this.getList('1');
 		},
 		watch:{
 			//发货时间
@@ -324,6 +324,10 @@
 			},
 			//设置
 			setKs(type,title,ksbm){
+				if(!ksbm && this.select_ids.length == 0){
+					this.$message.warning('至少选择一个款式');
+					return;
+				}
 				//1:试；2:补；3:停；4:清
 				this.$confirm(`货品性质确定转为${title}么？想好哦！`, '提示', {
 					confirmButtonText: '确定',
@@ -331,7 +335,6 @@
 					type: 'warning'
 				}).then(() => {
 					if(ksbm){
-						this.select_ids = [];
 						this.select_ids.push(ksbm);
 					}
 					let ks = this.select_ids.join(',');
@@ -339,6 +342,8 @@
 						resource.trialTry({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
+								//获取列表
+								this.getList();
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -347,6 +352,8 @@
 						resource.trialReplenish({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
+								//获取列表
+								this.getList();
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -355,6 +362,8 @@
 						resource.trialStop({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
+								//获取列表
+								this.getList();
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -363,12 +372,16 @@
 						resource.trialClear({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
+								//获取列表
+								this.getList();
 							}else{
 								this.$message.warning(res.data.msg);
 							}
 						})
 					}
+					this.select_ids = [];
 				}).catch(() => {
+					this.select_ids = [];
 					this.$message({
 						type: 'info',
 						message: '取消'

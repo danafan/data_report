@@ -49,6 +49,15 @@ let path = {
 	ajaxGys:'Common/ajaxGys',										//供应商列表
 	ajaxGyshh:'Common/ajaxGyshh',									//供应商货号
 	ajaxKsbm:'Common/ajaxKsbm',										//款式编码
+	ajaxBd:'Common/ajaxBd',											//波段
+	replenishList:'buffer/replenishlist',							//补货管理列表
+	replenishTry:'replenish/try',									//补货试
+	replenishStop:'replenish/stop',									//补货停
+	replenishClear:'replenish/clear',								//补货清
+	modify:'replenish/modify',										//修正数量
+	replenishSet:'replenish/set',									//内部核价
+	replenishDetail:'replenish/detail',								//下钻
+
 }					
 export default{
 	//获取用户id
@@ -275,6 +284,38 @@ export default{
 	ajaxKsbm(params){
 		return http.get(path.ajaxKsbm, params)
 	},
+	//波段列表
+	ajaxBd(params){
+		return http.get(path.ajaxBd, params)
+	},
+	//补货管理列表
+	replenishList(params){
+		return http.get(path.replenishList, params)
+	},
+	//补货试
+	replenishTry(params){
+		return http.post(path.replenishTry, params)
+	},				
+	//补货停					
+	replenishStop(params){
+		return http.post(path.replenishStop, params)
+	},					
+	//补货清				
+	replenishClear(params){
+		return http.post(path.replenishClear, params)
+	},		
+	//修正数量	
+	modify(params){
+		return http.post(path.modify, params)
+	},		
+	//内部核价
+	replenishSet(params){
+		return http.post(path.replenishSet, params)
+	},
+	//下钻
+	replenishDetail(params){
+		return http.get(path.replenishDetail, params)
+	},						
 }
 
 
