@@ -57,6 +57,39 @@ let path = {
 	modify:'replenish/modify',										//修正数量
 	replenishSet:'replenish/set',									//内部核价
 	replenishDetail:'replenish/detail',								//下钻
+	stopList:'buffer/stoplist',										//停止进货管理列表
+	stopTry:'stop/try',												//停止进货试
+	stopReplenish:'stop/replenish',									//停止进货补
+	stopClear:'stop/clear',											//停止进货补
+	stopDetail:'stop/detail',										//停止进货下钻
+	clearList:'buffer/clearlist',									//清货管理列表
+	clearTry:'clear/try',											//清货管理试
+	clearReplenish:'clear/replenish',								//清货管理补
+	clearStop:'clear/stop',											//清货管理停
+	ajaxYyjc:'Common/ajaxYyjc',										//运营决策列表
+	ajaxCgjc:'Common/ajaxCgjc',										//采购决策列表
+	clearDetail:'clear/detail',										//清货管理详情
+	hpxzList:'buffer/hpxzlist',										//货品性质权限
+	hpxzTry:'hpxz/try',												//货品性质权限-试
+	hpxzReplenish:'hpxz/replenish',									//货品性质权限-补
+	hpxzStop:'hpxz/stop',											//货品性质权限-停
+	hpxzClear:'hpxz/clear',											//货品性质权限-清
+	reportList:'bufferreport/list',									//款式列表
+	shopSale:'bufferreport/shopsale',								//店铺销量图表
+	plsale:'bufferreport/plsale',									//店铺品类图表
+	kssale:'bufferreport/kssale',									//款式销量图表
+	daySale:'bufferreport/daysale',									//每日销量图表
+	shopPromotion:'bufferreport/shoppromotion',						//店铺推广费用
+	catePromotion:'bufferreport/catepromotion',						//直通车推广费用
+	ksPromotion:'bufferreport/kspromotion',							//款式推广费用
+	shopcb:'bufferreport/shopcb',									//店铺销售成本图表
+	shopplcb:'bufferreport/plcb',									//品类销售成本图表
+	shopkscb:'bufferreport/kscb',									//款式销售成本图表
+	plkc:'bufferreport/plkc',										//品类库存图表
+	kskc:'bufferreport/kskc',										//款式库存及到货情况
+	rks:'bufferreport/rks',											//入库数
+	hpxz:'bufferreport/hpxz',										//货品性质占比
+	hpxzks:'bufferreport/hpxzks',									//货品性质对应店铺款式数量
 
 }					
 export default{
@@ -315,6 +348,138 @@ export default{
 	//下钻
 	replenishDetail(params){
 		return http.get(path.replenishDetail, params)
+	},	
+	//停止进货管理列表
+	stopList(params){
+		return http.get(path.stopList, params)
+	},			
+	//停止进货试
+	stopTry(params){
+		return http.post(path.stopTry, params)
+	},		
+	//停止进货补		
+	stopReplenish(params){
+		return http.post(path.stopReplenish, params)
+	},
+	//停止进货清		
+	stopClear(params){
+		return http.post(path.stopClear, params)
+	},		
+	//停止进货下钻
+	stopDetail(params){
+		return http.get(path.stopDetail, params)
+	},	
+	//清货管理列表	
+	clearList(params){
+		return http.get(path.clearList, params)
+	},		
+	//清货管理试
+	clearTry(params){
+		return http.post(path.clearTry, params)
+	},						
+	//清货管理补					
+	clearReplenish(params){
+		return http.post(path.clearReplenish, params)
+	},				
+	//清货管理停				
+	clearStop(params){
+		return http.post(path.clearStop, params)
+	},	
+	//运营决策列表
+	ajaxYyjc(params){
+		return http.get(path.ajaxYyjc, params)
+	},							
+	//采购决策列表				
+	ajaxCgjc(params){
+		return http.get(path.ajaxCgjc, params)
+	},											
+	//清货管理详情
+	clearDetail(params){
+		return http.get(path.clearDetail, params)
+	},		
+	//货品性质权限列表
+	hpxzList(params){
+		return http.get(path.hpxzList, params)
+	},		
+	//货品性质权限-试				
+	hpxzTry(params){
+		return http.post(path.hpxzTry, params)
+	},					
+	//货品性质权限-补							
+	hpxzReplenish(params){
+		return http.post(path.hpxzReplenish, params)
+	},					
+	//货品性质权限-停				
+	hpxzStop(params){
+		return http.post(path.hpxzStop, params)
+	},			
+	//货品性质权限-清									
+	hpxzClear(params){
+		return http.post(path.hpxzClear, params)
+	},		
+	//款式列表
+	reportList(params){
+		return http.get(path.reportList, params)
+	},		
+	//店铺销量图表
+	shopSale(params){
+		return http.get(path.shopSale, params)
+	},	
+	//店铺品类图表	
+	plsale(params){
+		return http.get(path.plsale, params)
+	},	
+	//款式销量图表	
+	kssale(params){
+		return http.get(path.kssale, params)
+	},
+	//每日销量图表
+	daySale(params){
+		return http.get(path.daySale, params)
+	},		
+	//店铺推广费用
+	shopPromotion(params){
+		return http.get(path.shopPromotion, params)
+	},		
+	//直通车推广费用
+	catePromotion(params){
+		return http.get(path.catePromotion, params)
+	},		
+	//款式推广费用
+	ksPromotion(params){
+		return http.get(path.ksPromotion, params)
+	},			
+	//店铺销售成本图表
+	shopcb(params){
+		return http.get(path.shopcb, params)
+	},					
+	//品类销售成本图表				
+	shopplcb(params){
+		return http.get(path.shopplcb, params)
+	},		
+	//款式销售成本图表								
+	shopkscb(params){
+		return http.get(path.shopkscb, params)
+	},
+	//品类库存列表		
+	plkc(params){
+		return http.get(path.plkc, params)
+	},
+	//款式库存及到货情况			
+	kskc(params){
+		return http.get(path.kskc, params)
+	},
+	//入库数
+	rks(params){
+		return http.get(path.rks, params)
+	},
+	//货品性质占比		
+	hpxz(params){
+		return http.get(path.hpxz, params)
+	},
+	//货品性质对应店铺款式数量
+	hpxzks(params){
+		return http.get(path.hpxzks, params)
 	},						
 }
 

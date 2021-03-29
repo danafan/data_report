@@ -39,17 +39,6 @@
 							<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
 						</el-menu-item-group>
 					</el-submenu>
-					<!-- 缓冲机制 -->
-					<el-submenu index="999">
-						<template slot="title">
-							<i class="el-icon-s-marketing"></i>
-							<span>缓冲机制</span>
-						</template>
-						<el-menu-item-group>     
-							<el-menu-item index="/test_market">试销管理</el-menu-item>
-							<el-menu-item index="/supplement">补货管理</el-menu-item>
-						</el-menu-item-group>
-					</el-submenu>
 				</el-menu>
 			</div>
 			<el-main class="main">
@@ -173,10 +162,10 @@
 			}
 		},
 		mounted(){
-			this.ding_user_name = localStorage.getItem('ding_user_name');
-			this.$router.push('/supplement')
+			// this.ding_user_name = localStorage.getItem('ding_user_name');
+			// this.$router.push('/report_page')
 			//获取菜单列表
-			// this.getMenuList();
+			this.getMenuList();
 		},	
 		computed:{
 			menu_list(){
@@ -188,7 +177,7 @@
 				if(n.path != '/home'){
 					this.show_welcome = false;
 				}else{
-					this.$router.push('/supplement')
+					this.$router.push('/report_page')
 					// this.show_welcome = true;
 				};
 			}

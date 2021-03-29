@@ -2,31 +2,31 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺：">
-				<el-select v-model="select_shop_list" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商：">
-				<el-select v-model="select_gys" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_gys" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商货号：">
-				<el-select v-model="select_gyshh_list" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品类：">
-				<el-select v-model="select_pl_list" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_pl_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="款式：">
-				<el-select v-model="select_ks_list" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -38,7 +38,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="波段：">
-				<el-select v-model="select_bd_list" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_bd_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -62,9 +62,9 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="负数库存：">
-				<el-input style="width:100px" type="number" v-model="operator1" clearable placeholder="大于等于"></el-input>
+				<el-input style="width:100px" clearable type="number" v-model="operator1" clearable placeholder="大于等于"></el-input>
 				--
-				<el-input style="width:100px" type="number" v-model="operator2" clearable placeholder="小于"></el-input>
+				<el-input style="width:100px" clearable type="number" v-model="operator2" clearable placeholder="小于"></el-input>
 			</el-form-item>
 			<el-form-item label="上架日期:" style="margin-right: 20px">
 				<el-date-picker
@@ -111,7 +111,7 @@
 			<!-- 内部核价 -->
 			<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
 			<!-- 下钻 -->
-			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
+			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-else-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
 			<div v-else>{{scope.row[item.row_field_name]}}</div>
 		</template>
 	</el-table-column>
@@ -448,6 +448,7 @@
 						resource.replenishTry({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
+								this.select_ids = [];
 								//获取列表
 								this.getList();
 							}else{
@@ -458,6 +459,7 @@
 						resource.replenishStop({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
+								this.select_ids = [];
 								//获取列表
 								this.getList();
 							}else{
@@ -468,6 +470,7 @@
 						resource.replenishClear({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
+								this.select_ids = [];
 								//获取列表
 								this.getList();
 							}else{
@@ -475,9 +478,7 @@
 							}
 						})
 					}
-					this.select_ids = [];
 				}).catch(() => {
-					this.select_ids = [];
 					this.$message({
 						type: 'info',
 						message: '取消'
