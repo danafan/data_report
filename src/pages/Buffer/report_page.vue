@@ -21,7 +21,7 @@
 	export default{
 		data(){
 			return{
-				activeTab:"inventory_clear",
+				activeTab:"store_sales",
 				menu_list:[]
 			}
 		},

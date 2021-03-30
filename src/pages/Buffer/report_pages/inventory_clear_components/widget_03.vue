@@ -86,28 +86,26 @@
 							title: {
 								text: '货品性质占比'
 							},
-							tooltip: {
-								trigger: 'item',
-								formatter: "{a} <br/>{b}: {c}%"
-							},
-							series: [{
+							// legend: {
+							// 	top: 'top'
+							// },
+							series: [
+							{
 								name: '货品性质占比',
 								type: 'pie',
-								radius: ['40%', '70%'],
-								avoidLabelOverlap: false,
-								label: {
-									show: false,
-									position: 'center'
-								},
-								emphasis: {
-									label: {
-										show: true,
-										fontSize: '40',
-										fontWeight: 'bold'
+								radius: [50, 250],
+								center: ['50%', '50%'],
+								roseType: 'area',
+								label:{
+									position:'inner',
+									fontSize:16,
+									fontWeight:'bold',
+									formatter:(params) => {
+										return params.name + '\n' + '\n' + params.value + '%'
 									}
 								},
-								labelLine: {
-									show: false
+								itemStyle: {
+									borderRadius: 8
 								},
 								data: data_list
 							}]
@@ -116,24 +114,19 @@
 						window.addEventListener('resize',() => {
 							_this.shop_hpxzChart.resize();
 						})
-						// this.shop_saleChart.getZr().on('click', params => {
-						// 	let pointInPixel = [params.offsetX, params.offsetY]
-						// 	if (this.shop_saleChart.containPixel('grid', pointInPixel)) {
-						// 		let xIndex = this.shop_saleChart.convertFromPixel({ seriesIndex: 0 }, [params.offsetX, params.offsetY])[0]
-						// 		let old_req = {select_shop_id:name_list[xIndex]}
-						// 		let new_req = {...req,...old_req}
-						// 		//店铺品类销售数据图表
-						// 		this.shopPlsale(new_req);
-						// 	}
-						// })
+						this.shop_hpxzChart.on('click', params => {
+							let new_req = {hpxz:name_list[params.dataIndex]}
+							//店铺品类销售数据图表
+							this.shopHpxzks(new_req);
+						})
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
 			},
 			//款式数量
-			shopHpxzks(){
-				resource.hpxzks().then(res => {
+			shopHpxzks(req){
+				resource.hpxzks(req).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let name_list = res.data.data.name_list;
@@ -167,7 +160,9 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['款式数量']
+								data: ['款式数量'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -182,9 +177,9 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'款式数量',
+								name:'款式数量（万件）',
 								axisLabel: {
-									formatter: '{value}万件'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -202,16 +197,6 @@
 						window.addEventListener('resize',() => {
 							_this.shop_hpxzksChart.resize();
 						})
-						// this.shop_kskcChart.getZr().on('click', params => {
-						// 	let pointInPixel = [params.offsetX, params.offsetY]
-						// 	if (this.shop_kskcChart.containPixel('grid', pointInPixel)) {
-						// 		let xIndex = this.shop_kskcChart.convertFromPixel({ seriesIndex: 0 }, [params.offsetX, params.offsetY])[0]
-						// 		let old_req = {select_shop_id:name_list[xIndex]}
-						// 		let new_req = {...req,...old_req}
-						// 		//店铺品类销售数据图表
-						// 		this.shopPlsale(new_req);
-						// 	}
-						// })
 					}else{
 						this.$message.warning(res.data.msg);
 					}

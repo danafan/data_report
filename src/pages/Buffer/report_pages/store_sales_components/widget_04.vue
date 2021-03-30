@@ -77,7 +77,9 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['费用']
+								data: ['费用'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -92,9 +94,9 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用',
+								name:'费用（万）',
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -163,7 +165,9 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['费用']
+								data: ['费用'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -178,9 +182,9 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用',
+								name:'费用（万）',
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -252,7 +256,9 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['费用']
+								data: ['费用'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -267,9 +273,9 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用',
+								name:'费用（万）',
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}'
 								}
 							}],
 							series: [{

@@ -85,23 +85,29 @@
 		</el-form-item>
 	</el-form>
 	<div class="table_setting">
-		<el-popover
-		placement="right-start"
-		:append-to-body="false"
-		width="150"
-		trigger="click">
-		<div class="setStyle">
-			<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
-		</div>
-		<div class="setStyle">
-			<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
-			<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
-		</div>
-		<el-button type="primary" size="small" slot="reference">批量设置</el-button>
-	</el-popover>
+		<div class="buts">
+			<el-popover
+			placement="right-start"
+			:append-to-body="false"
+			width="150"
+			trigger="click">
+			<div class="setStyle">
+				<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
+			</div>
+			<div class="setStyle">
+				<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
+				<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
+			</div>
+			<el-button type="primary" size="small" slot="reference">批量设置</el-button>
+		</el-popover>
+		<el-button type="primary" size="small" @click="show_sup = true">供应商报价</el-button>
+		<el-button type="primary" size="small" @click="show_match = true">档口配齐时间</el-button>
+		<el-button type="primary" size="small" @click="show_zng = true">转内供款式</el-button>
+	</div>
+
 	<div class="buts">
 		<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
-		<el-button type="primary" plain size="small">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
@@ -189,6 +195,12 @@
 	</el-pagination>
 </div>
 </el-dialog>
+<!-- 供应商报价 -->
+<SupplierQuotation v-if="show_sup" @callback="closeSup"/>
+<!-- 档口配齐时间表 -->
+<MatchTime v-if="show_match" @callback="closeMatch"/>
+<!-- 转内供列表 -->
+<ZngPage v-if="show_zng" @callback="closeZng"/>
 </div>
 </template>
 <style lang="less" scoped>
@@ -210,6 +222,10 @@
 <script>
 	import resource from '../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+	import SupplierQuotation from './supplement_pages/supplier_quotation.vue'
+	import MatchTime from './supplement_pages/match_time.vue'
+	import ZngPage from './supplement_pages/zng_page.vue'
+	import exportFile from '../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -298,7 +314,10 @@
 				ksbm:"",
 				detailDialog:false,			
 				detail_page:1,
-				detail_page_size:10
+				detail_page_size:10,
+				show_sup:false,								//供应商报价
+				show_match:false,							//档口配齐时间
+				show_zng:false
 			}
 		},
 		created(){
@@ -325,6 +344,33 @@
 			},
 		},
 		methods:{
+			//导出
+			exportFile(){
+				var arr = [];
+				let req = {
+					pagesize:this.pagesize,
+					page:this.page,
+					shop_id:this.select_shop_list.join(','),
+					gys:this.select_gys.join(','),
+					gyshh:this.select_gyshh_list.join(','),
+					pl:this.select_pl_list.join(','),
+					ks:this.select_ks_list.join(','),
+					jyhpxz:this.jyhpxz,
+					bd:this.select_bd_list.join(','),
+					status:this.status,
+					sfkt:this.sfkt,
+					sfng:this.sfng,
+					sj_start_time:this.start_time,
+					sj_end_time:this.end_time,
+					operator1:this.operator1,
+					operator2:this.operator2
+				}
+				for(var item in req){
+					let str = item + '=' + req[item];
+					arr.push(str);
+				};
+				exportFile.exportUp(`replenish/replenishexport?${arr.join('&')}`)
+			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
 				let req = {
@@ -594,6 +640,45 @@
 				//获取列表
 				this.getDetailList();
 			},
+			//取消或保存供应商报价
+			closeSup(req){
+				if(req.type == '1'){
+					resource.addGp({list:req.req_list}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.show_sup = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.show_sup = false;
+				}
+			},
+			//档口配齐时间表
+			closeMatch(req){
+				if(req.type == '1'){
+					resource.addMatch({list:req.req_list}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.show_match = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.show_match = false;
+				}
+			},
+			//转内供
+			closeZng(){
+				this.show_zng = false;
+			}
+		},
+		components:{
+			SupplierQuotation,
+			MatchTime,
+			ZngPage
 		}
 	}
 </script>

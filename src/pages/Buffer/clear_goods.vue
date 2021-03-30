@@ -86,7 +86,7 @@
 	</el-popover>
 	<div class="buts">
 		<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
-		<el-button type="primary" plain size="small">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
@@ -175,6 +175,7 @@
 </style>
 <script>
 	import resource from '../../api/resource.js'
+	import exportFile from '../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -213,17 +214,17 @@
 		},
 		created(){
 			//店铺列表
-			// this.ajaxViewStore();
+			this.ajaxViewStore();
 			//产品分类
-			// this.ajaxPl();
+			this.ajaxPl();
 			//供应商列表
-			// this.ajaxGys();
+			this.ajaxGys();
 			//供应商货号
-			// this.ajaxGyshh();
+			this.ajaxGyshh();
 			//产品编码
-			// this.ajaxKsbm();
+			this.ajaxKsbm();
 			//产品编码
-			// this.ajaxBd();
+			this.ajaxBd();
 			//运营决策列表
 			this.ajaxYyjc();
 			//运营决策列表
@@ -232,6 +233,29 @@
 			this.getList('1');
 		},
 		methods:{
+			//导出
+			exportFile(){
+				var arr = [];
+				let req = {
+					pagesize:this.pagesize,
+					page:this.page,
+					shop_id:this.select_shop_list.join(','),
+					gys:this.select_gys.join(','),
+					gyshh:this.select_gyshh_list.join(','),
+					pl:this.select_pl_list.join(','),
+					ks:this.select_ks_list.join(','),
+					jyhpxz:this.jyhpxz,
+					bd:this.select_bd_list.join(','),
+					yyjc:this.yyjc,
+					cgjc:this.cgjc,
+					xr_start_time:this.xr_start_time
+				}
+				for(var item in req){
+					let str = item + '=' + req[item];
+					arr.push(str);
+				};
+				exportFile.exportUp(`clear/clearexport?${arr.join('&')}`)
+			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
 				let req = {

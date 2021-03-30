@@ -84,7 +84,9 @@
 							},
 							color:['#5AD8A6','#F6BD16'],
 							legend: {
-								data: ['销量', '金额']
+								data: ['销量', '金额'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -99,15 +101,15 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销量',
+								name:'销量（万件）',
 								axisLabel: {
-									formatter: '{value}万件'
+									formatter: '{value}'
 								}
 							},{
 								type: 'value',
-								name:'金额',
+								name:'金额（万）',
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -189,7 +191,9 @@
 							},
 							color:['#5AD8A6','#F6BD16'],
 							legend: {
-								data: ['销量', '金额']
+								data: ['销量', '金额'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -204,15 +208,15 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销量',
+								name:'销量（万件）',
 								axisLabel: {
-									formatter: '{value}万件'
+									formatter: '{value}'
 								}
 							},{
 								type: 'value',
-								name:'金额',
+								name:'金额（万）',
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -297,7 +301,9 @@
 							},
 							color:['#5AD8A6','#F6BD16'],
 							legend: {
-								data: ['销量', '金额']
+								data: ['销量', '金额'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -312,15 +318,15 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销量',
+								name:'销量（万件）',
 								axisLabel: {
-									formatter: '{value}万件'
+									formatter: '{value}'
 								}
 							},{
 								type: 'value',
-								name:'金额',
+								name:'金额（万）',
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -390,7 +396,9 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['销量']
+								data: ['销量'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -405,9 +413,9 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销量',
+								name:'销量（万件）',
 								axisLabel: {
-									formatter: '{value}万件'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -423,7 +431,7 @@
 						});
 						var _this = this;
 						window.addEventListener('resize',() => {
-							_this.kssaleChart.resize();
+							_this.day_saleChart.resize();
 						})
 					}else{
 						this.$message.warning(res.data.msg);

@@ -90,6 +90,14 @@ let path = {
 	rks:'bufferreport/rks',											//入库数
 	hpxz:'bufferreport/hpxz',										//货品性质占比
 	hpxzks:'bufferreport/hpxzks',									//货品性质对应店铺款式数量
+	shopUnsaLable:'bufferreport/shopunsalable',						//店铺滞销款数据
+	plkcunSalable:'bufferreport/plkcunsalable',						//滞销款式库存
+	plunsaLableMoney:'bufferreport/plunsalablemoney',				//滞销款式金额
+	gysbj:'buffer/gysbj',											//供应商报价列表
+	addGp:'buffer/addgp',											//填写供应商报价
+	matchTime:'buffer/match',										//档口配齐时间表
+	addMatch:'buffer/add_match',									//填写档口配齐时间
+	zngList:'buffer/zng',											//转内供款式表
 
 }					
 export default{
@@ -480,7 +488,39 @@ export default{
 	//货品性质对应店铺款式数量
 	hpxzks(params){
 		return http.get(path.hpxzks, params)
-	},						
+	},		
+	//店铺滞销款数据
+	shopUnsaLable(params){
+		return http.get(path.shopUnsaLable, params)
+	},		
+	//滞销款式库存		
+	plkcunSalable(params){
+		return http.get(path.plkcunSalable, params)
+	},			
+	//滞销款式金额			
+	plunsaLableMoney(params){
+		return http.get(path.plunsaLableMoney, params)
+	},	
+	//供应商报价列表	
+	gysbj(params){
+		return http.get(path.gysbj, params)
+	},	
+	//填写供应商报价	
+	addGp(params){
+		return http.post(path.addGp, params)
+	},
+	//档口配齐时间表	
+	matchTime(params){
+		return http.get(path.matchTime, params)
+	},
+	//填写档口配齐时间
+	addMatch(params){
+		return http.post(path.addMatch, params)
+	},
+	//转内供款式表
+	zngList(params){
+		return http.get(path.zngList, params)
+	},
 }
 
 

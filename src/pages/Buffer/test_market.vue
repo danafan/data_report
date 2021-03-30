@@ -89,7 +89,7 @@
 </el-popover>
 <div class="buts">
 	<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
-	<el-button type="primary" plain size="small">导出<i class="el-icon-download el-icon--right"></i></el-button>
+	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
@@ -150,6 +150,7 @@
 <script>
 	import resource from '../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+	import exportFile from '../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -225,6 +226,29 @@
 			},
 		},
 		methods:{
+			//导出
+			exportFile(){
+				var arr = [];
+				let req = {
+					shop_id:this.shop_id.join(','),
+					gys:this.gys.join(','),
+					gyshh:this.gyshh.join(','),
+					pl:this.pl.join(','),
+					ks:this.ks.join(','),
+					jyhpxz:this.jyhpxz,
+					yyjc:this.yyjc,
+					sj_start_time:this.start_time,
+					sj_end_time:this.end_time,
+					xr_start_time:this.xr_start_time,
+					pagesize:this.pagesize,
+					page:this.page
+				}
+				for(var item in req){
+					let str = item + '=' + req[item];
+					arr.push(str);
+				};
+				exportFile.exportUp(`trial/trialexport?${arr.join('&')}`)
+			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
 				let req = {

@@ -177,7 +177,7 @@
 				if(n.path != '/home'){
 					this.show_welcome = false;
 				}else{
-					this.$router.push('/report_page')
+					this.$router.push('/supplement')
 					// this.show_welcome = true;
 				};
 			}

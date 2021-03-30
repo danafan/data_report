@@ -24,7 +24,7 @@
 	justify-content: space-between;
 	.charts_item{
 		width: 46%;
-		height: 500px
+		height: 450px
 	}
 }
 </style>
@@ -96,7 +96,9 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['入库数']
+								data: ['入库数'],
+								top:0,
+								right:0
 							},
 							grid:{
 								y2:150
@@ -111,9 +113,9 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'入库数',
+								name:'入库数（万件）',
 								axisLabel: {
-									formatter: '{value}万件'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
