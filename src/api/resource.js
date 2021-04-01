@@ -1,5 +1,8 @@
 import http from './request.js'
 let path = {	
+	messageList:'message/list',										//获取消息列表
+	messageRead:'message/read',										//读取消息
+	unreadnum:'message/unreadnum',									//未读消息数
 	login:'login',													//获取用户id
 	quit:'quit',													//推出
 	getMenu:'access/mymenu',										//获取所有菜单列表
@@ -101,6 +104,18 @@ let path = {
 
 }					
 export default{
+	//获取消息列表
+	messageList(params){
+		return http.get(path.messageList, params)
+	},
+	//读取消息
+	messageRead(params){
+		return http.post(path.messageRead, params)
+	},
+	//未读消息数
+	unreadnum(params){
+		return http.get(path.unreadnum, params)
+	},
 	//获取用户id
 	login(params){
 		return http.post(path.login, params)

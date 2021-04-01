@@ -42,6 +42,9 @@ export function getLastMonthEndDate(month_num){
 	var lastMonthEndDate = new Date(nowYear, nowMonth - month_num, 0); 
 	return formatDate(lastMonthEndDate); 
 }
+export function thousands(num){
+    return num.toLocaleString();
+}
 //格式化日期
 function formatDate(date) { 
 	var myyear = date.getFullYear(); 

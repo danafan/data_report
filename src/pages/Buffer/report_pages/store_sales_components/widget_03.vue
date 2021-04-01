@@ -23,6 +23,7 @@
 </style>
 <script>
 	import resource from '../../../../api/resource.js'
+	import {thousands} from '../../../../api/nowMonth.js'
 	export default{
 		data(){
 			return {
@@ -52,7 +53,7 @@
 						this.shop_promotionChart = echarts.init(shop_promotion);
 						this.shop_promotionChart.setOption({
 							title: {
-								text: '店铺推广费用'
+								text: '店铺各项营销费用'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -61,7 +62,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "（万）";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（元）";
 										}
 									}
 									return tip;
@@ -94,7 +95,7 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用（万）',
+								name:'费用（元）',
 								axisLabel: {
 									formatter: '{value}'
 								}
@@ -140,7 +141,7 @@
 						this.catepromotionChart = echarts.init(catepromotion);
 						this.catepromotionChart.setOption({
 							title: {
-								text: '直通车推广费用'
+								text: '各项营销费用'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -231,7 +232,7 @@
 						this.kspromotionChart = echarts.init(kspromotion);
 						this.kspromotionChart.setOption({
 							title: {
-								text: '款式推广费用'
+								text: '款式营销费用'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -240,7 +241,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "（万）";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（元）";
 										}
 									}
 									return tip;
@@ -273,7 +274,7 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用（万）',
+								name:'费用（元）',
 								axisLabel: {
 									formatter: '{value}'
 								}

@@ -23,7 +23,7 @@
 	display: flex;
 	justify-content: space-between;
 	.charts_item{
-		width: 46%;
+		width: 60%;
 		height: 450px
 	}
 }

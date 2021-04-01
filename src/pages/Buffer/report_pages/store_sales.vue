@@ -10,17 +10,14 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="付款日期:" style="margin-right: 20px">
+			<el-form-item label="付款日期">
 				<el-date-picker
-				v-model="date"
-				type="daterange"
-				unlink-panels
+				v-model="start_time"
+				type="date"
 				value-format="yyyy-MM-dd"
-				range-separator="至"
-				start-placeholder="开始日期"
-				end-placeholder="结束日期"
+				placeholder="选择日期"
 				:append-to-body="false"
-				:picker-options="pickerOptions">
+				>
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item>
@@ -44,7 +41,7 @@
 }
 </style>
 <script>
-	import {getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js';
+	import {getCurrentDate} from '../../../api/nowMonth.js';
 	import resource from '../../../api/resource.js'
 	import Widget01 from './store_sales_components/widget_01.vue'
 	import Widget02 from './store_sales_components/widget_02.vue'
@@ -53,41 +50,9 @@
 	export default{
 		data(){
 			return{
-				pickerOptions: {
-					shortcuts: [{
-						text: '当月',
-						onClick(picker) {
-							const start = getMonthStartDate();
-							const end = getCurrentDate();
-							picker.$emit('pick', [start, end]);
-						}
-					},{
-						text: '上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(1);
-							const end = getLastMonthEndDate(0);
-							picker.$emit('pick', [start, end]);
-						}
-					}, {
-						text: '上上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(2);
-							const end = getLastMonthEndDate(1);
-							picker.$emit('pick', [start, end]);
-						}
-					}]
-				},	 										//时间区间
-				date:[getCurrentDate(),getCurrentDate()],	//付款日期
-				start_time:getCurrentDate(),				//开始日期
-				end_time:getCurrentDate(),					//结束日期
+				start_time:getCurrentDate(),				//付款日期
 				store_list:[],
 				select_store_ids:[],
-			}
-		},
-		watch:{
-			date:function(n){
-				this.start_time = n && n.length> 0?n[0]:"";
-				this.end_time = n && n.length> 0?n[1]:"";
 			}
 		},
 		mounted(){
@@ -101,7 +66,6 @@
 				let req = {
 					shop_id:this.select_store_ids.join(','),
 					start_time:this.start_time,
-					end_time:this.end_time
 				}
 				this.$refs.widget02.reLoadData(req);
 				this.$refs.widget03.reLoadData(req);

@@ -8,13 +8,22 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商：">
-				<el-select v-model="gys" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="gys" clearable :popper-append-to-body="false" multiple filterable
+				remote
+				reserve-keyword
+				placeholder="请输入供应商"
+				:remote-method="ajaxGys"
+				 collapse-tags >
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商货号：">
-				<el-select v-model="gyshh" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="gyshh" clearable :popper-append-to-body="false" multiple filterable
+				remote
+				reserve-keyword
+				placeholder="请输入供应商货号"
+				:remote-method="ajaxGyshh" collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -26,50 +35,55 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="款式：">
-				<el-select v-model="ks" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="建议货品性质：">
-				<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
-					<el-option v-for="item in jyhpxz_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="建议：">
-				<el-select v-model="yyjc" :popper-append-to-body="false" clearable placeholder="全部">
-					<el-option v-for="item in yyjc_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="上架日期:" style="margin-right: 20px">
-				<el-date-picker
-				v-model="date"
-				type="daterange"
-				:clearable="false"
-				unlink-panels
-				value-format="yyyy-MM-dd"
-				range-separator="至"
-				start-placeholder="开始日期"
-				end-placeholder="结束日期"
-				:append-to-body="false"
-				:picker-options="pickerOptions">
-			</el-date-picker>
+				<el-select v-model="ks" clearable :popper-append-to-body="false" multiple filterable
+				remote
+				reserve-keyword
+				placeholder="请输入款式"
+				:remote-method="ajaxKsbm"
+				collapse-tags>
+				<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
 		</el-form-item>
-		<el-form-item label="写入日期：">
+		<el-form-item label="建议货品性质：">
+			<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
+				<el-option v-for="item in jyhpxz_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="建议：">
+			<el-select v-model="yyjc" :popper-append-to-body="false" clearable placeholder="全部">
+				<el-option v-for="item in yyjc_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="上架日期:" style="margin-right: 20px">
 			<el-date-picker
-			v-model="xr_start_time"
-			type="date"
+			v-model="date"
+			type="daterange"
+			:clearable="false"
+			unlink-panels
 			value-format="yyyy-MM-dd"
-			placeholder="选择日期"
+			range-separator="至"
+			start-placeholder="开始日期"
+			end-placeholder="结束日期"
 			:append-to-body="false"
-			>
+			:picker-options="pickerOptions">
 		</el-date-picker>
 	</el-form-item>
-	<el-form-item>
-		<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
-	</el-form-item>
+	<el-form-item label="写入日期：">
+		<el-date-picker
+		v-model="xr_start_time"
+		type="date"
+		value-format="yyyy-MM-dd"
+		placeholder="选择日期"
+		:append-to-body="false"
+		>
+	</el-date-picker>
+</el-form-item>
+<el-form-item>
+	<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
+</el-form-item>
 </el-form>
 <div class="table_setting">
 	<el-popover
@@ -209,12 +223,6 @@
 			this.ajaxViewStore();
 			//产品分类
 			this.ajaxPl();
-			//供应商列表
-			this.ajaxGys();
-			//供应商货号
-			this.ajaxGyshh();
-			//产品编码
-			this.ajaxKsbm();
 			//获取列表
 			this.getList('1');
 		},
@@ -302,34 +310,40 @@
 				})
 			},
 			//供应商列表
-			ajaxGys(){
-				resource.ajaxGys().then(res => {
-					if(res.data.code == 1){
-						this.gys_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			ajaxGys(e){
+				if(e != ''){
+					resource.ajaxGys({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gys_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//供应商货号
-			ajaxGyshh(){
-				resource.ajaxGyshh().then(res => {
-					if(res.data.code == 1){
-						this.gyshh_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			ajaxGyshh(e){
+				if(e != ''){
+					resource.ajaxGyshh({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gyshh_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//产品编码
-			ajaxKsbm(){
-				resource.ajaxKsbm().then(res => {
-					if(res.data.code == 1){
-						this.ks_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			ajaxKsbm(e){
+				if(e != ''){
+					resource.ajaxKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.ks_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//切换选中
 			handleSelectionChange(val) {

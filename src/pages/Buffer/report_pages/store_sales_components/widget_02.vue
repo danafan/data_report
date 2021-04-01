@@ -24,7 +24,7 @@
 </style>
 <script>
 	import resource from '../../../../api/resource.js'
-	
+	import {thousands} from '../../../../api/nowMonth.js'
 	export default{
 		data(){
 			return {
@@ -58,7 +58,7 @@
 						this.shop_saleChart = echarts.init(shop_sale);
 						this.shop_saleChart.setOption({
 							title: {
-								text: '店铺销售数据'
+								text: '店铺七天销量'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -165,7 +165,7 @@
 						this.plsaleChart = echarts.init(plsale);
 						this.plsaleChart.setOption({
 							title: {
-								text: '品类销售数据'
+								text: '品类七天销量'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -174,8 +174,8 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + '</br>'
-											+ params[0].seriesName + "：" + params[0].value + "（万件）</br>"
-											+ params[1].seriesName + "：" + params[1].value + "（万）</br>";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（件）</br>"
+											+ params[1].seriesName + "：" + thousands(params[1].value) + "（元）</br>";
 										}
 									}
 									return tip;
@@ -208,13 +208,13 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销量（万件）',
+								name:'销量（件）',
 								axisLabel: {
 									formatter: '{value}'
 								}
 							},{
 								type: 'value',
-								name:'金额（万）',
+								name:'金额（元）',
 								axisLabel: {
 									formatter: '{value}'
 								}
@@ -275,7 +275,7 @@
 						this.kssaleChart = echarts.init(kssale);
 						this.kssaleChart.setOption({
 							title: {
-								text: '款式销量数据'
+								text: '款式七天销量'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -284,8 +284,8 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + '</br>'
-											+ params[0].seriesName + "：" + params[0].value + "（万件）</br>"
-											+ params[1].seriesName + "：" + params[1].value + "（万）</br>";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（件）</br>"
+											+ params[1].seriesName + "：" + thousands(params[1].value) + "（元）</br>";
 										}
 									}
 									return tip;
@@ -318,13 +318,13 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销量（万件）',
+								name:'销量（件）',
 								axisLabel: {
 									formatter: '{value}'
 								}
 							},{
 								type: 'value',
-								name:'金额（万）',
+								name:'金额（元）',
 								axisLabel: {
 									formatter: '{value}'
 								}
@@ -371,7 +371,7 @@
 						this.day_saleChart = echarts.init(day_sale);
 						this.day_saleChart.setOption({
 							title: {
-								text: '每日销量数据'
+								text: '日销量'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -380,7 +380,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "（万）";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（件）";
 										}
 									}
 									return tip;
@@ -413,7 +413,7 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销量（万件）',
+								name:'销量（件）',
 								axisLabel: {
 									formatter: '{value}'
 								}

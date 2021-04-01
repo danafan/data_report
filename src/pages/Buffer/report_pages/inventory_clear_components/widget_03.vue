@@ -31,6 +31,7 @@
 </style>
 <script>
 	import resource from '../../../../api/resource.js'
+	import {thousands} from '../../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
@@ -84,38 +85,40 @@
 						this.shop_hpxzChart = echarts.init(shop_hpxz);
 						this.shop_hpxzChart.setOption({
 							title: {
-								text: '货品性质占比'
+								text: '货品性质款式占比'
 							},
-							// legend: {
-							// 	top: 'top'
-							// },
+							tooltip: {
+								trigger: 'item',
+								formatter: (params) => {
+									return params.name + "：" + params.value + '%';
+								},
+								backgroundColor:"rgba(0,0,0,.8)",
+								textStyle:{
+									color:"#ffffff"
+								},
+								borderColor:"rgba(0,0,0,0.7)",
+								axisPointer: {            
+									type: 'shadow'        
+								}
+							},
 							series: [
 							{
-								name: '货品性质占比',
+								name: '访问来源',
 								type: 'pie',
-								radius: [50, 250],
-								center: ['50%', '50%'],
-								roseType: 'area',
+								radius: ['40%', '70%'],
 								label:{
-									position:'inner',
-									fontSize:16,
-									fontWeight:'bold',
-									formatter:(params) => {
-										return params.name + '\n' + '\n' + params.value + '%'
-									}
-								},
-								itemStyle: {
-									borderRadius: 8
+									formatter: '{b}: {d}%',
 								},
 								data: data_list
-							}]
+							}
+							]
 						});
 						var _this = this;
 						window.addEventListener('resize',() => {
 							_this.shop_hpxzChart.resize();
 						})
 						this.shop_hpxzChart.on('click', params => {
-							let new_req = {hpxz:name_list[params.dataIndex]}
+							let new_req = {hpxz:params.name}
 							//店铺品类销售数据图表
 							this.shopHpxzks(new_req);
 						})
@@ -135,7 +138,7 @@
 						this.shop_hpxzksChart = echarts.init(shop_hpxzks);
 						this.shop_hpxzksChart.setOption({
 							title: {
-								text: '款式数量'
+								text: '店铺款式数量'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -144,7 +147,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + '</br>'
-											+ params[0].seriesName + "：" + params[0].value + "（万件）</br>";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（件）</br>";
 										}
 									}
 									return tip;
@@ -177,7 +180,7 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'款式数量（万件）',
+								name:'款式数量（件）',
 								axisLabel: {
 									formatter: '{value}'
 								}

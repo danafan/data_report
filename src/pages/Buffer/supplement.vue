@@ -8,13 +8,23 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商：">
-				<el-select v-model="select_gys" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_gys" clearable :popper-append-to-body="false" multiple filterable
+				remote
+				reserve-keyword
+				placeholder="请输入供应商"
+				:remote-method="ajaxGys"
+				 collapse-tags>
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商货号：">
-				<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable
+				remote
+				reserve-keyword
+				placeholder="请输入供应商货号"
+				:remote-method="ajaxGyshh"
+				 collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -26,7 +36,12 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="款式：">
-				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple
+				filterable
+				remote
+				reserve-keyword
+				placeholder="请输入款式"
+				:remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -100,7 +115,7 @@
 			</div>
 			<el-button type="primary" size="small" slot="reference">批量设置</el-button>
 		</el-popover>
-		<el-button type="primary" size="small" @click="show_sup = true">供应商报价</el-button>
+		<el-button style="margin-left: 10px" type="primary" size="small" @click="show_sup = true">供应商报价</el-button>
 		<el-button type="primary" size="small" @click="show_match = true">档口配齐时间</el-button>
 		<el-button type="primary" size="small" @click="show_zng = true">转内供款式</el-button>
 	</div>
@@ -322,17 +337,11 @@
 		},
 		created(){
 			//店铺列表
-			// this.ajaxViewStore();
+			this.ajaxViewStore();
 			//产品分类
-			// this.ajaxPl();
-			//供应商列表
-			// this.ajaxGys();
-			//供应商货号
-			// this.ajaxGyshh();
-			//产品编码
-			// this.ajaxKsbm();
-			//产品编码
-			// this.ajaxBd();
+			this.ajaxPl();
+			//波段
+			this.ajaxBd();
 			//获取列表
 			this.getList('1');
 		},
@@ -341,7 +350,7 @@
 			date:function(n){
 				this.start_time = n && n.length> 0?n[0]:"";
 				this.end_time = n && n.length> 0?n[1]:"";
-			},
+			}
 		},
 		methods:{
 			//导出
@@ -428,24 +437,28 @@
 				})
 			},
 			//供应商列表
-			ajaxGys(){
-				resource.ajaxGys().then(res => {
-					if(res.data.code == 1){
-						this.gys_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			ajaxGys(e){
+				if(e != ''){
+					resource.ajaxGys({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gys_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//供应商货号
-			ajaxGyshh(){
-				resource.ajaxGyshh().then(res => {
-					if(res.data.code == 1){
-						this.gyshh_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			ajaxGyshh(e){
+				if(e != ''){
+					resource.ajaxGyshh({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gyshh_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//波段列表
 			ajaxBd(){
@@ -458,14 +471,16 @@
 				})
 			},
 			//产品编码
-			ajaxKsbm(){
-				resource.ajaxKsbm().then(res => {
-					if(res.data.code == 1){
-						this.ks_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			ajaxKsbm(e){
+				if(e != ''){
+					resource.ajaxKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.ks_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//切换选中
 			handleSelectionChange(val) {

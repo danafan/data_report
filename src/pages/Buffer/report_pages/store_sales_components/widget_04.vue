@@ -23,6 +23,7 @@
 </style>
 <script>
 	import resource from '../../../../api/resource.js'
+	import {thousands} from '../../../../api/nowMonth.js'
 	export default{
 		data(){
 			return {
@@ -52,7 +53,7 @@
 						this.shopcbChart = echarts.init(shopcb);
 						this.shopcbChart.setOption({
 							title: {
-								text: '店铺销售成本'
+								text: '店铺七天销售成本'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -77,7 +78,7 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['费用'],
+								data: ['成本'],
 								top:0,
 								right:0
 							},
@@ -94,13 +95,13 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用（万）',
+								name:'成本（万）',
 								axisLabel: {
 									formatter: '{value}'
 								}
 							}],
 							series: [{
-								name: '费用',
+								name: '成本',
 								type: 'bar',
 								stack: '1',
 								yAxisIndex:0,
@@ -140,7 +141,7 @@
 						this.shopplcbChart = echarts.init(shopplcb);
 						this.shopplcbChart.setOption({
 							title: {
-								text: '品类销售成本'
+								text: '品类七天销售成本'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -149,7 +150,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "（万）";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（元）";
 										}
 									}
 									return tip;
@@ -165,7 +166,7 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['费用'],
+								data: ['成本'],
 								top:0,
 								right:0
 							},
@@ -182,13 +183,13 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用（万）',
+								name:'成本（元）',
 								axisLabel: {
 									formatter: '{value}'
 								}
 							}],
 							series: [{
-								name: '费用',
+								name: '成本',
 								type: 'bar',
 								stack: '1',
 								yAxisIndex:0,
@@ -231,7 +232,7 @@
 						this.shopkscbChart = echarts.init(shopkscb);
 						this.shopkscbChart.setOption({
 							title: {
-								text: '款式销售成本'
+								text: '款式七天销售成本'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -240,7 +241,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "（万）";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（元）";
 										}
 									}
 									return tip;
@@ -256,7 +257,7 @@
 							},
 							color:['#5AD8A6'],
 							legend: {
-								data: ['费用'],
+								data: ['成本'],
 								top:0,
 								right:0
 							},
@@ -273,13 +274,13 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'费用（万）',
+								name:'成本（元）',
 								axisLabel: {
 									formatter: '{value}'
 								}
 							}],
 							series: [{
-								name: '费用',
+								name: '成本',
 								type: 'bar',
 								stack: '1',
 								yAxisIndex:0,

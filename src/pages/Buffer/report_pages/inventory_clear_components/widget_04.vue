@@ -23,6 +23,7 @@
 </style>
 <script>
 	import resource from '../../../../api/resource.js'
+	import {thousands} from '../../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
@@ -51,7 +52,7 @@
 						this.shop_zxkChart = echarts.init(shop_zxk);
 						this.shop_zxkChart.setOption({
 							title: {
-								text: '店铺滞销款'
+								text: '店铺滞销款数'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -60,7 +61,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + '</br>'
-											+ params[0].seriesName + "：" + params[0].value + "（万件）</br>";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（件）</br>";
 										}
 									}
 									return tip;
@@ -88,7 +89,7 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'款式数量（万件）',
+								name:'款式数量（件）',
 								axisLabel: {
 									formatter: '{value}'
 								}
@@ -120,6 +121,18 @@
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;
+						var data_arr = [];
+						list.map((item,index) => {
+							name_list.map((name_item,i) => {
+								if(index == i){
+									let obj = {
+										name:name_item,
+										value:item
+									}
+									data_arr.push(obj);
+								}
+							})
+						})
 						var shop_zxkc = document.getElementById('shop_zxkc');
 						this.shop_zxkcChart = echarts.init(shop_zxkc);
 						this.shop_zxkcChart.setOption({
@@ -127,16 +140,9 @@
 								text: '滞销款式库存'
 							},
 							tooltip: {
-								trigger: 'axis',
+								trigger: 'item',
 								formatter: (params) => {
-									let tip = "";
-									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = params[0].axisValueLabel + '</br>'
-											+ "库存：" + params[0].value + "（万件）";
-										}
-									}
-									return tip;
+									return params.name + "：" + params.value + '%';
 								},
 								backgroundColor:"rgba(0,0,0,.8)",
 								textStyle:{
@@ -147,41 +153,32 @@
 									type: 'shadow'        
 								}
 							},
-							grid:{
-								y2:150
-							},
-							xAxis: {
-								type: 'category',
-								data: name_list,
-								axisLabel: {
-									color: '#333',
-									rotate:70
+							series: [
+							{
+								name: '滞销款式库存',
+								type: 'pie',
+								radius: '50%',
+								label:{
+									formatter: '{b}: {d}%',
+								},
+								data: data_arr,
+								emphasis: {
+									itemStyle: {
+										shadowBlur: 10,
+										shadowOffsetX: 0,
+										shadowColor: 'rgba(0, 0, 0, 0.5)'
+									}
 								}
-							},
-							yAxis: {
-								type: 'value',
-								name:'库存（万件）',
-								axisLabel: {
-									formatter: '{value}'
-								}
-							},
-							series: [{
-								data: list,
-								type: 'bar'
-							}]
+							}
+							]
 						})
 						var _this = this;
 						window.addEventListener('resize',() => {
 							_this.shop_zxkcChart.resize();
 						})
-						this.shop_zxkcChart.getZr().on('click', params => {
-							let pointInPixel = [params.offsetX, params.offsetY]
-							if (this.shop_zxkcChart.containPixel('grid', pointInPixel)) {
-								let xIndex = this.shop_zxkcChart.convertFromPixel({ seriesIndex: 0 }, [params.offsetX, params.offsetY])[0]
-								//店铺品类销售数据图表
-								let new_req = {pl:name_list[xIndex]};
-								this.plunsaLableMoney(new_req);
-							}
+						this.shop_zxkcChart.on('click', params => {
+							let new_req = {pl:params.name};
+							this.plunsaLableMoney(new_req);
 						})
 					}else{
 						this.$message.warning(res.data.msg);
@@ -199,7 +196,7 @@
 						this.shop_zxjeChart = echarts.init(shop_zxje);
 						this.shop_zxjeChart.setOption({
 							title: {
-								text: '滞销款式金额'
+								text: '滞销款式库存金额'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -208,7 +205,7 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + '</br>'
-											+ params[0].seriesName + "：" + params[0].value + "（万）";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（元）";
 										}
 									}
 									return tip;
@@ -236,7 +233,7 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'金额（万元）',
+								name:'金额（元）',
 								axisLabel: {
 									formatter: '{value}'
 								}

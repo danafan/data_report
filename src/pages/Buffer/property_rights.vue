@@ -2,7 +2,12 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="款式：">
-				<el-select v-model="ks" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="ks" clearable :popper-append-to-body="false" multiple filterable
+				remote
+				reserve-keyword
+				placeholder="请输入款式"
+				:remote-method="ajaxKsbm"
+				 collapse-tags>
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -72,8 +77,6 @@
 			}
 		},
 		created(){
-			//产品编码
-			this.ajaxKsbm();
 			//获取列表
 			this.getList('1');
 		},
@@ -101,14 +104,16 @@
 				});
 			},
 			//产品编码
-			ajaxKsbm(){
-				resource.ajaxKsbm().then(res => {
-					if(res.data.code == 1){
-						this.ks_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			ajaxKsbm(e){
+				if(e != ''){
+					resource.ajaxKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.ks_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//设置
 			setKs(type,title,ksbm){

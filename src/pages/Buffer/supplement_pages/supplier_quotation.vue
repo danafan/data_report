@@ -2,51 +2,7 @@
 	<div>
 		<el-dialog title="供应商报价" :visible.sync="showDialog" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false">
 			<el-tabs v-model="activeTab" @tab-click="checkTab">
-				<el-tab-pane label="已填报价数据" lazy name="1">
-					<el-form :inline="true" size="small" class="demo-form-inline">
-						<el-form-item label="预警日期：">
-							<el-date-picker
-							v-model="warning_time"
-							type="date"
-							value-format="yyyy-MM-dd"
-							placeholder="选择日期"
-							:append-to-body="false"
-							>
-						</el-date-picker>
-					</el-form-item>
-					<el-form-item label="填报日期：">
-						<el-date-picker
-						v-model="add_time"
-						type="date"
-						value-format="yyyy-MM-dd"
-						placeholder="选择日期"
-						:append-to-body="false"
-						>
-					</el-date-picker>
-				</el-form-item>
-			</el-form>
-			<el-table :data="data_list" size="small">
-				<el-table-column align="center" prop="ksbm" label="款式"></el-table-column>
-				<el-table-column align="center" prop="gys" label="供应商">
-				</el-table-column>
-				<el-table-column align="center" prop="price" label="报价"></el-table-column>
-				<el-table-column align="center" prop="warning_time" label="预警日期"></el-table-column>
-				<el-table-column align="center" prop="add_time" label="填报日期"></el-table-column>
-			</el-table>
-			<div class="page">
-				<el-pagination
-				@size-change="pagesizeChange"
-				@current-change="pageChange"
-				:current-page="page"
-				:pager-count="11"
-				:page-sizes="[5, 10, 15, 20]"
-				layout="total, sizes, prev, pager, next, jumper"
-				:total="total"
-				>
-			</el-pagination>
-		</div>
-	</el-tab-pane>
-	<el-tab-pane label="待填报价数据" lazy name="0">
+				<el-tab-pane label="待填报价数据" lazy name="0">
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="预警日期：">
 				<el-date-picker
@@ -96,6 +52,50 @@
 </el-pagination>
 </div>
 </el-tab-pane>
+				<el-tab-pane label="已填报价数据" lazy name="1">
+					<el-form :inline="true" size="small" class="demo-form-inline">
+						<el-form-item label="预警日期：">
+							<el-date-picker
+							v-model="warning_time"
+							type="date"
+							value-format="yyyy-MM-dd"
+							placeholder="选择日期"
+							:append-to-body="false"
+							>
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="填报日期：">
+						<el-date-picker
+						v-model="add_time"
+						type="date"
+						value-format="yyyy-MM-dd"
+						placeholder="选择日期"
+						:append-to-body="false"
+						>
+					</el-date-picker>
+				</el-form-item>
+			</el-form>
+			<el-table :data="data_list" size="small">
+				<el-table-column align="center" prop="ksbm" label="款式"></el-table-column>
+				<el-table-column align="center" prop="gys" label="供应商">
+				</el-table-column>
+				<el-table-column align="center" prop="price" label="报价"></el-table-column>
+				<el-table-column align="center" prop="warning_time" label="预警日期"></el-table-column>
+				<el-table-column align="center" prop="add_time" label="填报日期"></el-table-column>
+			</el-table>
+			<div class="page">
+				<el-pagination
+				@size-change="pagesizeChange"
+				@current-change="pageChange"
+				:current-page="page"
+				:pager-count="11"
+				:page-sizes="[5, 10, 15, 20]"
+				layout="total, sizes, prev, pager, next, jumper"
+				:total="total"
+				>
+			</el-pagination>
+		</div>
+	</el-tab-pane>
 </el-tabs>
 <span slot="footer" class="dialog-footer">
 	<el-button size="small" @click="colseDialog('0')">取消</el-button>
@@ -112,7 +112,7 @@
 	export default{
 		data(){
 			return{
-				activeTab:"1",
+				activeTab:"0",
 				warning_time:"",
 				add_time:"",
 				page:1,

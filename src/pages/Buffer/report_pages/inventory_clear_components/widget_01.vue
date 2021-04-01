@@ -83,6 +83,7 @@
 </style>
 <script>
 	import resource from '../../../../api/resource.js'
+	import {thousands} from '../../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
@@ -103,23 +104,28 @@
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name;
+						var data_arr = [];
+						list.map((item,index) => {
+							name_list.map((name_item,i) => {
+								if(index == i){
+									let obj = {
+										name:name_item,
+										value:item
+									}
+									data_arr.push(obj);
+								}
+							})
+						})
 						var shop_plkc = document.getElementById('shop_plkc');
 						this.shop_plkcChart = echarts.init(shop_plkc);
 						this.shop_plkcChart.setOption({
 							title: {
-								text: '品类库存'
+								text: '品类库存数量'
 							},
 							tooltip: {
-								trigger: 'axis',
+								trigger: 'item',
 								formatter: (params) => {
-									let tip = "";
-									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = params[0].axisValueLabel + '</br>'
-											+ "库存：" + params[0].value + "（万件）";
-										}
-									}
-									return tip;
+									return params.name + "：" + params.value + '%';
 								},
 								backgroundColor:"rgba(0,0,0,.8)",
 								textStyle:{
@@ -130,41 +136,30 @@
 									type: 'shadow'        
 								}
 							},
-							grid:{
-								y2:150
-							},
-							xAxis: {
-								type: 'category',
-								data: name_list,
-								axisLabel: {
-									color: '#333',
-									rotate:70
-								}
-							},
-							yAxis: {
-								type: 'value',
-								name:'库存（万件）',
-								axisLabel: {
-									formatter: '{value}'
-								}
-							},
 							series: [{
-								data: list,
-								type: 'bar'
+								name: '品类库存数量',
+								type: 'pie',
+								radius: '50%',
+								label:{
+									formatter: '{b}: {d}%',
+								},
+								data: data_arr,
+								emphasis: {
+									itemStyle: {
+										shadowBlur: 10,
+										shadowOffsetX: 0,
+										shadowColor: 'rgba(0, 0, 0, 0.5)'
+									}
+								}
 							}]
 						})
 						var _this = this;
 						window.addEventListener('resize',() => {
 							_this.shop_plkcChart.resize();
 						})
-						this.shop_plkcChart.getZr().on('click', params => {
-							let pointInPixel = [params.offsetX, params.offsetY]
-							if (this.shop_plkcChart.containPixel('grid', pointInPixel)) {
-								let xIndex = this.shop_plkcChart.convertFromPixel({ seriesIndex: 0 }, [params.offsetX, params.offsetY])[0]
-								//店铺品类销售数据图表
-								let new_req = {pl:name_list[xIndex]};
-								this.shopKskc(new_req);
-							}
+						this.shop_plkcChart.on('click', params => {
+							let new_req = {pl:params.name};
+							this.shopKskc(new_req);
 						})
 					}else{
 						this.$message.warning(res.data.msg);
@@ -183,7 +178,7 @@
 						this.shop_kskcChart = echarts.init(shop_kskc);
 						this.shop_kskcChart.setOption({
 							title: {
-								text: '款式库存及到货情况'
+								text: '款式库存数量'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -192,8 +187,8 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + '</br>'
-											+ params[0].seriesName + "：" + params[0].value + "（万件）</br>"
-											+ params[1].seriesName + "：" + params[1].value + "（万件）</br>";
+											+ params[0].seriesName + "：" + thousands(params[0].value) + "（件）</br>"
+											+ params[1].seriesName + "：" + thousands(params[1].value) + "（件）</br>";
 										}
 									}
 									return tip;
@@ -226,13 +221,13 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'库存（万件）',
+								name:'库存（件）',
 								axisLabel: {
 									formatter: '{value}'
 								}
 							},{
 								type: 'value',
-								name:'到货（万件）',
+								name:'到货（件）',
 								axisLabel: {
 									formatter: '{value}'
 								}
