@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="breadcrumb">
-			<el-button type="primary" size="small" icon="el-icon-arrow-left" @click="$router.go(-1)">返回</el-button>
+			<el-button type="primary" size="small" icon="el-icon-arrow-left" @click="$router.push('/permssions_index')">返回</el-button>
 			<div class="breadcrumb_name">数据权限 / 权限人员列表</div>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">

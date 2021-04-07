@@ -260,9 +260,9 @@
 				}
 			},
 			//查看用户列表
-			roleUser(menu_role_id){
+			roleUser(data_role_id){
 				this.$store.commit('checkPerTab','data_permssion');
-				this.$router.push('/data_role_user?role_id=' + menu_role_id);
+				this.$router.push(`/data_role_user?role_id=${data_role_id}`);
 			},
 			//分页
 			handleSizeChange(val) {

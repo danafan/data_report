@@ -285,7 +285,7 @@
 			//查看用户列表
 			roleUser(menu_role_id){
 				this.$store.commit('checkPerTab','access_permssion');
-				this.$router.push('/role_user?role_id=' + menu_role_id);
+				this.$router.push(`/role_user?role_id=${menu_role_id}`);
 			},
 			//分页
 			handleSizeChange(val) {

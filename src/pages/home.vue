@@ -251,8 +251,7 @@
 			$route(n){
 				if(n.path != '/home'){
 					this.show_welcome = false;
-					this.activeIndex = n.path;
-					this.$router.push(n.path)
+					this.handleSelect(n.path);
 				};
 			}
 		},
@@ -312,9 +311,12 @@
 					}
 				})
 			},
-			//切换导航
 			handleSelect(index){
-				this.activeIndex = index;
+				if(index == '/data_role_user' || index == '/role_user'){
+					this.activeIndex = '/permssions_index';
+				}else{
+					this.activeIndex = index;
+				}
 			}
 		}
 	}

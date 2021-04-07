@@ -1,14 +1,14 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="款式：">
-				<el-select v-model="ks" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+			<el-form-item label="店铺:">
+				<el-select v-model="select_store_ids" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="getList()">查询</el-button>
+				<el-button type="primary" size="small" @click="shopHpxz()">查询</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="charts_box">
@@ -35,28 +35,26 @@
 	export default{
 		data(){
 			return{
-				ks_list:[],				//款式列表
-				ks:[],
+				store_list:[],
+				select_store_ids:[],
 				shop_hpxzChart:null,
 				shop_hpxzksChart:null
 			}
-		},
-		created(){
-			//产品编码
-			this.ajaxKsbm();
 		},
 		mounted(){
 			//货品性质占比
 			this.shopHpxz();
 			//款式数量
 			this.shopHpxzks();
+			//店铺列表
+			this.getStoreList();
 		},
 		methods:{
-			//产品编码
-			ajaxKsbm(){
-				resource.ajaxKsbm().then(res => {
+			//店铺列表
+			getStoreList(){
+				resource.ajaxViewStore().then(res => {
 					if(res.data.code == 1){
-						this.ks_list = res.data.data;
+						this.store_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -64,7 +62,7 @@
 			},
 			//货品性质占比
 			shopHpxz(){
-				resource.hpxz().then(res => {
+				resource.hpxz({shop_id:this.select_store_ids.join(','),}).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let list = res.data.data.list;

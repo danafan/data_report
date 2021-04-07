@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺：">
 				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -102,7 +102,7 @@
 	<el-button type="primary" size="small" slot="reference">批量设置</el-button>
 </el-popover>
 <div class="buts">
-	<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
+	<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
 	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
 </div>
@@ -247,7 +247,7 @@
 					yyjc:this.yyjc,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
-					xr_start_time:this.xr_start_time,
+					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
 					pagesize:this.pagesize,
 					page:this.page
 				}
@@ -269,7 +269,7 @@
 					yyjc:this.yyjc,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
-					xr_start_time:this.xr_start_time,
+					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
 					pagesize:this.pagesize,
 					page:type == '1'?1:this.page
 				}
@@ -438,6 +438,11 @@
 				this.page = val;
 				//获取列表
 				this.getList();
+			},
+			//自定义列表
+			customFun(){
+				this.show_custom = true;
+				this.row_ids = this.dataObj.selected_ids;
 			},
 			//恢复默认
 			Restore(){

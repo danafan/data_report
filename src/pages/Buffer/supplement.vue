@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺：">
 				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -121,7 +121,7 @@
 	</div>
 
 	<div class="buts">
-		<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
+		<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
 		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 </div>
@@ -313,7 +313,7 @@
 				},	 										//时间区间
 				start_time:getMonthStartDate(),				//开始时间
 				end_time:getCurrentDate(),					//结束时间
-				date:[],
+				date:[getMonthStartDate(),getCurrentDate()],//发货时间
 				operator1:"",
 				operator2:"",
 				dataObj:{},									//列表数据
@@ -371,8 +371,8 @@
 					sfng:this.sfng,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
-					operator1:this.operator1,
-					operator2:this.operator2
+					operator_value1:this.operator1,
+					operator_value2:this.operator2
 				}
 				for(var item in req){
 					let str = item + '=' + req[item];
@@ -397,8 +397,8 @@
 					sfng:this.sfng,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
-					operator1:this.operator1,
-					operator2:this.operator2
+					operator_value1:this.operator1,
+					operator_value2:this.operator2
 				}
 				if(type == '2'){
 					req.row_ids = this.row_ids.join(',');
@@ -557,6 +557,11 @@
 				//获取列表
 				this.getList();
 			},
+			//自定义列表
+			customFun(){
+				this.show_custom = true;
+				this.row_ids = this.dataObj.selected_ids;
+			},
 			//恢复默认
 			Restore(){
 				this.row_ids = [];
@@ -628,7 +633,7 @@
 					day:this.sjxrrq,
 					ks:this.ksbm,
 					page:this.detail_page,
-					page_size:this.detail_page_size
+					pagesize:this.detail_page_size
 				}
 				resource.replenishDetail(req).then(res => {
 					if(res.data.code == 1){

@@ -20,9 +20,9 @@
       }
     },
     created(){
-      // this.$router.push('/home');
+      this.$router.push('/home'); 
       //获取code
-      this.GetCode();
+      // this.GetCode();
     },
     methods: {
       //获取code
@@ -43,16 +43,19 @@
             });
         });
       },
-      //获取用户id
+      //获取用户信息
       GetUserId(code){
         resource.login({code:code}).then(res => {
           if(res.data.code == 1){
-            let token = res.data.data.token;
-            localStorage.setItem('token',token);
+            let login_token = res.data.data.login_token;
+            localStorage.setItem('login_token',login_token);
             let ding_user_name = res.data.data.ding_user_name;
             localStorage.setItem('ding_user_name',ding_user_name);
             let ding_user_id = res.data.data.ding_user_id;
+            localStorage.setItem('ding_user_id',ding_user_id);
             watermark.set(ding_user_name,ding_user_id);
+            let secret_key = res.data.data.secret_key;
+            localStorage.setItem('secret_key',secret_key);
             this.$router.push('/home');
           }else{
             this.$message.warning(res.data.msg);

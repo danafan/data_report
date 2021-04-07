@@ -6,6 +6,9 @@
 					<el-date-picker v-model="warning_time" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false" >
 					</el-date-picker>
 				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
+				</el-form-item>
 			</el-form>
 			<el-table :data="data_list" size="small">
 				<el-table-column width="120" fixed="left" align="center" prop="ksbm" label="款式"></el-table-column>
@@ -55,11 +58,11 @@
 		},
 		methods:{
 			//获取列表
-			getData(){
+			getData(type){
 				let req = {
-					warning_time:this.warning_time,
-					page:this.page,
-					page_size:this.page_size
+					warning_time:!this.warning_time?'':this.warning_time,
+					page:type == '1'?1:this.page,
+					pagesize:this.page_size
 				}
 				resource.zngList(req).then(res => {
 					if(res.data.code == 1){

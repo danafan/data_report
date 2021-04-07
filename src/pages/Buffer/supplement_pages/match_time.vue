@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-dialog title="档口配齐时间" :visible.sync="showDialog" :close-on-press-escape="false" :show-close="false" :close-on-click-modal="false">
+		<el-dialog title="档口配齐时间" :visible.sync="showDialog" @close="colseDialog('0')" :close-on-press-escape="false" :close-on-click-modal="false">
 			<el-tabs v-model="activeTab" @tab-click="checkTab">
 				<el-tab-pane label="待填档口配齐时间表" lazy name="0">
 					<el-form :inline="true" size="small" class="demo-form-inline">
@@ -14,7 +14,7 @@
 							>
 						</el-date-picker>
 					</el-form-item>
-					<el-form-item label="填报日期：">
+					<el-form-item label="填报日期：" v-if="activeTab == '1'">
 						<el-date-picker
 						v-model="add_time"
 						type="date"
@@ -23,6 +23,9 @@
 						:append-to-body="false"
 						>
 					</el-date-picker>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
 				</el-form-item>
 			</el-form>
 			<el-table :data="data_list" size="small">
@@ -85,6 +88,9 @@
 		>
 	</el-date-picker>
 </el-form-item>
+<el-form-item>
+	<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
+</el-form-item>
 </el-form>
 <el-table :data="data_list" size="small">
 	<el-table-column width="120" fixed="left" align="center" prop="ksbm" label="款式"></el-table-column>
@@ -132,7 +138,7 @@
 				warning_time:"",
 				add_time:"",
 				page:1,
-				page_size:10,
+				pagesize:10,
 				showDialog:true,
 				data_list:[],
 				total:0
@@ -149,18 +155,18 @@
 				this.warning_time = "";
 				this.add_time = "";
 				this.page = 1;
-				this.page_size = 10;
+				this.pagesize = 10;
 				//获取列表
 				this.getData();
 			},
 			//获取列表
-			getData(){
+			getData(type){
 				let req = {
 					status:this.activeTab,
-					warning_time:this.warning_time,
-					add_time:this.add_time,
-					page:this.page,
-					page_size:this.page_size
+					warning_time:!this.warning_time?'':this.warning_time,
+					add_time:!this.add_time?'':this.add_time,
+					page:type == '1'?1:this.page,
+					pagesize:this.pagesize
 				}
 				resource.matchTime(req).then(res => {
 					if(res.data.code == 1){
@@ -182,7 +188,7 @@
 			},
 			//分页
 			pagesizeChange(val) {
-				this.page_size = val;
+				this.pagesize = val;
 				//获取列表
 				this.getData();
 			},

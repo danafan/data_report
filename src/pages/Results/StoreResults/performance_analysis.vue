@@ -161,7 +161,7 @@
 		</div>
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="Restore">恢复默认</el-button>
-			<el-button size="small" @click="show_custom = false">取消</el-button>
+			<el-button size="small" @click="Restore('is_close')">取消</el-button>
 			<el-button size="small" type="primary" @click="GetData('1')">保存</el-button>
 		</div>
 	</el-dialog>
@@ -473,11 +473,14 @@
 				}
 			},
 			//恢复默认
-			Restore(){
+			Restore(type){
 				this.selected_ids = [];
 				this.view_row.map(item => {
 					this.selected_ids.push(item.row_id)
 				})
+				if(type == 'is_close'){
+					this.show_custom = false;
+				}
 			}
 			
 		}
