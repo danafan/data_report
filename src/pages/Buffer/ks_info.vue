@@ -1,12 +1,6 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="店铺：">
-				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
 			<el-form-item label="供应商：">
 				<el-select v-model="select_gys" clearable :popper-append-to-body="false" multiple filterable
 				remote
@@ -36,7 +30,8 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="款式：">
-				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple filterable
+				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple
+				filterable
 				remote
 				reserve-keyword
 				placeholder="请输入款式"
@@ -57,35 +52,92 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="写入日期：">
-			<el-date-picker
-			v-model="xr_start_time"
-			type="date"
-			value-format="yyyy-MM-dd"
-			placeholder="选择日期"
-			:append-to-body="false"
-			>
-		</el-date-picker>
-	</el-form-item>
+			<el-form-item label="预警值：">
+				<el-select v-model="yjs" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option key="0" label="小于等于0" value="0">
+					</el-option>
+					<el-option key="1" label="大于0" value="1">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="是否自主款：">
+				<el-select v-model="sfzzk" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option key="1" label="是" value="1">
+					</el-option>
+					<el-option key="0" label="否" value="0">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="确认状态：">
+				<el-select v-model="status" :popper-append-to-body="false" clearable placeholder="全部">
+					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="是否可退：">
+				<el-select v-model="sfkt" :popper-append-to-body="false" clearable placeholder="全部">
+					<el-option v-for="item in sfkt_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="是否内供：">
+				<el-select v-model="sfng" :popper-append-to-body="false" clearable placeholder="全部">
+					<el-option v-for="item in sfng_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="负数库存：">
+				<el-input style="width:100px" clearable type="number" v-model="operator1" clearable placeholder="大于等于"></el-input>
+				--
+				<el-input style="width:100px" clearable type="number" v-model="operator2" clearable placeholder="小于"></el-input>
+			</el-form-item>
+			<el-form-item label="上架日期:" style="margin-right: 20px">
+				<el-date-picker
+				v-model="date"
+				type="daterange"
+				unlink-panels
+				value-format="yyyy-MM-dd"
+				range-separator="至"
+				start-placeholder="开始日期"
+				end-placeholder="结束日期"
+				:append-to-body="false"
+				:picker-options="pickerOptions">
+			</el-date-picker>
+		</el-form-item>
+		<el-form-item label="写入日期：">
+	<el-date-picker
+	v-model="xr_start_time"
+	type="date"
+	clearable
+	value-format="yyyy-MM-dd"
+	placeholder="选择日期"
+	:append-to-body="false"
+	>
+</el-date-picker>
+</el-form-item>
 		<el-form-item>
 			<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
 		</el-form-item>
 	</el-form>
 	<div class="table_setting">
-		<el-popover
-		placement="right-start"
-		:append-to-body="false"
-		width="150"
-		trigger="click">
-		<div class="setStyle">
-			<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
-			<el-button type="primary" size="small" plain @click="setKs('2','补')">补</el-button>
-		</div>
-		<div class="setStyle">
-			<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
-		</div>
-		<el-button type="primary" size="small" slot="reference">批量设置</el-button>
-	</el-popover>
+		<div class="buts">
+			<el-popover
+			placement="right-start"
+			:append-to-body="false"
+			width="150"
+			trigger="click">
+			<div class="setStyle">
+				<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
+				<el-button type="primary" size="small" plain @click="setKs('2','补')">试</el-button>
+			</div>
+			<div class="setStyle">
+				<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
+				<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
+			</div>
+			<el-button type="primary" size="small" slot="reference">批量设置</el-button>
+		</el-popover>
+	</div>
+
 	<div class="buts">
 		<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
 		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -95,8 +147,10 @@
 	<el-table-column type="selection" width="55" fixed></el-table-column>
 	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd'?160:120" align="center" v-for="item in dataObj.title_list">
 		<template slot-scope="scope">
+			<!-- 内部核价 -->
+			<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
 			<!-- 下钻 -->
-			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
+			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-else-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
 			<div v-else>{{scope.row[item.row_field_name]}}</div>
 		</template>
 	</el-table-column>
@@ -104,7 +158,9 @@
 		<template slot-scope="scope">
 			<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
 			<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)">补</el-button>
+			<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)">停</el-button>
 			<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)">清</el-button>
+			<el-button type="text" size="small" @click="updateNum(scope.row.ksbm)">修正数量</el-button>
 		</template>
 	</el-table-column>
 </el-table>
@@ -132,6 +188,22 @@
 		<el-button size="small" @click="show_custom = false">取消</el-button>
 		<el-button size="small" type="primary" @click="getList('2')">保存</el-button>
 	</div>
+</el-dialog>
+<!-- 修正数量 -->
+<el-dialog title="修正数量" @close="closeDialog" :visible.sync="updeteDialog">
+	<el-form size="small" label-width="100px">
+		<el-form-item label="修正数量：" label-width="100px" required>
+			<el-input v-model="num" type="number" style='width: 300px' placeholder="请输入数量"></el-input>
+		</el-form-item>
+		<el-form-item label="修正原因：" label-width="100px">
+			<el-input v-model="remark" type="textarea"
+			:rows="3" style='width: 300px;' placeholder="请输入修正原因"></el-input>
+		</el-form-item>
+	</el-form>
+	<span slot="footer" class="dialog-footer">
+		<el-button size="small" @click="updeteDialog = false">取消</el-button>
+		<el-button size="small" type="primary" @click="submitUpdate">确 定</el-button>
+	</span>
 </el-dialog>
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
@@ -177,14 +249,13 @@
 </style>
 <script>
 	import resource from '../../api/resource.js'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import exportFile from '../../api/export.js'
 	export default{
 		data(){
 			return{
 				pagesize:10,
 				page:1,
-				shop_list:[],								//店铺列表
-				select_shop_list:[],						//选中的店铺列表
 				gys_list:[],								//供应商列表
 				select_gys:[],								//选中的供应商列表
 				gyshh_list:[],								//供应商货号列表
@@ -193,32 +264,99 @@
 				select_pl_list:[],							//选中的品类列表
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表
-				jyhpxz_list:['试','补','清'],					//建议货品性质列表
+				jyhpxz_list:['试','补','停','清'],			//建议货品性质列表
 				jyhpxz:"",
 				bd_list:[],									//波段列表
 				select_bd_list:[],							//选中的波段列表
-				xr_start_time:"",							//写入日期
+				status_list:[{
+					id:'0',
+					name:"未确认"
+				},{
+					id:'1',
+					name:"已确认"
+				},{
+					id:'2',
+					name:"已修正"
+				}],											//确认状态列表
+				status:"",
+				yjs:"",
+				sfzzk:"",
+				sfkt_list:[{
+					id:'0',
+					name:"不可退"
+				},{
+					id:'1',
+					name:"可退"
+				}],											//是否可退列表
+				sfkt:"",
+				sfng_list:[{
+					id:'0',
+					name:"否"
+				},{
+					id:'1',
+					name:"是"
+				}],											//是否内供列表
+				sfng:"",
+				pickerOptions: {
+					shortcuts: [{
+						text: '当月',
+						onClick(picker) {
+							const start = getMonthStartDate();
+							const end = getCurrentDate();
+							picker.$emit('pick', [start, end]);
+						}
+					},{
+						text: '上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(1);
+							const end = getLastMonthEndDate(0);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '上上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(2);
+							const end = getLastMonthEndDate(1);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},	 										//时间区间
+				start_time:"",				//开始时间
+				end_time:"",					//结束时间
+				date:[],//发货时间
+				xr_start_time:"",
+				operator1:"",
+				operator2:"",
 				dataObj:{},									//列表数据
 				select_ids:[],								//批量操作选中的id列表
 				show_custom:false,							//自定义列表是否显示
 				row_ids:[],									//选择的自定义列表id
+				updeteDialog:false,							//修正数量不显示
+				ks:"",
+				num:"",
+				remark:"",
 				detailData:[],								//下钻信息
 				sjxrrq:"",
 				ksbm:"",
 				detailDialog:false,			
 				detail_page:1,
-				detail_page_size:10
+				detail_page_size:10,
 			}
 		},
 		created(){
-			//店铺列表
-			this.ajaxViewStore();
 			//产品分类
 			this.ajaxPl();
 			//波段
 			this.ajaxBd();
 			//获取列表
 			this.getList('1');
+		},
+		watch:{
+			//发货时间
+			date:function(n){
+				this.start_time = n && n.length> 0?n[0]:"";
+				this.end_time = n && n.length> 0?n[1]:"";
+			}
 		},
 		methods:{
 			//导出
@@ -227,39 +365,55 @@
 				let req = {
 					pagesize:this.pagesize,
 					page:this.page,
-					shop_id:this.select_shop_list.join(','),
 					gys:this.select_gys.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					pl:this.select_pl_list.join(','),
 					ks:this.select_ks_list.join(','),
 					jyhpxz:this.jyhpxz,
 					bd:this.select_bd_list.join(','),
-					xr_start_time:this.xr_start_time
+					status:this.status,
+					yjs:this.yjs,
+					sfzzk:this.sfzzk,
+					sfkt:this.sfkt,
+					sfng:this.sfng,
+					sj_start_time:this.start_time,
+					sj_end_time:this.end_time,
+					xr_start_time:this.xr_start_time,
+					operator_value1:this.operator1,
+					operator_value2:this.operator2
 				}
 				for(var item in req){
 					let str = item + '=' + req[item];
 					arr.push(str);
 				};
-				exportFile.exportUp(`stop/stopexport?${arr.join('&')}`)
+				exportFile.exportUp(`ksinfo/ksexport?${arr.join('&')}`)
 			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
 				let req = {
 					pagesize:this.pagesize,
 					page:type == '1'?1:this.page,
-					shop_id:this.select_shop_list.join(','),
 					gys:this.select_gys.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					pl:this.select_pl_list.join(','),
 					ks:this.select_ks_list.join(','),
 					jyhpxz:this.jyhpxz,
 					bd:this.select_bd_list.join(','),
-					xr_start_time:this.xr_start_time
+					status:this.status,
+					yjs:this.yjs,
+					sfzzk:this.sfzzk,
+					sfkt:this.sfkt,
+					sfng:this.sfng,
+					sj_start_time:this.start_time,
+					sj_end_time:this.end_time,
+					xr_start_time:this.xr_start_time,
+					operator_value1:this.operator1,
+					operator_value2:this.operator2
 				}
 				if(type == '2'){
 					req.row_ids = this.row_ids.join(',');
 				}
-				resource.stopList(req).then(res => {
+				resource.ksInfoList(req).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
@@ -271,16 +425,6 @@
 						this.$message.warning(res.data.msg);
 					}
 				});
-			},
-			//店铺列表
-			ajaxViewStore(){
-				resource.ajaxViewStore().then(res => {
-					if(res.data.code == 1){
-						this.shop_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
 			},
 			//产品分类
 			ajaxPl(){
@@ -351,7 +495,7 @@
 					this.$message.warning('至少选择一个款式');
 					return;
 				}
-				//1:试；2:补；4:清
+				//1:试；2:补；3:停；4:清
 				this.$confirm(`货品性质确定转为${title}么？想好哦！`, '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -362,7 +506,7 @@
 					}
 					let ks = this.select_ids.join(',');
 					if(type == '1'){
-						resource.stopTry({ks:ks}).then(res => {
+						resource.ksInfoTry({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -373,7 +517,18 @@
 							}
 						})
 					}else if(type == '2'){
-						resource.stopReplenish({ks:ks}).then(res => {
+						resource.ksInfoReplenish({ks:ks}).then(res => {
+							if(res.data.code == 1){
+								this.$message.success(res.data.msg);
+								this.select_ids = [];
+								//获取列表
+								this.getList();
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+					}else if(type == '3'){
+						resource.ksInfoStop({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -384,7 +539,7 @@
 							}
 						})
 					}else if(type == '4'){
-						resource.stopClear({ks:ks}).then(res => {
+						resource.ksInfoClear({ks:ks}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -425,7 +580,57 @@
 					this.row_ids.push(item.row_id)
 				})
 			},
-			
+			//修正数量
+			updateNum(ks){
+				this.ks = ks;
+				this.updeteDialog = true;
+			},
+			//关闭修正数量
+			closeDialog(){
+				this.updeteDialog = false;
+				this.num = "";
+				this.remark = "";
+			},
+			//确认修正
+			submitUpdate(){
+				if(this.num == ""){
+					this.$message.warning('请输入修正数量');
+				}else{
+					let req = {
+						ks:this.ks,
+						num:this.num,
+						remark:this.remark
+					}
+					resource.ksinfoModify(req).then(res => {
+						if(res.data.code == 1){
+							this.updeteDialog = false;
+							this.$message.success(res.data.msg);
+							//获取列表
+							this.getList();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//内部核价
+			nuclearPrice(e,v){
+				if(e == ''){
+					this.$message.warning('请输入价格');
+				}else{
+					let req = {
+						ks:v,
+						price:e
+					}
+					resource.ksinfoSet(req).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
 			//下钻
 			getDetail(ksbm,sjxrrq){
 				this.ksbm = ksbm;
@@ -441,7 +646,7 @@
 					page:this.detail_page,
 					pagesize:this.detail_page_size
 				}
-				resource.stopDetail(req).then(res => {
+				resource.ksinfoDetail(req).then(res => {
 					if(res.data.code == 1){
 						this.detailData = res.data.data;
 						this.detailDialog = true;
@@ -466,6 +671,40 @@
 				//获取列表
 				this.getDetailList();
 			},
+			//取消或保存供应商报价
+			closeSup(req){
+				if(req.type == '1'){
+					resource.addGp({list:req.req_list}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.show_sup = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.show_sup = false;
+				}
+			},
+			//档口配齐时间表
+			closeMatch(req){
+				if(req.type == '1'){
+					resource.addMatch({list:req.req_list}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.show_match = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.show_match = false;
+				}
+			},
+			//转内供
+			closeZng(){
+				this.show_zng = false;
+			}
 		}
 	}
 </script>

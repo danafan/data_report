@@ -293,12 +293,8 @@
 							}
 						})
 					}
-					if(row.web_url == 'show_sup' || row.web_url == 'show_match' || row.web_url == 'show_zng'){
-						this.$router.push('/supplement?type' + row.web_url);
-					}else{
-						this.$router.push('/' + row.web_url);
-					}
-					
+					this.$router.push('/' + row.web_url);
+					// this.$router.push('/supplement?show_zng=true');
 				},
 			//获取菜单列表
 			getMenuList(){

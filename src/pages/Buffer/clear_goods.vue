@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺：">
 				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -205,7 +205,7 @@
 				select_pl_list:[],							//选中的品类列表
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表
-				jyhpxz_list:['试','补','清'],					//建议货品性质列表
+				jyhpxz_list:['试','补','停'],					//建议货品性质列表
 				jyhpxz:"",
 				bd_list:[],									//波段列表
 				select_bd_list:[],							//选中的波段列表

@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺：">
 				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -61,7 +61,6 @@
 			<el-date-picker
 			v-model="date"
 			type="daterange"
-			:clearable="false"
 			unlink-panels
 			value-format="yyyy-MM-dd"
 			range-separator="至"
@@ -75,6 +74,7 @@
 		<el-date-picker
 		v-model="xr_start_time"
 		type="date"
+		clearable
 		value-format="yyyy-MM-dd"
 		placeholder="选择日期"
 		:append-to-body="false"
@@ -208,9 +208,9 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[getMonthStartDate(),getCurrentDate()],//发货时间
-				start_time:getMonthStartDate(),				//开始时间
-				end_time:getCurrentDate(),					//结束时间
+				date:[],//发货时间
+				start_time:"",				//开始时间
+				end_time:"",					//结束时间
 				xr_start_time:"",							//数据写入日期
 				dataObj:{},									//列表数据
 				select_ids:[],								//批量操作选中的id列表
@@ -219,6 +219,12 @@
 			}
 		},
 		created(){
+			let query = this.$route.query;
+			if(JSON.stringify(query) != "{}"){
+				for(var item in query){
+					this.[item] = query[item];
+				}
+			}
 			//店铺列表
 			this.ajaxViewStore();
 			//产品分类

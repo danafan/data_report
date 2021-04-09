@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺：">
 				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -13,117 +13,135 @@
 				reserve-keyword
 				placeholder="请输入供应商"
 				:remote-method="ajaxGys"
-				 collapse-tags>
-					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="供应商货号：">
-				<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable
-				remote
-				reserve-keyword
-				placeholder="请输入供应商货号"
-				:remote-method="ajaxGyshh"
-				 collapse-tags>
-					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="品类：">
-				<el-select v-model="select_pl_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="款式：">
-				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple
-				filterable
-				remote
-				reserve-keyword
-				placeholder="请输入款式"
-				:remote-method="ajaxKsbm" collapse-tags>
-					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="建议货品性质：">
-				<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
-					<el-option v-for="item in jyhpxz_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="波段：">
-				<el-select v-model="select_bd_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="确认状态：">
-				<el-select v-model="status" :popper-append-to-body="false" clearable placeholder="全部">
-					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="是否可退：">
-				<el-select v-model="sfkt" :popper-append-to-body="false" clearable placeholder="全部">
-					<el-option v-for="item in sfkt_list" :key="item.id" :label="item.name" :value="item.id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="是否内供：">
-				<el-select v-model="sfng" :popper-append-to-body="false" clearable placeholder="全部">
-					<el-option v-for="item in sfng_list" :key="item.id" :label="item.name" :value="item.id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="负数库存：">
-				<el-input style="width:100px" clearable type="number" v-model="operator1" clearable placeholder="大于等于"></el-input>
-				--
-				<el-input style="width:100px" clearable type="number" v-model="operator2" clearable placeholder="小于"></el-input>
-			</el-form-item>
-			<el-form-item label="上架日期:" style="margin-right: 20px">
-				<el-date-picker
-				v-model="date"
-				type="daterange"
-				:clearable="false"
-				unlink-panels
-				value-format="yyyy-MM-dd"
-				range-separator="至"
-				start-placeholder="开始日期"
-				end-placeholder="结束日期"
-				:append-to-body="false"
-				:picker-options="pickerOptions">
-			</el-date-picker>
+				collapse-tags>
+				<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
 		</el-form-item>
-		<el-form-item>
-			<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
-		</el-form-item>
-	</el-form>
-	<div class="table_setting">
-		<div class="buts">
-			<el-popover
-			placement="right-start"
-			:append-to-body="false"
-			width="150"
-			trigger="click">
-			<div class="setStyle">
-				<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
-			</div>
-			<div class="setStyle">
-				<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
-				<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
-			</div>
-			<el-button type="primary" size="small" slot="reference">批量设置</el-button>
-		</el-popover>
-		<el-button style="margin-left: 10px" type="primary" size="small" @click="show_sup = true">供应商报价</el-button>
-		<el-button type="primary" size="small" @click="show_match = true">档口配齐时间</el-button>
-		<el-button type="primary" size="small" @click="show_zng = true">转内供款式</el-button>
-	</div>
-
+		<el-form-item label="供应商货号：">
+			<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable
+			remote
+			reserve-keyword
+			placeholder="请输入供应商货号"
+			:remote-method="ajaxGyshh"
+			collapse-tags>
+			<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
+			</el-option>
+		</el-select>
+	</el-form-item>
+	<el-form-item label="品类：">
+		<el-select v-model="select_pl_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+			<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
+			</el-option>
+		</el-select>
+	</el-form-item>
+	<el-form-item label="款式：">
+		<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple
+		filterable
+		remote
+		reserve-keyword
+		placeholder="请输入款式"
+		:remote-method="ajaxKsbm" collapse-tags>
+		<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="预警值：">
+	<el-select v-model="yjs" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option key="0" label="小于等于0" value="0">
+		</el-option>
+		<el-option key="1" label="大于0" value="1">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="建议货品性质：">
+	<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option v-for="item in jyhpxz_list" :key="item" :label="item" :value="item">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="波段：">
+	<el-select v-model="select_bd_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+		<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="确认状态：">
+	<el-select v-model="status" :popper-append-to-body="false" clearable placeholder="全部">
+		<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="是否可退：">
+	<el-select v-model="sfkt" :popper-append-to-body="false" clearable placeholder="全部">
+		<el-option v-for="item in sfkt_list" :key="item.id" :label="item.name" :value="item.id">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="是否内供：">
+	<el-select v-model="sfng" :popper-append-to-body="false" clearable placeholder="全部">
+		<el-option v-for="item in sfng_list" :key="item.id" :label="item.name" :value="item.id">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="负数库存：">
+	<el-input style="width:100px" clearable type="number" v-model="operator1" clearable placeholder="大于等于"></el-input>
+	--
+	<el-input style="width:100px" clearable type="number" v-model="operator2" clearable placeholder="小于"></el-input>
+</el-form-item>
+<el-form-item label="上架日期:" style="margin-right: 20px">
+	<el-date-picker
+	v-model="date"
+	type="daterange"
+	unlink-panels
+	value-format="yyyy-MM-dd"
+	range-separator="至"
+	start-placeholder="开始日期"
+	end-placeholder="结束日期"
+	:append-to-body="false"
+	:picker-options="pickerOptions">
+</el-date-picker>
+</el-form-item>
+<el-form-item label="写入日期：">
+	<el-date-picker
+	v-model="xr_start_time"
+	type="date"
+	clearable
+	value-format="yyyy-MM-dd"
+	placeholder="选择日期"
+	:append-to-body="false"
+	>
+</el-date-picker>
+</el-form-item>
+<el-form-item>
+	<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
+</el-form-item>
+</el-form>
+<div class="table_setting">
 	<div class="buts">
-		<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
-	</div>
+		<el-popover
+		placement="right-start"
+		:append-to-body="false"
+		width="150"
+		trigger="click">
+		<div class="setStyle">
+			<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
+		</div>
+		<div class="setStyle">
+			<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
+			<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
+		</div>
+		<el-button type="primary" size="small" slot="reference">批量设置</el-button>
+	</el-popover>
+	<el-button style="margin-left: 10px" type="primary" size="small" @click="show_sup = true">供应商报价</el-button>
+	<el-button type="primary" size="small" @click="show_match = true">档口配齐时间</el-button>
+	<el-button type="primary" size="small" @click="show_zng = true">转内供款式</el-button>
+</div>
+
+<div class="buts">
+	<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
+	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+</div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
 	<el-table-column type="selection" width="55" fixed></el-table-column>
@@ -256,6 +274,7 @@
 				select_pl_list:[],							//选中的品类列表
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表
+				yjs:"",
 				jyhpxz_list:['试','补','停','清'],			//建议货品性质列表
 				jyhpxz:"",
 				bd_list:[],									//波段列表
@@ -311,9 +330,10 @@
 						}
 					}]
 				},	 										//时间区间
-				start_time:getMonthStartDate(),				//开始时间
-				end_time:getCurrentDate(),					//结束时间
-				date:[getMonthStartDate(),getCurrentDate()],//发货时间
+				start_time:"",				//开始时间
+				end_time:"",					//结束时间
+				xr_start_time:"",
+				date:[],//发货时间
 				operator1:"",
 				operator2:"",
 				dataObj:{},									//列表数据
@@ -336,6 +356,12 @@
 			}
 		},
 		created(){
+			let query = this.$route.query;
+			if(JSON.stringify(query) != "{}"){
+				for(var item in query){
+					this.[item] = query[item];
+				}
+			}
 			//店铺列表
 			this.ajaxViewStore();
 			//产品分类
@@ -346,6 +372,16 @@
 			this.getList('1');
 		},
 		watch:{
+			$route() {
+				let query = this.$route.query;
+				if(JSON.stringify(query) != "{}"){
+					for(var item in query){
+						this.[item] = query[item];
+					}
+				}
+				//获取列表
+				this.getList('1');
+			},
 			//发货时间
 			date:function(n){
 				this.start_time = n && n.length> 0?n[0]:"";
@@ -364,6 +400,7 @@
 					gyshh:this.select_gyshh_list.join(','),
 					pl:this.select_pl_list.join(','),
 					ks:this.select_ks_list.join(','),
+					yjs:this.yjs,
 					jyhpxz:this.jyhpxz,
 					bd:this.select_bd_list.join(','),
 					status:this.status,
@@ -371,6 +408,7 @@
 					sfng:this.sfng,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
+					xr_start_time:this.xr_start_time,
 					operator_value1:this.operator1,
 					operator_value2:this.operator2
 				}
@@ -390,6 +428,7 @@
 					gyshh:this.select_gyshh_list.join(','),
 					pl:this.select_pl_list.join(','),
 					ks:this.select_ks_list.join(','),
+					yjs:this.yjs,
 					jyhpxz:this.jyhpxz,
 					bd:this.select_bd_list.join(','),
 					status:this.status,
@@ -397,6 +436,7 @@
 					sfng:this.sfng,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
+					xr_start_time:this.xr_start_time,
 					operator_value1:this.operator1,
 					operator_value2:this.operator2
 				}

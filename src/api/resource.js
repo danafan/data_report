@@ -101,6 +101,14 @@ let path = {
 	matchTime:'buffer/match',										//档口配齐时间表
 	addMatch:'buffer/add_match',									//填写档口配齐时间
 	zngList:'buffer/zng',											//转内供款式表
+	ksInfoList:'buffer/ksinfolist',									//款式信息管理列表
+	ksInfoTry:'ksinfo/try',											//款式信息管理列表-试
+	ksInfoReplenish:'ksinfo/replenish',								//款式信息管理列表-补
+	ksInfoStop:'ksinfo/stop',										//款式信息管理列表-停
+	ksInfoClear:'ksinfo/clear',										//款式信息管理列表-清
+	ksinfoModify:'ksinfo/modify',									//款式信息管理列表-修正数量
+	ksinfoSet:'ksinfo/set',											//款式信息管理列表-设置内部核价
+	ksinfoDetail:'ksinfo/detail',									//款式信息管理列表-下钻
 
 }					
 export default{
@@ -536,6 +544,38 @@ export default{
 	zngList(params){
 		return http.get(path.zngList, params)
 	},
+	//款式信息管理列表
+	ksInfoList(params){
+		return http.get(path.ksInfoList, params)
+	},
+	//款式信息管理列表-试
+	ksInfoTry(params){
+		return http.post(path.ksInfoTry, params)
+	},					
+	//款式信息管理列表-补						
+	ksInfoReplenish(params){
+		return http.post(path.ksInfoReplenish, params)
+	},							
+	//款式信息管理列表-停	
+	ksInfoStop(params){
+		return http.post(path.ksInfoStop, params)
+	},							
+	//款式信息管理列表-清			
+	ksInfoClear(params){
+		return http.post(path.ksInfoClear, params)
+	},		
+	//修正数量	
+	ksinfoModify(params){
+		return http.post(path.ksinfoModify, params)
+	},		
+	//设置内部核价	
+	ksinfoSet(params){
+		return http.post(path.ksinfoSet, params)
+	},	
+	//下钻
+	ksinfoDetail(params){
+		return http.get(path.ksinfoDetail, params)
+	},							
 }
 
 
