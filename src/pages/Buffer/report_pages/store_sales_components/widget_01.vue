@@ -68,7 +68,7 @@
 <style lang="less" scoped>
 .tp{
 	width: 80px;
-	height: 50px;
+	height: 80px;
 }
 </style>
 <script>

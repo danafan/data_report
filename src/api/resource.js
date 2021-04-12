@@ -109,6 +109,7 @@ let path = {
 	ksinfoModify:'ksinfo/modify',									//款式信息管理列表-修正数量
 	ksinfoSet:'ksinfo/set',											//款式信息管理列表-设置内部核价
 	ksinfoDetail:'ksinfo/detail',									//款式信息管理列表-下钻
+	boardShop:'board/shop',											//店铺看板
 
 }					
 export default{
@@ -575,7 +576,11 @@ export default{
 	//下钻
 	ksinfoDetail(params){
 		return http.get(path.ksinfoDetail, params)
-	},							
+	},	
+	//店铺看板
+	boardShop(params){
+		return http.get(path.boardShop, params)
+	},						
 }
 
 
