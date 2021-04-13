@@ -110,6 +110,9 @@ let path = {
 	ksinfoSet:'ksinfo/set',											//款式信息管理列表-设置内部核价
 	ksinfoDetail:'ksinfo/detail',									//款式信息管理列表-下钻
 	boardShop:'board/shop',											//店铺看板
+	targetFinish:'board/targetFinish',								//目标完成情况
+	boardFlow:'board/flow',											//流量看板（表格）
+	ajaxllly:'Common/ajaxllly',										//流量来源列表
 
 }					
 export default{
@@ -580,7 +583,19 @@ export default{
 	//店铺看板
 	boardShop(params){
 		return http.get(path.boardShop, params)
-	},						
+	},		
+	//目标完成情况
+	targetFinish(params){
+		return http.get(path.targetFinish, params)
+	},	
+	//流量看板（表格）
+	boardFlow(params){
+		return http.get(path.boardFlow, params)
+	},		
+	//流量来源列表	
+	ajaxllly(params){
+		return http.get(path.ajaxllly, params)
+	},			
 }
 
 

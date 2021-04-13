@@ -13,6 +13,16 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="统计日期：">
+				<el-date-picker
+				v-model="date_time"
+				type="date"
+				value-format="yyyy-MM-dd"
+				placeholder="选择日期"
+				:append-to-body="false"
+				>
+			</el-date-picker>
+		</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
@@ -24,13 +34,13 @@
 				<CompleteStatus v-if="item.web_url == 'complete_status'"/>
 			</el-tab-pane> -->
 			<el-tab-pane label="店铺看板" lazy name="store_view" class="tab_pane_box">
-				<StoreView :shop_id="shop_id"/>
+				<StoreView :shop_id="shop_id" :tjrq="tjrq"/>
 			</el-tab-pane>
 			<el-tab-pane label="流量看板" lazy name="traffic_view" class="tab_pane_box">
-				<TrafficView/>
+				<TrafficView :shop_id="shop_id" :tjrq="tjrq"/>
 			</el-tab-pane>
 			<el-tab-pane label="目标达成情况" lazy name="complete_status" class="tab_pane_box">
-				<CompleteStatus/>
+				<CompleteStatus :shop_id="shop_id" :tjrq="tjrq"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -55,6 +65,8 @@
 				dept_list: [],								//部门列表	
 				select_department_ids:[],					//选中的部门id列表
 				shop_id:"",
+				tjrq:"",									//日期
+				date_time:"",								//传递的日期
 			}
 		},
 		created(){
@@ -102,6 +114,7 @@
 			//点击搜索
 			getList(){
 				this.shop_id = this.select_shop_list.join(',');
+				this.tjrq = this.date_time;
 			}
 		},
 		components:{
