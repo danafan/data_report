@@ -58,7 +58,7 @@
 		<div class="cate_row">
 			<div class="cate_item">
 				<div class="item_label">访客数</div>
-				<div class="sub_label">{{view_obj.cgtkje}}</div>
+				<div class="sub_label">{{view_obj.fks}}</div>
 				<div class="small_text">环比：<span :class="{'red_color': view_obj.fks_hb > 0,'green_color': view_obj.fks_hb < 0}">{{view_obj.fks_hb}}%</span></div>
 				<div class="small_text">同比(周)：<span :class="{'red_color': view_obj.fks_tb > 0,'green_color': view_obj.fks_tb < 0}">{{view_obj.fks_tb}}%</span></div>
 				<div class="column_line"></div>
@@ -466,7 +466,7 @@
 }
 </style>
 <script>
-	import resource from '../../../api/resource.js'
+	import resource from '../../../../api/resource.js'
 	export default{
 		data(){
 			return{
@@ -474,6 +474,10 @@
 			}
 		},
 		props:{
+			dept_id:{
+				type:String,
+				default:""
+			},
 			shop_id:{
 				type:String,
 				default:""
@@ -484,6 +488,11 @@
 			}
 		},
 		watch:{
+			dept_id:function(n,o){
+				console.log(n)
+				//获取列表
+				this.getList();
+			},
 			shop_id:function(n,o){
 				//获取列表
 				this.getList();
@@ -501,13 +510,13 @@
 			//获取列表
 			getList(){
 				let req = {
-					tjrq:this.tjrq,
-					shop_id:this.shop_id
+					dept_id:this.dept_id,
+					shop_id:this.shop_id,
+					tjrq:this.tjrq
 				}
 				resource.boardShop(req).then(res => {
 					if(res.data.code == 1){
 						this.view_obj = res.data.data;
-						this.view_obj.uvjz_hb = -32;
 					}else{
 						this.$message.warning(res.data.msg)
 					}

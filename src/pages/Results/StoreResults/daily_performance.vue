@@ -254,6 +254,8 @@
 			this.AjaxViewDept();
 			//店铺列表
 			this.GetStoreList();
+		},
+		mounted(){
 			//获取信息
 			this.GetData();
 		},

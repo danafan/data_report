@@ -113,6 +113,19 @@ let path = {
 	targetFinish:'board/targetFinish',								//目标完成情况
 	boardFlow:'board/flow',											//流量看板（表格）
 	ajaxllly:'Common/ajaxllly',										//流量来源列表
+	getDaymx:'board/daymx',											//访客流量来源（日）
+	getDayly:'board/dayly',											//访客流量明细（日）
+	getWeekly:'board/weekly',										//访客流量来源（周）
+	getWeekmx:'board/weekmx',										//访客流量明细（周）
+	ajaxReportsJxrrq:'Common/ajaxreportsjxrrq',						//获取分析报告的写入日期
+	trialSetXjrq:'trial/setxjrq',									//设置下架日期（试销）
+	setXjrq:'replenish/setxjrq',									//设置下架日期（补货）
+	stopSetXjrq:'stop/setxjrq',										//设置下架日期（停止进货）
+	clearSetXjrq:'clear/setxjrq',									//设置下架日期（清货）
+	hpxzSetXjrq:'hpxz/setxjrq',										//设置下架日期（货品性质权限）
+	ksInfoSetXjrq:'ksinfo/setxjrq',									//设置下架日期（款式信息）
+	modifySkuNum:'replenish/modifyskunum',							//补货下钻修正sku数量
+	ksinfoModifySkunum:'ksinfo/modifyskunum',						//款式信息修正sku数量
 
 }					
 export default{
@@ -595,7 +608,59 @@ export default{
 	//流量来源列表	
 	ajaxllly(params){
 		return http.get(path.ajaxllly, params)
-	},			
+	},
+	//访客流量来源（日）	
+	getDaymx(params){
+		return http.get(path.getDaymx, params)
+	},
+	//访客流量明细（日）		
+	getDayly(params){
+		return http.get(path.getDayly, params)
+	},
+	//访客流量来源（周）
+	getWeekly(params){
+		return http.get(path.getWeekly, params)
+	},
+	//访客流量明细（周）
+	getWeekmx(params){
+		return http.get(path.getWeekmx, params)
+	},
+	//获取分析报告写入日期
+	ajaxReportsJxrrq(params){
+		return http.get(path.ajaxReportsJxrrq, params)
+	},
+	//设置下架日期（试销）
+	trialSetXjrq(params){
+		return http.post(path.trialSetXjrq, params)
+	},
+	//设置下架日期（补货）
+	setXjrq(params){
+		return http.post(path.setXjrq, params)
+	},
+	//设置下架日期（停止进货）
+	stopSetXjrq(params){
+		return http.post(path.stopSetXjrq, params)
+	},
+	//设置下架日期（清货）
+	clearSetXjrq(params){
+		return http.post(path.clearSetXjrq, params)
+	},
+	//设置下架日期（货品性质权限）
+	hpxzSetXjrq(params){
+		return http.post(path.hpxzSetXjrq, params)
+	},
+	//设置下架日期（款式信息）
+	ksInfoSetXjrq(params){
+		return http.post(path.ksInfoSetXjrq, params)
+	},
+	//补货下钻修正数量
+	modifySkuNum(params){
+		return http.post(path.modifySkuNum, params)
+	},
+	//款式信息下钻修正数量
+	ksinfoModifySkunum(params){
+		return http.post(path.ksinfoModifySkunum, params)
+	},
 }
 
 

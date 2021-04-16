@@ -10,15 +10,18 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="付款日期">
+			<el-form-item label="写入日期">
 				<el-date-picker
-				v-model="start_time"
+				v-model="time_data.sjxrrq"
 				type="date"
 				value-format="yyyy-MM-dd"
 				placeholder="选择日期"
 				:append-to-body="false"
 				>
 			</el-date-picker>
+		</el-form-item>
+		<el-form-item label="数据日期">
+			<div>{{time_data.start_date}} -- {{time_data.end_date}}</div>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="searchFun">搜索</el-button>
@@ -41,7 +44,6 @@
 }
 </style>
 <script>
-	import {getCurrentDate} from '../../../api/nowMonth.js';
 	import resource from '../../../api/resource.js'
 	import Widget01 from './store_sales_components/widget_01.vue'
 	import Widget02 from './store_sales_components/widget_02.vue'
@@ -50,10 +52,14 @@
 	export default{
 		data(){
 			return{
-				start_time:getCurrentDate(),				//付款日期
+				time_data:{},
 				store_list:[],
 				select_store_ids:[],
 			}
+		},
+		created(){
+			//获取分析报告的写入日期
+			this.ajaxReportsJxrrq();
 		},
 		mounted(){
 			this.searchFun();
@@ -65,11 +71,21 @@
 			searchFun(){
 				let req = {
 					shop_id:this.select_store_ids.join(','),
-					start_time:this.start_time,
+					start_time:this.time_data.sjxrrq,
 				}
 				this.$refs.widget02.reLoadData(req);
 				this.$refs.widget03.reLoadData(req);
 				this.$refs.widget04.reLoadData(req);
+			},
+			//获取分析报告的写入日期
+			ajaxReportsJxrrq(){
+				resource.ajaxReportsJxrrq().then(res => {
+					if(res.data.code == 1){
+						this.time_data = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//店铺列表
 			getStoreList(){

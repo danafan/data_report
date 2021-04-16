@@ -60,6 +60,12 @@
 		</el-option>
 	</el-select>
 </el-form-item>
+<el-form-item label="销售性质：">
+	<el-select v-model="xsxz" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option v-for="item in xsxz_list" :key="item.id" :label="item.name" :value="item.id">
+		</el-option>
+	</el-select>
+</el-form-item>
 <el-form-item label="波段：">
 	<el-select v-model="select_bd_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 		<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
@@ -143,14 +149,24 @@
 	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
 </div>
-<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
-	<el-table-column type="selection" width="55" fixed></el-table-column>
-	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd'?160:120" align="center" v-for="item in dataObj.title_list">
+<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="(item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq')?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'jybhsl'?'custom':false" align="center" v-for="item in dataObj.title_list">
 		<template slot-scope="scope">
 			<!-- 内部核价 -->
 			<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
 			<!-- 下钻 -->
 			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-else-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
+			<!--  实际下架日期 -->
+			<el-date-picker
+			@change="changeTime($event,scope.row.ksbm)"
+			v-else-if="item.row_field_name == 'sjxjrq'"
+			v-model="scope.row.sjxjrq"
+			type="date"
+			clearable
+			value-format="yyyy-MM-dd"
+			placeholder="选择日期"
+			size="small"
+			></el-date-picker>
 			<div v-else>{{scope.row[item.row_field_name]}}</div>
 		</template>
 	</el-table-column>
@@ -159,7 +175,7 @@
 			<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
 			<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)">停</el-button>
 			<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)">清</el-button>
-			<el-button type="text" size="small" @click="updateNum(scope.row.ksbm)">修正数量</el-button>
+			<el-button type="text" size="small" @click="updateNum(scope.row.ksbm,scope.row.replenish_num,scope.row.sjxrrq)">修正数量</el-button>
 		</template>
 	</el-table-column>
 </el-table>
@@ -207,14 +223,40 @@
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
 	<el-table :data="detailData.data" size="small">
-		<el-table-column width="120" align="center" property="spbm" label="商品编码"></el-table-column>
+		<el-table-column width="160" align="center" property="spbm" label="商品编码"></el-table-column>
+		<el-table-column width="120" align="center" property="ys" label="颜色"></el-table-column>
+		<el-table-column width="120" align="center" property="cm" label="尺码"></el-table-column>
+		<el-table-column width="120" align="center" property="stxl" label="三天销量"></el-table-column>
+		<el-table-column width="120" align="center" property="sgstxl" label="上个三天销量"></el-table-column>
+		<el-table-column width="120" align="center" property="strjhb" label="三天日均环比"></el-table-column>
+		<el-table-column width="120" align="center" property="xjqxbh" label="下架前需补货"></el-table-column>
 		<el-table-column align="center" property="jsfhdqtxl" label="七天销量"></el-table-column>
 		<el-table-column align="center" property="kys" label="可用库存"></el-table-column>
 		<el-table-column align="center" property="zts" label="在途数"></el-table-column>
 		<el-table-column align="center" property="bhts" label="备货天数"></el-table-column>
 		<el-table-column align="center" property="qzxs" label="权重系数"></el-table-column>
 		<el-table-column align="center" property="jybhsl" label="补货数量"></el-table-column>
+		<el-table-column align="center" label="操作">
+			<template slot-scope="scope">
+				<el-button type="text" size="small" v-if="scope.$index > 0" @click="updateSku(scope.row.spbm,scope.row.replenish_num)">修改数量</el-button>
+			</template>
+		</el-table-column>
 	</el-table>
+	<el-dialog width="30%" title="修改SKU数量" @close="closeDialog" :visible.sync="innerVisible" append-to-body>
+		<el-form size="small" label-width="100px">
+			<el-form-item label="修正数量：" label-width="100px" required>
+				<el-input v-model="num" type="number" style='width: 300px' placeholder="请输入数量"></el-input>
+			</el-form-item>
+			<el-form-item label="修正原因：" label-width="100px">
+				<el-input v-model="remark" type="textarea"
+				:rows="3" style='width: 300px;' placeholder="请输入修正原因"></el-input>
+			</el-form-item>
+		</el-form>
+		<span slot="footer" class="dialog-footer">
+			<el-button size="small" @click="innerVisible = false">取消</el-button>
+			<el-button size="small" type="primary" @click="submitSku">确 定</el-button>
+		</span>
+	</el-dialog>
 	<div class="page">
 		<el-pagination
 		@size-change="detailSizeChange"
@@ -289,6 +331,20 @@
 					id:'2',
 					name:"已修正"
 				}],											//确认状态列表
+				xsxz_list:[{
+					id:'5',
+					name:"爆"
+				},{
+					id:'4',
+					name:"畅"
+				},{
+					id:'3',
+					name:"平"
+				},{
+					id:'2',
+					name:"滞"
+				}],											//销售性质列表
+				xsxz:"",
 				status:"",
 				sfkt_list:[{
 					id:'0',
@@ -337,7 +393,6 @@
 				operator1:"",
 				operator2:"",
 				dataObj:{},									//列表数据
-				select_ids:[],								//批量操作选中的id列表
 				show_custom:false,							//自定义列表是否显示
 				row_ids:[],									//选择的自定义列表id
 				updeteDialog:false,							//修正数量不显示
@@ -346,13 +401,17 @@
 				remark:"",
 				detailData:[],								//下钻信息
 				sjxrrq:"",
+				spbm:"",
 				ksbm:"",
 				detailDialog:false,			
 				detail_page:1,
 				detail_page_size:10,
 				show_sup:false,								//供应商报价
 				show_match:false,							//档口配齐时间
-				show_zng:false
+				show_zng:false,
+				innerVisible:false,							//修改sku数量
+				sort:"",
+				sort_type:""
 			}
 		},
 		created(){
@@ -389,6 +448,27 @@
 			}
 		},
 		methods:{
+			sortChange(column){
+				this.sort = column.prop;
+				this.sort_type = column.order == 'ascending'?'0':'1';
+				this.getList();
+			},
+			//修改实际下架日期
+			changeTime(e,ksbm){
+				let req = {
+					ks:ksbm,
+					xjrq:!e?'':e
+				}
+				resource.setXjrq(req).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						//获取列表
+						this.getList();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//导出
 			exportFile(){
 				var arr = [];
@@ -410,7 +490,10 @@
 					sj_end_time:this.end_time,
 					xr_start_time:this.xr_start_time,
 					operator_value1:this.operator1,
-					operator_value2:this.operator2
+					operator_value2:this.operator2,
+					xsxz:this.xsxz,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				for(var item in req){
 					let str = item + '=' + req[item];
@@ -438,7 +521,10 @@
 					sj_end_time:this.end_time,
 					xr_start_time:this.xr_start_time,
 					operator_value1:this.operator1,
-					operator_value2:this.operator2
+					operator_value2:this.operator2,
+					xsxz:this.xsxz,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				if(type == '2'){
 					req.row_ids = this.row_ids.join(',');
@@ -522,18 +608,35 @@
 					})
 				}
 			},
-			//切换选中
-			handleSelectionChange(val) {
-				this.select_ids = [];
-				val.map(item => {
-					this.select_ids.push(item.ksbm)
-				})
-			},
 			//设置
 			setKs(type,title,ksbm){
-				if(!ksbm && this.select_ids.length == 0){
-					this.$message.warning('至少选择一个款式');
-					return;
+				var req = {};
+				if(!ksbm){
+					let ee = {
+						shop_id:this.select_shop_list.join(','),
+						gys:this.select_gys.join(','),
+						gyshh:this.select_gyshh_list.join(','),
+						pl:this.select_pl_list.join(','),
+						ks:this.select_ks_list.join(','),
+						yjs:this.yjs,
+						jyhpxz:this.jyhpxz,
+						bd:this.select_bd_list.join(','),
+						status:this.status,
+						sfkt:this.sfkt,
+						sfng:this.sfng,
+						sj_start_time:this.start_time,
+						sj_end_time:this.end_time,
+						xr_start_time:this.xr_start_time,
+						operator_value1:this.operator1,
+						operator_value2:this.operator2,
+						xsxz:this.xsxz,
+						flag:'1',
+						from:'1'
+					}
+					req = ee;
+				}else{
+					req.ks = ksbm;
+					req.flag = '2';
 				}
 				//1:试；3:停；4:清
 				this.$confirm(`货品性质确定转为${title}么？想好哦！`, '提示', {
@@ -541,12 +644,8 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					if(ksbm){
-						this.select_ids.push(ksbm);
-					}
-					let ks = this.select_ids.join(',');
 					if(type == '1'){
-						resource.replenishTry({ks:ks}).then(res => {
+						resource.replenishTry(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -557,7 +656,7 @@
 							}
 						})
 					}else if(type == '3'){
-						resource.replenishStop({ks:ks}).then(res => {
+						resource.replenishStop(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -568,7 +667,7 @@
 							}
 						})
 					}else if(type == '4'){
-						resource.replenishClear({ks:ks}).then(res => {
+						resource.replenishClear(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -609,13 +708,45 @@
 					this.row_ids.push(item.row_id)
 				})
 			},
+			//修正sku数量
+			updateSku(spbm,replenish_num){
+				this.num = replenish_num;
+				this.spbm = spbm;
+				this.innerVisible = true;
+			},
+			//修正sku数量
+			submitSku(){
+				if(this.num == ""){
+					this.$message.warning('请输入修正数量');
+				}else{
+					let req = {
+						spbm:this.spbm,
+						sjxrrq:this.sjxrrq,
+						num:this.num,
+						remark:this.remark
+					}
+					resource.modifySkuNum(req).then(res => {
+						if(res.data.code == 1){
+							this.innerVisible = false;
+							this.$message.success(res.data.msg);
+							//获取列表
+							this.getDetailList();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
 			//修正数量
-			updateNum(ks){
+			updateNum(ks,replenish_num,sjxrrq){
+				this.sjxrrq = sjxrrq;
 				this.ks = ks;
+				this.num = replenish_num;
 				this.updeteDialog = true;
 			},
 			//关闭修正数量
 			closeDialog(){
+				this.innerVisible = false;
 				this.updeteDialog = false;
 				this.num = "";
 				this.remark = "";
@@ -628,6 +759,7 @@
 					let req = {
 						ks:this.ks,
 						num:this.num,
+						sjxrrq:this.sjxrrq,
 						remark:this.remark
 					}
 					resource.modify(req).then(res => {

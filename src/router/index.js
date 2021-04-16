@@ -3,10 +3,9 @@ import Router from 'vue-router'
 
 const home = resolve=>require(['@/pages/home'],resolve)
 //业务参考
-const store_data = resolve=>require(['@/pages/Business/store_data'],resolve)
+const store_data = resolve=>require(['@/pages/Results/StoreResults/store_data'],resolve)
 //业绩指标
 const store_results = resolve=>require(['@/pages/Results/store_results'],resolve)
-const run_weekly = resolve=>require(['@/pages/Results/run_weekly'],resolve)
 //缓冲机制
 const test_market = resolve=>require(['@/pages/Buffer/test_market'],resolve)
 const supplement = resolve=>require(['@/pages/Buffer/supplement'],resolve)
@@ -29,7 +28,6 @@ const router = new Router({
     children:[
     { path: '/store_data',name:"店铺日数据", component: store_data},
     { path: '/store_results',name:"店铺业绩", component: store_results},
-    { path: '/run_weekly',name:"运营周报", component: run_weekly},
     { path: '/test_market',name:"试销管理", component: test_market},
     { path: '/supplement',name:"补货管理", component: supplement},
     { path: '/stop_replenish',name:"停止进货", component: stop_replenish},

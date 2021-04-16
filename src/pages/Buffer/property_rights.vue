@@ -7,56 +7,69 @@
 				reserve-keyword
 				placeholder="请输入款式"
 				:remote-method="ajaxKsbm"
-				 collapse-tags>
-					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="建议货品性质：">
-				<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
-					<el-option v-for="item in hpxz_list" :key="item.id" :label="item.name" :value="item.name">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="实际货品性质：">
-				<el-select v-model="sjhpxz" clearable :popper-append-to-body="false" placeholder="全部">
-					<el-option v-for="item in hpxz_list" :key="item.id" :label="item.name" :value="item.id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item>
-				<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
-			</el-form-item>
-		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column align="center" property="ksbm" label="款式"></el-table-column>
-			<el-table-column align="center" property="gyshh" label="供应商货号"></el-table-column>
-			<el-table-column align="center" property="mc" label="品类"></el-table-column>
-			<el-table-column align="center" property="gys" label="供应商"></el-table-column>
-			<el-table-column align="center" property="sjhpxz" label="实际货品性质"></el-table-column>
-			<el-table-column align="center" property="jyhpxz" label="建议货品性质"></el-table-column>
-			<el-table-column align="center" property="sjxrrq" label="建议日期"></el-table-column>
-			<el-table-column label="操作" align="center" width="180" fixed="right">
-				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
-					<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)">补</el-button>
-					<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)">停</el-button>
-					<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)">清</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination
-			@size-change="handleSizeChange"
-			@current-change="handleCurrentChange"
-			:current-page="page"
-			:pager-count="11"
-			:page-sizes="[5, 10, 15, 20]"
-			layout="total, sizes, prev, pager, next, jumper"
-			:total="dataObj.total"
-			>
-		</el-pagination>
-	</div>
+				collapse-tags>
+				<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="建议货品性质：">
+			<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
+				<el-option v-for="item in hpxz_list" :key="item.id" :label="item.name" :value="item.name">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="实际货品性质：">
+			<el-select v-model="sjhpxz" clearable :popper-append-to-body="false" placeholder="全部">
+				<el-option v-for="item in hpxz_list" :key="item.id" :label="item.name" :value="item.id">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item>
+			<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
+		</el-form-item>
+	</el-form>
+	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table-column align="center" property="ksbm" label="款式"></el-table-column>
+		<el-table-column align="center" property="gyshh" label="供应商货号"></el-table-column>
+		<el-table-column align="center" property="mc" label="品类"></el-table-column>
+		<el-table-column align="center" property="gys" label="供应商"></el-table-column>
+		<el-table-column align="center" :width="260" label="实际下架日期">
+			<template slot-scope="scope">
+				<el-date-picker
+				@change="changeTime($event,scope.row.ksbm)"
+				v-model="scope.row.sjxjrq"
+				type="date"
+				clearable
+				value-format="yyyy-MM-dd"
+				placeholder="选择日期"
+				size="small"
+				></el-date-picker>
+			</template>
+		</el-table-column>
+		<el-table-column align="center" property="sjhpxz" label="实际货品性质"></el-table-column>
+		<el-table-column align="center" property="jyhpxz" label="建议货品性质"></el-table-column>
+		<el-table-column align="center" property="sjxrrq" label="建议日期"></el-table-column>
+		<el-table-column label="操作" align="center" width="180" fixed="right">
+			<template slot-scope="scope">
+				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
+				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)">补</el-button>
+				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)">停</el-button>
+				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)">清</el-button>
+			</template>
+		</el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination
+		@size-change="handleSizeChange"
+		@current-change="handleCurrentChange"
+		:current-page="page"
+		:pager-count="11"
+		:page-sizes="[5, 10, 15, 20]"
+		layout="total, sizes, prev, pager, next, jumper"
+		:total="dataObj.total"
+		>
+	</el-pagination>
+</div>
 </div>
 </template>
 <style lang="less" scoped>
@@ -94,6 +107,22 @@
 			this.getList('1');
 		},
 		methods:{
+			//修改实际下架日期
+			changeTime(e,ksbm){
+				let req = {
+					ks:ksbm,
+					xjrq:!e?'':e
+				}
+				resource.hpxzSetXjrq(req).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						//获取列表
+						this.getList();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置
 				let req = {

@@ -444,6 +444,7 @@
 							day_ytje_obj.sjje.push(item.sjje);		//实际金额
 							day_ytje_obj.ytje.push(item.ytje);		//鱼塘金额
 						});
+
 						var money_date = document.getElementById('money_date');
 						this.money_dateChart = echarts.init(money_date);
 						this.money_dateChart.setOption({
@@ -795,108 +796,111 @@
 							shop_target_obj.ytwcl.push(item.ytwcl);		//鱼塘完成率
 						})
 						var over_state = document.getElementById('over_state');
-						this.over_stateChart = echarts.init(over_state);
-						this.over_stateChart.setOption({
-							title: {
-								text: '鱼塘目标完成情况'
-							},
-							tooltip: {
-								trigger: 'axis',
-								formatter: function (params) {
-									let tip = "";
-									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "万</br>"
-											+ params[1].seriesName + "：" + params[1].value + "万</br>"
-											+ params[2].seriesName + "：" + params[2].value + "%</br>" 
-											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2) + "万";
-										}
-									}
-									return tip;
-								},
-								backgroundColor:"rgba(0,0,0,.8)",
-								textStyle:{
-									color:"#ffffff"
-								},
-								borderColor:"rgba(0,0,0,0.7)",
-								axisPointer: {            
-									type: 'shadow'        
-								}
-							},
-							color:['#5AD8A6','#F6BD16', '#5B8FF9'],
-							legend: {
-								data: ['鱼塘目标值', '鱼塘单量', '鱼塘完成率']
-							},
-							grid:{
-								y2:300
-							},
-							xAxis: [{
-								type: 'category',
-								data: shop_target_obj.dpid,
-								axisLabel: {
-									color: '#333',
-									interval: 2,
-									rotate:70
-								}
-							}],
-							yAxis:[{
-								type: 'value',
-								axisLabel: {
-									formatter: '{value} 万'
-								}
-							},{
-								type: 'value',
-								min: 0,
-								axisLabel: {
-									formatter: '{value} %'
-								}
-							}],
-							series: [{
-								name: '鱼塘目标值',
-								type: 'bar',
-								stack: '2',
-								emphasis: {
-									focus: 'series'
-								},
-								data: shop_target_obj.target
-							},{
-								name: '鱼塘单量',
-								type: 'bar',
-								stack: '1',
-								barGap: '-120%',
-								barMaxWidth:"60%",
-								emphasis: {
-									focus: 'series'
-								},
-								data: shop_target_obj.ytdl
-							},{
-								name: '鱼塘完成率',
-								type: 'line',
-								yAxisIndex:1,
-								lineStyle: { 
-									 width:3.6
-								},
-								emphasis: {
-									focus: 'series'
-								},
-								data: shop_target_obj.ytwcl
-							}]
-						});
-						var _this = this;
-						window.addEventListener('resize',() => {
-							_this.single_dateChart.resize();
-							_this.single_totalChart.resize();
-							_this.money_dateChart.resize();
-							_this.money_totalChart.resize();
-							_this.accountedChart.resize();
-							_this.amountChart.resize();
-							_this.over_stateChart.resize();
-						})
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+						if (this.over_stateChart != null && this.over_stateChart != "" && this.over_stateChart != undefined) {
+        						this.over_stateChart.dispose();//销毁
+        					};
+        					this.over_stateChart = echarts.init(over_state);
+        					this.over_stateChart.setOption({
+        						title: {
+        							text: '鱼塘目标完成情况'
+        						},
+        						tooltip: {
+        							trigger: 'axis',
+        							formatter: function (params) {
+        								let tip = "";
+        								if(params != null && params.length > 0) {
+        									for(let i =0; i < params.length; i++) {
+        										tip = params[0].axisValueLabel + "</br>"
+        										+ params[0].seriesName + "：" + params[0].value + "万</br>"
+        										+ params[1].seriesName + "：" + params[1].value + "万</br>"
+        										+ params[2].seriesName + "：" + params[2].value + "%</br>" 
+        										+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2) + "万";
+        									}
+        								}
+        								return tip;
+        							},
+        							backgroundColor:"rgba(0,0,0,.8)",
+        							textStyle:{
+        								color:"#ffffff"
+        							},
+        							borderColor:"rgba(0,0,0,0.7)",
+        							axisPointer: {            
+        								type: 'shadow'        
+        							}
+        						},
+        						color:['#5AD8A6','#F6BD16', '#5B8FF9'],
+        						legend: {
+        							data: ['鱼塘目标值', '鱼塘单量', '鱼塘完成率']
+        						},
+        						grid:{
+        							y2:300
+        						},
+        						xAxis: [{
+        							type: 'category',
+        							data: shop_target_obj.dpid,
+        							axisLabel: {
+        								color: '#333',
+        								interval: 2,
+        								rotate:70
+        							}
+        						}],
+        						yAxis:[{
+        							type: 'value',
+        							axisLabel: {
+        								formatter: '{value} 万'
+        							}
+        						},{
+        							type: 'value',
+        							min: 0,
+        							axisLabel: {
+        								formatter: '{value} %'
+        							}
+        						}],
+        						series: [{
+        							name: '鱼塘目标值',
+        							type: 'bar',
+        							stack: '2',
+        							emphasis: {
+        								focus: 'series'
+        							},
+        							data: shop_target_obj.target
+        						},{
+        							name: '鱼塘单量',
+        							type: 'bar',
+        							stack: '1',
+        							barGap: '-120%',
+        							barMaxWidth:"60%",
+        							emphasis: {
+        								focus: 'series'
+        							},
+        							data: shop_target_obj.ytdl
+        						},{
+        							name: '鱼塘完成率',
+        							type: 'line',
+        							yAxisIndex:1,
+        							lineStyle: { 
+        								 width:3.6
+        							},
+        							emphasis: {
+        								focus: 'series'
+        							},
+        							data: shop_target_obj.ytwcl
+        						}]
+        					});
+        					var _this = this;
+        					window.addEventListener('resize',() => {
+        						_this.single_dateChart.resize();
+        						_this.single_totalChart.resize();
+        						_this.money_dateChart.resize();
+        						_this.money_totalChart.resize();
+        						_this.accountedChart.resize();
+        						_this.amountChart.resize();
+        						_this.over_stateChart.resize();
+        					})
+        				}else{
+        					this.$message.warning(res.data.msg);
+        				}
+        			})
 },
 			//清空查询条件
 			ClearReq(){

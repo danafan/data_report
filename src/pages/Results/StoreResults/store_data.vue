@@ -23,27 +23,18 @@
 				>
 			</el-date-picker>
 		</el-form-item>
-			<el-form-item>
-				<el-button type="primary" size="small" @click="getList">搜索</el-button>
-			</el-form-item>
-		</el-form>
-		<el-tabs v-model="activeTab">
-			<!-- <el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<StoreView v-if="item.web_url == 'store_view'"/>
-				<TrafficView v-if="item.web_url == 'traffic_view'"/>
-				<CompleteStatus v-if="item.web_url == 'complete_status'"/>
-			</el-tab-pane> -->
-			<el-tab-pane label="店铺看板" lazy name="store_view" class="tab_pane_box">
-				<StoreView :shop_id="shop_id" :tjrq="tjrq"/>
-			</el-tab-pane>
-			<el-tab-pane label="流量看板" lazy name="traffic_view" class="tab_pane_box">
-				<TrafficView :shop_id="shop_id" :tjrq="tjrq"/>
-			</el-tab-pane>
-			<el-tab-pane label="目标达成情况" lazy name="complete_status" class="tab_pane_box">
-				<CompleteStatus :shop_id="shop_id" :tjrq="tjrq"/>
-			</el-tab-pane>
-		</el-tabs>
-	</div>
+		<el-form-item>
+			<el-button type="primary" size="small" @click="getList">搜索</el-button>
+		</el-form-item>
+	</el-form>
+	<el-tabs v-model="activeTab" type="border-card" @tab-click="checkTab">
+		<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+			<StoreView :dept_id="dept_id" :shop_id="shop_id" :tjrq="tjrq" v-if="item.web_url == 'store_view'"/>
+			<TrafficView :dept_id="dept_id" :shop_id="shop_id" :tjrq="tjrq" v-if="item.web_url == 'traffic_view'"/>
+			<CompleteStatus :dept_id="dept_id" :shop_id="shop_id" :tjrq="tjrq" v-if="item.web_url == 'complete_status'"/>
+		</el-tab-pane>
+	</el-tabs>
+</div>
 </template>
 <style lang="less" scoped>
 .tab_pane_box{
@@ -51,7 +42,7 @@
 }
 </style>
 <script>
-	import resource from '../../api/resource.js'
+	import resource from '../../../api/resource.js'
 	import StoreView from './store_data/store_view.vue'
 	import TrafficView from './store_data/traffic_view.vue'
 	import CompleteStatus from './store_data/complete_status.vue'
@@ -62,20 +53,42 @@
 				menu_list:[],								//所有菜单列表
 				shop_list:[],								//店铺列表
 				select_shop_list:[],						//选中的店铺列表
-				dept_list: [],								//部门列表	
-				select_department_ids:[],					//选中的部门id列表
 				shop_id:"",
-				tjrq:"",									//日期
+				dept_list: [],								//部门列表
+				dept_id:"",	
+				select_department_ids:[],					//选中的部门id列表
 				date_time:"",								//传递的日期
+				tjrq:"",
+				ss:[]
 			}
 		},
-		created(){
+		created(){	
 			let menu_list = this.$store.state.menu_list;
-			this.forMenuList(menu_list,'store_data');
-			//店铺列表
+			this.forMenuList(menu_list);
+			this.getIndex();
+			//部门/店铺列表
 			this.AjaxViewDept();
+			//店铺列表
+			this.GetStoreList();
+			this.getList();
 		},
 		methods:{
+			forMenuList(arr) {
+				arr.map(item => {
+					if('list' in item){
+						this.ss.push(item);
+						this.forMenuList(item.list)
+					}
+				})
+			},
+			getIndex(){
+				this.ss.map(item => {
+					if (item.web_url == 'store_data') {
+						this.menu_list = item.list;
+						this.activeTab = this.menu_list[0].web_url;
+					}
+				})
+			},
 			//部门列表
 			AjaxViewDept(){
 				resource.ajaxViewDept().then(res => {
@@ -98,23 +111,16 @@
 					}
 				})
 			},
-			forMenuList(arr, web_url) {
-				for (let obj of arr) {
-					if (obj.web_url == web_url) {
-						this.menu_list = obj.list;
-						this.activeTab = this.menu_list[0].web_url;
-						return;
-					}else{
-						if('list' in obj){
-							this.forMenuList(obj.list,'store_data')
-						}
-					}
-				}
-			},
 			//点击搜索
 			getList(){
+				this.dept_id = this.select_department_ids.join(',');
 				this.shop_id = this.select_shop_list.join(',');
-				this.tjrq = this.date_time;
+				this.tjrq = !this.date_time?'':this.date_time;
+			},
+			//切换tab
+			checkTab(e){
+				this.activeTab = e.name;
+				this.getList();
 			}
 		},
 		components:{

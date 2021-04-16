@@ -107,8 +107,8 @@
 						<div class="row_item">销售收入日完成预估率</div>
 					</div>
 					<div class="table_content">
-						<div class="row_item border_bottom border_top">{{view_obj.month.xssryg}}万</div>
-						<div class="row_item border_bottom">{{view_obj.month.rmb_xssr}}万</div>
+						<div class="row_item border_bottom border_top">{{view_obj.month.xssryg}}</div>
+						<div class="row_item border_bottom">{{view_obj.month.rmb_xssr}}</div>
 						<div class="row_item border_bottom green_color">{{view_obj.month.rmb_xssrwcl}}%</div>
 					</div>
 				</div>
@@ -199,10 +199,11 @@
 }
 </style>
 <script>
-	import resource from '../../../api/resource.js'
+	import resource from '../../../../api/resource.js'
 	export default{
 		data(){
 			return{
+				today_xssrygChart:null,
 				view_obj:{
 					today: {},
 					week: {},
@@ -211,6 +212,10 @@
 			}
 		},
 		props:{
+			dept_id:{
+				type:String,
+				default:""
+			},
 			shop_id:{
 				type:String,
 				default:""
@@ -221,6 +226,10 @@
 			}
 		},
 		watch:{
+			dept_id:function(n,o){
+				//获取列表
+				this.getList();
+			},
 			shop_id:function(n,o){
 				//获取列表
 				this.getList();
@@ -230,7 +239,7 @@
 				this.getList();
 			}
 		},
-		mounted(){
+		created(){
 			//获取列表
 			this.getList();
 		},
@@ -238,56 +247,20 @@
 			//获取列表
 			getList(){
 				let req = {
-					tjrq:this.tjrq,
-					shop_id:this.shop_id
+					dept_id:this.dept_id,
+					shop_id:this.shop_id,
+					tjrq:this.tjrq
 				}
 				resource.targetFinish(req).then(res => {
 					if(res.data.code == 1){
 						this.view_obj = res.data.data;
 						var echarts = require("echarts");
-						// let data = {
-						// 	today: {
-						// 		xssryg: 1220131.2,
-						// 		rmb_xssr: 2578927.03,
-						// 		rmb_xssrwcl: 47.311,
-						// 		gxmyyg: -614730.3,
-						// 		rmb_gxmy: 444121.80,
-						// 		rmb_gxmywcl: 38.414,
-						// 		yxfy: 475751.45,
-						// 		rmb_yxfy: 566022.05,
-						// 		yxfyrwcl: 84.051,
-						// 		title: "2021-04-01"
-						// 	},
-						// 	week: {
-						// 		xssryg: 1220131.2,
-						// 		rmb_xssr: "2578927.03",
-						// 		rmb_xssrwcl: 28.34,
-						// 		gxmyyg: -614730.3,
-						// 		rmb_gxmy: "444121.80",
-						// 		rmb_gxmywcl: 98.21,
-						// 		yxfy: "475751.45",
-						// 		rmb_yxfy: "566022.05",
-						// 		yxfyrwcl: 12.32,
-						// 		title: "13"
-						// 	},
-						// 	month: {
-						// 		xssryg: 1220131.2,
-						// 		rmb_xssr: "2578927.03",
-						// 		rmb_xssrwcl: 78.43,
-						// 		gxmyyg: -614730.3,
-						// 		rmb_gxmy: "444121.80",
-						// 		rmb_gxmywcl: 23.45,
-						// 		yxfy: "475751.45",
-						// 		rmb_yxfy: "566022.05",
-						// 		yxfyrwcl: 65.43,
-						// 		title: "04"
-						// 	}
-						// }
-						// this.view_obj = data;
+
 						//日-销售收入预估
 						var today_xssryg = document.getElementById('today_xssryg');
 						this.today_xssrygChart = echarts.init(today_xssryg);
 						this.today_xssrygChart.setOption(this.option(this.view_obj.today.rmb_xssrwcl));
+						var _this = this;
 						//日-贡献毛益预估
 						var today_gxmyyg = document.getElementById('today_gxmyyg');
 						this.today_gxmyygChart = echarts.init(today_gxmyyg);

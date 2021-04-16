@@ -13,90 +13,106 @@
 				reserve-keyword
 				placeholder="请输入供应商"
 				:remote-method="ajaxGys"
-				 collapse-tags>
-					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="供应商货号：">
-				<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable
-				remote
-				reserve-keyword
-				placeholder="请输入供应商货号"
-				:remote-method="ajaxGyshh"
-				 collapse-tags>
-					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="品类：">
-				<el-select v-model="select_pl_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="款式：">
-				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple filterable
-				remote
-				reserve-keyword
-				placeholder="请输入款式"
-				:remote-method="ajaxKsbm" collapse-tags>
-					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="建议货品性质：">
-				<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
-					<el-option v-for="item in jyhpxz_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="波段：">
-				<el-select v-model="select_bd_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="写入日期：">
-			<el-date-picker
-			v-model="xr_start_time"
-			type="date"
-			value-format="yyyy-MM-dd"
-			placeholder="选择日期"
-			:append-to-body="false"
-			>
-		</el-date-picker>
-	</el-form-item>
-		<el-form-item>
-			<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
+				collapse-tags>
+				<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
 		</el-form-item>
-	</el-form>
-	<div class="table_setting">
-		<el-popover
-		placement="right-start"
-		:append-to-body="false"
-		width="150"
-		trigger="click">
-		<div class="setStyle">
-			<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
-			<el-button type="primary" size="small" plain @click="setKs('2','补')">补</el-button>
-		</div>
-		<div class="setStyle">
-			<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
-		</div>
-		<el-button type="primary" size="small" slot="reference">批量设置</el-button>
-	</el-popover>
-	<div class="buts">
-		<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<el-form-item label="供应商货号：">
+			<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable
+			remote
+			reserve-keyword
+			placeholder="请输入供应商货号"
+			:remote-method="ajaxGyshh"
+			collapse-tags>
+			<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
+			</el-option>
+		</el-select>
+	</el-form-item>
+	<el-form-item label="品类：">
+		<el-select v-model="select_pl_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+			<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
+			</el-option>
+		</el-select>
+	</el-form-item>
+	<el-form-item label="款式：">
+		<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple filterable
+		remote
+		reserve-keyword
+		placeholder="请输入款式"
+		:remote-method="ajaxKsbm" collapse-tags>
+		<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="建议货品性质：">
+	<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option v-for="item in jyhpxz_list" :key="item" :label="item" :value="item">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="销售性质：">
+	<el-select v-model="xsxz" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option v-for="item in xsxz_list" :key="item.id" :label="item.name" :value="item.id">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="波段：">
+	<el-select v-model="select_bd_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+		<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="写入日期：">
+	<el-date-picker
+	v-model="xr_start_time"
+	type="date"
+	value-format="yyyy-MM-dd"
+	placeholder="选择日期"
+	:append-to-body="false"
+	>
+</el-date-picker>
+</el-form-item>
+<el-form-item>
+	<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
+</el-form-item>
+</el-form>
+<div class="table_setting">
+	<el-popover
+	placement="right-start"
+	:append-to-body="false"
+	width="150"
+	trigger="click">
+	<div class="setStyle">
+		<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
+		<el-button type="primary" size="small" plain @click="setKs('2','补')">补</el-button>
 	</div>
+	<div class="setStyle">
+		<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
+	</div>
+	<el-button type="primary" size="small" slot="reference">批量设置</el-button>
+</el-popover>
+<div class="buts">
+	<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
+	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
-<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
-	<el-table-column type="selection" width="55" fixed></el-table-column>
-	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd'?160:120" align="center" v-for="item in dataObj.title_list">
+</div>
+<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%":header-cell-style="{'background':'#f4f4f4'}">
+	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" align="center" v-for="item in dataObj.title_list">
 		<template slot-scope="scope">
 			<!-- 下钻 -->
 			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
+			<!--  实际下架日期 -->
+			<el-date-picker
+			@change="changeTime($event,scope.row.ksbm)"
+			v-else-if="item.row_field_name == 'sjxjrq'"
+			v-model="scope.row.sjxjrq"
+			type="date"
+			clearable
+			value-format="yyyy-MM-dd"
+			placeholder="选择日期"
+			size="small"
+			></el-date-picker>
 			<div v-else>{{scope.row[item.row_field_name]}}</div>
 		</template>
 	</el-table-column>
@@ -194,12 +210,25 @@
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表
 				jyhpxz_list:['试','补','清'],					//建议货品性质列表
+				xsxz_list:[{
+					id:'5',
+					name:"爆"
+				},{
+					id:'4',
+					name:"畅"
+				},{
+					id:'3',
+					name:"平"
+				},{
+					id:'2',
+					name:"滞"
+				}],											//销售性质列表
+				xsxz:"",
 				jyhpxz:"",
 				bd_list:[],									//波段列表
 				select_bd_list:[],							//选中的波段列表
 				xr_start_time:"",							//写入日期
 				dataObj:{},									//列表数据
-				select_ids:[],								//批量操作选中的id列表
 				show_custom:false,							//自定义列表是否显示
 				row_ids:[],									//选择的自定义列表id
 				detailData:[],								//下钻信息
@@ -221,6 +250,22 @@
 			this.getList('1');
 		},
 		methods:{
+			//修改实际下架日期
+			changeTime(e,ksbm){
+				let req = {
+					ks:ksbm,
+					xjrq:!e?'':e
+				}
+				resource.stopSetXjrq(req).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						//获取列表
+						this.getList();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//导出
 			exportFile(){
 				var arr = [];
@@ -233,6 +278,7 @@
 					pl:this.select_pl_list.join(','),
 					ks:this.select_ks_list.join(','),
 					jyhpxz:this.jyhpxz,
+					xsxz:this.xsxz,
 					bd:this.select_bd_list.join(','),
 					xr_start_time:this.xr_start_time
 				}
@@ -253,6 +299,7 @@
 					pl:this.select_pl_list.join(','),
 					ks:this.select_ks_list.join(','),
 					jyhpxz:this.jyhpxz,
+					xsxz:this.xsxz,
 					bd:this.select_bd_list.join(','),
 					xr_start_time:this.xr_start_time
 				}
@@ -338,18 +385,27 @@
 					})
 				}
 			},
-			//切换选中
-			handleSelectionChange(val) {
-				this.select_ids = [];
-				val.map(item => {
-					this.select_ids.push(item.ksbm)
-				})
-			},
 			//设置
 			setKs(type,title,ksbm){
-				if(!ksbm && this.select_ids.length == 0){
-					this.$message.warning('至少选择一个款式');
-					return;
+				var req = {};
+				if(!ksbm){
+					let ee = {
+						shop_id:this.select_shop_list.join(','),
+						gys:this.select_gys.join(','),
+						gyshh:this.select_gyshh_list.join(','),
+						pl:this.select_pl_list.join(','),
+						ks:this.select_ks_list.join(','),
+						jyhpxz:this.jyhpxz,
+						xsxz:this.xsxz,
+						bd:this.select_bd_list.join(','),
+						xr_start_time:this.xr_start_time,
+						flag:'1',
+						from:'1'
+					}
+					req = ee;
+				}else{
+					req.ks = ksbm;
+					req.flag = '2';
 				}
 				//1:试；2:补；4:清
 				this.$confirm(`货品性质确定转为${title}么？想好哦！`, '提示', {
@@ -357,12 +413,8 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					if(ksbm){
-						this.select_ids.push(ksbm);
-					}
-					let ks = this.select_ids.join(',');
 					if(type == '1'){
-						resource.stopTry({ks:ks}).then(res => {
+						resource.stopTry(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -373,7 +425,7 @@
 							}
 						})
 					}else if(type == '2'){
-						resource.stopReplenish({ks:ks}).then(res => {
+						resource.stopReplenish(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -384,7 +436,7 @@
 							}
 						})
 					}else if(type == '4'){
-						resource.stopClear({ks:ks}).then(res => {
+						resource.stopClear(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];

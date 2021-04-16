@@ -83,15 +83,6 @@
 					<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
 				</el-menu-item-group>
 			</el-submenu>
-			<el-submenu index="10">
-				<template slot="title">
-					<i class="el-icon-s-platform"></i>
-					<span>店铺日数据</span>
-				</template>
-				<el-menu-item-group>     
-					<el-menu-item index="/store_data">店铺日数据</el-menu-item>
-				</el-menu-item-group>
-			</el-submenu>
 		</el-menu>
 	</div>
 	<el-main class="main">
