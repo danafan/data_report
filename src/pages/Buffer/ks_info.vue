@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="店铺：">
+				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="供应商：">
 				<el-select v-model="select_gys" clearable :popper-append-to-body="false" multiple filterable
 				remote
@@ -53,7 +59,7 @@
 	</el-select>
 </el-form-item>
 <el-form-item label="公司销售性质：">
-	<el-select v-model="xsxz" clearable :popper-append-to-body="false" placeholder="全部">
+	<el-select v-model="xsxz_gs" clearable :popper-append-to-body="false" placeholder="全部">
 		<el-option v-for="item in xsxz_list" :key="item.id" :label="item.name" :value="item.id">
 		</el-option>
 	</el-select>
@@ -140,7 +146,7 @@
 		trigger="click">
 		<div class="setStyle">
 			<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
-			<el-button type="primary" size="small" plain @click="setKs('2','补')">试</el-button>
+			<el-button type="primary" size="small" plain @click="setKs('2','补')">补</el-button>
 		</div>
 		<div class="setStyle">
 			<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
@@ -154,8 +160,8 @@
 	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
 </div>
-<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" align="center" v-for="item in dataObj.title_list">
+<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'jybhsl'?'custom':false" align="center" v-for="item in dataObj.title_list">
 		<template slot-scope="scope">
 			<!-- 内部核价 -->
 			<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
@@ -228,7 +234,7 @@
 </el-dialog>
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-	<el-table :data="detailData.data" size="small">
+	<el-table :data="detailData.data" size="small" @sort-change="sortDetail">
 		<el-table-column width="160" align="center" property="spbm" label="商品编码"></el-table-column>
 		<el-table-column width="120" align="center" property="ys" label="颜色"></el-table-column>
 		<el-table-column width="120" align="center" property="cm" label="尺码"></el-table-column>
@@ -236,12 +242,13 @@
 		<el-table-column width="120" align="center" property="sgstxl" label="上个三天销量"></el-table-column>
 		<el-table-column width="120" align="center" property="strjhb" label="三天日均环比"></el-table-column>
 		<el-table-column width="120" align="center" property="xjqxbh" label="下架前需补货"></el-table-column>
-		<el-table-column align="center" property="jsfhdqtxl" label="七天销量"></el-table-column>
-		<el-table-column align="center" property="kys" label="可用库存"></el-table-column>
+		<el-table-column width="120" align="center" property="jsfhdqtxl" label="七天销量" sortable="custom"></el-table-column>
+		<el-table-column width="120" align="center" property="kys" label="可用库存" sortable="custom"></el-table-column>
 		<el-table-column align="center" property="zts" label="在途数"></el-table-column>
 		<el-table-column align="center" property="bhts" label="备货天数"></el-table-column>
 		<el-table-column align="center" property="qzxs" label="权重系数"></el-table-column>
-		<el-table-column align="center" property="jybhsl" label="补货数量"></el-table-column>
+		<el-table-column width="120" align="center" property="jybhsl" label="建议补货数量"></el-table-column>
+		<el-table-column width="120" align="center" property="replenish_num" label="实际补货数量"></el-table-column>
 		<el-table-column align="center" label="操作">
 			<template slot-scope="scope">
 				<el-button type="text" size="small" v-if="scope.$index > 0" @click="updateSku(scope.row.spbm,scope.row.replenish_num)">修改数量</el-button>
@@ -303,6 +310,8 @@
 			return{
 				pagesize:10,
 				page:1,
+				shop_list:[],								//店铺列表
+				shop_id:[],
 				gys_list:[],								//供应商列表
 				select_gys:[],								//选中的供应商列表
 				gyshh_list:[],								//供应商货号列表
@@ -409,16 +418,20 @@
 					id:'2',
 					name:"滞"
 				}],											//销售性质列表
-				xsxz:"",
+				xsxz_gs:"",
 				sjxrrq:"",
 				ksbm:"",
 				detailDialog:false,			
 				detail_page:1,
 				detail_page_size:10,
 				innerVisible:false,							//修改sku数量
+				sort:"",
+				sort_type:""
 			}
 		},
 		created(){
+			//店铺列表
+			this.ajaxViewStore();
 			//产品分类
 			this.ajaxPl();
 			//波段
@@ -434,6 +447,11 @@
 			}
 		},
 		methods:{
+			sortChange(column){
+				this.sort = column.prop;
+				this.sort_type = column.order == 'ascending'?'0':'1';
+				this.getList();
+			},
 			//修改实际下架日期
 			changeTime(e,ksbm){
 				let req = {
@@ -456,6 +474,7 @@
 				let req = {
 					pagesize:this.pagesize,
 					page:this.page,
+					shop_id:this.shop_id.join(','),
 					gys:this.select_gys.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					pl:this.select_pl_list.join(','),
@@ -470,10 +489,12 @@
 					sfng:this.sfng,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
-					xsxz:this.xsxz,
+					xsxz_gs:this.xsxz_gs,
 					xr_start_time:this.xr_start_time,
 					operator_value1:this.operator1,
-					operator_value2:this.operator2
+					operator_value2:this.operator2,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				for(var item in req){
 					let str = item + '=' + req[item];
@@ -486,6 +507,7 @@
 				let req = {
 					pagesize:this.pagesize,
 					page:type == '1'?1:this.page,
+					shop_id:this.shop_id.join(','),
 					gys:this.select_gys.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					pl:this.select_pl_list.join(','),
@@ -500,10 +522,12 @@
 					sfng:this.sfng,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
-					xsxz:this.xsxz,
+					xsxz_gs:this.xsxz_gs,
 					xr_start_time:this.xr_start_time,
 					operator_value1:this.operator1,
-					operator_value2:this.operator2
+					operator_value2:this.operator2,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				if(type == '2'){
 					req.row_ids = this.row_ids.join(',');
@@ -520,6 +544,16 @@
 						this.$message.warning(res.data.msg);
 					}
 				});
+			},
+			//店铺列表
+			ajaxViewStore(){
+				resource.ajaxViewStore().then(res => {
+					if(res.data.code == 1){
+						this.shop_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//产品分类
 			ajaxPl(){
@@ -582,19 +616,27 @@
 				var req = {};
 				if(!ksbm){
 					let ee = {
-						shop_id:this.select_shop_list.join(','),
+						shop_id:this.shop_id.join(','),
 						gys:this.select_gys.join(','),
 						gyshh:this.select_gyshh_list.join(','),
 						pl:this.select_pl_list.join(','),
 						ks:this.select_ks_list.join(','),
 						jyhpxz:this.jyhpxz,
+						sjhpxz:this.sjhpxz,
 						bd:this.select_bd_list.join(','),
-						yyjc:this.yyjc,
-						cgjc:this.cgjc,
-						xsxz:this.xsxz,
+						status:this.status,
+						yjs:this.yjs,
+						sfzzk:this.sfzzk,
+						sfkt:this.sfkt,
+						sfng:this.sfng,
+						sj_start_time:this.start_time,
+						sj_end_time:this.end_time,
+						xsxz_gs:this.xsxz_gs,
 						xr_start_time:this.xr_start_time,
+						operator_value1:this.operator1,
+						operator_value2:this.operator2,
 						flag:'1',
-						from:'1'
+						from:'5'
 					}
 					req = ee;
 				}else{
@@ -770,17 +812,28 @@
 			getDetail(ksbm,sjxrrq){
 				this.ksbm = ksbm;
 				this.sjxrrq = sjxrrq;
-				//获取下钻内容
-				this.getDetailList();
-			},
-			//获取下钻内容
-			getDetailList(){
-				let req = {
-					day:this.sjxrrq,
-					ks:this.ksbm,
+				let sort_obj = {
 					page:this.detail_page,
 					pagesize:this.detail_page_size
 				}
+				//获取下钻内容
+				this.getDetailList(sort_obj);
+			},
+			sortDetail(column){
+				let sort_obj = {
+					page:this.detail_page,
+					pagesize:this.detail_page_size,
+					sort:column.prop,
+					sort_type:column.order == 'ascending'?'0':'1'
+				}
+				this.getDetailList(sort_obj);
+			},
+			//获取下钻内容
+			getDetailList(sort_obj){
+				let req = {...{
+					day:this.sjxrrq,
+					ks:this.ksbm
+				},...sort_obj}
 				resource.ksinfoDetail(req).then(res => {
 					if(res.data.code == 1){
 						this.detailData = res.data.data;

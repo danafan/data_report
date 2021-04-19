@@ -109,8 +109,8 @@
 	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
 </div>
-<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" align="center" v-for="item in dataObj.title_list">
+<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'jybhsl'?'custom':false" align="center" v-for="item in dataObj.title_list">
 		<template slot-scope="scope">
 			<!-- 下钻 -->
 			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
@@ -252,7 +252,9 @@
 				ksbm:"",
 				detailDialog:false,			
 				detail_page:1,
-				detail_page_size:10
+				detail_page_size:10,
+				sort:"",
+				sort_type:""
 			}
 		},
 		created(){
@@ -270,6 +272,11 @@
 			this.getList('1');
 		},
 		methods:{
+			sortChange(column){
+				this.sort = column.prop;
+				this.sort_type = column.order == 'ascending'?'0':'1';
+				this.getList();
+			},
 			//修改实际下架日期
 			changeTime(e,ksbm){
 				let req = {
@@ -302,7 +309,9 @@
 					yyjc:this.yyjc,
 					cgjc:this.cgjc,
 					xsxz:this.xsxz,
-					xr_start_time:this.xr_start_time
+					xr_start_time:this.xr_start_time,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				for(var item in req){
 					let str = item + '=' + req[item];
@@ -325,7 +334,9 @@
 					yyjc:this.yyjc,
 					cgjc:this.cgjc,
 					xsxz:this.xsxz,
-					xr_start_time:this.xr_start_time
+					xr_start_time:this.xr_start_time,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				if(type == '2'){
 					req.row_ids = this.row_ids.join(',');
@@ -446,7 +457,7 @@
 						xr_start_time:this.xr_start_time,
 						xsxz:this.xsxz,
 						flag:'1',
-						from:'1'
+						from:'4'
 					}
 					req = ee;
 				}else{

@@ -7,27 +7,27 @@
 			<div class="time_content">
 				<div class="time_item">
 					<div>一周</div>
-					<div class="red_color">20</div>
+					<div class="red_color">{{clearObj.one_week}}</div>
 					<div class="red_color">%</div>
 				</div>
 				<div class="time_item">
 					<div>二周</div>
-					<div class="red_color">20</div>
+					<div class="red_color">{{clearObj.two_week}}</div>
 					<div class="red_color">%</div>
 				</div>
 				<div class="time_item">
 					<div>三周</div>
-					<div class="red_color">20</div>
+					<div class="red_color">{{clearObj.three_week}}</div>
 					<div class="red_color">%</div>
 				</div>
 				<div class="time_item">
 					<div>四周</div>
-					<div class="red_color">20</div>
+					<div class="red_color">{{clearObj.four_week}}</div>
 					<div class="red_color">%</div>
 				</div>
 				<div class="time_item">
 					<div>待清理款</div>
-					<div class="red_color">20</div>
+					<div class="red_color">{{clearObj.wait_clean}}</div>
 				</div>
 			</div>
 		</div>
@@ -87,8 +87,12 @@
 	export default{
 		data(){
 			return{
-				shop_plkcChart:null
+				shop_plkcChart:null,
+				clearObj:{}
 			}
+		},
+		created(){
+			this.cleanProgress();
 		},
 		mounted(){
 			//品类库存列表
@@ -97,6 +101,15 @@
 			this.shopKskc();
 		},
 		methods:{
+			cleanProgress(){
+				resource.cleanProgress().then(res => {
+					if(res.data.code == 1){
+						this.clearObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//品类库存列表
 			shopPlkc(){
 				resource.plkc().then(res => {

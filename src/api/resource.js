@@ -126,6 +126,7 @@ let path = {
 	ksInfoSetXjrq:'ksinfo/setxjrq',									//设置下架日期（款式信息）
 	modifySkuNum:'replenish/modifyskunum',							//补货下钻修正sku数量
 	ksinfoModifySkunum:'ksinfo/modifyskunum',						//款式信息修正sku数量
+	cleanprogress:'bufferreport/cleanprogress',						//清理进度图表
 
 }					
 export default{
@@ -660,6 +661,10 @@ export default{
 	//款式信息下钻修正数量
 	ksinfoModifySkunum(params){
 		return http.post(path.ksinfoModifySkunum, params)
+	},
+	//清理进度图表
+	cleanProgress(params){
+		return http.get(path.cleanprogress, params)
 	},
 }
 

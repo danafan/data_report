@@ -5,7 +5,7 @@
 			<div class="cate_item border_none"></div>
 			<div class="cate_item border_none"></div>
 			<div class="cate_item">
-				<div class="item_label">UA价值</div>
+				<div class="item_label">UV价值</div>
 				<div class="sub_label">{{view_obj.uvjz}}</div>
 				<div class="small_text">环比：<span :class="{'red_color': view_obj.uvjz_hb > 0,'green_color': view_obj.uvjz_hb < 0}">{{view_obj.uvjz_hb}}%</span></div>
 				<div class="small_text">同比(周)：<span :class="{'red_color': view_obj.uvjz_tb > 0,'green_color': view_obj.uvjz_tb < 0}">{{view_obj.uvjz_tb}}%</span></div>

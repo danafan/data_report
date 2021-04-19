@@ -222,7 +222,7 @@
 </el-dialog>
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-	<el-table :data="detailData.data" size="small">
+	<el-table :data="detailData.data" @sort-change="sortDetail" size="small">
 		<el-table-column width="160" align="center" property="spbm" label="商品编码"></el-table-column>
 		<el-table-column width="120" align="center" property="ys" label="颜色"></el-table-column>
 		<el-table-column width="120" align="center" property="cm" label="尺码"></el-table-column>
@@ -230,12 +230,13 @@
 		<el-table-column width="120" align="center" property="sgstxl" label="上个三天销量"></el-table-column>
 		<el-table-column width="120" align="center" property="strjhb" label="三天日均环比"></el-table-column>
 		<el-table-column width="120" align="center" property="xjqxbh" label="下架前需补货"></el-table-column>
-		<el-table-column align="center" property="jsfhdqtxl" label="七天销量"></el-table-column>
-		<el-table-column align="center" property="kys" label="可用库存"></el-table-column>
+		<el-table-column width="120" align="center" property="jsfhdqtxl" label="七天销量" sortable="custom"></el-table-column>
+		<el-table-column width="120" align="center" property="kys" label="可用库存" sortable="custom"></el-table-column>
 		<el-table-column align="center" property="zts" label="在途数"></el-table-column>
 		<el-table-column align="center" property="bhts" label="备货天数"></el-table-column>
 		<el-table-column align="center" property="qzxs" label="权重系数"></el-table-column>
-		<el-table-column align="center" property="jybhsl" label="补货数量"></el-table-column>
+		<el-table-column width="120" align="center" property="jybhsl" label="建议补货数量"></el-table-column>
+		<el-table-column width="120" align="center" property="replenish_num" label="实际补货数量"></el-table-column>
 		<el-table-column align="center" label="操作">
 			<template slot-scope="scope">
 				<el-button type="text" size="small" v-if="scope.$index > 0" @click="updateSku(scope.row.spbm,scope.row.replenish_num)">修改数量</el-button>
@@ -631,7 +632,7 @@
 						operator_value2:this.operator2,
 						xsxz:this.xsxz,
 						flag:'1',
-						from:'1'
+						from:'2'
 					}
 					req = ee;
 				}else{
@@ -796,17 +797,28 @@
 			getDetail(ksbm,sjxrrq){
 				this.ksbm = ksbm;
 				this.sjxrrq = sjxrrq;
-				//获取下钻内容
-				this.getDetailList();
-			},
-			//获取下钻内容
-			getDetailList(){
-				let req = {
-					day:this.sjxrrq,
-					ks:this.ksbm,
+				let sort_obj = {
 					page:this.detail_page,
 					pagesize:this.detail_page_size
 				}
+				//获取下钻内容
+				this.getDetailList(sort_obj);
+			},
+			sortDetail(column){
+				let sort_obj = {
+					page:this.detail_page,
+					pagesize:this.detail_page_size,
+					sort:column.prop,
+					sort_type:column.order == 'ascending'?'0':'1'
+				}
+				this.getDetailList(sort_obj);
+			},
+			//获取下钻内容
+			getDetailList(sort_obj){
+				let req = {...{
+					day:this.sjxrrq,
+					ks:this.ksbm
+				},...sort_obj}
 				resource.replenishDetail(req).then(res => {
 					if(res.data.code == 1){
 						this.detailData = res.data.data;

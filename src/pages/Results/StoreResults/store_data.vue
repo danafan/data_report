@@ -46,6 +46,7 @@
 	import StoreView from './store_data/store_view.vue'
 	import TrafficView from './store_data/traffic_view.vue'
 	import CompleteStatus from './store_data/complete_status.vue'
+	import {getCurrentDate} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
@@ -57,12 +58,13 @@
 				dept_list: [],								//部门列表
 				dept_id:"",	
 				select_department_ids:[],					//选中的部门id列表
-				date_time:"",								//传递的日期
+				date_time:getCurrentDate(),								//传递的日期
 				tjrq:"",
 				ss:[]
 			}
 		},
 		created(){	
+			console.log(getCurrentDate());
 			let menu_list = this.$store.state.menu_list;
 			this.forMenuList(menu_list);
 			this.getIndex();

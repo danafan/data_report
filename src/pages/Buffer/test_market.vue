@@ -106,8 +106,8 @@
 	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
 </div>
-<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-	<el-table-column :label="item.row_name" :width="item.row_field_name == 'sjxjrq'?260:120"" align="center" v-for="item in dataObj.title_list">
+<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table-column :label="item.row_name" :width="item.row_field_name == 'sjxjrq'?260:120"" align="center" v-for="item in dataObj.title_list" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'jybhsl'?'custom':false">
 		<template slot-scope="scope">
 			<!--  实际下架日期 -->
 			<el-date-picker
@@ -229,6 +229,8 @@
 				dataObj:{},									//列表数据
 				show_custom:false,							//自定义列表是否显示
 				row_ids:[],									//选择的自定义列表id
+				sort:"",
+				sort_type:""
 			}
 		},
 		created(){
@@ -253,6 +255,11 @@
 			},
 		},
 		methods:{
+			sortChange(column){
+				this.sort = column.prop;
+				this.sort_type = column.order == 'ascending'?'0':'1';
+				this.getList();
+			},
 			//修改实际下架日期
 			changeTime(e,ksbm){
 				let req = {
@@ -284,7 +291,9 @@
 					sj_end_time:this.end_time,
 					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
 					pagesize:this.pagesize,
-					page:this.page
+					page:this.page,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				for(var item in req){
 					let str = item + '=' + req[item];
@@ -306,7 +315,9 @@
 					sj_end_time:this.end_time,
 					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
 					pagesize:this.pagesize,
-					page:type == '1'?1:this.page
+					page:type == '1'?1:this.page,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				if(type == '2'){
 					req.row_ids = this.row_ids.join(',');
@@ -420,7 +431,7 @@
 							}
 						})
 					}else if(type == '2'){
-						resource.trialReplenish({ks:ks}).then(res => {
+						resource.trialReplenish(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								//获取列表
@@ -430,7 +441,7 @@
 							}
 						})
 					}else if(type == '3'){
-						resource.trialStop({ks:ks}).then(res => {
+						resource.trialStop(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								//获取列表
@@ -440,7 +451,7 @@
 							}
 						})
 					}else if(type == '4'){
-						resource.trialClear({ks:ks}).then(res => {
+						resource.trialClear(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								//获取列表
