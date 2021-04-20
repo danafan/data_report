@@ -143,7 +143,7 @@
 		<div class="table_list">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
 				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item" :key="i.id">
-					<el-tooltip effect="dark" :content="i.field_value_str" placement="top" v-if="i.id == 1">
+					<el-tooltip effect="dark" :content="i.field_value_str" placement="top" v-if="i.id == 1 || i.id == 183">
 						<el-button type="text" class="tooltip_but">{{i.field_value_str}}</el-button>
 					</el-tooltip>
 					<div class='tab_text' v-else>{{i.field_value_str}}</div>
@@ -162,7 +162,54 @@
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="Restore">恢复默认</el-button>
 			<el-button size="small" @click="Restore('is_close')">取消</el-button>
-			<el-button size="small" type="primary" @click="GetData('1')">保存</el-button>
+			<el-button size="small" type="primary" @click="GetData('1','1')">保存</el-button>
+		</div>
+	</el-dialog>
+
+	<!-- 营销周报 -->
+	<div class="table_setting">
+		<el-button type="primary" size="small" @click="show_week_custom = true">店铺自定义列表</el-button>
+		<el-button type="primary" plain size="small" @click="ExportWeek" v-if="button_list.week_export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
+	</div>
+	<!-- 表格 -->
+	<div class="table_container" v-if="week_data_list.length > 0">
+		<div class="table_header">
+			<div class="header_item" v-for="(item,index) in week_label_list" :key="index" @mouseenter="CheckWeekShow(index)" @mouseleave="CheckWeekShow(index)">
+				<div class="label_title">{{item.title}}
+					<el-tooltip class="item" effect="dark" :content="item.remark" placement="top-start" v-if="item.remark != ''">
+						<i class="el-icon-warning" style="color: #FFE58F"></i>
+					</el-tooltip>
+				</div>
+				<div v-if="item.show_sort">
+					<img class="sort-icon" v-if="item.sort == 0" src="../../../static/sort_icon.png" @click="SortWeekFun(2,index)">
+					<img class="sort-icon" v-if="item.sort == 1" src="../../../static/sort_up.png" @click="SortWeekFun(0,index)">
+					<img class="sort-icon" v-if="item.sort == 2" src="../../../static/sort_down.png" @click="SortWeekFun(1,index)">
+				</div>
+			</div>
+		</div>
+		<div class="table_list">
+			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in week_data_list" :key="index">
+				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item" :key="i.id">
+					<el-tooltip effect="dark" :content="i.field_value_str" placement="top" v-if="i.id == 170 || i.id == 171">
+						<el-button type="text" class="tooltip_but">{{i.field_value_str}}</el-button>
+					</el-tooltip>
+					<div class='tab_text' v-else>{{i.field_value_str}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 没有数据 -->
+	<div class="data_null" v-if="show_week_null && week_data_list.length == 0">暂无数据</div>
+	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_week_custom">
+		<div class="select_box">
+			<el-checkbox-group v-model="selected_week_ids">
+				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_week_row">{{item.row_name}}</el-checkbox>
+			</el-checkbox-group>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="RestoreWeek">恢复默认</el-button>
+			<el-button size="small" @click="RestoreWeek('is_close')">取消</el-button>
+			<el-button size="small" type="primary" @click="GetData('1','2')">保存</el-button>
 		</div>
 	</el-dialog>
 </div>
@@ -338,6 +385,13 @@
 				default_data_list:[],				//表格数据（默认排序用）
 				show_custom:false,					//是否显示自定义弹框
 				button_list:{},						//按钮权限
+				week_label_list:[],					//表格数据（营销周报，左侧表头）
+				week_data_list:[],					//表格数据（营销周报，下面内容）
+				view_week_row:[],					//自定义列的内容(营销周报)
+				selected_week_ids:[],				//选中的自定义列的id(营销周报)
+				show_week_null:false,				//默认不显示空提示(营销周报)
+				default_week_data_list:[],			//表格数据（营销周报，默认排序用）
+				show_week_custom:false,				//营销周报是否显示自定义弹框
 			}
 		},
 		created(){
@@ -377,6 +431,28 @@
 				})
 				exportExcel(data_obj);
 			},
+			//营销周报导出
+			ExportWeek(){
+				var data_obj = {
+					table_title:"营销周报报告",
+					table_title_list:[],
+					field_name_list:[],
+					data_list:[]
+				};
+				this.week_label_list.map(item => {
+					data_obj.table_title_list.push(item.title);
+					data_obj.field_name_list.push(item.field_name);
+				})
+				this.week_data_list.map(item => {
+					let obj = {};
+					item.map(i => {
+						obj[i.field_name] = i.field_value_str;
+					})
+					data_obj.data_list.push(obj)
+				})
+				console.log(data_obj)
+				exportExcel(data_obj);
+			},
 			//部门列表
 			AjaxViewDept(){
 				resource.ajaxViewDept().then(res => {
@@ -400,7 +476,7 @@
 				})
 			},
 			//获取信息
-			GetData(is_save){
+			GetData(is_save,type){
 				let req = {
 					dept_id:this.select_department_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
@@ -409,11 +485,16 @@
 					audit_flag:this.is_assessment,
 				}
 				if(is_save == '1'){
-					req.row_ids = this.selected_ids.join(',')
+					if(type == '1'){
+						req.row_ids = this.selected_ids.join(',')
+					}else{
+						req.week_row_ids = this.selected_week_ids.join(',')
+					}
 				}
 				resource.performanceReport(req).then(res => {
 					if(res.data.code == 1){
 						this.show_custom = false;
+						this.show_week_custom = false;
 						let data = res.data.data;
 						this.xssryg = data.top.xssryg;
 						this.yxfyyg = data.top.yxfyyg;
@@ -430,6 +511,17 @@
 						this.button_list = data.button_list;
 						this.show_null = true;
 						this.default_data_list = JSON.stringify(data.shop_table_list.list);
+
+						data.week_table_list.title_names.map(item => {
+							item.is_show = true;		//是否显示当前行
+							item.show_sort = false;		//是否显示排序标签
+						})
+						this.week_label_list = data.week_table_list.title_names;
+						this.week_data_list = data.week_table_list.list;
+						this.view_week_row = data.week_view_row;
+						this.selected_week_ids = data.week_selected_ids;
+						this.show_week_null = true;
+						this.default_week_data_list = JSON.stringify(data.week_table_list.list);
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -441,11 +533,15 @@
 				this.select_store_ids = [];
 				this.date = [];
 			},
-			//切换是否显示
+			//切换是否显示(业绩分析)
 			CheckShow(index){
 				this.label_list[index].show_sort = !this.label_list[index].show_sort;
 			},
-			// 排序
+			//切换是否显示(营销周报)
+			CheckWeekShow(index){
+				this.week_label_list[index].show_sort = !this.week_label_list[index].show_sort;
+			},
+			// 排序(业绩分析)
 			SortFun(sort,index){
 				this.label_list.map((item,i) => {
 					if(i == index){
@@ -458,6 +554,21 @@
 					this.data_list = JSON.parse(this.default_data_list);
 				}else{
 					this.data_list.sort(this.Compare(sort,index));
+				}
+			},
+			// 排序(营销周报)
+			SortWeekFun(sort,index){
+				this.week_label_list.map((item,i) => {
+					if(i == index){
+						item.sort = sort;
+					}else{
+						item.sort = 0;
+					}
+				})
+				if(sort == 0){
+					this.week_data_list = JSON.parse(this.default_week_data_list);
+				}else{
+					this.week_data_list.sort(this.Compare(sort,index));
 				}
 			},
 			// 排序
@@ -481,7 +592,17 @@
 				if(type == 'is_close'){
 					this.show_custom = false;
 				}
-			}
+			},
+			//恢复默认(营销周报)
+			RestoreWeek(type){
+				this.selected_week_ids = [];
+				this.view_week_row.map(item => {
+					this.selected_week_ids.push(item.row_id)
+				})
+				if(type == 'is_close'){
+					this.show_week_custom = false;
+				}
+			},
 			
 		}
 	}

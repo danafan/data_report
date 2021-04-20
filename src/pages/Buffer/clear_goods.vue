@@ -110,7 +110,7 @@
 </div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'jybhsl'?'custom':false" align="center" v-for="item in dataObj.title_list">
+	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list">
 		<template slot-scope="scope">
 			<!-- 下钻 -->
 			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
@@ -476,7 +476,7 @@
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
 								//获取列表
-								this.getList();
+								this.getList('1');
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -487,7 +487,7 @@
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
 								//获取列表
-								this.getList();
+								this.getList('1');
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -498,7 +498,7 @@
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
 								//获取列表
-								this.getList();
+								this.getList('1');
 							}else{
 								this.$message.warning(res.data.msg);
 							}

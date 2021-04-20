@@ -150,7 +150,7 @@
 </div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-	<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="(item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq')?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'jybhsl'?'custom':false" align="center" v-for="item in dataObj.title_list">
+	<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="(item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq')?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list">
 		<template slot-scope="scope">
 			<!-- 内部核价 -->
 			<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
@@ -235,7 +235,7 @@
 		<el-table-column align="center" property="zts" label="在途数"></el-table-column>
 		<el-table-column align="center" property="bhts" label="备货天数"></el-table-column>
 		<el-table-column align="center" property="qzxs" label="权重系数"></el-table-column>
-		<el-table-column width="120" align="center" property="jybhsl" label="建议补货数量"></el-table-column>
+		<el-table-column width="160" align="center" property="xds" label="根据销量建议下单数"></el-table-column>
 		<el-table-column width="120" align="center" property="replenish_num" label="实际补货数量"></el-table-column>
 		<el-table-column align="center" label="操作">
 			<template slot-scope="scope">
@@ -651,7 +651,7 @@
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
 								//获取列表
-								this.getList();
+								this.getList('1');
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -662,7 +662,7 @@
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
 								//获取列表
-								this.getList();
+								this.getList('1');
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -673,7 +673,7 @@
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
 								//获取列表
-								this.getList();
+								this.getList('1');
 							}else{
 								this.$message.warning(res.data.msg);
 							}
