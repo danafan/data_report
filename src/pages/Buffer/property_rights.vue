@@ -160,13 +160,20 @@
 			//设置
 			setKs(type,title,ksbm){
 				//1:试；2:补；3:停；4:清
-				this.$confirm(`货品性质确定转为${title}么？想好哦！`, '提示', {
+				this.$prompt('请输入原因', `货品性质确定转为${title}么？想好哦！`, {
 					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
+					cancelButtonText: '取消'
+				}).then(({ value }) => {
+					if(!value){
+						this.$message.warning('请输入原因');
+						return;
+					}
+					let req = {
+						remark:value,
+						ks:ksbm
+					}
 					if(type == '1'){
-						resource.hpxzTry({ks:ksbm}).then(res => {
+						resource.hpxzTry(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -177,7 +184,7 @@
 							}
 						})
 					}else if(type == '2'){
-						resource.hpxzReplenish({ks:ksbm}).then(res => {
+						resource.hpxzReplenish(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -188,7 +195,7 @@
 							}
 						})
 					}else if(type == '3'){
-						resource.hpxzStop({ks:ksbm}).then(res => {
+						resource.hpxzStop(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -199,7 +206,7 @@
 							}
 						})
 					}else if(type == '4'){
-						resource.hpxzClear({ks:ksbm}).then(res => {
+						resource.hpxzClear(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.select_ids = [];
@@ -214,7 +221,7 @@
 					this.$message({
 						type: 'info',
 						message: '取消'
-					});          
+					});       
 				});
 			},
 			//分页

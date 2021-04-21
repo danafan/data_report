@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="项目部:" style="margin-right: 20px">
+				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="店铺：">
 				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
@@ -54,6 +60,12 @@
 <el-form-item label="建议：">
 	<el-select v-model="yyjc" :popper-append-to-body="false" clearable placeholder="全部">
 		<el-option v-for="item in yyjc_list" :key="item" :label="item" :value="item">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="是否可退：">
+	<el-select v-model="sfkt" :popper-append-to-body="false" clearable placeholder="全部">
+		<el-option v-for="item in sfkt_list" :key="item.id" :label="item.name" :value="item.id">
 		</el-option>
 	</el-select>
 </el-form-item>
@@ -184,6 +196,8 @@
 			return{
 				pagesize:10,
 				page:1,
+				dept_list: [],						//部门列表	
+				select_department_ids:[],			//选中的部门id列表
 				shop_list:[],								//店铺列表
 				pl_list:[],									//产品分类
 				gys_list:[],								//供应商列表
@@ -198,6 +212,14 @@
 				ks:[],										//款式id列表
 				jyhpxz:"",									//建议货品性质
 				yyjc:"",									//建议
+				sfkt_list:[{
+					id:'0',
+					name:"不可退"
+				},{
+					id:'1',
+					name:"可退"
+				}],											//是否可退列表
+				sfkt:"",
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -240,8 +262,10 @@
 					this.[item] = query[item];
 				}
 			}
+			//部门
+			this.AjaxViewDept();
 			//店铺列表
-			this.ajaxViewStore();
+			this.GetStoreList();
 			//产品分类
 			this.ajaxPl();
 			//获取列表
@@ -280,6 +304,7 @@
 			exportFile(){
 				var arr = [];
 				let req = {
+					dept_id:this.select_department_ids.join(','),
 					shop_id:this.shop_id.join(','),
 					gys:this.gys.join(','),
 					gyshh:this.gyshh.join(','),
@@ -287,6 +312,7 @@
 					ks:this.ks.join(','),
 					jyhpxz:this.jyhpxz,
 					yyjc:this.yyjc,
+					sfkt:this.sfkt,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
 					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
@@ -303,7 +329,9 @@
 			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
+				this.page = type == '1'?1:this.page;
 				let req = {
+					dept_id:this.select_department_ids.join(','),
 					shop_id:this.shop_id.join(','),
 					gys:this.gys.join(','),
 					gyshh:this.gyshh.join(','),
@@ -311,6 +339,7 @@
 					ks:this.ks.join(','),
 					jyhpxz:this.jyhpxz,
 					yyjc:this.yyjc,
+					sfkt:this.sfkt,
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
 					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
@@ -335,9 +364,21 @@
 					}
 				});
 			},
-			//店铺列表
-			ajaxViewStore(){
-				resource.ajaxViewStore().then(res => {
+			//部门列表
+			AjaxViewDept(){
+				resource.ajaxViewDept().then(res => {
+					if(res.data.code == 1){
+						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},	
+			// 获取所有店铺
+			GetStoreList(){
+				let dept_id = this.select_department_ids.join(',');
+				this.select_store_ids = [];
+				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
@@ -396,6 +437,7 @@
 				var req = {};
 				if(!ksbm){
 					let ee = {
+						dept_id:this.select_department_ids.join(','),
 						shop_id:this.shop_id.join(','),
 						gys:this.gys.join(','),
 						gyshh:this.gyshh.join(','),
@@ -403,6 +445,7 @@
 						ks:this.ks.join(','),
 						jyhpxz:this.jyhpxz,
 						yyjc:this.yyjc,
+						sfkt:this.sfkt,
 						sj_start_time:this.start_time,
 						sj_end_time:this.end_time,
 						xr_start_time:!this.xr_start_time?'':this.xr_start_time,
@@ -415,57 +458,61 @@
 					req.flag = '2';
 				}
 				//1:试；2:补；3:停；4:清
-				this.$confirm(`货品性质确定转为${title}么？想好哦！`, '提示', {
+				this.$prompt('请输入原因', `货品性质确定转为${title}么？想好哦！`, {
 					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
+					cancelButtonText: '取消'
+				}).then(({ value }) => {
+					if(!value){
+						this.$message.warning('请输入原因');
+						return;
+					}
+					req.remark = value;
 					if(type == '1'){
 						resource.trialTry(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
-								//获取列表
-								this.getList('1');
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
+									//获取列表
+									this.getList('1');
+								}else{
+									this.$message.warning(res.data.msg);
+								}
+							})
 					}else if(type == '2'){
 						resource.trialReplenish(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
-								//获取列表
-								this.getList('1');
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
+									//获取列表
+									this.getList('1');
+								}else{
+									this.$message.warning(res.data.msg);
+								}
+							})
 					}else if(type == '3'){
 						resource.trialStop(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
-								//获取列表
-								this.getList('1');
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
+									//获取列表
+									this.getList('1');
+								}else{
+									this.$message.warning(res.data.msg);
+								}
+							})
 					}else if(type == '4'){
 						resource.trialClear(req).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
-								//获取列表
-								this.getList('1');
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
+									//获取列表
+									this.getList('1');
+								}else{
+									this.$message.warning(res.data.msg);
+								}
+							})
 					}
 				}).catch(() => {
 					this.$message({
 						type: 'info',
 						message: '取消'
-					});          
+					});       
 				});
 			},
 			//分页

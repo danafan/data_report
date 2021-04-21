@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="项目部:" style="margin-right: 20px">
+				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="店铺：">
 				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
@@ -304,12 +310,14 @@
 <script>
 	import resource from '../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
-	import exportFile from '../../api/export.js'
+	import {exportUp} from '../../api/export.js'
 	export default{
 		data(){
 			return{
 				pagesize:10,
 				page:1,
+				dept_list: [],						//部门列表	
+				select_department_ids:[],			//选中的部门id列表
 				shop_list:[],								//店铺列表
 				shop_id:[],
 				gys_list:[],								//供应商列表
@@ -430,8 +438,10 @@
 			}
 		},
 		created(){
+			//部门列表
+			this.AjaxViewDept();
 			//店铺列表
-			this.ajaxViewStore();
+			this.GetStoreList();
 			//产品分类
 			this.ajaxPl();
 			//波段
@@ -474,6 +484,7 @@
 				let req = {
 					pagesize:this.pagesize,
 					page:this.page,
+					dept_id:this.select_department_ids.join(','),
 					shop_id:this.shop_id.join(','),
 					gys:this.select_gys.join(','),
 					gyshh:this.select_gyshh_list.join(','),
@@ -490,7 +501,7 @@
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
 					xsxz_gs:this.xsxz_gs,
-					xr_start_time:this.xr_start_time,
+					xr_start_time:this.xr_start_time?this.xr_start_time:'',
 					operator_value1:this.operator1,
 					operator_value2:this.operator2,
 					sort:this.sort,
@@ -500,13 +511,15 @@
 					let str = item + '=' + req[item];
 					arr.push(str);
 				};
-				exportFile.exportUp(`ksinfo/ksexport?${arr.join('&')}`)
+				exportUp(`ksinfo/ksexport?${arr.join('&')}`)
 			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
+				this.page = type == '1'?1:this.page;
 				let req = {
 					pagesize:this.pagesize,
 					page:type == '1'?1:this.page,
+					dept_id:this.select_department_ids.join(','),
 					shop_id:this.shop_id.join(','),
 					gys:this.select_gys.join(','),
 					gyshh:this.select_gyshh_list.join(','),
@@ -523,7 +536,7 @@
 					sj_start_time:this.start_time,
 					sj_end_time:this.end_time,
 					xsxz_gs:this.xsxz_gs,
-					xr_start_time:this.xr_start_time,
+					xr_start_time:this.xr_start_time?this.xr_start_time:'',
 					operator_value1:this.operator1,
 					operator_value2:this.operator2,
 					sort:this.sort,
@@ -545,9 +558,21 @@
 					}
 				});
 			},
-			//店铺列表
-			ajaxViewStore(){
-				resource.ajaxViewStore().then(res => {
+			//部门列表
+			AjaxViewDept(){
+				resource.ajaxViewDept().then(res => {
+					if(res.data.code == 1){
+						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},	
+			// 获取所有店铺
+			GetStoreList(){
+				let dept_id = this.select_department_ids.join(',');
+				this.select_store_ids = [];
+				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
@@ -616,6 +641,7 @@
 				var req = {};
 				if(!ksbm){
 					let ee = {
+						dept_id:this.select_department_ids.join(','),
 						shop_id:this.shop_id.join(','),
 						gys:this.select_gys.join(','),
 						gyshh:this.select_gyshh_list.join(','),
@@ -632,7 +658,7 @@
 						sj_start_time:this.start_time,
 						sj_end_time:this.end_time,
 						xsxz_gs:this.xsxz_gs,
-						xr_start_time:this.xr_start_time,
+						xr_start_time:this.xr_start_time?this.xr_start_time:'',
 						operator_value1:this.operator1,
 						operator_value2:this.operator2,
 						flag:'1',
@@ -644,11 +670,15 @@
 					req.flag = '2';
 				}
 				//1:试；2:补；3:停；4:清
-				this.$confirm(`货品性质确定转为${title}么？想好哦！`, '提示', {
+				this.$prompt('请输入原因', `货品性质确定转为${title}么？想好哦！`, {
 					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
+					cancelButtonText: '取消'
+				}).then(({ value }) => {
+					if(!value){
+						this.$message.warning('请输入原因');
+						return;
+					}
+					req.remark = value;
 					if(type == '1'){
 						resource.ksInfoTry(req).then(res => {
 							if(res.data.code == 1){
@@ -698,7 +728,7 @@
 					this.$message({
 						type: 'info',
 						message: '取消'
-					});          
+					});       
 				});
 			},
 			//分页
@@ -727,7 +757,6 @@
 			//修正sku数量
 			updateSku(spbm,replenish_num){
 				this.num = replenish_num;
-				console.log(this.num)
 				this.spbm = spbm;
 				this.innerVisible = true;
 			},

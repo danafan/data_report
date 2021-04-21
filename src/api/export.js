@@ -1,4 +1,5 @@
 import { MessageBox,Message } from 'element-ui';
+import {middleWare} from './request.js'
 
 function formatJson(filterVal, jsonData) {
 	return jsonData.map(v => filterVal.map(j => v[j]))
@@ -26,7 +27,6 @@ export function exportExcel(data_obj) {
 }
 
 export function exportUp(url){
-	console.log(url)
 		MessageBox.confirm('确认导出?', '提示', {
 			confirmButtonText: '确定',
 			cancelButtonText: '取消',
