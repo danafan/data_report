@@ -178,7 +178,7 @@
 <script>
 	import resource from '../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
-	import exportFile from '../../api/export.js'
+	import {exportUp} from '../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -299,7 +299,7 @@
 					let str = item + '=' + req[item];
 					arr.push(str);
 				};
-				exportFile.exportUp(`trial/trialexport?${arr.join('&')}`)
+				exportUp(`trial/trialexport?${arr.join('&')}`)
 			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
