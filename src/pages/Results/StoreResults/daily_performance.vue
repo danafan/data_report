@@ -192,8 +192,8 @@
 	border:1px solid #D9D9D9;
 	width:100%;
 	text-align: center;
-	height: 80px;
-	line-height: 80px;
+	height: 260px;
+	line-height: 260px;
 	font-size:18px;
 	color: #D9D9D9;
 }
@@ -279,7 +279,9 @@
 					data_obj.table_title_list.push(item.title);
 					data_obj.field_name_list.push(item.field_name);
 				})
-				this.data_list.map(item => {
+				let new_data_list = JSON.parse(JSON.stringify(this.data_list));
+				new_data_list.unshift(JSON.parse(JSON.stringify(this.total_list)))
+				new_data_list.map(item => {
 					let obj = {};
 					item.map(i => {
 						obj[i.field_name] = i.field_value_str;

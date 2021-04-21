@@ -228,7 +228,8 @@
 				default_data_list:[],
 				show_sort_index:null,
 				tab_index:'1',
-				req:{}
+				req:{},
+				standSize: document.body.clientWidth
 			}
 		},
 		props:{
@@ -550,6 +551,7 @@
 								return params.name + '\n' + params.value + '%';
 							},
 						},
+						minAngle: 10,  // 设置每块扇形的最小占比
 						data: data_list
 					}
 					]

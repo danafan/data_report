@@ -166,6 +166,7 @@
 		</div>
 	</el-dialog>
 
+	<div style="margin-top: 30px;margin-bottom: 10px;font-size: 22;font-weight: bold">营销周报</div>
 	<!-- 营销周报 -->
 	<div class="table_setting">
 		<el-button type="primary" size="small" @click="show_week_custom = true">店铺自定义列表</el-button>
@@ -259,11 +260,12 @@
 	display: flex;
 	font-size:14px;
 	.table_header{
+		border-top:1px solid #fff;
 		border-right:1px solid #D9D9D9;
 		.header_item{
 			border-bottom:1px solid #fff;
-			height: 36px;
-			line-height: 36px;
+			height: 37px;
+			line-height: 37px;
 			color: #333333;
 			font-weight: 600;
 			position: relative;
