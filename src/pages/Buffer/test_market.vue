@@ -119,7 +119,7 @@
 </div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-	<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'sjxjrq'?260:120"" align="center" v-for="item in dataObj.title_list" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false">
+	<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'sjxjrq'?260:120"" align="center" v-for="item in dataObj.title_list" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" show-overflow-tooltip>
 		<template slot-scope="scope">
 			<!--  实际下架日期 -->
 			<el-date-picker

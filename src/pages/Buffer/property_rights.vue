@@ -29,8 +29,8 @@
 		</el-form-item>
 	</el-form>
 	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-		<el-table-column align="center" property="ksbm" label="款式"></el-table-column>
-		<el-table-column align="center" property="gyshh" label="供应商货号"></el-table-column>
+		<el-table-column align="center" :width="160" property="ksbm" label="款式"></el-table-column>
+		<el-table-column align="center" :width="160" property="gyshh" label="供应商货号"></el-table-column>
 		<el-table-column align="center" property="mc" label="品类"></el-table-column>
 		<el-table-column align="center" property="gys" label="供应商"></el-table-column>
 		<el-table-column align="center" :width="260" label="实际下架日期">
@@ -46,9 +46,11 @@
 				></el-date-picker>
 			</template>
 		</el-table-column>
-		<el-table-column align="center" property="sjhpxz" label="实际货品性质"></el-table-column>
-		<el-table-column align="center" property="jyhpxz" label="建议货品性质"></el-table-column>
-		<el-table-column align="center" property="sjxrrq" label="建议日期"></el-table-column>
+		<el-table-column align="center" :width="120" property="sjhpxz" label="实际货品性质"></el-table-column>
+		<el-table-column align="center" :width="120" property="jyhpxz" label="建议货品性质"></el-table-column>
+		<el-table-column align="center" :width="120" property="sjxrrq" label="建议日期"></el-table-column>
+		<el-table-column align="center" :width="120" property="remark" label="备注" show-overflow-tooltip>
+		</el-table-column>
 		<el-table-column label="操作" align="center" width="180" fixed="right">
 			<template slot-scope="scope">
 				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
@@ -73,7 +75,15 @@
 </div>
 </template>
 <style lang="less" scoped>
-
+.label_title{
+	width: 100px;
+	color: #333333;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	display: -webkit-box;
+	-webkit-line-clamp: 1;
+	-webkit-box-orient: vertical;
+}
 </style>
 <script>
 	import resource from '../../api/resource.js'
