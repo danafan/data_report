@@ -224,7 +224,7 @@
 				select_pl_list:[],							//选中的品类列表
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表
-				jyhpxz_list:['试','补','清'],					//建议货品性质列表
+				jyhpxz_list:['试','补','停','清'],					//建议货品性质列表
 				xsxz_list:[{
 					id:'5',
 					name:"爆"

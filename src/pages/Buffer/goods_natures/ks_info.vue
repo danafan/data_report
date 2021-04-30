@@ -167,7 +167,7 @@
 </div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip>
+	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="maxWidth(item.row_field_name)" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 		<template slot-scope="scope">
 			<!-- 内部核价 -->
 			<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
@@ -308,9 +308,9 @@
 }
 </style>
 <script>
-	import resource from '../../api/resource.js'
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
-	import {exportUp} from '../../api/export.js'
+	import resource from '../../../api/resource.js'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {exportUp} from '../../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -921,6 +921,19 @@
 			//转内供
 			closeZng(){
 				this.show_zng = false;
+			},
+			//宽度
+			maxWidth(row_field_name){
+				if(row_field_name == 'bd' || row_field_name == 'sjxjrq' || row_field_name == 'nbhj' || row_field_name == 'jsgsqtxl'){
+					return 260;
+				}else{
+					return 120;
+				}
+			},
+			isFixed(row_field_name){
+				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'mc' || row_field_name == 'bd' || row_field_name == 'gys' || row_field_name == 'xb'){
+					return true;
+				}
 			}
 		}
 	}

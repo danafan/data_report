@@ -1,0 +1,66 @@
+<template>
+	<div>退货数据</div>
+</template>
+<style lang="less" scoped>
+	
+</style>
+<script>
+	export default{
+		props:{
+			dept_id:{
+				type:String,
+				default:""
+			},
+			shop_id:{
+				type:String,
+				default:""
+			},
+			cpfl:{
+				type:String,
+				default:""
+			},
+			year:{
+				type:String,
+				default:""
+			},
+			month:{
+				type:String,
+				default:""
+			}
+		},
+		watch:{
+			dept_id:function(n,o){
+				//获取列表
+				this.getList();
+			},
+			shop_id:function(n,o){
+				//获取列表
+				this.getList();
+			},
+			cpfl:function(n,o){
+				//获取列表
+				this.getList();
+			},
+			year:function(n,o){
+				//获取列表
+				this.getList();
+			},
+			month:function(n,o){
+				//获取列表
+				this.getList();
+			}
+		},
+		methods:{
+			getList(){
+				let req = {
+					dept_id:this.dept_id,
+					shop_id:this.shop_id,
+					cpfl:this.cpfl,
+					year:this.year,
+					month:this.month
+				}
+				console.log(req);
+			}
+		}
+	}
+</script>

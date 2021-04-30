@@ -127,6 +127,25 @@ let path = {
 	modifySkuNum:'replenish/modifyskunum',							//补货下钻修正sku数量
 	ksinfoModifySkunum:'ksinfo/modifyskunum',						//款式信息修正sku数量
 	cleanprogress:'bufferreport/cleanprogress',						//清理进度图表
+	annualAmount:'annual/amount',									//销售金额报表
+	ajaxMs:'Common/ajaxMs',											//获取买手列表
+	ajaxCgy:'Common/ajaxCgy',										//采购员列表
+	ajaxCgxz:'Common/ajaxCgxz',										//采购性质列表
+	ajaxXkfs:'Common/ajaxXkfs',										//选款方式列表
+	ajaxSjs:'Common/ajaxSjs',										//设计师列表
+	ajaxGdy:'Common/ajaxGdy',										//跟单员列表
+	ajaxJgd:'Common/ajaxJgd',										//价格带列表
+	decisionSku:'decision/sku',										//商品管理列表
+	ajaxSpbm:'Common/ajaxSpbm',										//商品编码
+	editSku:'decision/editsku',										//商品管理编辑
+	decisionAdd:'decision/add',										//导入到决策管理
+	decisionList:'decision/decision',								//决策管理列表
+	editDecision:'decision/editdecision',							//决策管理编辑
+	decisionConfirm:'decision/confirm',								//决策管理确认
+	ajaxDecisionKs:'Common/ajaxDecisionKs',							//款式列表（决策）
+	ajaxDecisionGyshh:'Common/ajaxDecisionGyshh',					//供应商货号（决策）
+	ajaxDecisionGys:'Common/ajaxDecisionGys',						//供应商（决策）
+	ajaxDecisionPlList:'Common/ajaxDecisionPlList',					//品类（决策）
 
 }					
 export default{
@@ -665,6 +684,82 @@ export default{
 	//清理进度图表
 	cleanProgress(params){
 		return http.get(path.cleanprogress, params)
+	},
+	//销售金额报表
+	annualAmount(params){
+		return http.get(path.annualAmount, params)
+	},
+	//获取买手列表
+	ajaxMs(params){
+		return http.get(path.ajaxMs, params)
+	},
+	//采购员列表
+	ajaxCgy(params){
+		return http.get(path.ajaxCgy, params)
+	},
+	//采购性质列表
+	ajaxCgxz(params){
+		return http.get(path.ajaxCgxz, params)
+	},
+	//选款方式列表
+	ajaxXkfs(params){
+		return http.get(path.ajaxXkfs, params)
+	},
+	//设计师列表
+	ajaxSjs(params){
+		return http.get(path.ajaxSjs, params)
+	},
+	//跟单员列表
+	ajaxGdy(params){
+		return http.get(path.ajaxGdy, params)
+	},
+	//价格带列表
+	ajaxJgd(params){
+		return http.get(path.ajaxJgd, params)
+	},
+	//商品管理列表
+	decisionSku(params){
+		return http.get(path.decisionSku, params)
+	},
+	//商品编码
+	ajaxSpbm(params){
+		return http.get(path.ajaxSpbm, params)
+	},
+	//商品管理编辑
+	editSku(params){
+		return http.post(path.editSku, params)
+	},
+	//导入到决策管理
+	decisionAdd(params){
+		return http.post(path.decisionAdd, params)
+	},
+	//决策管理列表
+	decisionList(params){
+		return http.get(path.decisionList, params)
+	},
+	//决策管理编辑
+	editDecision(params){
+		return http.post(path.editDecision, params)
+	},
+	//决策管理确认
+	decisionConfirm(params){
+		return http.post(path.decisionConfirm, params)
+	},
+	//款式列表（决策）
+	ajaxDecisionKs(params){
+		return http.get(path.ajaxDecisionKs, params)
+	},
+	//供应商货号（决策）
+	ajaxDecisionGyshh(params){
+		return http.get(path.ajaxDecisionGyshh, params)
+	},
+	//供应商（决策）
+	ajaxDecisionGys(params){
+		return http.get(path.ajaxDecisionGys, params)
+	},
+	//品类（决策）
+	ajaxDecisionPlList(params){
+		return http.get(path.ajaxDecisionPlList, params)
 	},
 }
 

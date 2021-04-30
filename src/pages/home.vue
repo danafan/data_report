@@ -82,6 +82,14 @@
 				<el-menu-item-group>     
 					<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
 				</el-menu-item-group>
+				<!-- <el-submenu index="1-4">
+					<template slot="title">精细化运营</template>
+					<el-menu-item index="/annual_report">销售年度报告</el-menu-item>
+				</el-submenu> -->
+				<!-- <el-submenu index="111">
+					<template slot="title">货品性质管理</template>
+					<el-menu-item index="/goods_nature">货品性质管理</el-menu-item>
+				</el-submenu> -->
 			</el-submenu>
 		</el-menu>
 	</div>
@@ -283,17 +291,17 @@
 			},
 			//跳转消息详情
 			messageDetail(row){
-					if(row.status == 0){
-						resource.messageRead({id:row.message_id}).then(res => {
-							if(res.data.code == 1){
+				if(row.status == 0){
+					resource.messageRead({id:row.message_id}).then(res => {
+						if(res.data.code == 1){
 								//未读消息数
 								this.unreadnum();
 							}else{
 								this.$message.warning(res.data.msg);
 							}
 						})
-					}
-					this.$router.push('/' + row.web_url);
+				}
+				this.$router.push('/' + row.web_url);
 					// this.$router.push('/supplement?show_zng=true');
 				},
 			//获取菜单列表
