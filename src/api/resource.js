@@ -146,6 +146,8 @@ let path = {
 	ajaxDecisionGyshh:'Common/ajaxDecisionGyshh',					//供应商货号（决策）
 	ajaxDecisionGys:'Common/ajaxDecisionGys',						//供应商（决策）
 	ajaxDecisionPlList:'Common/ajaxDecisionPlList',					//品类（决策）
+	skuDetail:'decision/skudetail',									//商品管理下钻
+	decisionCancel:'decision/cancel',								//决策管理取消
 
 }					
 export default{
@@ -760,6 +762,14 @@ export default{
 	//品类（决策）
 	ajaxDecisionPlList(params){
 		return http.get(path.ajaxDecisionPlList, params)
+	},
+	//商品管理下钻
+	skuDetail(params){
+		return http.get(path.skuDetail, params)
+	},
+	//决策管理取消
+	decisionCancel(params){
+		return http.post(path.decisionCancel, params)
 	},
 }
 

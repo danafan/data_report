@@ -128,17 +128,18 @@
 		</el-form>
 		<div class="buts">
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
+			<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
-					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
+					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.id)"></el-input>
 					<!--  实际下架日期 -->
 					<el-date-picker
-					@change="editFun($event,item.row_field_name,scope.row.ksbm)"
+					@change="editFun($event,item.row_field_name,scope.row.id)"
 					v-else-if="item.row_field_name == 'sjxjrq'"
 					v-model="scope.row.sjxjrq"
-					 :disabled="scope.row.edit_status == 0"
+					:disabled="scope.row.edit_status == 0"
 					type="date"
 					clearable
 					value-format="yyyy-MM-dd"
@@ -148,9 +149,9 @@
 					<!-- 实际货品性质 -->
 					<el-select 
 					v-model="scope.row.sjhpxz" 
-					@change="editFun($event,item.row_field_name,scope.row.ksbm)" 
+					@change="editFun($event,item.row_field_name,scope.row.id)" 
 					v-else-if="item.row_field_name == 'sjhpxz'" 
-					 :disabled="scope.row.edit_status == 0"
+					:disabled="scope.row.edit_status == 0"
 					clearable 
 					size="small"
 					placeholder="全部">
@@ -158,53 +159,54 @@
 					</el-option>
 				</el-select>
 				<!-- 最后四个 -->
-					<el-select 
-					v-model="scope.row[item.row_field_name]" 
-					@change="editFun($event,item.row_field_name,scope.row.ksbm)" 
-					v-else-if="item.row_field_name == 'jrsx' || item.row_field_name == 's2b' || item.row_field_name == 'b2t' || item.row_field_name == 't2q'" 
-					clearable 
-					 :disabled="scope.row.edit_status == 0"
-					size="small"
-					placeholder="全部">
-					<el-option label="是" :value="1"></el-option>
-					<el-option label="否" :value="0"></el-option>
-				</el-select>
-					<!-- 图片 -->
-					<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'">
-					<div v-else>{{scope.row[item.row_field_name]}}</div>
-				</template>
-			</el-table-column>
-			<el-table-column label="操作" align="center" width="120" fixed="right">
-				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="confirmFun(scope.row.ksbm)" v-if="scope.row.is_done == 0">确认</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination
-			@size-change="handleSizeChange"
-			@current-change="handleCurrentChange"
-			:current-page="page"
-			:pager-count="11"
-			:page-sizes="[5, 10, 15, 20]"
-			layout="total, sizes, prev, pager, next, jumper"
-			:total="dataObj.total"
-			>
-		</el-pagination>
+				<el-select 
+				v-model="scope.row[item.row_field_name]" 
+				@change="editFun($event,item.row_field_name,scope.row.id)" 
+				v-else-if="item.row_field_name == 'jrsx' || item.row_field_name == 's2b' || item.row_field_name == 'b2t' || item.row_field_name == 't2q'" 
+				clearable 
+				:disabled="scope.row.edit_status == 0"
+				size="small"
+				placeholder="全部">
+				<el-option label="是" :value="1"></el-option>
+				<el-option label="否" :value="0"></el-option>
+			</el-select>
+			<!-- 图片 -->
+			<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'">
+			<div v-else>{{scope.row[item.row_field_name]}}</div>
+		</template>
+	</el-table-column>
+	<el-table-column label="操作" align="center" width="120" fixed="right">
+		<template slot-scope="scope">
+			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'1')" v-if="scope.row.is_done == 0">确认</el-button>
+			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'2')" v-if="scope.row.is_done == 2">取消</el-button>
+		</template>
+	</el-table-column>
+</el-table>
+<div class="page">
+	<el-pagination
+	@size-change="handleSizeChange"
+	@current-change="handleCurrentChange"
+	:current-page="page"
+	:pager-count="11"
+	:page-sizes="[5, 10, 15, 20]"
+	layout="total, sizes, prev, pager, next, jumper"
+	:total="dataObj.total"
+	>
+</el-pagination>
+</div>
+<!-- 自定义列表 -->
+<el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
+	<div class="select_box">
+		<el-checkbox-group v-model="row_ids">
+			<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in dataObj.view_row">{{item.row_name}}</el-checkbox>
+		</el-checkbox-group>
 	</div>
-	<!-- 自定义列表 -->
-	<el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
-		<div class="select_box">
-			<el-checkbox-group v-model="row_ids">
-				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in dataObj.view_row">{{item.row_name}}</el-checkbox>
-			</el-checkbox-group>
-		</div>
-		<div slot="footer" class="dialog-footer">
-			<el-button size="small" @click="Restore">恢复默认</el-button>
-			<el-button size="small" @click="show_custom = false">取消</el-button>
-			<el-button size="small" type="primary" @click="getList('2')">保存</el-button>
-		</div>
-	</el-dialog>
+	<div slot="footer" class="dialog-footer">
+		<el-button size="small" @click="Restore">恢复默认</el-button>
+		<el-button size="small" @click="show_custom = false">取消</el-button>
+		<el-button size="small" type="primary" @click="getList('2')">保存</el-button>
+	</div>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -232,6 +234,7 @@
 </style>
 <script>
 	import resource from '../../../api/resource.js'
+	import {exportUp} from '../../../api/export.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	export default{
 		data(){
@@ -380,6 +383,45 @@
 				this.sort = column.prop;
 				this.sort_type = column.order == 'ascending'?'0':'1';
 				this.getList();
+			},
+			//导出
+			exportFile(){
+				var arr = [];
+				let req = {
+					pagesize:this.pagesize,
+					page:this.page,
+					ks:this.select_ks_list.join(','),
+					gyshh:this.select_gyshh_list.join(','),
+					jj:this.select_jj_list.join(','),
+					bd:this.select_bd_list.join(','),
+					ms:this.select_ms_list.join(','),
+					cgy:this.select_cgy_list.join(','),
+					cgxz:this.select_cgxz_list.join(','),
+					sfkt:this.sfkt,
+					start_first_fkrq:this.start_first_fkrq,
+					end_first_fkrq:this.end_first_fkrq,
+					start_cjrq:this.start_cjrq,
+					end_cjrq:this.end_cjrq,
+					start_decision_rq:this.start_decision_rq,
+					end_decision_rq:this.end_decision_rq,
+					gys:this.select_gys.join(','),
+					xb:this.xb,
+					pl:this.select_pl_list.join(','),
+					xkfs:this.select_xkfs_list.join(','),
+					sjs:this.select_sjs_list.join(','),
+					gdy:this.select_gdy_list.join(','),
+					jgd:this.select_jgd_list.join(','),
+					sfng:this.sfng,
+					is_confirm:this.is_confirm,
+					sjhpxz:this.sjhpxz,
+					sort:this.sort,
+					sort_type:this.sort_type
+				}
+				for(var item in req){
+					let str = item + '=' + req[item];
+					arr.push(str);
+				};
+				exportUp(`trial/trialexport?${arr.join('&')}`)
 			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
@@ -580,11 +622,11 @@
 				})
 			},
 			//编辑某一个input
-			editFun(e,name,ksbm){
+			editFun(e,name,id){
 				let req = {
 					name:name,
 					content:e,
-					ks:ksbm
+					decision_id:id
 				}
 				resource.editDecision(req).then(res => {
 					if(res.data.code == 1){
@@ -605,20 +647,32 @@
 				}
 			},
 			//确认
-			confirmFun(ksbm){
-				this.$confirm('确认?', '提示', {
+			confirmFun(id,type){	//1:确认；2:取消
+				this.$confirm(`${type == '1'?'确认':'取消'}?`, '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					resource.decisionConfirm({ks:ksbm}).then(res => {
-						if(res.data.code == 1){
-							this.$message.success(res.data.msg);
-							this.getList();
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
+					if(type == '1'){	//确认
+						resource.decisionConfirm({decision_id:id}).then(res => {
+							if(res.data.code == 1){
+								this.$message.success(res.data.msg);
+								this.getList();
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+					}else{
+						resource.decisionCancel({decision_id:id}).then(res => {
+							if(res.data.code == 1){
+								this.$message.success(res.data.msg);
+								this.getList();
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+					}
+					
 				}).catch(() => {
 					this.$message({
 						type: 'info',
@@ -627,7 +681,7 @@
 				});
 			},
 			isFixed(row_field_name){
-				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'mc' || row_field_name == 'bd' || row_field_name == 'gys' || row_field_name == 'xb'){
+				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'xb'){
 					return true;
 				}
 			}

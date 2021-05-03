@@ -7,12 +7,6 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="商品编码：">
-				<el-select v-model="select_spbm_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="全部" :remote-method="ajaxSpbm" collapse-tags>
-					<el-option v-for="item in spbm_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
 			<el-form-item label="供应商货号：">
 				<el-select v-model="select_gyshh_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="供应商货号" :remote-method="ajaxGyshh" collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
@@ -130,13 +124,15 @@
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
 					<!-- 编辑框 -->
-					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
+					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'ksbm'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
+					<!-- 下钻 -->
+					<el-button type="text" size="small" @click="getDetail(scope.row.ksbm)" v-else-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
 					<!--  实际下架日期 -->
 					<el-date-picker
 					@change="editFun($event,item.row_field_name,scope.row.ksbm)"
 					v-else-if="item.row_field_name == 'sjxjrq'"
 					v-model="scope.row.sjxjrq"
-					 :disabled="scope.row.edit_status == 0"
+					:disabled="scope.row.edit_status == 0"
 					type="date"
 					clearable
 					value-format="yyyy-MM-dd"
@@ -148,7 +144,7 @@
 					v-model="scope.row.sjhpxz" 
 					@change="editFun($event,item.row_field_name,scope.row.ksbm)" 
 					v-else-if="item.row_field_name == 'sjhpxz'"
-					 :disabled="scope.row.edit_status == 0" 
+					:disabled="scope.row.edit_status == 0" 
 					clearable 
 					size="small"
 					placeholder="全部">
@@ -186,6 +182,29 @@
 		<el-button size="small" type="primary" @click="getList('2')">保存</el-button>
 	</div>
 </el-dialog>
+<!-- 下钻 -->
+<el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
+	<el-table :data="detailData.data" size="small">
+		<el-table-column width="160" align="center" label="商品ID">
+			<template slot-scope="scope">
+				<el-button type="text" size="small" @click="openWindow(scope.row.spid_url)">{{scope.row.spid}}</el-button>
+			</template>
+		</el-table-column>
+		<el-table-column width="120" align="center" property="ys" label="店铺ID"></el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination
+		@size-change="detailSizeChange"
+		@current-change="detailCurrentChange"
+		:current-page="detail_page"
+		:pager-count="11"
+		:page-sizes="[5, 10, 15, 20]"
+		layout="total, sizes, prev, pager, next, jumper"
+		:total="detailData.total"
+		>
+	</el-pagination>
+</div>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -210,8 +229,6 @@
 				page:1,
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表	
-				spbm_list:[],								//商品编码
-				select_spbm_list:[],						//选中的商品编码
 				gyshh_list:[],								//供应商货号列表
 				select_gyshh_list:[],						//选中的供应商货号列表
 				jj_list:['春','夏','秋','冬'],				//季节列表
@@ -289,7 +306,12 @@
 				sort_type:"",
 				show_custom:false,							//自定义列表
 				dataObj:{},
-				row_ids:[]
+				row_ids:[],
+				detailDialog:false,							//下钻
+				detailData:{},								//下钻获取的列表
+				ksbm:"",									//下钻的款式编码
+				detail_page:1,
+				detail_page_size:10,
 			}
 		},
 		watch:{
@@ -342,7 +364,6 @@
 				}).then(() => {
 					let req = {
 						ks:this.select_ks_list.join(','),
-						spbm:this.select_spbm_list.join(','),
 						gyshh:this.select_gyshh_list.join(','),
 						jj:this.select_jj_list.join(','),
 						bd:this.select_bd_list.join(','),
@@ -385,7 +406,6 @@
 					pagesize:this.pagesize,
 					page:type == '1'?1:this.page,
 					ks:this.select_ks_list.join(','),
-					spbm:this.select_spbm_list.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					jj:this.select_jj_list.join(','),
 					bd:this.select_bd_list.join(','),
@@ -551,18 +571,6 @@
 					}
 				})
 			},
-			//商品编码
-			ajaxSpbm(e){
-				if(e != ''){
-					resource.ajaxSpbm({name:e,from:2}).then(res => {
-						if(res.data.code == 1){
-							this.spbm_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
 			//分页
 			handleSizeChange(val) {
 				this.pagesize = val;
@@ -573,6 +581,50 @@
 				this.page = val;
 				//获取列表
 				this.getList();
+			},
+			//下钻
+			getDetail(ksbm){
+				this.ksbm = ksbm;
+				let sort_obj = {
+					page:this.detail_page,
+					pagesize:this.detail_page_size
+				}
+				//获取下钻内容
+				this.getDetailList(sort_obj);
+			},
+			//获取下钻内容
+			getDetailList(sort_obj){
+				let req = {...{
+					ks:this.ksbm
+				},...sort_obj}
+				resource.skuDetail(req).then(res => {
+					if(res.data.code == 1){
+						this.detailData = res.data.data;
+						this.detailDialog = true;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//关闭
+			closeDetail(){
+				this.detail_page_size = 10;
+				this.detail_page = 1;
+			},
+			//分页
+			detailSizeChange(val) {
+				this.detail_page_size = val;
+				//获取列表
+				this.getDetailList();
+			},
+			detailCurrentChange(val) {
+				this.detail_page = val;
+				//获取列表
+				this.getDetailList();
+			},
+			//跳转页面
+			openWindow(spid_url){
+				window.open(spid_url);
 			},
 			//自定义列表
 			customFun(){
@@ -612,7 +664,7 @@
 				}
 			},
 			isFixed(row_field_name){
-				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'mc' || row_field_name == 'bd' || row_field_name == 'gys' || row_field_name == 'xb'){
+				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'xb'){
 					return true;
 				}
 			}
