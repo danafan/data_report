@@ -111,9 +111,10 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="确认状态：">
-				<el-select v-model="is_confirm" :popper-append-to-body="false" clearable placeholder="全部">
+				<el-select v-model="is_confirm" multiple :popper-append-to-body="false" clearable placeholder="全部">
 					<el-option label="未确认" value="0"></el-option>
 					<el-option label="已确认" value="1"></el-option>
+					<el-option label="已取消" value="2"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="实际货品性质：">
@@ -177,8 +178,8 @@
 	</el-table-column>
 	<el-table-column label="操作" align="center" width="120" fixed="right">
 		<template slot-scope="scope">
-			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'1')" v-if="scope.row.is_done == 0">确认</el-button>
-			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'2')" v-if="scope.row.is_done == 2">取消</el-button>
+			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'1')" v-if="scope.row.is_done == 0 || scope.row.is_done == 2">确认</el-button>
+			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'2')" v-if="scope.row.is_done == 1">取消</el-button>
 		</template>
 	</el-table-column>
 </el-table>
@@ -421,7 +422,7 @@
 					let str = item + '=' + req[item];
 					arr.push(str);
 				};
-				exportUp(`trial/trialexport?${arr.join('&')}`)
+				exportUp(`decision/goodsExport?${arr.join('&')}`)
 			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段

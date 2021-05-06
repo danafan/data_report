@@ -117,8 +117,11 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="decisionAdd">导入决策管理<i class="el-icon-download el-icon--right"></i></el-button>
+			<div style="display:flex">
+				<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
+				<el-button type="primary" plain size="small" @click="showSearch = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
+			</div>
+			<el-button type="primary" plain size="small" @click="decisionAdd">导入决策管理<i class="el-icon-download"></i></el-button>
 		</div>
 		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
@@ -205,6 +208,27 @@
 	</el-pagination>
 </div>
 </el-dialog>
+<!-- 批量查询商品编码 -->
+<el-dialog title="数据查询" :visible.sync="showSearch">
+	<div>
+		<div>导入编辑好的Excel表格<span class="toast_text">（请以"款式编码"为第一行，在第一列填写相应编码）</span></div>
+		<div>
+			<div class="imgBox" v-if="filename == ''">
+				<div class="text">请选择上传文件</div>
+				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn" v-if="isMac">
+				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.ms-excel" @change="uploadFn" v-else/>
+			</div>
+			<div class="file_name_box" v-else>
+				<div class="file_name">{{filename}}</div>
+				<i class="el-icon-circle-close" @click="deleteFile"></i>
+			</div>
+		</div>
+	</div>
+	<div slot="footer" class="dialog-footer">
+		<el-button size="small" @click="showSearch = false">取消</el-button>
+		<el-button size="small" type="primary" @click="allSearch">批量查询</el-button>
+	</div>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -217,6 +241,59 @@
 .table_img{
 	width: 80px;
 	height: 80px;
+}
+.imgBox{
+	margin-top: 8px;
+	background: #fff;
+	display: flex;
+	align-items:center;
+	justify-content:center;
+	width: 106px;
+	height: 30px;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	position: relative;
+	.text{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+	}
+	.upload_file {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
+}
+.file_name_box{
+	display: flex;
+	align-items: center;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	width: 206px;
+	height: 30px;
+	padding-left: 10px;
+	padding-right: 10px;
+	.file_name{
+		margin-right: 10px;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+	}
+}
+.toast_text{
+	color: red;
 }
 </style>
 <script>
@@ -312,6 +389,11 @@
 				ksbm:"",									//下钻的款式编码
 				detail_page:1,
 				detail_page_size:10,
+				showSearch:false,							//批量查询弹框是否显示
+				filename:'',								//已上传的文件名
+				uploadKsbms:"",								//导入的款式编码
+				isMac:true,									//判断系统
+				all_search:false,							//是否是批量查询
 			}
 		},
 		watch:{
@@ -349,6 +431,19 @@
 			this.getList('1');
 		},
 		methods:{
+			OSnow(){
+				var agent = navigator.userAgent.toLowerCase();
+				var isMac = /macintosh|mac os x/i.test(navigator.userAgent);
+				if (agent.indexOf("win32") >= 0 || agent.indexOf("wow32") >= 0) {
+					this.isMac = false;
+				}
+				if (agent.indexOf("win64") >= 0 || agent.indexOf("wow64") >= 0) {
+					this.isMac = false;
+				}
+				if(isMac){
+					this.isMac = true;
+				}
+			},
 			//排序
 			sortChange(column){
 				this.sort = column.prop;
@@ -363,7 +458,8 @@
 					type: 'warning'
 				}).then(() => {
 					let req = {
-						ks:this.select_ks_list.join(','),
+						flag:this.all_search == true?1:0,
+						ks:this.all_search == true?this.uploadKsbms:this.select_ks_list.join(','),
 						gyshh:this.select_gyshh_list.join(','),
 						jj:this.select_jj_list.join(','),
 						bd:this.select_bd_list.join(','),
@@ -399,13 +495,47 @@
 					});          
 				});
 			},
+			// 上传文件
+			uploadFn(){
+				if (this.$refs.fileUpload.files.length > 0) {
+					var file = this.$refs.fileUpload.files[0];
+					resource.decisionUpload({file:file}).then(res => {
+						if(res.data.code == 1){
+							//上传文件
+							this.filename = res.data.data.name;
+							this.uploadKsbms = res.data.data.ksbm;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//删除文件
+			deleteFile(){
+				this.filename = '';
+				this.uploadKsbms = "";
+			},
+			//批量查询
+			allSearch(){
+				if(this.filename == '' || this.uploadKsbms == ""){
+					this.$message.warning('请先上传文件');
+				}else{
+					this.all_search = true;
+					this.page = 1;
+					this.getList();
+				}
+			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置字段
 				this.page = type == '1'?1:this.page;
+				if(type == '1'){
+					this.all_search = false;
+				}
 				let req = {
 					pagesize:this.pagesize,
-					page:type == '1'?1:this.page,
-					ks:this.select_ks_list.join(','),
+					page:this.page,
+					flag:this.all_search == true?1:0,
+					ks:this.all_search == true?this.uploadKsbms:this.select_ks_list.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					jj:this.select_jj_list.join(','),
 					bd:this.select_bd_list.join(','),
@@ -436,6 +566,7 @@
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
+						this.showSearch = false;
 						if(type == '2'){
 							this.$message.success(res.data.msg);
 							this.show_custom = false;
@@ -575,12 +706,12 @@
 			handleSizeChange(val) {
 				this.pagesize = val;
 				//获取列表
-				this.getList();
+				this.getList('3');
 			},
 			handleCurrentChange(val) {
 				this.page = val;
 				//获取列表
-				this.getList();
+				this.getList('3');
 			},
 			//下钻
 			getDetail(ksbm){
@@ -614,13 +745,21 @@
 			//分页
 			detailSizeChange(val) {
 				this.detail_page_size = val;
+				let sort_obj = {
+					page:this.detail_page,
+					pagesize:this.detail_page_size
+				}
 				//获取列表
-				this.getDetailList();
+				this.getDetailList(sort_obj);
 			},
 			detailCurrentChange(val) {
 				this.detail_page = val;
+				let sort_obj = {
+					page:this.detail_page,
+					pagesize:this.detail_page_size
+				}
 				//获取列表
-				this.getDetailList();
+				this.getDetailList(sort_obj);
 			},
 			//跳转页面
 			openWindow(spid_url){

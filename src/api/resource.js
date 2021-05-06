@@ -148,6 +148,7 @@ let path = {
 	ajaxDecisionPlList:'Common/ajaxDecisionPlList',					//品类（决策）
 	skuDetail:'decision/skudetail',									//商品管理下钻
 	decisionCancel:'decision/cancel',								//决策管理取消
+	decisionUpload:'decision/upload',								//上传批量查询（商品管理）
 
 }					
 export default{
@@ -770,6 +771,10 @@ export default{
 	//决策管理取消
 	decisionCancel(params){
 		return http.post(path.decisionCancel, params)
+	},
+	//上传批量查询（商品管理）
+	decisionUpload(params){
+		return http.post(path.decisionUpload, params)
 	},
 }
 
