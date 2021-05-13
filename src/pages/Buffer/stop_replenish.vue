@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
@@ -57,8 +57,14 @@
 		</el-option>
 	</el-select>
 </el-form-item>
-<el-form-item label="销售性质：">
+<el-form-item label="店铺销售性质：">
 	<el-select v-model="xsxz" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option v-for="item in xsxz_list" :key="item.id" :label="item.name" :value="item.id">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="公司销售性质：">
+	<el-select v-model="xsxz_gs" clearable :popper-append-to-body="false" placeholder="全部">
 		<el-option v-for="item in xsxz_list" :key="item.id" :label="item.name" :value="item.id">
 		</el-option>
 	</el-select>
@@ -74,6 +80,40 @@
 		<el-option v-for="item in sfkt_list" :key="item.id" :label="item.name" :value="item.id">
 		</el-option>
 	</el-select>
+</el-form-item>
+<el-form-item label="是否内供：">
+	<el-select v-model="sfng" :popper-append-to-body="false" clearable placeholder="全部">
+		<el-option key="1" label="是" value="1">
+		</el-option>
+		<el-option key="0" label="否" value="0">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="是否自主款：">
+	<el-select v-model="sfzzk" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option key="1" label="是" value="1">
+		</el-option>
+		<el-option key="0" label="否" value="0">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="负数库存：">
+	<el-input style="width:100px" clearable type="number" v-model="operator1" clearable placeholder="大于等于"></el-input>
+	--
+	<el-input style="width:100px" clearable type="number" v-model="operator2" clearable placeholder="小于"></el-input>
+</el-form-item>
+<el-form-item label="上架日期:" style="margin-right: 20px">
+	<el-date-picker
+	v-model="date"
+	type="daterange"
+	unlink-panels
+	value-format="yyyy-MM-dd"
+	range-separator="至"
+	start-placeholder="开始日期"
+	end-placeholder="结束日期"
+	:append-to-body="false"
+	:picker-options="pickerOptions">
+</el-date-picker>
 </el-form-item>
 <el-form-item label="写入日期：">
 	<el-date-picker
@@ -110,10 +150,15 @@
 </div>
 </div>
 <el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%":header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip>
+	<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 		<template slot-scope="scope">
 			<!-- 下钻 -->
-			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
+			<el-tooltip placement="top-end" v-if="item.row_field_name == 'ksbm'">
+				<div slot="content">
+					<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
+				</div>
+				<div style="color: #1890FF">{{scope.row[item.row_field_name]}}</div>
+			</el-tooltip>
 			<!--  实际下架日期 -->
 			<el-date-picker
 			@change="changeTime($event,scope.row.ksbm)"
@@ -206,6 +251,7 @@
 </style>
 <script>
 	import resource from '../../api/resource.js'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import {exportUp} from '../../api/export.js'
 	export default{
 		data(){
@@ -239,6 +285,7 @@
 					name:"滞"
 				}],											//销售性质列表
 				xsxz:"",
+				xsxz_gs:"",
 				jyhpxz:"",
 				bd_list:[],									//波段列表
 				select_bd_list:[],							//选中的波段列表
@@ -250,6 +297,37 @@
 					name:"可退"
 				}],											//是否可退列表
 				sfkt:"",
+				sfng:"",
+				sfzzk:"",
+				operator1:"",
+				operator2:"",
+				date:[],
+				pickerOptions: {
+					shortcuts: [{
+						text: '当月',
+						onClick(picker) {
+							const start = getMonthStartDate();
+							const end = getCurrentDate();
+							picker.$emit('pick', [start, end]);
+						}
+					},{
+						text: '上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(1);
+							const end = getLastMonthEndDate(0);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '上上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(2);
+							const end = getLastMonthEndDate(1);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},	 										//时间区间
+				start_time:"",				//开始时间
+				end_time:"",					//结束时间
 				xr_start_time:"",							//写入日期
 				dataObj:{},									//列表数据
 				show_custom:false,							//自定义列表是否显示
@@ -275,6 +353,13 @@
 			this.ajaxBd();
 			//获取列表
 			this.getList('1');
+		},
+		watch:{
+			//发货时间
+			date:function(n){
+				this.start_time = n && n.length> 0?n[0]:"";
+				this.end_time = n && n.length> 0?n[1]:"";
+			}
 		},
 		methods:{
 			sortChange(column){
@@ -312,9 +397,16 @@
 					ks:this.select_ks_list.join(','),
 					jyhpxz:this.jyhpxz,
 					xsxz:this.xsxz,
+					xsxz_gs:this.xsxz_gs,
 					bd:this.select_bd_list.join(','),
 					sfkt:this.sfkt,
 					xr_start_time:this.xr_start_time?this.xr_start_time:'',
+					sfng:this.sfng,
+					sfzzk:this.sfzzk,
+					operator_value1:this.operator1,
+					operator_value2:this.operator2,
+					sj_start_time:this.start_time,
+					sj_end_time:this.end_time,
 					sort:this.sort,
 					sort_type:this.sort_type
 				}
@@ -338,9 +430,16 @@
 					ks:this.select_ks_list.join(','),
 					jyhpxz:this.jyhpxz,
 					xsxz:this.xsxz,
+					xsxz_gs:this.xsxz_gs,
 					bd:this.select_bd_list.join(','),
 					sfkt:this.sfkt,
 					xr_start_time:this.xr_start_time?this.xr_start_time:'',
+					sfng:this.sfng,
+					sfzzk:this.sfzzk,
+					operator_value1:this.operator1,
+					operator_value2:this.operator2,
+					sj_start_time:this.start_time,
+					sj_end_time:this.end_time,
 					sort:this.sort,
 					sort_type:this.sort_type
 				}
@@ -362,7 +461,7 @@
 			},
 			//部门列表
 			AjaxViewDept(){
-				resource.ajaxViewDept().then(res => {
+				resource.ajaxViewDept({from:1}).then(res => {
 					if(res.data.code == 1){
 						this.dept_list = res.data.data;
 					}else{
@@ -374,7 +473,7 @@
 			GetStoreList(){
 				let dept_id = this.select_department_ids.join(',');
 				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
@@ -577,6 +676,11 @@
 				//获取列表
 				this.getDetailList();
 			},
+			isFixed(row_field_name){
+				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'xb'){
+					return true;
+				}
+			}
 		}
 	}
 </script>

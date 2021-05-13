@@ -1,6 +1,18 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="项目部:" style="margin-right: 20px">
+				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="店铺：">
+				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="款式编码：">
 				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="全部" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
@@ -123,6 +135,18 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="操作人：">
+				<el-select v-model="select_operator" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in operator_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="公司销售性质：">
+				<el-select v-model="xsxz_gs" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option v-for="item in xsxz_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
 			</el-form-item>
@@ -134,13 +158,13 @@
 		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
-					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.id)"></el-input>
+					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.is_self == 0 || scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"></el-input>
 					<!--  实际下架日期 -->
 					<el-date-picker
-					@change="editFun($event,item.row_field_name,scope.row.id)"
+					@change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"
 					v-else-if="item.row_field_name == 'sjxjrq'"
 					v-model="scope.row.sjxjrq"
-					:disabled="scope.row.edit_status == 0"
+					:disabled="scope.row.is_self == 0 || scope.row.edit_status == 0"
 					type="date"
 					clearable
 					value-format="yyyy-MM-dd"
@@ -150,9 +174,9 @@
 					<!-- 实际货品性质 -->
 					<el-select 
 					v-model="scope.row.sjhpxz" 
-					@change="editFun($event,item.row_field_name,scope.row.id)" 
+					@change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)" 
 					v-else-if="item.row_field_name == 'sjhpxz'" 
-					:disabled="scope.row.edit_status == 0"
+					:disabled="scope.row.is_self == 0 || scope.row.edit_status == 0"
 					clearable 
 					size="small"
 					placeholder="全部">
@@ -162,24 +186,24 @@
 				<!-- 最后四个 -->
 				<el-select 
 				v-model="scope.row[item.row_field_name]" 
-				@change="editFun($event,item.row_field_name,scope.row.id)" 
+				@change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)" 
 				v-else-if="item.row_field_name == 'jrsx' || item.row_field_name == 's2b' || item.row_field_name == 'b2t' || item.row_field_name == 't2q'" 
 				clearable 
-				:disabled="scope.row.edit_status == 0"
+				:disabled="scope.row.is_self == 0 || scope.row.edit_status == 0"
 				size="small"
 				placeholder="全部">
 				<el-option label="是" :value="1"></el-option>
 				<el-option label="否" :value="0"></el-option>
 			</el-select>
 			<!-- 图片 -->
-			<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'">
+			<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row[item.row_field_name])">
 			<div v-else>{{scope.row[item.row_field_name]}}</div>
 		</template>
 	</el-table-column>
 	<el-table-column label="操作" align="center" width="120" fixed="right">
 		<template slot-scope="scope">
-			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'1')" v-if="scope.row.is_done == 0 || scope.row.is_done == 2">确认</el-button>
-			<el-button type="text" size="small" @click="confirmFun(scope.row.id,'2')" v-if="scope.row.is_done == 1">取消</el-button>
+			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'1')" v-if="scope.row.is_self == 1 && (scope.row.is_done == 0 || scope.row.is_done == 2)">确认</el-button>
+			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'2')" v-if="scope.row.is_self == 1 && scope.row.is_done == 1">取消</el-button>
 		</template>
 	</el-table-column>
 </el-table>
@@ -208,6 +232,13 @@
 		<el-button size="small" type="primary" @click="getList('2')">保存</el-button>
 	</div>
 </el-dialog>
+<!-- 图片放大 -->
+<el-dialog title="图片" :visible.sync="imageDialog" width="30%" center>
+	<img class="big_img" :src="big_img_url">
+	<span slot="footer" class="dialog-footer">
+		<el-button type="primary" @click="imageDialog = false">关闭</el-button>
+	</span>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -220,6 +251,9 @@
 .table_img{
 	width: 80px;
 	height: 80px;
+}
+.big_img{
+	width: 100%;
 }
 </style>
 <style lang="less">
@@ -242,6 +276,10 @@
 			return{
 				pagesize:10,
 				page:1,
+				dept_list: [],						//部门列表	
+				select_department_ids:[],			//选中的部门id列表
+				shop_list:[],								//店铺列表
+				shop_id:[],
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表	
 				gyshh_list:[],								//供应商货号列表
@@ -321,11 +359,29 @@
 				is_confirm:"",								//是否确认
 				sjhpxz_list:['试','补','停','清'],			//实际货品性质列表
 				sjhpxz:"",									//选中的实际货品性质
+				xsxz_list:[{
+					id:'5',
+					name:"爆"
+				},{
+					id:'4',
+					name:"畅"
+				},{
+					id:'3',
+					name:"平"
+				},{
+					id:'2',
+					name:"滞"
+				}],											//销售性质列表
+				xsxz_gs:"",
+				operator_list:[],							//操作人列表
+				select_operator:[],							//选中的操作人
 				sort:"",
 				sort_type:"",
 				show_custom:false,							//自定义列表
 				dataObj:{},
-				row_ids:[]
+				row_ids:[],
+				imageDialog:false,							//是否显示放大图片弹框
+				big_img_url:"",								//放大的图片地址
 			}
 		},
 		watch:{
@@ -346,6 +402,10 @@
 			}
 		},
 		created(){
+			//部门列表
+			this.AjaxViewDept();
+			//店铺列表
+			this.GetStoreList();
 			//波段
 			this.ajaxBd();
 			//买手列表
@@ -364,6 +424,8 @@
 			this.ajaxGdy();
 			// 价格带
 			this.ajaxJgd();
+			// 操作人
+			this.commonoPerator();
 			//获取列表
 			this.getList('1');
 		},
@@ -391,6 +453,8 @@
 				let req = {
 					pagesize:this.pagesize,
 					page:this.page,
+					dept_id:this.select_department_ids.join(','),
+					shop_id:this.shop_id.join(','),
 					ks:this.select_ks_list.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					jj:this.select_jj_list.join(','),
@@ -415,6 +479,8 @@
 					sfng:this.sfng,
 					is_confirm:this.is_confirm,
 					sjhpxz:this.sjhpxz,
+					operator:this.select_operator,
+					xsxz_gs:this.xsxz_gs,
 					sort:this.sort,
 					sort_type:this.sort_type
 				}
@@ -430,6 +496,8 @@
 				let req = {
 					pagesize:this.pagesize,
 					page:type == '1'?1:this.page,
+					dept_id:this.select_department_ids.join(','),
+					shop_id:this.shop_id.join(','),
 					ks:this.select_ks_list.join(','),
 					gyshh:this.select_gyshh_list.join(','),
 					jj:this.select_jj_list.join(','),
@@ -454,6 +522,8 @@
 					sfng:this.sfng,
 					is_confirm:this.is_confirm,
 					sjhpxz:this.sjhpxz,
+					operator:this.select_operator,
+					xsxz_gs:this.xsxz_gs,
 					sort:this.sort,
 					sort_type:this.sort_type
 				}
@@ -472,6 +542,43 @@
 						this.$message.warning(res.data.msg);
 					}
 				});
+			},
+			//放大图片
+			bigImg(big_img_url){
+				this.imageDialog = true;
+				this.big_img_url = big_img_url;
+			},
+			//操作人列表
+			commonoPerator(){
+				resource.commonoPerator().then(res => {
+					if(res.data.code == 1){
+						this.operator_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//部门列表
+			AjaxViewDept(){
+				resource.ajaxViewDept({from:1}).then(res => {
+					if(res.data.code == 1){
+						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},	
+			// 获取所有店铺
+			GetStoreList(){
+				let dept_id = this.select_department_ids.join(',');
+				this.select_store_ids = [];
+				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
+					if(res.data.code == 1){
+						this.shop_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//款式列表
 			ajaxKsbm(e){
@@ -623,11 +730,12 @@
 				})
 			},
 			//编辑某一个input
-			editFun(e,name,id){
+			editFun(e,name,decision_rq,ksbm){
 				let req = {
 					name:name,
 					content:e,
-					decision_id:id
+					decision_rq:decision_rq,
+					ks:ksbm
 				}
 				resource.editDecision(req).then(res => {
 					if(res.data.code == 1){
@@ -648,14 +756,14 @@
 				}
 			},
 			//确认
-			confirmFun(id,type){	//1:确认；2:取消
+			confirmFun(decision_rq,ksbm,type){	//1:确认；2:取消
 				this.$confirm(`${type == '1'?'确认':'取消'}?`, '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
 					if(type == '1'){	//确认
-						resource.decisionConfirm({decision_id:id}).then(res => {
+						resource.decisionConfirm({decision_rq:decision_rq,ks:ksbm}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.getList();
@@ -664,7 +772,7 @@
 							}
 						})
 					}else{
-						resource.decisionCancel({decision_id:id}).then(res => {
+						resource.decisionCancel({decision_rq:decision_rq,ks:ksbm}).then(res => {
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 								this.getList();

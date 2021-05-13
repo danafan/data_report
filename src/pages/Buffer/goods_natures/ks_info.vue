@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
@@ -84,14 +84,6 @@
 		</el-option>
 	</el-select>
 </el-form-item>
-<el-form-item label="是否自主款：">
-	<el-select v-model="sfzzk" clearable :popper-append-to-body="false" placeholder="全部">
-		<el-option key="1" label="是" value="1">
-		</el-option>
-		<el-option key="0" label="否" value="0">
-		</el-option>
-	</el-select>
-</el-form-item>
 <el-form-item label="确认状态：">
 	<el-select v-model="status" :popper-append-to-body="false" clearable placeholder="全部">
 		<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
@@ -107,6 +99,14 @@
 <el-form-item label="是否内供：">
 	<el-select v-model="sfng" :popper-append-to-body="false" clearable placeholder="全部">
 		<el-option v-for="item in sfng_list" :key="item.id" :label="item.name" :value="item.id">
+		</el-option>
+	</el-select>
+</el-form-item>
+<el-form-item label="是否自主款：">
+	<el-select v-model="sfzzk" clearable :popper-append-to-body="false" placeholder="全部">
+		<el-option key="1" label="是" value="1">
+		</el-option>
+		<el-option key="0" label="否" value="0">
 		</el-option>
 	</el-select>
 </el-form-item>
@@ -160,6 +160,7 @@
 		</div>
 		<el-button type="primary" size="small" slot="reference">批量设置</el-button>
 	</el-popover>
+	<el-button style="margin-left: 10px" type="primary" plain size="small" @click="showSearch = true">批量填写内部核价<i class="el-icon-edit el-icon--right"></i></el-button>
 </div>
 <div class="buts">
 	<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
@@ -172,7 +173,12 @@
 			<!-- 内部核价 -->
 			<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
 			<!-- 下钻 -->
-			<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)" v-else-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
+			<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm'">
+				<div slot="content">
+					<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
+				</div>
+				<div style="color: #1890FF">{{scope.row[item.row_field_name]}}</div>
+			</el-tooltip>
 			<!--  实际下架日期 -->
 			<el-date-picker
 			@change="changeTime($event,scope.row.ksbm)"
@@ -289,6 +295,29 @@
 	</el-pagination>
 </div>
 </el-dialog>
+<!-- 批量修改内部核价 -->
+<el-dialog title="内部核价" :visible.sync="showSearch">
+	<div>
+		<div>导入编辑好的Excel表格</div>
+		<div class="toast_text">请以"款式编码、内部核价"为第一行，在第一列填写相应编码，第二列填写内部核价</div>
+		<img class="model_img" src="../../../static/model_img_02.png">
+		<div>
+			<div class="imgBox" v-if="filename == ''">
+				<div class="text">请选择上传文件</div>
+				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn" v-if="isMac">
+				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.ms-excel" @change="uploadFn" v-else/>
+			</div>
+			<div class="file_name_box" v-else>
+				<div class="file_name">{{filename}}</div>
+				<i class="el-icon-circle-close" @click="deleteFile"></i>
+			</div>
+		</div>
+	</div>
+	<div slot="footer" class="dialog-footer">
+		<el-button size="small" @click="showSearch = false">取消</el-button>
+		<el-button size="small" type="primary" @click="allSearch">批量填写</el-button>
+	</div>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -305,6 +334,69 @@
 	display:flex;
 	align-items: center;
 	justify-content:space-around;
+}
+.toast_text{
+	margin-top: 10px;
+	color: red;
+}
+.model_img{
+	margin-top: 10px;
+	margin-bottom: 30px;
+	width: 160px;
+}
+.imgBox{
+	margin-top: 8px;
+	background: #fff;
+	display: flex;
+	align-items:center;
+	justify-content:center;
+	width: 106px;
+	height: 30px;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	position: relative;
+	.text{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+	}
+	.upload_file {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
+}
+.file_name_box{
+	display: flex;
+	align-items: center;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	width: 206px;
+	height: 30px;
+	padding-left: 10px;
+	padding-right: 10px;
+	.file_name{
+		margin-right: 10px;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 1;
+		overflow: hidden;
+	}
 }
 </style>
 <script>
@@ -434,7 +526,11 @@
 				detail_page_size:10,
 				innerVisible:false,							//修改sku数量
 				sort:"",
-				sort_type:""
+				sort_type:"",
+				showSearch:false,							//批量查询弹框是否显示
+				filename:'',								//已上传的文件名
+				file:null,									//已上传的文件
+				isMac:true,									//判断系统
 			}
 		},
 		created(){
@@ -457,6 +553,49 @@
 			}
 		},
 		methods:{
+			OSnow(){
+				var agent = navigator.userAgent.toLowerCase();
+				var isMac = /macintosh|mac os x/i.test(navigator.userAgent);
+				if (agent.indexOf("win32") >= 0 || agent.indexOf("wow32") >= 0) {
+					this.isMac = false;
+				}
+				if (agent.indexOf("win64") >= 0 || agent.indexOf("wow64") >= 0) {
+					this.isMac = false;
+				}
+				if(isMac){
+					this.isMac = true;
+				}
+			},
+			// 上传文件
+			uploadFn(){
+				if (this.$refs.fileUpload.files.length > 0) {
+					var file = this.$refs.fileUpload.files[0];
+					this.filename = file.name;
+					this.file = file;
+				}
+			},
+			//删除文件
+			deleteFile(){
+				this.filename = '';
+				this.file = null;
+			},
+			//批量填写
+			allSearch(){
+				if(this.filename == '' || !this.file){
+					this.$message.warning('请先上传文件');
+				}else{
+					resource.batchSet({file:this.file}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.filename = '';
+							this.file = null;
+							this.showSearch = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
 			sortChange(column){
 				this.sort = column.prop;
 				this.sort_type = column.order == 'ascending'?'0':'1';
@@ -560,7 +699,7 @@
 			},
 			//部门列表
 			AjaxViewDept(){
-				resource.ajaxViewDept().then(res => {
+				resource.ajaxViewDept({from:1}).then(res => {
 					if(res.data.code == 1){
 						this.dept_list = res.data.data;
 					}else{
@@ -572,7 +711,7 @@
 			GetStoreList(){
 				let dept_id = this.select_department_ids.join(',');
 				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
@@ -931,7 +1070,7 @@
 				}
 			},
 			isFixed(row_field_name){
-				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'mc' || row_field_name == 'bd' || row_field_name == 'gys' || row_field_name == 'xb'){
+				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'xb'){
 					return true;
 				}
 			}

@@ -1,6 +1,18 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="项目部:" style="margin-right: 20px">
+				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="店铺：">
+				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="款式编码：">
 				<el-select v-model="select_ks_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="全部" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
@@ -112,6 +124,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="公司销售性质：">
+				<el-select v-model="xsxz_gs" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option v-for="item in xsxz_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
 			</el-form-item>
@@ -129,7 +147,12 @@
 					<!-- 编辑框 -->
 					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'ksbm'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
 					<!-- 下钻 -->
-					<el-button type="text" size="small" @click="getDetail(scope.row.ksbm)" v-else-if="item.row_field_name == 'ksbm'">{{scope.row[item.row_field_name]}}</el-button>
+					<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm'">
+						<div slot="content">
+							<el-button type="text" size="small" @click="getDetail(scope.row.ksbm)">下钻</el-button>
+						</div>
+						<div style="color: #1890FF">{{scope.row[item.row_field_name]}}</div>
+					</el-tooltip>
 					<!--  实际下架日期 -->
 					<el-date-picker
 					@change="editFun($event,item.row_field_name,scope.row.ksbm)"
@@ -155,7 +178,7 @@
 					</el-option>
 				</el-select>
 				<!-- 图片 -->
-				<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'">
+				<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row[item.row_field_name])">
 				<div v-else>{{scope.row[item.row_field_name]}}</div>
 			</template>
 		</el-table-column>
@@ -190,10 +213,17 @@
 	<el-table :data="detailData.data" size="small">
 		<el-table-column width="160" align="center" label="商品ID">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" @click="openWindow(scope.row.spid_url)">{{scope.row.spid}}</el-button>
+				<el-tooltip placement="top-end">
+					<div slot="content">
+						<el-button type="text" size="small" @click="openWindow(scope.row.spid_url)">查看商品</el-button>
+					</div>
+					<div style="color: #1890FF">{{scope.row.spid}}</div>
+				</el-tooltip>
 			</template>
 		</el-table-column>
-		<el-table-column width="120" align="center" property="ys" label="店铺ID"></el-table-column>
+		<el-table-column width="120" align="center" property="dpid" label="店铺ID"></el-table-column>
+		<el-table-column width="120" align="center" property="xsxz" label="销售性质"></el-table-column>
+		<el-table-column width="120" align="center" property="spid_qtxl" label="商品ID7天销量"></el-table-column>
 	</el-table>
 	<div class="page">
 		<el-pagination
@@ -211,7 +241,9 @@
 <!-- 批量查询商品编码 -->
 <el-dialog title="数据查询" :visible.sync="showSearch">
 	<div>
-		<div>导入编辑好的Excel表格<span class="toast_text">（请以"款式编码"为第一行，在第一列填写相应编码）</span></div>
+		<div>导入编辑好的Excel表格</div>
+		<div class="toast_text">请以"款式编码"为第一行，在第一列填写相应编码</div>
+		<img class="model_img" src="../../../static/model_img.png">
 		<div>
 			<div class="imgBox" v-if="filename == ''">
 				<div class="text">请选择上传文件</div>
@@ -228,6 +260,17 @@
 		<el-button size="small" @click="showSearch = false">取消</el-button>
 		<el-button size="small" type="primary" @click="allSearch">批量查询</el-button>
 	</div>
+</el-dialog>
+<!-- 图片放大 -->
+<el-dialog
+title="图片"
+:visible.sync="imageDialog"
+width="30%"
+center>
+<img class="big_img" :src="big_img_url">
+<span slot="footer" class="dialog-footer">
+	<el-button type="primary" @click="imageDialog = false">关闭</el-button>
+</span>
 </el-dialog>
 </div>
 </template>
@@ -290,10 +333,23 @@
 		line-height: 30px;
 		font-size: 13px;
 		color: #666666;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 1;
+		overflow: hidden;
 	}
 }
 .toast_text{
+	margin-top: 10px;
 	color: red;
+}
+.model_img{
+	margin-top: 10px;
+	margin-bottom: 30px;
+	width: 160px;
+}
+.big_img{
+	width: 100%;
 }
 </style>
 <script>
@@ -304,6 +360,10 @@
 			return{
 				pagesize:10,
 				page:1,
+				dept_list: [],						//部门列表	
+				select_department_ids:[],			//选中的部门id列表
+				shop_list:[],								//店铺列表
+				shop_id:[],
 				ks_list:[],									//款式列表
 				select_ks_list:[],							//选中的款式列表	
 				gyshh_list:[],								//供应商货号列表
@@ -379,6 +439,20 @@
 				sfng:"",									//选中的是否内供
 				sjhpxz_list:['试','补','停','清'],			//实际货品性质列表
 				sjhpxz:"",									//选中的实际货品性质
+				xsxz_list:[{
+					id:'5',
+					name:"爆"
+				},{
+					id:'4',
+					name:"畅"
+				},{
+					id:'3',
+					name:"平"
+				},{
+					id:'2',
+					name:"滞"
+				}],											//销售性质列表
+				xsxz_gs:"",
 				sort:"",
 				sort_type:"",
 				show_custom:false,							//自定义列表
@@ -394,6 +468,8 @@
 				uploadKsbms:"",								//导入的款式编码
 				isMac:true,									//判断系统
 				all_search:false,							//是否是批量查询
+				imageDialog:false,							//是否显示放大图片弹框
+				big_img_url:"",								//放大的图片地址
 			}
 		},
 		watch:{
@@ -409,6 +485,10 @@
 			}
 		},
 		created(){
+			//部门列表
+			this.AjaxViewDept();
+			//店铺列表
+			this.GetStoreList();
 			//波段
 			this.ajaxBd();
 			//买手列表
@@ -458,6 +538,8 @@
 					type: 'warning'
 				}).then(() => {
 					let req = {
+						dept_id:this.select_department_ids.join(','),
+						shop_id:this.shop_id.join(','),
 						flag:this.all_search == true?1:0,
 						ks:this.all_search == true?this.uploadKsbms:this.select_ks_list.join(','),
 						gyshh:this.select_gyshh_list.join(','),
@@ -479,7 +561,8 @@
 						gdy:this.select_gdy_list.join(','),
 						jgd:this.select_jgd_list.join(','),
 						sfng:this.sfng,
-						sjhpxz:this.sjhpxz
+						sjhpxz:this.sjhpxz,
+						xsxz_gs:this.xsxz_gs
 					}
 					resource.decisionAdd(req).then(res => {
 						if(res.data.code == 1){
@@ -534,6 +617,8 @@
 				let req = {
 					pagesize:this.pagesize,
 					page:this.page,
+					dept_id:this.select_department_ids.join(','),
+					shop_id:this.shop_id.join(','),
 					flag:this.all_search == true?1:0,
 					ks:this.all_search == true?this.uploadKsbms:this.select_ks_list.join(','),
 					gyshh:this.select_gyshh_list.join(','),
@@ -556,6 +641,7 @@
 					jgd:this.select_jgd_list.join(','),
 					sfng:this.sfng,
 					sjhpxz:this.sjhpxz,
+					xsxz_gs:this.xsxz_gs,
 					sort:this.sort,
 					sort_type:this.sort_type
 				}
@@ -575,6 +661,33 @@
 						this.$message.warning(res.data.msg);
 					}
 				});
+			},
+			//放大图片
+			bigImg(big_img_url){
+				this.imageDialog = true;
+				this.big_img_url = big_img_url;
+			},
+			//部门列表
+			AjaxViewDept(){
+				resource.ajaxViewDept({from:1}).then(res => {
+					if(res.data.code == 1){
+						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},	
+			// 获取所有店铺
+			GetStoreList(){
+				let dept_id = this.select_department_ids.join(',');
+				this.select_store_ids = [];
+				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
+					if(res.data.code == 1){
+						this.shop_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//款式列表
 			ajaxKsbm(e){

@@ -149,6 +149,8 @@ let path = {
 	skuDetail:'decision/skudetail',									//商品管理下钻
 	decisionCancel:'decision/cancel',								//决策管理取消
 	decisionUpload:'decision/upload',								//上传批量查询（商品管理）
+	commonoPerator:'Common/operator',								//操作人列表
+	batchSet:'decision/batchset',									//批量更新内部核价
 
 }					
 export default{
@@ -775,6 +777,14 @@ export default{
 	//上传批量查询（商品管理）
 	decisionUpload(params){
 		return http.post(path.decisionUpload, params)
+	},
+	//操作人列表
+	commonoPerator(params){
+		return http.get(path.commonoPerator, params)
+	},
+	//批量更新内部核价
+	batchSet(params){
+		return http.post(path.batchSet, params)
 	},
 }
 
