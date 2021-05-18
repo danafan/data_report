@@ -130,6 +130,9 @@
 					name:(nowYear - i) + '年'
 				};
 				this.years_list.push(obj);
+				if(i < 2){
+					this.select_years_list.push(nowYear - i);
+				}
 			}
 			// let menu_list = this.$store.state.menu_list;
 			// this.forMenuList(menu_list);

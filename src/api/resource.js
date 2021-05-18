@@ -151,6 +151,15 @@ let path = {
 	decisionUpload:'decision/upload',								//上传批量查询（商品管理）
 	commonoPerator:'Common/operator',								//操作人列表
 	batchSet:'decision/batchset',									//批量更新内部核价
+	annualVolume:'annual/volume',									//销售数量报表
+	ksbmExport:'decision/ksbmExport',								//商品信息管理导出
+	ksExport:'ksinfo/ksexport',										//货品性质管理导出
+	setColumns:'buffer/setcolumns',									//设置自定义列
+	dayUpload:'buffer/dayupload',									//上传店铺数据
+	trialExport:'trial/trialexport',								//试销管理导出
+	replenishExport:'replenish/replenishexport',					//补货管理导出
+	stopExport:'stop/stopexport',									//停止进货管理导出
+	clearExport:'clear/clearexport',								//清理管理导出
 
 }					
 export default{
@@ -356,7 +365,7 @@ export default{
 	},
 	//试销管理列表
 	trialList(params){
-		return http.get(path.trialList, params)
+		return http.post(path.trialList, params)
 	},
 	//试
 	trialTry(params){
@@ -396,7 +405,7 @@ export default{
 	},
 	//补货管理列表
 	replenishList(params){
-		return http.get(path.replenishList, params)
+		return http.post(path.replenishList, params)
 	},
 	//补货试
 	replenishTry(params){
@@ -424,7 +433,7 @@ export default{
 	},	
 	//停止进货管理列表
 	stopList(params){
-		return http.get(path.stopList, params)
+		return http.post(path.stopList, params)
 	},			
 	//停止进货试
 	stopTry(params){
@@ -444,7 +453,7 @@ export default{
 	},	
 	//清货管理列表	
 	clearList(params){
-		return http.get(path.clearList, params)
+		return http.post(path.clearList, params)
 	},		
 	//清货管理试
 	clearTry(params){
@@ -588,7 +597,7 @@ export default{
 	},
 	//款式信息管理列表
 	ksInfoList(params){
-		return http.get(path.ksInfoList, params)
+		return http.post(path.ksInfoList, params)
 	},
 	//款式信息管理列表-试
 	ksInfoTry(params){
@@ -724,7 +733,7 @@ export default{
 	},
 	//商品管理列表
 	decisionSku(params){
-		return http.get(path.decisionSku, params)
+		return http.post(path.decisionSku, params)
 	},
 	//商品编码
 	ajaxSpbm(params){
@@ -785,6 +794,42 @@ export default{
 	//批量更新内部核价
 	batchSet(params){
 		return http.post(path.batchSet, params)
+	},
+	//销售数量报表
+	annualVolume(params){
+		return http.get(path.annualVolume, params)
+	},
+	//商品信息管理导出
+	ksbmExport(params){
+		return http.post(path.ksbmExport, params)
+	},
+	//货品性质管理导出
+	ksExport(params){
+		return http.post(path.ksExport, params)
+	},
+	//设置自定义列
+	setColumns(params){
+		return http.post(path.setColumns, params)
+	},
+	//上传店铺数据
+	dayUpload(params){
+		return http.post(path.dayUpload, params)
+	},
+	//试销管理导出
+	trialExport(params){
+		return http.post(path.trialExport, params)
+	},
+	//补货管理导出
+	replenishExport(params){
+		return http.post(path.replenishExport, params)
+	},
+	//停止进货管理导出
+	stopExport(params){
+		return http.post(path.stopExport, params)
+	},
+	//清理管理导出
+	clearExport(params){
+		return http.post(path.clearExport, params)
 	},
 }
 

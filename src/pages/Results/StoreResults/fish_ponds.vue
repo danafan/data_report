@@ -444,7 +444,6 @@
 							day_ytje_obj.sjje.push(item.sjje);		//实际金额
 							day_ytje_obj.ytje.push(item.ytje);		//鱼塘金额
 						});
-
 						var money_date = document.getElementById('money_date');
 						this.money_dateChart = echarts.init(money_date);
 						this.money_dateChart.setOption({

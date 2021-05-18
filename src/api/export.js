@@ -27,24 +27,44 @@ export function exportExcel(data_obj) {
 }
 
 export function exportUp(url){
-		MessageBox.confirm('确认导出?', '提示', {
-			confirmButtonText: '确定',
-			cancelButtonText: '取消',
-			type: 'warning'
-		}).then(() => {
-			let req = {};
-			let req_arr = url.split('?')[1].split('&');
-			req_arr.map(item => {
-				req[item.split('=')[0]] = item.split('=')[1];
-			})
-      let get_str = middleWare(req,'get');
-      let open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
-      window.open(open_url);
-    }).catch(() => {
-     Message({
-      type: 'info',
-      message: '取消导出'
-    });          
-   });
-  }
+	MessageBox.confirm('确认导出?', '提示', {
+		confirmButtonText: '确定',
+		cancelButtonText: '取消',
+		type: 'warning'
+	}).then(() => {
+		let req = {};
+		let req_arr = url.split('?')[1].split('&');
+		req_arr.map(item => {
+			req[item.split('=')[0]] = item.split('=')[1];
+		})
+		let get_str = middleWare(req,'get');
+		let open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
+		window.open(open_url);
+	}).catch(() => {
+		Message({
+			type: 'info',
+			message: '取消导出'
+		});          
+	});
+}
+
+export function exportPost(data,name){
+	const blob = new Blob([data], {type: 'text/csv,charset=UTF-8'})
+	let today = new Date();
+	let tadayDate =
+	today.getFullYear() +
+	"-" +
+	(today.getMonth() + 1) +
+	"-" +
+	today.getDate();
+	const fileName = name + '-' + tadayDate + '.csv'
+	const elink = document.createElement('a')
+	elink.download = fileName
+	elink.style.display = 'none'
+	elink.href = URL.createObjectURL(blob)
+	document.body.appendChild(elink)
+	elink.click()
+    URL.revokeObjectURL(elink.href) // 释放URL 对象
+    document.body.removeChild(elink)
+}
 

@@ -1,188 +1,70 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺：">
-				<el-select v-model="shop_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="供应商：">
-				<el-select v-model="gys" clearable :popper-append-to-body="false" multiple filterable
-				remote
-				reserve-keyword
-				placeholder="请输入供应商"
-				:remote-method="ajaxGys"
-				collapse-tags >
-				<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
-				</el-option>
-			</el-select>
-		</el-form-item>
-		<el-form-item label="供应商货号：">
-			<el-select v-model="gyshh" clearable :popper-append-to-body="false" multiple filterable
-			remote
-			reserve-keyword
-			placeholder="请输入供应商货号"
-			:remote-method="ajaxGyshh" collapse-tags>
-			<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
-			</el-option>
-		</el-select>
-	</el-form-item>
-	<el-form-item label="品类：">
-		<el-select v-model="pl" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-			<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
-			</el-option>
-		</el-select>
-	</el-form-item>
-	<el-form-item label="款式：">
-		<el-select v-model="ks" clearable :popper-append-to-body="false" multiple filterable
-		remote
-		reserve-keyword
-		placeholder="请输入款式"
-		:remote-method="ajaxKsbm"
-		collapse-tags>
-		<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="建议货品性质：">
-	<el-select v-model="jyhpxz" clearable :popper-append-to-body="false" placeholder="全部">
-		<el-option v-for="item in jyhpxz_list" :key="item" :label="item" :value="item">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="实际货品性质：">
-	<el-select v-model="sjhpxz" clearable :popper-append-to-body="false" placeholder="全部">
-		<el-option v-for="item in hpxz_list" :key="item.id" :label="item.name" :value="item.id">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="波段：">
-	<el-select v-model="select_bd_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-		<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="建议：">
-	<el-select v-model="yyjc" :popper-append-to-body="false" clearable placeholder="全部">
-		<el-option v-for="item in yyjc_list" :key="item" :label="item" :value="item">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="是否可退：">
-	<el-select v-model="sfkt" :popper-append-to-body="false" clearable placeholder="全部">
-		<el-option v-for="item in sfkt_list" :key="item.id" :label="item.name" :value="item.id">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="是否内供：">
-	<el-select v-model="sfng" :popper-append-to-body="false" clearable placeholder="全部">
-		<el-option key="1" label="是" value="1">
-		</el-option>
-		<el-option key="0" label="否" value="0">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="是否自主款：">
-	<el-select v-model="sfzzk" clearable :popper-append-to-body="false" placeholder="全部">
-		<el-option key="1" label="是" value="1">
-		</el-option>
-		<el-option key="0" label="否" value="0">
-		</el-option>
-	</el-select>
-</el-form-item>
-<el-form-item label="上架日期:" style="margin-right: 20px">
-	<el-date-picker
-	v-model="date"
-	type="daterange"
-	unlink-panels
-	value-format="yyyy-MM-dd"
-	range-separator="至"
-	start-placeholder="开始日期"
-	end-placeholder="结束日期"
-	:append-to-body="false"
-	:picker-options="pickerOptions">
-</el-date-picker>
-</el-form-item>
-<el-form-item label="写入日期：">
-	<el-date-picker
-	v-model="xr_start_time"
-	type="date"
-	clearable
-	value-format="yyyy-MM-dd"
-	placeholder="选择日期"
-	:append-to-body="false"
-	>
-</el-date-picker>
-</el-form-item>
-<el-form-item>
-	<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
-</el-form-item>
-</el-form>
-<div class="table_setting">
-	<el-popover
-	placement="right-start"
-	:append-to-body="false"
-	width="150"
-	trigger="click">
-	<div class="setStyle">
-		<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
-		<el-button type="success" size="small" plain @click="setKs('2','补')">补</el-button>
+		<condition page_type="1" @callBack="searchFun"/>
+		<div class="table_setting">
+			<div style="display:flex">
+				<el-popover
+				placement="right-start"
+				:append-to-body="false"
+				width="150"
+				trigger="click">
+				<div class="setStyle">
+					<el-button type="primary" size="small" plain @click="setKs('1','试')" v-if="button_list.try == 1">试</el-button>
+					<el-button type="success" size="small" plain @click="setKs('2','补')" v-if="button_list.replenishment == 1">补</el-button>
+				</div>
+				<div class="setStyle">
+					<el-button type="warning" size="small" plain @click="setKs('3','停')" v-if="button_list.stop == 1">停</el-button>
+					<el-button type="danger" size="small" plain @click="setKs('4','清')" v-if="button_list.clear == 1">清</el-button>
+				</div>
+				<el-button type="primary" size="small" slot="reference">批量设置</el-button>
+			</el-popover>
+			<el-button type="primary" plain size="small" style="margin-left: 10px" @click="showSearch = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
+		</div>
+		<div class="buts">
+			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
+			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 	</div>
-	<div class="setStyle">
-		<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
-		<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
-	</div>
-	<el-button type="primary" size="small" slot="reference">批量设置</el-button>
-</el-popover>
-<div class="buts">
-	<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-	<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
-</div>
-</div>
-<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-	<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'sjxjrq'?260:120"" align="center" v-for="item in dataObj.title_list" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
-		<template slot-scope="scope">
-			<!--  实际下架日期 -->
-			<el-date-picker
-			@change="changeTime($event,scope.row.ksbm)"
-			v-if="item.row_field_name == 'sjxjrq'"
-			v-model="scope.row.sjxjrq"
-			type="date"
-			clearable
-			value-format="yyyy-MM-dd"
-			placeholder="选择日期"
-			size="small"
-			></el-date-picker>
-			<div v-else>{{scope.row[item.row_field_name]}}</div>
-		</template>
-	</el-table-column>
-	<el-table-column label="操作" align="center" width="180" fixed="right">
-		<template slot-scope="scope">
-			<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
-			<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)">补</el-button>
-			<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)">停</el-button>
-			<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)">清</el-button>
-		</template>
-	</el-table-column>
-</el-table>
-<div class="page">
-	<el-pagination
-	@size-change="handleSizeChange"
-	@current-change="handleCurrentChange"
-	:current-page="page"
-	:pager-count="11"
-	:page-sizes="[5, 10, 15, 20]"
-	layout="total, sizes, prev, pager, next, jumper"
-	:total="dataObj.total"
-	>
-</el-pagination>
+	<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'sjxjrq'?260:120"" align="center" v-for="item in dataObj.title_list" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
+			<template slot-scope="scope">
+				<!--  实际下架日期 -->
+				<el-date-picker
+				@change="changeTime($event,scope.row.ksbm)"
+				v-if="item.row_field_name == 'sjxjrq'"
+				v-model="scope.row.sjxjrq"
+				type="date"
+				clearable
+				:disabled="button_list.export != 1"
+				value-format="yyyy-MM-dd"
+				placeholder="选择日期"
+				size="small"
+				></el-date-picker>
+				<!-- 图片 -->
+				<img style="width: 80px;height: 80px" :src="scope.row.tp" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
+				<div v-else>{{scope.row[item.row_field_name]}}</div>
+			</template>
+		</el-table-column>
+		<el-table-column label="操作" align="center" width="180" fixed="right">
+			<template slot-scope="scope">
+				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
+				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
+				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)" v-if="button_list.stop == 1">停</el-button>
+				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
+			</template>
+		</el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination
+		@size-change="handleSizeChange"
+		@current-change="handleCurrentChange"
+		:current-page="page"
+		:pager-count="11"
+		:page-sizes="[5, 10, 15, 20]"
+		layout="total, sizes, prev, pager, next, jumper"
+		:total="dataObj.total"
+		>
+	</el-pagination>
 </div>
 <!-- 自定义列表 -->
 <el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -194,7 +76,37 @@
 	<div slot="footer" class="dialog-footer">
 		<el-button size="small" @click="Restore">恢复默认</el-button>
 		<el-button size="small" @click="show_custom = false">取消</el-button>
-		<el-button size="small" type="primary" @click="getList('2')">保存</el-button>
+		<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+	</div>
+</el-dialog>
+<!-- 图片放大 -->
+<el-dialog title="图片" :visible.sync="imageDialog" width="30%" center>
+	<img style="width: 100%" :src="big_img_url">
+	<span slot="footer" class="dialog-footer">
+		<el-button type="primary" @click="imageDialog = false">关闭</el-button>
+	</span>
+</el-dialog>
+<!-- 批量查询商品编码 -->
+<el-dialog title="数据查询" :visible.sync="showSearch">
+	<div>
+		<div>导入编辑好的Excel表格</div>
+		<div class="toast_text">请以"款式编码"为第一行，在第一列填写相应编码</div>
+		<img class="model_img" src="../../static/model_img.png">
+		<div>
+			<div class="imgBox" v-if="filename == ''">
+				<div class="text">请选择上传文件</div>
+				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn" v-if="isMac">
+				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.ms-excel" @change="uploadFn" v-else/>
+			</div>
+			<div class="file_name_box" v-else>
+				<div class="file_name">{{filename}}</div>
+				<i class="el-icon-circle-close" @click="deleteFile"></i>
+			</div>
+		</div>
+	</div>
+	<div slot="footer" class="dialog-footer">
+		<el-button size="small" @click="showSearch = false">取消</el-button>
+		<el-button size="small" type="primary" @click="allSearch">批量查询</el-button>
 	</div>
 </el-dialog>
 </div>
@@ -214,91 +126,95 @@
 	align-items: center;
 	justify-content:space-around;
 }
+.imgBox{
+	margin-top: 8px;
+	background: #fff;
+	display: flex;
+	align-items:center;
+	justify-content:center;
+	width: 106px;
+	height: 30px;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	position: relative;
+	.text{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+	}
+	.upload_file {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
+}
+.file_name_box{
+	display: flex;
+	align-items: center;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	width: 206px;
+	height: 30px;
+	padding-left: 10px;
+	padding-right: 10px;
+	.file_name{
+		margin-right: 10px;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 1;
+		overflow: hidden;
+	}
+}
+.toast_text{
+	margin-top: 10px;
+	color: red;
+}
+.model_img{
+	margin-top: 10px;
+	margin-bottom: 30px;
+	width: 160px;
+}
 </style>
 <script>
 	import resource from '../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
-	import {exportUp} from '../../api/export.js'
+	import {exportPost} from '../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
+	import condition from '../../components/condition.vue'
 	export default{
 		data(){
 			return{
 				pagesize:10,
 				page:1,
-				dept_list: [],								//部门列表	
-				select_department_ids:[],					//选中的部门id列表
-				shop_list:[],								//店铺列表
-				pl_list:[],									//产品分类
-				gys_list:[],								//供应商列表
-				gyshh_list:[],								//供应商货号列表
-				ks_list:[],									//产品编码
-				jyhpxz_list:['试','补','停','清'],			//建议货品性质
-				hpxz_list:[{
-					id:'1',
-					name:'试'
-				},{
-					id:'2',
-					name:'补'
-				},{
-					id:'3',
-					name:'停'
-				},{
-					id:'4',
-					name:'清'
-				}],											//实际货品性质列表
-				sjhpxz:"",									//选中的实际货品性质
-				bd_list:[],									//波段列表
-				select_bd_list:[],							//选中的波段列表
-				sfng:"",									//是否内供
-				sfzzk:"",									//是否自主款
-				yyjc_list:['转正','下架'],					//建议
-				shop_id:[],									//店铺id列表
-				gys:[],										//供应商id列表
-				gyshh:[],									//供应商货号id列表
-				pl:[],										//品类id列表
-				ks:[],										//款式id列表
-				jyhpxz:"",									//建议货品性质
-				yyjc:"",									//建议
-				sfkt_list:[{
-					id:'0',
-					name:"不可退"
-				},{
-					id:'1',
-					name:"可退"
-				}],											//是否可退列表
-				sfkt:"",
-				pickerOptions: {
-					shortcuts: [{
-						text: '当月',
-						onClick(picker) {
-							const start = getMonthStartDate();
-							const end = getCurrentDate();
-							picker.$emit('pick', [start, end]);
-						}
-					},{
-						text: '上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(1);
-							const end = getLastMonthEndDate(0);
-							picker.$emit('pick', [start, end]);
-						}
-					}, {
-						text: '上上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(2);
-							const end = getLastMonthEndDate(1);
-							picker.$emit('pick', [start, end]);
-						}
-					}]
-				},	 										//时间区间
-				date:[],//发货时间
-				start_time:"",				//开始时间
-				end_time:"",					//结束时间
-				xr_start_time:"",							//数据写入日期
+				req:{},											//请求参数
 				dataObj:{},									//列表数据
 				show_custom:false,							//自定义列表是否显示
 				row_ids:[],									//选择的自定义列表id
 				sort:"",
-				sort_type:""
+				sort_type:"",
+				imageDialog:false,							//是否显示放大图片弹框
+				big_img_url:"",								//放大的图片地址
+				showSearch:false,							//批量查询弹框是否显示
+				filename:'',								//已上传的文件名
+				file:null,
+				isMac:true,									//判断系统
+				all_search:false,							//是否是批量查询
+				button_list:{}
 			}
 		},
 		created(){
@@ -308,25 +224,30 @@
 					this.[item] = query[item];
 				}
 			}
-			//部门
-			this.AjaxViewDept();
-			//店铺列表
-			this.GetStoreList();
-			//产品分类
-			this.ajaxPl();
-			//波段
-			this.ajaxBd();
 			//获取列表
-			this.getList('1');
-		},
-		watch:{
-			//发货时间
-			date:function(n){
-				this.start_time = n && n.length> 0?n[0]:"";
-				this.end_time = n && n.length> 0?n[1]:"";
-			},
+			this.getList();
 		},
 		methods:{
+			//判断mac还是windows
+			// OSnow(){
+			// 	var agent = navigator.userAgent.toLowerCase();
+			// 	var isMac = /macintosh|mac os x/i.test(navigator.userAgent);
+			// 	if (agent.indexOf("win32") >= 0 || agent.indexOf("wow32") >= 0) {
+			// 		this.isMac = false;
+			// 	}
+			// 	if (agent.indexOf("win64") >= 0 || agent.indexOf("wow64") >= 0) {
+			// 		this.isMac = false;
+			// 	}
+			// 	if(isMac){
+			// 		this.isMac = true;
+			// 	}
+			// },
+			//图片放大
+			bigImg(big_img_url){
+				this.imageDialog = true;
+				this.big_img_url = big_img_url;
+			},
+			//排序
 			sortChange(column){
 				this.sort = column.prop;
 				this.sort_type = column.order == 'ascending'?'0':'1';
@@ -348,177 +269,99 @@
 					}
 				})
 			},
+			// 上传文件
+			uploadFn(){
+				if (this.$refs.fileUpload.files.length > 0) {
+					var file = this.$refs.fileUpload.files[0];
+					this.filename = file.name;
+					this.file = file;
+				}
+			},
+			//删除文件
+			deleteFile(){
+				this.filename = '';
+				this.file = null;
+			},
 			//导出
 			exportFile(){
-				var arr = [];
-				let req = {
-					dept_id:this.select_department_ids.join(','),
-					shop_id:this.shop_id.join(','),
-					gys:this.gys.join(','),
-					gyshh:this.gyshh.join(','),
-					pl:this.pl.join(','),
-					ks:this.ks.join(','),
-					jyhpxz:this.jyhpxz,
-					sjhpxz:this.sjhpxz,
-					bd:this.select_bd_list.join(','),
-					sfng:this.sfng,
-					sfzzk:this.sfzzk,
-					yyjc:this.yyjc,
-					sfkt:this.sfkt,
-					sj_start_time:this.start_time,
-					sj_end_time:this.end_time,
-					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
-					pagesize:this.pagesize,
-					page:this.page,
-					sort:this.sort,
-					sort_type:this.sort_type
+				this.req.flag = this.all_search == true?1:0;
+				this.req.sort = this.sort;
+				this.req.sort_type = this.sort_type;
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					resource.trialExport(this.req).then(res => {
+						exportPost("\ufeff" + res.data,'试销管理');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
+			//按条件查询
+			searchFun(req){
+				this.page = 1;
+				this.all_search = false;
+				this.req = req;
+				//获取列表
+				this.getList();
+			},
+			//批量查询
+			allSearch(){
+				if(!this.file){
+					this.$message.warning('请先上传文件');
+					return;
 				}
-				for(var item in req){
-					let str = item + '=' + req[item];
-					arr.push(str);
-				};
-				exportUp(`trial/trialexport?${arr.join('&')}`)
+				this.page = 1;
+				this.all_search = true;
+				this.req = {
+					file:this.file
+				}
+				//获取列表
+				this.getList();
 			},
 			//获取列表
-			getList(type){		//type:1(搜索);2:设置字段
-				this.page = type == '1'?1:this.page;
-				let req = {
-					dept_id:this.select_department_ids.join(','),
-					shop_id:this.shop_id.join(','),
-					gys:this.gys.join(','),
-					gyshh:this.gyshh.join(','),
-					pl:this.pl.join(','),
-					ks:this.ks.join(','),
-					jyhpxz:this.jyhpxz,
-					sjhpxz:this.sjhpxz,
-					bd:this.select_bd_list.join(','),
-					sfng:this.sfng,
-					sfzzk:this.sfzzk,
-					yyjc:this.yyjc,
-					sfkt:this.sfkt,
-					sj_start_time:this.start_time,
-					sj_end_time:this.end_time,
-					xr_start_time:!this.xr_start_time?'':this.xr_start_time,
-					pagesize:this.pagesize,
-					page:type == '1'?1:this.page,
-					sort:this.sort,
-					sort_type:this.sort_type
-				}
-				if(type == '2'){
-					req.row_ids = this.row_ids.join(',');
-				}
-				resource.trialList(req).then(res => {
+			getList(){		
+				this.req.flag = this.all_search == true?1:0;
+				this.req.pagesize = this.pagesize;
+				this.req.page = this.page;
+				this.req.sort = this.sort;
+				this.req.sort_type = this.sort_type;
+				resource.trialList(this.req).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
+						this.button_list = this.dataObj.button_list;
+						this.showSearch = false;
 						this.show_custom = false;
-						if(type == '2'){
-							this.$message.success(res.data.msg);
-						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
-			//部门列表
-			AjaxViewDept(){
-				resource.ajaxViewDept({from:1}).then(res => {
+			//设置自定义列
+			setColumns(){
+				resource.setColumns({menu_id:'18',row_ids:this.row_ids.join(',')}).then(res => {
 					if(res.data.code == 1){
-						this.dept_list = res.data.data;
+						this.$message.success(res.data.msg);
+						this.getList(this.all_search == true?'3':'1');
 					}else{
 						this.$message.warning(res.data.msg);
 					}
-				})
-			},	
-			// 获取所有店铺
-			GetStoreList(){
-				let dept_id = this.select_department_ids.join(',');
-				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
-					if(res.data.code == 1){
-						this.shop_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//产品分类
-			ajaxPl(){
-				resource.ajaxPl().then(res => {
-					if(res.data.code == 1){
-						this.pl_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//供应商列表
-			ajaxGys(e){
-				if(e != ''){
-					resource.ajaxGys({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.gys_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
-			//供应商货号
-			ajaxGyshh(e){
-				if(e != ''){
-					resource.ajaxGyshh({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.gyshh_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
-			//波段列表
-			ajaxBd(){
-				resource.ajaxBd().then(res => {
-					if(res.data.code == 1){
-						this.bd_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//产品编码
-			ajaxKsbm(e){
-				if(e != ''){
-					resource.ajaxKsbm({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.ks_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
+				});
 			},
 			//设置
 			setKs(type,title,ksbm){
 				var req = {};
 				if(!ksbm){
-					let ee = {
-						dept_id:this.select_department_ids.join(','),
-						shop_id:this.shop_id.join(','),
-						gys:this.gys.join(','),
-						gyshh:this.gyshh.join(','),
-						pl:this.pl.join(','),
-						ks:this.ks.join(','),
-						jyhpxz:this.jyhpxz,
-						yyjc:this.yyjc,
-						sfkt:this.sfkt,
-						sj_start_time:this.start_time,
-						sj_end_time:this.end_time,
-						xr_start_time:!this.xr_start_time?'':this.xr_start_time,
-						flag:'1',
-						from:'1'
-					}
-					req = ee;
+					let allSet = JSON.parse(JSON.stringify(this.req));
+					allSet.flag = this.all_search?'3':'1';
+					allSet.from = '1';
+					req = allSet;
 				}else{
 					req.ks = ksbm;
 					req.flag = '2';
@@ -538,7 +381,7 @@
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 									//获取列表
-									this.getList('1');
+									this.getList();
 								}else{
 									this.$message.warning(res.data.msg);
 								}
@@ -548,7 +391,7 @@
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 									//获取列表
-									this.getList('1');
+									this.getList();
 								}else{
 									this.$message.warning(res.data.msg);
 								}
@@ -558,7 +401,7 @@
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 									//获取列表
-									this.getList('1');
+									this.getList();
 								}else{
 									this.$message.warning(res.data.msg);
 								}
@@ -568,7 +411,7 @@
 							if(res.data.code == 1){
 								this.$message.success(res.data.msg);
 									//获取列表
-									this.getList('1');
+									this.getList();
 								}else{
 									this.$message.warning(res.data.msg);
 								}
@@ -609,6 +452,9 @@
 					return true;
 				}
 			}
+		},
+		components:{
+			condition
 		}
 	}
 </script>
