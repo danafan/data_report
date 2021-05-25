@@ -3,18 +3,18 @@
 		<condition page_type="7" @callBack="searchFun"/>
 		<div class="buts">
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
-					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.is_self == 0 || scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"></el-input>
+					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"></el-input>
 					<!--  实际下架日期 -->
 					<el-date-picker
 					@change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"
 					v-else-if="item.row_field_name == 'sjxjrq'"
 					v-model="scope.row.sjxjrq"
-					:disabled="scope.row.is_self == 0 || scope.row.edit_status == 0"
+					:disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0"
 					type="date"
 					clearable
 					value-format="yyyy-MM-dd"
@@ -26,7 +26,7 @@
 					v-model="scope.row.sjhpxz" 
 					@change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)" 
 					v-else-if="item.row_field_name == 'sjhpxz'" 
-					:disabled="scope.row.is_self == 0 || scope.row.edit_status == 0"
+					:disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0"
 					clearable 
 					size="small"
 					placeholder="全部">
@@ -41,7 +41,7 @@
 				@change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)" 
 				v-else-if="item.row_field_name == 'jrsx' || item.row_field_name == 's2b' || item.row_field_name == 'b2t' || item.row_field_name == 't2q'" 
 				clearable 
-				:disabled="scope.row.is_self == 0 || scope.row.edit_status == 0"
+				:disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0"
 				size="small"
 				placeholder="全部">
 				<el-option label="是" :value="1"></el-option>
@@ -54,8 +54,8 @@
 	</el-table-column>
 	<el-table-column label="操作" align="center" width="120" fixed="right">
 		<template slot-scope="scope">
-			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'1')" v-if="scope.row.is_self == 1 && (scope.row.is_done == 0 || scope.row.is_done == 2)">确认</el-button>
-			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'2')" v-if="scope.row.is_self == 1 && scope.row.is_done == 1">取消</el-button>
+			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'1')" v-if="button_list.confirm == 1 && scope.row.is_self == 1 && (scope.row.is_done == 0 || scope.row.is_done == 2)">确认</el-button>
+			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'2')" v-if="button_list.cancel_confirm == 1 && scope.row.is_self == 1 && scope.row.is_done == 1">取消</el-button>
 		</template>
 	</el-table-column>
 </el-table>
@@ -137,6 +137,7 @@
 				row_ids:[],
 				imageDialog:false,							//是否显示放大图片弹框
 				big_img_url:"",								//放大的图片地址
+				button_list:{}
 			}
 		},
 		created(){
@@ -189,6 +190,7 @@
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
+						this.button_list = this.dataObj.button_list;
 						this.show_custom = false;
 					}else{
 						this.$message.warning(res.data.msg);

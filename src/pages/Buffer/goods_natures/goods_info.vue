@@ -7,17 +7,17 @@
 				<el-button type="primary" plain size="small" @click="showSearch = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
 			</div>
 			<div style="display:flex">
-				<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
-				<el-button type="primary" plain size="small" @click="decisionAdd">导入决策管理<i class="el-icon-download"></i></el-button>
+				<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="decisionAdd" v-if="button_list.add_decision == 1">导入决策管理<i class="el-icon-download"></i></el-button>
 			</div>
 		</div>
 		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
 					<!-- 编辑框 -->
-					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'ksbm'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
+					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0 || button_list.edit != 1" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'ksbm'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
 					<!-- 下钻 -->
-					<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm'">
+					<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm' && button_list.detail == 1">
 						<div slot="content">
 							<el-button type="text" size="small" @click="getDetail(scope.row.ksbm)">下钻</el-button>
 						</div>
@@ -28,7 +28,7 @@
 					@change="editFun($event,item.row_field_name,scope.row.ksbm)"
 					v-else-if="item.row_field_name == 'sjxjrq'"
 					v-model="scope.row.sjxjrq"
-					:disabled="scope.row.edit_status == 0"
+					:disabled="scope.row.edit_status == 0 || button_list.edit != 1"
 					type="date"
 					clearable
 					value-format="yyyy-MM-dd"
@@ -40,7 +40,7 @@
 					v-model="scope.row.sjhpxz" 
 					@change="editFun($event,item.row_field_name,scope.row.ksbm)" 
 					v-else-if="item.row_field_name == 'sjhpxz'"
-					:disabled="scope.row.edit_status == 0" 
+					:disabled="scope.row.edit_status == 0 || button_list.edit != 1" 
 					clearable 
 					size="small"
 					placeholder="全部">
@@ -252,6 +252,7 @@ center>
 				all_search:false,							//是否是批量查询
 				imageDialog:false,							//是否显示放大图片弹框
 				big_img_url:"",								//放大的图片地址
+				button_list:{}
 			}
 		},
 		created(){
@@ -291,35 +292,10 @@ center>
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					let req = {
-						dept_id:this.select_department_ids.join(','),
-						shop_id:this.shop_id.join(','),
-						flag:this.all_search == true?1:0,
-						ks:this.select_ks_list.join(','),
-						gyshh:this.select_gyshh_list.join(','),
-						jj:this.select_jj_list.join(','),
-						bd:this.select_bd_list.join(','),
-						ms:this.select_ms_list.join(','),
-						cgy:this.select_cgy_list.join(','),
-						cgxz:this.select_cgxz_list.join(','),
-						sfkt:this.sfkt,
-						start_first_fkrq:this.start_first_fkrq,
-						end_first_fkrq:this.end_first_fkrq,
-						start_cjrq:this.start_cjrq,
-						end_cjrq:this.end_cjrq,
-						gys:this.select_gys.join(','),
-						xb:this.xb,
-						pl:this.select_pl_list.join(','),
-						xkfs:this.select_xkfs_list.join(','),
-						sjs:this.select_sjs_list.join(','),
-						gdy:this.select_gdy_list.join(','),
-						jgd:this.select_jgd_list.join(','),
-						sfng:this.sfng,
-						sfzzk:this.sfzzk,
-						sjhpxz:this.sjhpxz,
-						xsxz_gs:this.xsxz_gs
-					}
-					resource.decisionAdd(req).then(res => {
+					this.req.flag = this.all_search == true?1:0;
+					this.req.sort = this.sort;
+					this.req.sort_type = this.sort_type;
+					resource.decisionAdd(this.req).then(res => {
 						if(res.data.code == 1){
 							this.$message.success(res.data.msg);
 						}else{
@@ -399,6 +375,7 @@ center>
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
+						this.button_list = this.dataObj.button_list;
 						this.showSearch = false;
 						this.show_custom = false;
 					}else{

@@ -1,9 +1,9 @@
 <template>
 	<div>
-		<!-- 第一个 -->
+		<!-- 品类销售金额汇总 -->
 		<div class="title_text">品类销售金额汇总</div>
-		<el-table :data="pl_list" size="small" height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle">
-			<el-table-column prop="cpfl" align="center" label="品类" width="150"></el-table-column>
+		<el-table v-if="show_table" :data="pl_list" size="small" height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle">
+			<el-table-column fixed prop="cpfl" align="center" label="品类" width="150"></el-table-column>
 			<el-table-column :label="item" align="center" v-for="item in year_list">
 				<el-table-column :prop="`value_${item}`" align="center" label="销售金额" width="120">
 				</el-table-column>
@@ -13,9 +13,9 @@
 				</el-table-column>
 			</el-table-column>
 		</el-table>
-		<!-- 第二个 -->
+		<!-- 每日销售金额年同比 -->
 		<div id="axis_01" class="axis_01"></div>
-		<!-- 第三个 -->
+		<!-- 销售金额年同比 -->
 		<div class="third_row">
 			<div id="axis_02" class="axis_02"></div>
 			<div class="tb_box">
@@ -29,18 +29,21 @@
 				</div>
 			</div>
 		</div>
+		<!-- 每日鱼塘金额年同比 -->
 		<div class="tab_container">
 			<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">按金额</div>
 			<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">按占比</div>
 		</div>
-		<!-- 第四个 -->
+		<!-- 每日鱼塘金额年同比（按金额） -->
 		<div id="axis_03" class="axis_01" v-show="tab_index == '1'"></div>
-		<!-- 第五个 -->
-		<div class="third_row" v-show="tab_index == '1'">
+		<!-- 每日鱼塘金额年同比（按占比） -->
+		<div id="axis_05" class="axis_01" v-show="tab_index == '2'"></div>
+		<!-- 鱼塘金额年同比 -->
+		<div class="third_row">
 			<div id="axis_04" class="axis_02"></div>
 			<div class="tb_box">
 				<div class="title">鱼塘金额年同比</div>
-				<div class="xsje_vlaue">{{yt_year_ntb.amount}}</div>
+				<div class="xsje_vlaue">{{yt_year_ntb.amount}}万</div>
 				<div class="xsje_toast">
 					<div style="margin-right: 10px">同比(年)</div>
 					<i class="el-icon-caret-top bai" v-if="yt_year_ntb.ntb > 0"></i>
@@ -49,14 +52,12 @@
 				</div>
 			</div>
 		</div>
-		<!-- 第六个 -->
-		<div id="axis_05" class="axis_01" v-show="tab_index == '2'"></div>
-		<!-- 第七个 -->
-		<div class="third_row" v-show="tab_index == '2'">
+		<!-- 鱼塘金额占比年同比 -->
+		<div class="third_row">
 			<div id="axis_06" class="axis_02"></div>
 			<div class="tb_box">
-				<div class="title">鱼塘金额年同比</div>
-				<div class="xsje_vlaue">{{yt_percent_year_ntb.amount}}</div>
+				<div class="title">鱼塘金额占比年同比</div>
+				<div class="xsje_vlaue">{{yt_percent_year_ntb.amount}}%</div>
 				<div class="xsje_toast">
 					<div style="margin-right: 10px">同比(年)</div>
 					<i class="el-icon-caret-top bai" v-if="yt_percent_year_ntb.ntb > 0"></i>
@@ -143,97 +144,57 @@
 	export default{
 		data(){
 			return{
+				show_table:false,
 				pl_list:[],			//顶部表格
 				year_list:[],		//所有年份列表
 				month_list:[],		//所有月份列表
 				day_list:[],		//所有日期列表
-				xsje_day_ntb:[],	//第二个折线图列表
+				xsje_day_ntb:[],	//每日销售金额年同比
+				xsje_month_ntb:[],	//每月销售金额年同比
+				xsje_year_ntb:{},	//销售金额年同比
 				axis_01Chart:null,
 				axis_02Chart:null,
-				xsje_month_ntb:[],	//第三个折线图列表
-				xsje_year_ntb:{},	//销售金额年同比
 				axis_03Chart:null,
 				axis_04Chart:null,
 				axis_05Chart:null,
-				yt_day_number_ntb:[],//每日鱼塘金额年同比（按金额）
-				yt_month_ntb:[],	//第五个折线图列表
-				yt_year_ntb:{},		//鱼塘金额年同比
+				axis_06Chart:null,
 				tab_index:'1',
+				yt_amount_day_ntb:[],	//每日鱼塘金额年同比（按金额）
 				yt_day_percent_ntb:[],	//每日鱼塘金额年同比（按占比）
-				yt_percent_month_ntb:[],
+				yt_month_ntb:[],		//每月鱼塘金额年同比
+				yt_year_ntb:{},			
+				yt_percent_month_ntb:[],//每月鱼塘金额占比年同比
 				yt_percent_year_ntb:{}
 			}
 		},
-		props:{
-			dept_id:{
-				type:String,
-				default:""
-			},
-			shop_id:{
-				type:String,
-				default:""
-			},
-			cpfl:{
-				type:String,
-				default:""
-			},
-			year:{
-				type:String,
-				default:""
-			},
-			month:{
-				type:String,
-				default:""
-			}
-		},
 		watch:{
-			dept_id:function(n,o){
-				//获取列表
-				this.getList();
-			},
-			shop_id:function(n,o){
-				//获取列表
-				this.getList();
-			},
-			cpfl:function(n,o){
-				//获取列表
-				this.getList();
-			},
-			year:function(n,o){
-				//获取列表
-				this.getList();
-			},
-			month:function(n,o){
-				//获取列表
-				this.getList();
-			},
 			tab_index:function(n){
 				this.$nextTick(() => {
 					this.axis_03Chart.resize();
-					this.axis_04Chart.resize();
 					this.axis_05Chart.resize();
-					this.axis_06Chart.resize();
 				})
 			}
 		},
-		mounted(){
-			//获取列表
-			this.getList();
-		},
 		methods:{
 			columnStyle({ row, column, rowIndex, columnIndex }) {
-				if (columnIndex == 0) {
-					return "background:#F6BD16;color:#333333";
+				if(columnIndex == 0){
+					return 'background: #F6BD16;color:#333333';
+				}else if(columnIndex == 3 || columnIndex == 6 || columnIndex == 9){
+					if(row[column.property].indexOf('-') > -1 && row[column.property].indexOf('%') > -1){
+						return 'color: #0CB618';
+					}else if(row[column.property].indexOf('-') == -1 && row[column.property].indexOf('%') > -1){
+						return 'color: #EA1B29';
+					}
 				}
 			},
-			getList(){
-				let req = {
-					dept_id:this.dept_id,
-					shop_id:this.shop_id,
-					cpfl:this.cpfl,
-					year:this.year,
-					month:this.month
-				}
+			//每次数据变化重新渲染比表格
+			refreshTable () {
+				this.show_table = false;
+				this.$nextTick(() => {
+					this.show_table = true;
+				})
+			},
+			getList(req){
 				resource.annualAmount(req).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
@@ -259,22 +220,24 @@
 						this.year_list = res.data.data.year_list; //所有年份列表
 						this.month_list = res.data.data.month_list;//所有月份列表
 						this.day_list = res.data.data.day_list;	  //所有日期列表
-						//第一个
+						//品类销售金额汇总
 						this.pl_list = res.data.data.pl_list;
-						//第二个
+						//每次数据变化重新渲染比表格
+						this.refreshTable();
+						//每日销售金额年同比
 						this.xsje_day_ntb = res.data.data.xsje_day_ntb;
-						let markPoint = {
-							data: [
-							{type: 'max', name: '最大值'},
-							{type: 'min', name: '最小值'},
-							]
-						}
-						this.xsje_day_ntb[this.xsje_day_ntb.length - 1].markPoint = markPoint;
+						// let markPoint = {
+						// 	data: [
+						// 	{type: 'max', name: '最大值'},
+						// 	{type: 'min', name: '最小值'},
+						// 	]
+						// }
+						// this.xsje_day_ntb[this.xsje_day_ntb.length - 1].markPoint = markPoint;
 						var axis_01 = document.getElementById('axis_01');
 						this.axis_01Chart = echarts.init(axis_01);
 						this.axis_01Chart.setOption({
 							title: {
-								text: '店铺七天销量'
+								text: '每日销售金额年同比'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -317,19 +280,20 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销售金额',
+								name:'金额',
 								axisLabel: {
 									formatter: '{value}万'
 								}
 							}],
 							series:this.xsje_day_ntb
 						});
-						//第三个
+						//每月销售金额年同比
 						this.xsje_month_ntb = res.data.data.xsje_month_ntb;
 						this.xsje_year_ntb = res.data.data.xsje_year_ntb;
 						this.xsje_month_ntb.map(item => {
 							item.label = {
-								show: true
+								show: true,
+								formatter: '{c}万',
 							}
 						})
 						var axis_02 = document.getElementById('axis_02');
@@ -380,22 +344,22 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销售金额',
+								name:'金额',
 								axisLabel: {
 									formatter: '{value}万'
 								}
 							}],
 							series:this.xsje_month_ntb
 						});
-						//第四个
+						//每日鱼塘金额年同比（按金额）
 						this.yt_amount_day_ntb = res.data.data.yt_amount_day_ntb;
-						let yt_amount_day_markPoint = {
-							data: [
-							{type: 'max', name: '最大值'},
-							{type: 'min', name: '最小值'},
-							]
-						}
-						this.yt_amount_day_ntb[this.yt_amount_day_ntb.length - 1].markPoint = yt_amount_day_markPoint;
+						// let yt_amount_day_markPoint = {
+						// 	data: [
+						// 	{type: 'max', name: '最大值'},
+						// 	{type: 'min', name: '最小值'},
+						// 	]
+						// }
+						// this.yt_amount_day_ntb[this.yt_amount_day_ntb.length - 1].markPoint = yt_amount_day_markPoint;
 						var axis_03 = document.getElementById('axis_03');
 						this.axis_03Chart = echarts.init(axis_03);
 						this.axis_03Chart.setOption({
@@ -410,7 +374,7 @@
 										for(let i = 0; i < params.length; i++) {
 											tip += "年份：" + params[i].data.tj_yr  + '</br>'
 											+ "日期：" + params[i].data.tj_mon_day + '</br>'
-											+ "销售金额：" + params[i].data.value + "万</br>"
+											+ "鱼塘金额指标：" + params[i].data.value + "万</br>"
 											+ "较去年变化率：" + params[i].data.jqnbh + "%</br>";
 										}
 									}
@@ -443,19 +407,83 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销售金额',
+								name:'金额',
 								axisLabel: {
 									formatter: '{value}万'
 								}
 							}],
 							series:this.yt_amount_day_ntb
 						});
-						//第五个
+						//每日鱼塘金额年同比（按占比）
+						this.yt_percent_day_ntb = res.data.data.yt_percent_day_ntb;
+						// let yt_day_percent_markPoint = {
+						// 	data: [
+						// 	{type: 'max', name: '最大值'},
+						// 	{type: 'min', name: '最小值'},
+						// 	]
+						// }
+						// this.yt_day_percent_ntb[this.yt_day_percent_ntb.length - 1].markPoint = yt_day_percent_markPoint;
+						var axis_05 = document.getElementById('axis_05');
+						this.axis_05Chart = echarts.init(axis_05);
+						this.axis_05Chart.setOption({
+							title: {
+								text: '每日鱼塘金额年同比'
+							},
+							tooltip: {
+								trigger: 'axis',
+								formatter: (params) => {
+									let tip = "";
+									if(params != null && params.length > 0) {
+										for(let i = 0; i < params.length; i++) {
+											tip += "年份：" + params[i].data.tj_yr  + '</br>'
+											+ "日期：" + params[i].data.tj_mon_day + '</br>'
+											+ "鱼塘金额指标：" + params[i].data.value + "%</br>"
+											+ "较去年变化率：" + params[i].data.jqnbh + "%</br>";
+										}
+									}
+									return tip;
+								},
+								backgroundColor:"rgba(0,0,0,.8)",
+								textStyle:{
+									color:"#ffffff"
+								},
+								borderColor:"rgba(0,0,0,0.7)",
+								axisPointer: {            
+									type: 'shadow'        
+								}
+							},
+							color:['#5AD8A6','#F6BD16','#5B8FF9'],
+							grid:{
+								top:'25%'
+							},
+							legend: {
+								data: this.year_list,
+								top:"8%",
+								left:0
+							},
+							xAxis: [{
+								data: this.day_list,
+								axisLabel: {
+									color: '#333',
+									rotate:70
+								}
+							}],
+							yAxis:[{
+								type: 'value',
+								name:'占比',
+								axisLabel: {
+									formatter: '{value}%'
+								}
+							}],
+							series:this.yt_percent_day_ntb
+						});
+						//每月鱼塘金额年同比
 						this.yt_month_ntb = res.data.data.yt_amount_month_ntb;
 						this.yt_year_ntb = res.data.data.yt_amount_year_ntb;
 						this.yt_month_ntb.map(item => {
 							item.label = {
-								show: true
+								show: true,
+								formatter: '{c}万',
 							}
 						})
 						var axis_04 = document.getElementById('axis_04');
@@ -472,7 +500,7 @@
 										for(let i = 0; i < params.length; i++) {
 											tip += "年份：" + params[i].data.tj_yr  + '</br>'
 											+ "月份：" + params[i].data.tj_mon + '月</br>'
-											+ "销售金额：" + params[i].data.value + "万</br>"
+											+ "鱼塘金额：" + params[i].data.value + "万</br>"
 											+ "较去年变化率：" + params[i].data.jqnbh + "%</br>";
 										}
 									}
@@ -506,89 +534,27 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销售金额',
+								name:'金额',
 								axisLabel: {
 									formatter: '{value}万'
 								}
 							}],
 							series:this.yt_month_ntb
 						});
-						//第六个
-						this.yt_day_percent_ntb = res.data.data.yt_percent_day_ntb;
-						let yt_day_percent_markPoint = {
-							data: [
-							{type: 'max', name: '最大值'},
-							{type: 'min', name: '最小值'},
-							]
-						}
-						this.yt_day_percent_ntb[this.yt_day_percent_ntb.length - 1].markPoint = yt_day_percent_markPoint;
-						var axis_05 = document.getElementById('axis_05');
-						this.axis_05Chart = echarts.init(axis_05);
-						this.axis_05Chart.setOption({
-							title: {
-								text: '每日鱼塘金额年同比'
-							},
-							tooltip: {
-								trigger: 'axis',
-								formatter: (params) => {
-									let tip = "";
-									if(params != null && params.length > 0) {
-										for(let i = 0; i < params.length; i++) {
-											tip += "年份：" + params[i].data.tj_yr  + '</br>'
-											+ "日期：" + params[i].data.tj_mon_day + '</br>'
-											+ "销售金额：" + params[i].data.value + "万</br>"
-											+ "较去年变化率：" + params[i].data.jqnbh + "%</br>";
-										}
-									}
-									return tip;
-								},
-								backgroundColor:"rgba(0,0,0,.8)",
-								textStyle:{
-									color:"#ffffff"
-								},
-								borderColor:"rgba(0,0,0,0.7)",
-								axisPointer: {            
-									type: 'shadow'        
-								}
-							},
-							color:['#5AD8A6','#F6BD16','#5B8FF9'],
-							grid:{
-								top:'25%'
-							},
-							legend: {
-								data: this.year_list,
-								top:"8%",
-								left:0
-							},
-							xAxis: [{
-								data: this.day_list,
-								axisLabel: {
-									color: '#333',
-									rotate:70
-								}
-							}],
-							yAxis:[{
-								type: 'value',
-								name:'销售金额',
-								axisLabel: {
-									formatter: '{value}万'
-								}
-							}],
-							series:this.yt_day_percent_ntb
-						});
-						//第七个
+						//每月鱼塘金额占比年同比
 						this.yt_percent_month_ntb = res.data.data.yt_percent_month_ntb;
 						this.yt_percent_year_ntb = res.data.data.yt_percent_year_ntb;
 						this.yt_percent_month_ntb.map(item => {
 							item.label = {
-								show: true
+								show: true,
+								formatter: '{c}%',
 							}
 						})
 						var axis_06 = document.getElementById('axis_06');
 						this.axis_06Chart = echarts.init(axis_06);
 						this.axis_06Chart.setOption({
 							title: {
-								text: '每月鱼塘金额年同比'
+								text: '每月鱼塘金额占比年同比'
 							},
 							tooltip: {
 								trigger: 'axis',
@@ -598,7 +564,7 @@
 										for(let i = 0; i < params.length; i++) {
 											tip += "年份：" + params[i].data.tj_yr  + '</br>'
 											+ "月份：" + params[i].data.tj_mon + '月</br>'
-											+ "销售金额：" + params[i].data.value + "万</br>"
+											+ "鱼塘金额占比：" + params[i].data.value + "%</br>"
 											+ "较去年变化率：" + params[i].data.jqnbh + "%</br>";
 										}
 									}
@@ -632,9 +598,9 @@
 							}],
 							yAxis:[{
 								type: 'value',
-								name:'销售金额',
+								name:'占比',
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}%'
 								}
 							}],
 							series:this.yt_percent_month_ntb

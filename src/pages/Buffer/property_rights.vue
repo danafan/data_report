@@ -53,10 +53,10 @@
 		</el-table-column>
 		<el-table-column label="操作" align="center" width="180" fixed="right">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
-				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)">补</el-button>
-				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)">停</el-button>
-				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)">清</el-button>
+				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
+				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
+				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)" v-if="button_list.stop == 1">停</el-button>
+				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -110,6 +110,7 @@
 					name:'清'
 				}],			//货品性质
 				dataObj:{},								//列表数据
+				button_list:{}
 			}
 		},
 		created(){
@@ -146,6 +147,7 @@
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
+						this.button_list = this.dataObj.button_list;
 						this.show_custom = false;
 						if(type == '2'){
 							this.$message.success(res.data.msg);

@@ -358,7 +358,7 @@
 			setKs(type,title,ksbm){
 				var req = {};
 				if(!ksbm){
-					let allSet = JSON.parse(JSON.stringify(this.req));
+					let allSet = this.req;
 					allSet.flag = this.all_search?'3':'1';
 					allSet.from = '1';
 					req = allSet;

@@ -64,7 +64,6 @@
 			}
 		},
 		created(){	
-			console.log(getCurrentDate());
 			let menu_list = this.$store.state.menu_list;
 			this.forMenuList(menu_list);
 			this.getIndex();

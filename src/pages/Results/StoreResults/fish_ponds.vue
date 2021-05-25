@@ -209,7 +209,7 @@
 			},
 			//品类列表
 			ajaxCpfl(){
-				resource.ajaxCpfl().then(res => {
+				resource.ajaxPl({from:9}).then(res => {
 					if(res.data.code == 1){
 						this.cate_name_list = res.data.data;
 					}else{

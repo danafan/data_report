@@ -123,7 +123,7 @@
 				<el-select v-model="select_status_id" :popper-append-to-body="false" clearable placeholder="全部">
 					<el-option label="未确认" value="0"></el-option>
 					<el-option label="已确认" value="1"></el-option>
-					<el-option label="已修正" value="2"></el-option>
+					<el-option :label="page_type == '7'?'已取消':'已修正'" value="2"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="是否可退：">
@@ -362,7 +362,7 @@
 					is_arr:false,
 					tags:['4']
 				},{
-					name:'is_confirm',
+					name:'status',
 					data_name:'select_status_id',
 					is_arr:false,
 					tags:['2','5','7']
@@ -475,26 +475,35 @@
 			this.getPl();
 			//波段列表
 			this.getBd();
-			//运营决策列表
-			this.getYyjc();
-			//采购决策列表
-			this.getCgjc();
-			//买手列表
-			this.getMs();
-			//采购员列表
-			this.getCgy();
-			//采购性质列表
-			this.getCgxz();
-			//选款方式
-			this.getXkfs();
-			//设计师列表
-			this.getSjs();
-			//跟单员列表
-			this.getGdy();
-			//价格带列表
-			this.getJgd();
-			//操作人列表
-			this.getPerator();
+			if(this.page_type == '1' || this.page_type == '4'){
+				//运营决策列表
+				this.getYyjc();
+			}
+			if(this.page_type == '4'){
+				//采购决策列表
+				this.getCgjc();
+			}
+			if(this.page_type == '6' || this.page_type == '7'){
+				//买手列表
+				this.getMs();
+				//采购员列表
+				this.getCgy();
+				//采购性质列表
+				this.getCgxz();
+				//选款方式
+				this.getXkfs();
+				//设计师列表
+				this.getSjs();
+				//跟单员列表
+				this.getGdy();
+				//价格带列表
+				this.getJgd();
+			}
+			if(this.page_type == '7'){
+				//操作人列表
+				this.getPerator();
+			}
+
 		},
 		watch:{
 			xr_start_time:function(n){
@@ -524,7 +533,7 @@
 		methods:{
 			//部门列表
 			getDept(){
-				resource.ajaxViewDept({from:1}).then(res => {
+				resource.ajaxViewDept({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.dept_list = res.data.data;
 					}else{
@@ -536,7 +545,7 @@
 			getStore(){
 				this.select_store_ids = [];
 				let dept_id = this.select_dept_ids.join(',');
-				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id,from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
@@ -547,7 +556,7 @@
 			//供应商列表
 			getGys(e){
 				if(e != ''){
-					resource.ajaxGys({name:e}).then(res => {
+					resource.ajaxGys({name:e,from:this.page_type}).then(res => {
 						if(res.data.code == 1){
 							this.gys_list = res.data.data;
 						}else{
@@ -559,7 +568,7 @@
 			//供应商货号
 			getGyshh(e){
 				if(e != ''){
-					resource.ajaxGyshh({name:e}).then(res => {
+					resource.ajaxGyshh({name:e,from:this.page_type}).then(res => {
 						if(res.data.code == 1){
 							this.gyshh_list = res.data.data;
 						}else{
@@ -570,7 +579,7 @@
 			},
 			//品类列表
 			getPl(){
-				resource.ajaxPl().then(res => {
+				resource.ajaxPl({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.pl_list = res.data.data;
 					}else{
@@ -581,7 +590,7 @@
 			//款式编码
 			getKsbm(e){
 				if(e != ''){
-					resource.ajaxKsbm({name:e}).then(res => {
+					resource.ajaxKsbm({name:e,from:this.page_type}).then(res => {
 						if(res.data.code == 1){
 							this.ks_list = res.data.data;
 						}else{
@@ -592,7 +601,7 @@
 			},
 			//波段列表
 			getBd(){
-				resource.ajaxBd().then(res => {
+				resource.ajaxBd({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.bd_list = res.data.data;
 					}else{
@@ -605,7 +614,7 @@
 				if(this.page_type == '1'){	//试销
 					this.yyjc_list = ['转正','下架'];
 				}else if(this.page_type == '4'){
-					resource.ajaxYyjc().then(res => {
+					resource.ajaxYyjc({from:this.page_type}).then(res => {
 						if(res.data.code == 1){
 							this.yyjc_list = res.data.data;
 						}else{
@@ -616,7 +625,7 @@
 			},
 			//采购决策列表
 			getCgjc(){
-				resource.ajaxCgjc().then(res => {
+				resource.ajaxCgjc({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.cgjc_list = res.data.data;
 					}else{
@@ -626,7 +635,7 @@
 			},
 			//买手列表
 			getMs(){
-				resource.ajaxMs({from:2}).then(res => {
+				resource.ajaxMs({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.ms_list = res.data.data;
 					}else{
@@ -636,7 +645,7 @@
 			},
 			//采购员列表
 			getCgy(){
-				resource.ajaxCgy({from:2}).then(res => {
+				resource.ajaxCgy({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.cgy_list = res.data.data;
 					}else{
@@ -646,7 +655,7 @@
 			},
 			//采购性质列表
 			getCgxz(){
-				resource.ajaxCgxz({from:2}).then(res => {
+				resource.ajaxCgxz({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.cgxz_list = res.data.data;
 					}else{
@@ -656,7 +665,7 @@
 			},
 			//选款方式
 			getXkfs(){
-				resource.ajaxXkfs({from:2}).then(res => {
+				resource.ajaxXkfs({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.xkfs_list = res.data.data;
 					}else{
@@ -666,7 +675,7 @@
 			},
 			//设计师列表
 			getSjs(){
-				resource.ajaxSjs({from:2}).then(res => {
+				resource.ajaxSjs({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.sjs_list = res.data.data;
 					}else{
@@ -676,7 +685,7 @@
 			},
 			//跟单员列表
 			getGdy(){
-				resource.ajaxGdy({from:2}).then(res => {
+				resource.ajaxGdy({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.gdy_list = res.data.data;
 					}else{
@@ -686,7 +695,7 @@
 			},
 			//价格带列表
 			getJgd(){
-				resource.ajaxJgd({from:2}).then(res => {
+				resource.ajaxJgd({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.jgd_list = res.data.data;
 					}else{
@@ -696,7 +705,7 @@
 			},
 			//操作人列表
 			getPerator(){
-				resource.commonoPerator().then(res => {
+				resource.commonoPerator({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.operator_list = res.data.data;
 					}else{

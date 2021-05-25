@@ -46,7 +46,7 @@
 				v-model="scope.row.sjxjrq"
 				type="date"
 				clearable
-				 :disabled="button_list.setxjrq != 1"
+				:disabled="button_list.setxjrq != 1"
 				value-format="yyyy-MM-dd"
 				placeholder="选择日期"
 				size="small"
@@ -458,7 +458,7 @@
 			setKs(type,title,ksbm){
 				var req = {};
 				if(!ksbm){
-					let allSet = JSON.parse(JSON.stringify(this.req));
+					let allSet = this.req;
 					allSet.flag = this.all_search?'3':'1';
 					allSet.from = '2';
 					req = allSet;

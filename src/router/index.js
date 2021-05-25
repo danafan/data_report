@@ -5,7 +5,7 @@ const home = resolve=>require(['@/pages/home'],resolve)
 //业绩指标
 const store_data = resolve=>require(['@/pages/Results/StoreResults/store_data'],resolve)
 const store_results = resolve=>require(['@/pages/Results/store_results'],resolve)
-const annual_report = resolve=>require(['@/pages/Results/FineOperation/annual_report'],resolve)
+const category_analysis = resolve=>require(['@/pages/Results/category_analysis'],resolve)
 //缓冲机制
 const test_market = resolve=>require(['@/pages/Buffer/test_market'],resolve)
 const supplement = resolve=>require(['@/pages/Buffer/supplement'],resolve)
@@ -28,7 +28,7 @@ const router = new Router({
     children:[
     { path: '/store_data',name:"店铺日数据", component: store_data},
     { path: '/store_results',name:"店铺业绩", component: store_results},
-    { path: '/annual_report',name:"销售年度报告", component: annual_report},
+    { path: '/category_analysis',name:"品类分析", component: category_analysis},
     { path: '/test_market',name:"试销管理", component: test_market},
     { path: '/supplement',name:"补货管理", component: supplement},
     { path: '/stop_replenish',name:"停止进货", component: stop_replenish},

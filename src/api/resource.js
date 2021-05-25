@@ -9,7 +9,6 @@ let path = {
 	jsapi:'jsapi',													//获取用户权限
 	ajaxViewDept:'Common/ajaxViewDept',								//部门列表
 	ajaxViewStore:'Common/ajaxViewShop',							//店铺列表
-	ajaxCpfl:'ajaxCpfl',											//商品品类列表
 	performanceReport:'PerformanceReport/index',					//业绩分析
 	dayAnalysis:'PerformanceReport/DayAnalysis',					//每日业绩
 	fishList:'fish/list',											//鱼塘分析报表
@@ -142,10 +141,6 @@ let path = {
 	decisionList:'decision/decision',								//决策管理列表
 	editDecision:'decision/editdecision',							//决策管理编辑
 	decisionConfirm:'decision/confirm',								//决策管理确认
-	ajaxDecisionKs:'Common/ajaxDecisionKs',							//款式列表（决策）
-	ajaxDecisionGyshh:'Common/ajaxDecisionGyshh',					//供应商货号（决策）
-	ajaxDecisionGys:'Common/ajaxDecisionGys',						//供应商（决策）
-	ajaxDecisionPlList:'Common/ajaxDecisionPlList',					//品类（决策）
 	skuDetail:'decision/skudetail',									//商品管理下钻
 	decisionCancel:'decision/cancel',								//决策管理取消
 	decisionUpload:'decision/upload',								//上传批量查询（商品管理）
@@ -160,6 +155,10 @@ let path = {
 	replenishExport:'replenish/replenishexport',					//补货管理导出
 	stopExport:'stop/stopexport',									//停止进货管理导出
 	clearExport:'clear/clearexport',								//清理管理导出
+	annualReturn:'annual/return',									//退货数据报表
+	ajaxSpid:'common/ajaxSpid',										//商品id
+	dpAnalysis:'annual/dp_analysis',								//单品分析-指标汇总
+	dayDpAnalysis:'annual/day_dp_Analysis',							//单品分析-每日分析下面的折线图
 
 }					
 export default{
@@ -198,10 +197,6 @@ export default{
 	//店铺列表
 	ajaxViewStore(params){
 		return http.get(path.ajaxViewStore, params)
-	},
-	//品类列表
-	ajaxCpfl(params){
-		return http.get(path.ajaxCpfl, params)
 	},
 	//业绩分析
 	performanceReport(params){
@@ -759,22 +754,6 @@ export default{
 	decisionConfirm(params){
 		return http.post(path.decisionConfirm, params)
 	},
-	//款式列表（决策）
-	ajaxDecisionKs(params){
-		return http.get(path.ajaxDecisionKs, params)
-	},
-	//供应商货号（决策）
-	ajaxDecisionGyshh(params){
-		return http.get(path.ajaxDecisionGyshh, params)
-	},
-	//供应商（决策）
-	ajaxDecisionGys(params){
-		return http.get(path.ajaxDecisionGys, params)
-	},
-	//品类（决策）
-	ajaxDecisionPlList(params){
-		return http.get(path.ajaxDecisionPlList, params)
-	},
 	//商品管理下钻
 	skuDetail(params){
 		return http.get(path.skuDetail, params)
@@ -830,6 +809,22 @@ export default{
 	//清理管理导出
 	clearExport(params){
 		return http.post(path.clearExport, params)
+	},
+	//退货数据报表
+	annualReturn(params){
+		return http.get(path.annualReturn, params)
+	},
+	//商品ID列表
+	ajaxSpid(params){
+		return http.get(path.ajaxSpid, params)
+	},
+	//单品分析-指标汇总
+	dpAnalysis(params){
+		return http.get(path.dpAnalysis, params)
+	},
+	//单品分析—每日分析下面的折线图
+	dayDpAnalysis(params){
+		return http.get(path.dayDpAnalysis, params)
 	},
 }
 

@@ -39,7 +39,6 @@
               onFail : err => {
                 alert('dd error: ' + JSON.stringify(err));
               }
-
             });
         });
       },

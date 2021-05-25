@@ -28,7 +28,7 @@
 		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 			<template slot-scope="scope">
 				<!-- 下钻 -->
-				<el-tooltip placement="top-end" v-if="item.row_field_name == 'ksbm'">
+				<el-tooltip placement="top-end" v-if="item.row_field_name == 'ksbm' && button_list.detail == 1">
 					<div slot="content">
 						<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
 					</div>
@@ -373,7 +373,7 @@
 			setKs(type,title,ksbm){
 				var req = {};
 				if(!ksbm){
-					let allSet = JSON.parse(JSON.stringify(this.req));
+					let allSet = this.req;
 					allSet.flag = this.all_search?'3':'1';
 					allSet.from = '4';
 					req = allSet;

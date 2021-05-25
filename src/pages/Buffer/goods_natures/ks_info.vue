@@ -9,31 +9,31 @@
 				width="150"
 				trigger="click">
 				<div class="setStyle">
-					<el-button type="primary" size="small" plain @click="setKs('1','试')">试</el-button>
-					<el-button type="primary" size="small" plain @click="setKs('2','补')">补</el-button>
+					<el-button type="primary" size="small" plain @click="setKs('1','试')" v-if="button_list.try == 1">试</el-button>
+					<el-button type="primary" size="small" plain @click="setKs('2','补')" v-if="button_list.replenishment == 1">补</el-button>
 				</div>
 				<div class="setStyle">
-					<el-button type="warning" size="small" plain @click="setKs('3','停')">停</el-button>
-					<el-button type="danger" size="small" plain @click="setKs('4','清')">清</el-button>
+					<el-button type="warning" size="small" plain @click="setKs('3','停')" v-if="button_list.stop == 1">停</el-button>
+					<el-button type="danger" size="small" plain @click="setKs('4','清')" v-if="button_list.clear == 1">清</el-button>
 				</div>
 				<el-button type="primary" size="small" slot="reference">批量设置</el-button>
 			</el-popover>
-			<el-button style="margin-left: 10px" type="primary" plain size="small" @click="showSearch = true">批量填写内部核价<i class="el-icon-edit el-icon--right"></i></el-button>
+			<el-button style="margin-left: 10px" type="primary" plain size="small" @click="showSearch = true" v-if="button_list.setprice == 1">批量填写内部核价<i class="el-icon-edit el-icon--right"></i></el-button>
 			<el-button type="primary" plain size="small" @click="showSearchAll = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
-			<el-button type="primary" plain size="small" @click="showAllUpload = true">批量上传店铺在售款式<i class="el-icon-search el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="showAllUpload = true" v-if="button_list.day_upload == 1">批量上传店铺在售款式<i class="el-icon-search el-icon--right"></i></el-button>
 		</div>
 		<div class="buts">
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 	</div>
 	<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="maxWidth(item.row_field_name)" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 			<template slot-scope="scope">
 				<!-- 内部核价 -->
-				<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)"></el-input>
+				<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)" :disabled="button_list.setprice != 1"></el-input>
 				<!-- 下钻 -->
-				<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm'">
+				<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm' && button_list.detail == 1">
 					<div slot="content">
 						<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
 					</div>
@@ -46,6 +46,7 @@
 				v-model="scope.row.sjxjrq"
 				type="date"
 				clearable
+				:disabled="button_list.setxjrq != 1"
 				value-format="yyyy-MM-dd"
 				placeholder="选择日期"
 				size="small"
@@ -57,11 +58,11 @@
 		</el-table-column>
 		<el-table-column label="操作" align="center" width="180" fixed="right">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)">试</el-button>
-				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)">补</el-button>
-				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)">停</el-button>
-				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)">清</el-button>
-				<el-button type="text" size="small" @click="updateNum(scope.row.ksbm,scope.row.replenish_num,scope.row.sjxrrq)">修正数量</el-button>
+				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
+				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
+				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)" v-if="button_list.stop == 1">停</el-button>
+				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
+				<el-button type="text" size="small" @click="updateNum(scope.row.ksbm,scope.row.replenish_num,scope.row.sjxrrq)" v-if="button_list.modifynum == 1">修正数量</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -125,7 +126,7 @@
 		<el-table-column width="120" align="center" property="replenish_num" label="实际补货数量"></el-table-column>
 		<el-table-column align="center" label="操作">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" v-if="scope.$index > 0" @click="updateSku(scope.row.spbm,scope.row.replenish_num)">修改数量</el-button>
+				<el-button type="text" size="small" v-if="scope.$index > 0 && button_list.modifyskunum == 1" @click="updateSku(scope.row.spbm,scope.row.replenish_num)">修改数量</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -369,6 +370,7 @@
 				showAllUpload:false,						//批量上传店铺款式
 				filename_upload:"",
 				file_upload:null,
+				button_list:{}
 			}
 		},
 		created(){
@@ -495,14 +497,14 @@
 			},
 			//批量查询
 			allSearchFun(){
-				if(!this.file){
+				if(!this.file_all){
 					this.$message.warning('请先上传文件');
 					return;
 				}
 				this.page = 1;
 				this.all_search = true;
 				this.req = {
-					file:this.file
+					file:this.file_all
 				}
 				//获取列表
 				this.getList();
@@ -538,7 +540,9 @@
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
+						this.button_list = this.dataObj.button_list;
 						this.showSearch = false;
+						this.showSearchAll = false;
 						this.show_custom = false;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -562,7 +566,7 @@
 			setKs(type,title,ksbm){
 				var req = {};
 				if(!ksbm){
-					let allSet = JSON.parse(JSON.stringify(this.req));
+					let allSet = this.req;
 					allSet.flag = this.all_search?'3':'1';
 					allSet.from = '5';
 					req = allSet;

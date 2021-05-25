@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
@@ -14,13 +14,13 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品类:">
-				<el-select v-model="select_cate_names" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_cate_names" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in cate_name_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="统计月份:">
-				<el-select v-model="select_month_list" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_month_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in month_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
@@ -34,23 +34,17 @@
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-tabs v-model="activeTab" @tab-click="checkTab">
-		<!-- <el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-			<SalesMoney :dept_id="dept_id" :shop_id="shop_id" v-if="item.web_url == 'store_view'"/>
-			<SalesNumber :dept_id="dept_id" :shop_id="shop_id" v-if="item.web_url == 'traffic_view'"/>
-			<ReturnsData :dept_id="dept_id" :shop_id="shop_id" v-if="item.web_url == 'complete_status'"/>
-		</el-tab-pane> -->
-		<el-tab-pane label="销售金额" lazy class="tab_pane_box" name="sales_money">
-			<SalesMoney :dept_id="dept_id" :shop_id="shop_id" :cpfl="cpfl" :year="year" :month="month"/>
-		</el-tab-pane>
-		<el-tab-pane label="销售数量" lazy class="tab_pane_box" name="sales_number">
-			<SalesNumber :dept_id="dept_id" :shop_id="shop_id" :cpfl="cpfl" :year="year" :month="month"/>
-		</el-tab-pane>
-		<el-tab-pane label="退货数据" lazy class="tab_pane_box" name="returns_data">
-			<ReturnsData :dept_id="dept_id" :shop_id="shop_id" :cpfl="cpfl" :year="year" :month="month"/>
-		</el-tab-pane>
-	</el-tabs>
-</div>
+		<el-tabs v-model="activeTab" type="border-card" @tab-click="checkTab">
+			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+				<!-- <SalesMoney :dept_id="dept_id" :shop_id="shop_id" :cpfl="cpfl" :year="year" :month="month" v-if="item.web_url == 'sales_money'"/>
+				<SalesNumber :dept_id="dept_id" :shop_id="shop_id" :cpfl="cpfl" :year="year" :month="month" v-if="item.web_url == 'sales_number'"/>
+				<ReturnsData :dept_id="dept_id" :shop_id="shop_id" :cpfl="cpfl" :year="year" :month="month" v-if="item.web_url == 'returns_data'"/> -->
+				<SalesMoney ref="sales_money" v-if="item.web_url == 'sales_money'"/>
+				<SalesNumber ref="sales_number" v-if="item.web_url == 'sales_number'"/>
+				<ReturnsData ref="returns_data" v-if="item.web_url == 'returns_data'"/>
+			</el-tab-pane>
+		</el-tabs>
+	</div>
 </template>
 <style lang="less" scoped>
 .tab_pane_box{
@@ -117,13 +111,16 @@
 				shop_id:"",									//传给子组件的店铺字符串
 				cpfl:"",
 				year:"",
-				month:""
+				month:"",
+				ss:[]
 			}
 		},
 		created(){	
-			//获取年份
+			//获取年份/月份
 			var now = new Date();
 			var nowYear = now.getFullYear();
+			var nowMonth = now.getMonth();
+			this.select_month_list = [nowMonth - 1 < 10?'0' + (nowMonth - 1):nowMonth - 1,nowMonth < 10?'0' + nowMonth:nowMonth,nowMonth + 1 < 10?'0' + (nowMonth + 1):nowMonth + 1];
 			for(var i = 0;i < 3;i ++){
 				let obj = {
 					id:nowYear - i,
@@ -134,9 +131,9 @@
 					this.select_years_list.push(nowYear - i);
 				}
 			}
-			// let menu_list = this.$store.state.menu_list;
-			// this.forMenuList(menu_list);
-			// this.getIndex();
+			let menu_list = this.$store.state.menu_list;
+			this.forMenuList(menu_list);
+			this.getIndex();
 			//部门列表
 			this.AjaxViewDept();
 			//店铺列表
@@ -156,7 +153,7 @@
 			},
 			getIndex(){
 				this.ss.map(item => {
-					if (item.web_url == 'store_data') {
+					if (item.web_url == 'annual_report') {
 						this.menu_list = item.list;
 						this.activeTab = this.menu_list[0].web_url;
 					}
@@ -186,7 +183,7 @@
 			},
 			//品类列表
 			ajaxCpfl(){
-				resource.ajaxCpfl().then(res => {
+				resource.ajaxPl({from:8}).then(res => {
 					if(res.data.code == 1){
 						this.cate_name_list = res.data.data;
 					}else{
@@ -201,11 +198,21 @@
 				this.cpfl = this.select_cate_names.join(',');
 				this.year = this.select_years_list.join(',');
 				this.month = this.select_month_list.join(',');
+				let req = {
+					dept_id:this.dept_id,
+					shop_id:this.shop_id,
+					cpfl:this.cpfl,
+					year:this.year,
+					month:this.month
+				} 
+				this.$nextTick(() => {
+					this.$refs[this.activeTab][0].getList(req);
+				})
 			},
 			//切换tab
 			checkTab(e){
 				this.activeTab = e.name;
-				this.getList();
+				this.getList(this.activeTab);
 			}
 		},
 		components:{
