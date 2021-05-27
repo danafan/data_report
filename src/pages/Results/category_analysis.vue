@@ -3,10 +3,7 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<AnnualReport v-if="item.web_url == 'annual_report'"/>
-				<!-- <ItemAnalysis v-if="item.web_url == 'item_analysis'"/> -->
-			</el-tab-pane>
-			<el-tab-pane label="单品数据分析" lazy name="item_analysis" class="tab_pane_box">
-				<ItemAnalysis/>
+				<ItemAnalysis v-if="item.web_url == 'item_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

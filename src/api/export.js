@@ -16,7 +16,14 @@ export function exportExcel(data_obj) {
 			　const filterVal = data_obj.field_name_list;
 			　const list = data_obj.data_list;
 			　const data = formatJson(filterVal,list);
-			　export_json_to_excel(tHeader, data, data_obj.table_title);
+			let today = new Date();
+			let tadayDate =
+			today.getFullYear() +
+			"-" +
+			(today.getMonth() + 1) +
+			"-" +
+			today.getDate();
+			　export_json_to_excel(tHeader, data, data_obj.table_title + "-" + tadayDate);
 		})
 	}).catch(() => {
 		Message({

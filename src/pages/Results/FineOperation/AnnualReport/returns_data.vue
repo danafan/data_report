@@ -2,7 +2,7 @@
 	<div>
 		<!-- 品类退货金额汇总 -->
 		<div class="title_text">品类退货金额汇总</div>
-		<el-table v-if="show_table" :data="pl_list" size="small" height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle">
+		<el-table v-if="show_table" :data="pl_list" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle">
 			<el-table-column fixed prop="cpfl" align="center" label="品类" width="150"></el-table-column>
 			<el-table-column :label="item" align="center" v-for="item in year_list">
 				<el-table-column :prop="`value_${item}`" align="center" label="退货金额" width="120">

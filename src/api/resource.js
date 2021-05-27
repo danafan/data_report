@@ -159,6 +159,10 @@ let path = {
 	ajaxSpid:'common/ajaxSpid',										//商品id
 	dpAnalysis:'annual/dp_analysis',								//单品分析-指标汇总
 	dayDpAnalysis:'annual/day_dp_Analysis',							//单品分析-每日分析下面的折线图
+	annualDpzt:'annual/dp_zt',										//每日分析-整体数据
+	annualDpSearch:'annual/dp_search',								//每日分析-搜索系列
+	annualDpZtc:'annual/dp_ztc',									//每日分析-直通车系列
+	annualDpCjtj:'annual/dp_cjtj',									//每日分析-超级推荐系列
 
 }					
 export default{
@@ -825,6 +829,22 @@ export default{
 	//单品分析—每日分析下面的折线图
 	dayDpAnalysis(params){
 		return http.get(path.dayDpAnalysis, params)
+	},
+	//每日分析-整体数据
+	annualDpzt(params){
+		return http.get(path.annualDpzt, params)
+	},
+	//每日分析-搜索系列
+	annualDpSearch(params){
+		return http.get(path.annualDpSearch, params)
+	},
+	//每日分析-直通车系列
+	annualDpZtc(params){
+		return http.get(path.annualDpZtc, params)
+	},
+	//每日分析-超级推荐系列
+	annualDpCjtj(params){
+		return http.get(path.annualDpCjtj, params)
 	},
 }
 
