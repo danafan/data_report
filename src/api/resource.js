@@ -163,6 +163,10 @@ let path = {
 	annualDpSearch:'annual/dp_search',								//每日分析-搜索系列
 	annualDpZtc:'annual/dp_ztc',									//每日分析-直通车系列
 	annualDpCjtj:'annual/dp_cjtj',									//每日分析-超级推荐系列
+	ztExport:'annual/zt_export',									//整体数据导出
+	searchExport:'annual/search_export',							//搜索系列导出
+	ztcExport:'annual/ztc_export',									//直通车导出
+	cjtjExport:'annual/cjtj_export',								//超级推荐系列导出
 
 }					
 export default{
@@ -845,6 +849,22 @@ export default{
 	//每日分析-超级推荐系列
 	annualDpCjtj(params){
 		return http.get(path.annualDpCjtj, params)
+	},
+	//整体数据导出
+	ztExport(params){
+		return http.get(path.ztExport, params)
+	},
+	//搜索导出
+	searchExport(params){
+		return http.get(path.searchExport, params)
+	},
+	//直通车导出
+	ztcExport(params){
+		return http.get(path.ztcExport, params)
+	},
+	//超级推荐导出
+	cjtjExport(params){
+		return http.get(path.cjtjExport, params)
 	},
 }
 

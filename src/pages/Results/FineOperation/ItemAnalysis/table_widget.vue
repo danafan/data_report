@@ -2,7 +2,7 @@
 	<div>
 		<div class="table_setting">
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="exportFun">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="exportFun" v-if="is_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" :cell-style="columnStyle" max-height='600' :summary-method="getSummaries"
 		show-summary>
@@ -46,12 +46,17 @@
 }
 </style>
 <script>
+	import resource from '../../../../api/resource.js'
 	import {exportExcel} from '../../../../api/export.js'
 	export default{
 		props:{
 			page_type:{
 				type:String,
 				default:""
+			},
+			is_export:{
+				type:Number,
+				default:1
 			},
 			table_data:{
 				type:Array,
@@ -113,20 +118,47 @@
 				switch(this.page_type){
 					case 'overall_data':
 					data_obj.table_title = "整体数据报表";
+					resource.ztExport().then(res => {
+						if(res.data.code == 1){
+							exportExcel(data_obj);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 					break;
 					case 'search_data':
 					data_obj.table_title = "搜索系列报表";
+					resource.searchExport().then(res => {
+						if(res.data.code == 1){
+							exportExcel(data_obj);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 					break;
 					case 'ztc_data':
 					data_obj.table_title = "直通车系列报表";
+					resource.ztcExport().then(res => {
+						if(res.data.code == 1){
+							exportExcel(data_obj);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 					break;
 					case 'cjtj_data':
 					data_obj.table_title = "超级推荐系列报表";
+					resource.cjtjExport().then(res => {
+						if(res.data.code == 1){
+							exportExcel(data_obj);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 					break;
 					default:
 					return "";
 				}
-				exportExcel(data_obj);
 			},
 		}
 	}

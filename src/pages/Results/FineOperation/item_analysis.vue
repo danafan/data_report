@@ -98,7 +98,10 @@
 		</div>
 		<!-- 指标汇总 -->
 		<div class="title">指标汇总</div>
-		<el-button type="primary" size="small" @click="customFun('zbhz_data')" style="margin-bottom: 5px">自定义列表</el-button>
+		<div class="table_setting">
+			<el-button type="primary" size="small" @click="customFun('zbhz_data')" style="margin-bottom: 5px">自定义列表</el-button>
+			<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'yxgxmyl'?160:120" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 				<template slot-scope="scope">
@@ -133,16 +136,16 @@
 		<div class="title">每日分析</div>
 		<el-tabs v-model="activeItemTab" @tab-click="checkItemTab">
 			<el-tab-pane label="整体数据" name="overall_data" class="tab_pane_box">
-				<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" @customBack="customFun"/>
+				<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" :is_export="button_list.zt_export" @customBack="customFun"/>
 			</el-tab-pane>
 			<el-tab-pane label="搜索系列" name="search_data" class="tab_pane_box">
-				<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" @customBack="customFun"/>
+				<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" :is_export="button_list.search_export" @customBack="customFun"/>
 			</el-tab-pane>
 			<el-tab-pane label="直通车系列" name="ztc_data" class="tab_pane_box">
-				<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" @customBack="customFun"/>
+				<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" :is_export="button_list.ztc_export" @customBack="customFun"/>
 			</el-tab-pane>
 			<el-tab-pane label="超级推荐系列" name="cjtj_data" class="tab_pane_box">
-				<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" @customBack="customFun"/>
+				<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" :is_export="button_list.cjtj_export" @customBack="customFun"/>
 			</el-tab-pane>
 		</el-tabs>
 		<!-- 折线图 -->
@@ -185,6 +188,11 @@
 	</div>
 </template>
 <style lang="less" scoped>
+.table_setting{
+	margin-bottom: 5px;
+	display: flex;
+	justify-content: space-between;
+}
 .top_row{
 	display: flex;
 	justify-content: space-between;
@@ -254,6 +262,7 @@
 	import resource from '../../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import TabaleWidget from './ItemAnalysis/table_widget.vue'
+	import {exportUp} from '../../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -339,6 +348,7 @@
 				menu_id:"",									//自定义提交的menu_id
 				page_type:"",								//弹框的类型
 				req:{},										//请求参数
+				button_list:{},								//权限
 			}
 		},
 		watch:{
@@ -527,6 +537,24 @@
 				//单品分析—-指标汇总
 				this.dpAnalysis();
 			},
+			//导出
+			exportFun(){
+				let req = {
+					spid:this.select_spid_list.join(','),
+					shop_id:this.select_shop_list.join(','),
+					tjrq_start:this.tjrq_start,
+					tjrq_end:this.tjrq_end,
+					cpfl:this.select_pl_ids.join(','),
+					gyskh:this.select_gyshh_ids.join(','),
+					ks:this.select_ks_ids.join(',')
+				}
+				var export_arr = [];
+				for(let key in req){
+					export_arr.push(`${key}=${req[key]}`);
+				}
+				let url = "annual/dp_analysis_export?" + export_arr.join("&");
+				exportUp(url)
+			},
 			//单品分析—-指标汇总
 			dpAnalysis(){
 				let req = JSON.parse(JSON.stringify(this.req));
@@ -538,6 +566,7 @@
 				};
 				resource.dpAnalysis({...req,...dpAnalysis}).then(res => {
 					if(res.data.code == 1){
+						this.button_list = res.data.data.button_list;	//导出按钮是否显示
 						this.table_list = res.data.data.table_list;		//列表行数据
 						this.title_list = res.data.data.title_list;		//列表列数据
 						this.selected_ids = res.data.data.selected_ids;	//自定义已选中的id
