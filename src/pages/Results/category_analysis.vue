@@ -4,6 +4,7 @@
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<AnnualReport v-if="item.web_url == 'annual_report'"/>
 				<ItemAnalysis v-if="item.web_url == 'item_analysis'"/>
+				<CostAnalysis v-if="item.web_url == 'cost_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -16,6 +17,7 @@
 <script>
 	import AnnualReport from './FineOperation/annual_report.vue'
 	import ItemAnalysis from './FineOperation/item_analysis.vue'
+	import CostAnalysis from './FineOperation/cost_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -53,7 +55,8 @@
 		},
 		components:{
 			AnnualReport,
-			ItemAnalysis
+			ItemAnalysis,
+			CostAnalysis
 		}
 	}
 </script>

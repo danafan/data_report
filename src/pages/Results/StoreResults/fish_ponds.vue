@@ -13,12 +13,6 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="品类:">
-				<el-select v-model="select_cate_names" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in cate_name_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
 			<el-form-item label="付款日期:" style="margin-right: 20px">
 				<el-date-picker
 				v-model="date"
@@ -142,8 +136,6 @@
 				select_department_ids:[],					//选中的部门id列表
 				store_list: [],								//店铺列表	
 				select_store_ids:[],						//选中的店铺id列表
-				cate_name_list:[],							//品类列表
-				select_cate_names:[],						//选中的品类列表
 				tab_index:'1',								//表格导航
 				single_dateChart:null,						//每日鱼塘单量
 				single_totalChart:null,						//累计鱼塘单量
@@ -159,8 +151,6 @@
 			this.AjaxViewDept();
 			//店铺列表
 			this.GetStoreList();
-			//品类列表
-			this.ajaxCpfl();
 		},
 		mounted(){
             //获取列表
@@ -207,24 +197,13 @@
 					}
 				})
 			},
-			//品类列表
-			ajaxCpfl(){
-				resource.ajaxPl({from:9}).then(res => {
-					if(res.data.code == 1){
-						this.cate_name_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
 			//获取列表
 			fishList(){
 				let req = {
 					dept_id:this.select_department_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					start_time:this.start_time,
-					end_time:this.end_time,
-					cate_name:this.select_cate_names.join(',')
+					end_time:this.end_time
 				}
 				resource.fishList(req).then(res => {
 					if(res.data.code == '1'){
@@ -905,7 +884,6 @@
 			ClearReq(){
 				this.select_department_ids = [];
 				this.select_store_ids = [];
-				this.select_cate_names = [];
 				this.date = [];
 			},
 		}

@@ -167,6 +167,10 @@ let path = {
 	searchExport:'annual/search_export',							//搜索系列导出
 	ztcExport:'annual/ztc_export',									//直通车导出
 	cjtjExport:'annual/cjtj_export',								//超级推荐系列导出
+	ajaxYongyou:'common/ajaxYongyou',								//用友店铺列表
+	ajaxXmdl:'common/ajaxXmdl',										//项目大类列表
+	ajaxXmmc:'common/ajaxXmmc',										//项目名称列表
+	yxfyList:'yxfy/list',											//营销费用分析报告
 
 }					
 export default{
@@ -865,6 +869,22 @@ export default{
 	//超级推荐导出
 	cjtjExport(params){
 		return http.get(path.cjtjExport, params)
+	},
+	//用友店铺列表
+	ajaxYongyou(params){
+		return http.get(path.ajaxYongyou, params)
+	},
+	//项目大类列表
+	ajaxXmdl(params){
+		return http.get(path.ajaxXmdl, params)
+	},
+	//项目名称列表
+	ajaxXmmc(params){
+		return http.get(path.ajaxXmmc, params)
+	},
+	//营销费用分析报告
+	yxfyList(params){
+		return http.get(path.yxfyList, params)
 	},
 }
 
