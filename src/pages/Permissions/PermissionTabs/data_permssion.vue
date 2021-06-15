@@ -41,9 +41,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="menu_list_box">
-			<div class="menu_item" v-for="item in menu_list">
-				<el-tree :data="item" ref="tree" node-key="dept_id" :default-checked-keys="checked_keys" :props="props" show-checkbox @check="checkChange"></el-tree>
-			</div>
+			<el-tree :data="menu_list" ref="tree" node-key="dept_id" :default-checked-keys="checked_keys" :props="props" show-checkbox @check="checkChange"></el-tree>
 		</div>
 		<div slot="footer" class="dialog-footer">
 			<el-button @click="show_role_dialog = false" size="small">取 消</el-button>
@@ -155,7 +153,12 @@
 			addRole(){
 				resource.addDataRoleGet().then(res => {
 					if(res.data.code == 1){
-						this.menu_list = res.data.data;
+						let arr = res.data.data;
+						var menu_list_arr = [];
+						arr.map(item => {
+							menu_list_arr.push(item[0]);
+						})
+						this.menu_list = menu_list_arr;
 						this.role_type = '1';
 						this.show_role_dialog = true;
 					}else{
@@ -167,9 +170,14 @@
 			editFun(role_id){
 				resource.editDataRoleGet({role_id:role_id}).then(res => {
 					if(res.data.code == 1){
-						this.menu_list = res.data.data.list;
+						let arr = res.data.data.list;
+						var menu_list_arr = [];
+						arr.map(item => {
+							menu_list_arr.push(item[0]);
+						})
+						this.menu_list = menu_list_arr;
 						this.checked_keys = res.data.data.ids;
-						this.name = res.data.data.role_name;							//角色名称
+						this.name = res.data.data.role_name;	//角色名称
 						this.role_id = role_id;
 						this.role_type = '2';
 						this.show_role_dialog = true;
@@ -213,12 +221,7 @@
 			},
 			//点击某个部门选项
 			checkChange(data, checked) {
-				let tree_list = this.$refs.tree;
-				let arr = [];
-				tree_list.map(item => {
-					arr = [...arr,...item.getCheckedKeys()];
-				})
-				this.checked_keys = arr;
+				this.checked_keys = checked.checkedKeys;
 			},
 			//提交添加或编辑
 			submitRole(){

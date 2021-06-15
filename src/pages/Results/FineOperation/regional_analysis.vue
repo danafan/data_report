@@ -19,16 +19,15 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="统计月份:">
-				<el-select v-model="select_month_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in month_list" :key="item.id" :label="item.name" :value="item.id">
+			<el-form-item label="省/直辖市:">
+				<el-select v-model="select_province_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in province_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="年份:">
-				<el-checkbox-group v-model="select_years_list">
-					<el-checkbox-button v-for="item in years_list" :label="item.id" :key="item.id">{{item.name}}</el-checkbox-button>
-				</el-checkbox-group>
+			<el-form-item label="付款日期:">
+				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
@@ -36,9 +35,9 @@
 		</el-form>
 		<el-tabs v-model="activeTab" type="border-card" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<SalesMoney ref="sales_money" v-if="item.web_url == 'sales_money'"/>
-				<SalesNumber ref="sales_number" v-if="item.web_url == 'sales_number'"/>
-				<ReturnsData ref="returns_data" v-if="item.web_url == 'returns_data'"/>
+				<SalesData ref="sales_data" v-if="item.web_url == 'sales_data'"/>
+				<RefundData ref="refund_data" v-if="item.web_url == 'refund_data'"/>
+				<FishpondsData ref="fishponds_data" v-if="item.web_url == 'fishponds_data'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -49,14 +48,15 @@
 }
 </style>
 <script>
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
-	import SalesMoney from './AnnualReport/sales_money.vue'
-	import SalesNumber from './AnnualReport/sales_number.vue'
-	import ReturnsData from './AnnualReport/returns_data.vue'
+	import SalesData from './RegionalAnalysis/sales_data.vue'
+	import RefundData from './RegionalAnalysis/refund_data.vue'
+	import FishpondsData from './RegionalAnalysis/fishponds_data.vue'
 	export default{
 		data(){
 			return{
-				activeTab:"sales_money",
+				activeTab:"sales_data",
 				menu_list:[],								//所有菜单列表
 				shop_list:[],								//店铺列表
 				select_shop_list:[],						//选中的店铺列表
@@ -64,70 +64,40 @@
 				select_department_ids:[],					//选中的部门id列表
 				cate_name_list:[],							//品类列表
 				select_cate_names:[],						//选中的品类列表
-				month_list:[{
-					id:'01',
-					name:'1月'
-				},{
-					id:'02',
-					name:'2月'
-				},{
-					id:'03',
-					name:'3月'
-				},{
-					id:'04',
-					name:'4月'
-				},{
-					id:'05',
-					name:'5月'
-				},{
-					id:'06',
-					name:'6月'
-				},{
-					id:'07',
-					name:'7月'
-				},{
-					id:'08',
-					name:'8月'
-				},{
-					id:'09',
-					name:'9月'
-				},{
-					id:'10',
-					name:'10月'
-				},{
-					id:'11',
-					name:'11月'
-				},{
-					id:'12',
-					name:'12月'
-				},],										//所有月份
-				select_month_list:[],						//选中的月份
-				years_list:[],								//所有的年份
-				select_years_list:[],						//选中的年份
 				dept_id:"",									//传给子组件的部门字符串
 				shop_id:"",									//传给子组件的店铺字符串
-				cpfl:"",
-				year:"",
-				month:"",
-				ss:[]
+				cpfl:"",									//传给子组件的品类字符串
+				ss:[],
+				province_list:[],							//所有省份列表
+				select_province_list:[],					//选中的省份列表
+				pickerOptions: {
+					shortcuts: [{
+						text: '当月',
+						onClick(picker) {
+							const start = getMonthStartDate();
+							const end = getCurrentDate();
+							picker.$emit('pick', [start, end]);
+						}
+					},{
+						text: '上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(1);
+							const end = getLastMonthEndDate(0);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '上上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(2);
+							const end = getLastMonthEndDate(1);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},	 										 //时间区间
+				date:[getMonthStartDate(),getCurrentDate()], //上架日期
 			}
 		},
 		created(){	
-			//获取年份/月份
-			var now = new Date();
-			var nowYear = now.getFullYear();
-			var nowMonth = now.getMonth();
-			this.select_month_list = [nowMonth - 1 < 10?'0' + (nowMonth - 1):nowMonth - 1,nowMonth < 10?'0' + nowMonth:nowMonth,nowMonth + 1 < 10?'0' + (nowMonth + 1):nowMonth + 1];
-			for(var i = 0;i < 3;i ++){
-				let obj = {
-					id:nowYear - i,
-					name:(nowYear - i) + '年'
-				};
-				this.years_list.push(obj);
-				if(i < 2){
-					this.select_years_list.push(nowYear - i);
-				}
-			}
 			let menu_list = this.$store.state.menu_list;
 			this.forMenuList(menu_list);
 			this.getIndex();
@@ -137,6 +107,8 @@
 			this.GetStoreList();
 			//品类列表
 			this.ajaxCpfl();
+			//所有省份列表
+			this.ajaxProvince();
 			this.getList();
 		},
 		methods:{
@@ -150,7 +122,7 @@
 			},
 			getIndex(){
 				this.ss.map(item => {
-					if (item.web_url == 'annual_report') {
+					if (item.web_url == 'regional_analysis') {
 						this.menu_list = item.list;
 						this.activeTab = this.menu_list[0].web_url;
 					}
@@ -188,22 +160,31 @@
 					}
 				})
 			},
+			//所有省份列表
+			ajaxProvince(){
+				resource.ajaxProvince().then(res => {
+					if(res.data.code == 1){
+						this.province_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//点击搜索
 			getList(){
 				this.dept_id = this.select_department_ids.join(',');
 				this.shop_id = this.select_shop_list.join(',');
 				this.cpfl = this.select_cate_names.join(',');
-				this.year = this.select_years_list.join(',');
-				this.month = this.select_month_list.join(',');
 				let req = {
 					dept_id:this.dept_id,
 					shop_id:this.shop_id,
 					cpfl:this.cpfl,
-					year:this.year,
-					month:this.month
+					province:this.select_province_list.join(','),
+					start_time:this.date?this.date[0]:'',
+					end_time:this.date?this.date[1]:'',
 				} 
 				this.$nextTick(() => {
-					this.$refs[this.activeTab][0].getList(req);
+					this.$refs[this.activeTab][0].setReq(req);
 				})
 			},
 			//切换tab
@@ -213,9 +194,9 @@
 			}
 		},
 		components:{
-			SalesMoney,
-			SalesNumber,
-			ReturnsData
+			SalesData,
+			RefundData,
+			FishpondsData
 		}
 	}
 </script>

@@ -6,6 +6,7 @@
 				<DailyPerformance v-if="item.web_url == 'daily_performance'"/>
 				<FishPonds v-if="item.web_url == 'fish_ponds'"/>
 				<StoreData v-if="item.web_url == 'store_data'"/>
+				<SalesTrend v-if="item.web_url == 'sales_trend'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -20,6 +21,7 @@
 	import DailyPerformance from './StoreResults/daily_performance.vue'
 	import FishPonds from './StoreResults/fish_ponds.vue'
 	import StoreData from './StoreResults/store_data.vue'
+	import SalesTrend from './StoreResults/sales_trend.vue'
 	export default{
 		data(){
 			return{
@@ -59,7 +61,8 @@
 			PerformanceAnalysis,
 			DailyPerformance,
 			FishPonds,
-			StoreData
+			StoreData,
+			SalesTrend
 		}
 	}
 </script>

@@ -5,6 +5,7 @@
 				<AnnualReport v-if="item.web_url == 'annual_report'"/>
 				<ItemAnalysis v-if="item.web_url == 'item_analysis'"/>
 				<CostAnalysis v-if="item.web_url == 'cost_analysis'"/>
+				<RegionalAnalysis v-if="item.web_url == 'regional_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -18,6 +19,7 @@
 	import AnnualReport from './FineOperation/annual_report.vue'
 	import ItemAnalysis from './FineOperation/item_analysis.vue'
 	import CostAnalysis from './FineOperation/cost_analysis.vue'
+	import RegionalAnalysis from './FineOperation/regional_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -56,7 +58,8 @@
 		components:{
 			AnnualReport,
 			ItemAnalysis,
-			CostAnalysis
+			CostAnalysis,
+			RegionalAnalysis
 		}
 	}
 </script>

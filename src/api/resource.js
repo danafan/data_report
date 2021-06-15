@@ -171,6 +171,10 @@ let path = {
 	ajaxXmdl:'common/ajaxXmdl',										//项目大类列表
 	ajaxXmmc:'common/ajaxXmmc',										//项目名称列表
 	yxfyList:'yxfy/list',											//营销费用分析报告
+	ajaxPlat:'common/ajaxPlat',										//平台列表
+	recentSales:'PerformanceReport/recent_sales',					//店铺近期销售额趋势
+	ajaxProvince:'common/ajaxProvince',								//所有省份列表
+	areaSale:'areasale/sales',										//销售数据
 
 }					
 export default{
@@ -885,6 +889,22 @@ export default{
 	//营销费用分析报告
 	yxfyList(params){
 		return http.get(path.yxfyList, params)
+	},
+	//平台列表
+	ajaxPlat(params){
+		return http.get(path.ajaxPlat, params)
+	},
+	//店铺近期销售额趋势
+	recentSales(params){
+		return http.get(path.recentSales, params)
+	},
+	//所有省份列表
+	ajaxProvince(params){
+		return http.get(path.ajaxProvince, params)
+	},
+	//销售数据
+	areaSale(params){
+		return http.get(path.areaSale, params)
 	},
 }
 
