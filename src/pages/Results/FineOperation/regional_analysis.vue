@@ -182,6 +182,7 @@
 					province:this.select_province_list.join(','),
 					start_time:this.date?this.date[0]:'',
 					end_time:this.date?this.date[1]:'',
+					select_province:""
 				} 
 				this.$nextTick(() => {
 					this.$refs[this.activeTab][0].setReq(req);

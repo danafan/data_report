@@ -175,6 +175,8 @@ let path = {
 	recentSales:'PerformanceReport/recent_sales',					//店铺近期销售额趋势
 	ajaxProvince:'common/ajaxProvince',								//所有省份列表
 	areaSale:'areasale/sales',										//销售数据
+	areasaleReturn:'areasale/return',								//退款指标
+	areasaleYt:'areasale/yt',										//鱼塘指标
 
 }					
 export default{
@@ -905,6 +907,14 @@ export default{
 	//销售数据
 	areaSale(params){
 		return http.get(path.areaSale, params)
+	},
+	//退款指标
+	areasaleReturn(params){
+		return http.get(path.areasaleReturn, params)
+	},
+	//鱼塘指标
+	areasaleYt(params){
+		return http.get(path.areasaleYt, params)
 	},
 }
 

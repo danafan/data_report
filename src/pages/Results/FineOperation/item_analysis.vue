@@ -117,7 +117,7 @@
 						<div style="color: #8D5714">{{scope.row.spid}}</div>
 					</el-tooltip>
 					<!-- 普通文字 -->
-					<div :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ""?item.unit:''}}</div>
+					<div :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -381,6 +381,14 @@
 			this.dayDpAnalysis();
 		},
 		methods:{
+			getQianNumber(number) {
+				const num = String(number)
+				const reg = /\d{1,3}(?=(\d{3})+$)/g
+				const res = num.replace(/^(-?)(\d+)((\.\d+)?)$/, function(match, s1, s2, s3){
+					return s1 + s2.replace(reg, '$&,') + s3
+				})
+				return res
+			},
 			//店铺列表
 			getStore(){
 				resource.ajaxViewStore().then(res => {

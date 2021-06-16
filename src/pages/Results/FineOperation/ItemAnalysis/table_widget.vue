@@ -9,11 +9,11 @@
 		<el-table-column :label="item.row_name" :prop="item.row_field_name" width="160" v-for="item in title_list" :sortable="item.is_sort == 1?true:false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 			<template slot-scope="scope">
 				<!-- 占比 -->
-				<div class="background_box" :style="{width:`${item.max_value == 0?0:(160/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
+				<div class="background_box" :style="{width:`${item.max_value == 0?0:(160/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{item.unit}}</div>
 				<!-- 正负颜色 -->
-				<div class="red_color" :class="{'green_color':scope.row[item.row_field_name] < 0}" v-else-if="item.type == 2">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ""?item.unit:''}}</div>
+				<div class="red_color" :class="{'green_color':scope.row[item.row_field_name] < 0}" v-else-if="item.type == 2">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ""?item.unit:''}}</div>
 				<!-- 普通文字 -->
-				<div :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ""?item.unit:''}}</div>
+				<div :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ""?item.unit:''}}</div>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -80,6 +80,14 @@
 			}
 		},
 		methods:{
+			getQianNumber(number) {
+				const num = String(number)
+				const reg = /\d{1,3}(?=(\d{3})+$)/g
+				const res = num.replace(/^(-?)(\d+)((\.\d+)?)$/, function(match, s1, s2, s3){
+					return s1 + s2.replace(reg, '$&,') + s3
+				})
+				return res
+			},
 			//周末行的样式
 			columnStyle({ row, column, rowIndex, columnIndex }) {
 				if(row.week == '周六' || row.week == '周日'){

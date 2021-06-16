@@ -37,12 +37,12 @@
 		.money_text{
 			font-size: 36px;
 			font-weight: bold;
-			color: #DE3F07;
+			color: #FC5C19;
 		}
 		.tb_row{
 			display:flex;
 			align-items: center;
-			font-size: 16px;
+			font-size: 14px;
 			.top{
 				color: #DE3F07;
 			}
@@ -51,13 +51,12 @@
 			}
 		}
 		.china_box{
-			border: 1px solid red;
 			width: 100%;
 			height: 350px;
 		}
 		.line_box{
 			width: 100%;
-			height: 200px;
+			height: 260px;
 		}
 	}
 }
@@ -73,26 +72,34 @@
 		color: #8a8a8a;
 	}
 	.active_tab_item{
-		background:#DE3F07;
+		background:#FC5C19;
 		color: #fff;
 	}
 }
 </style>
 <script>
 	import resource from '../../../../api/resource.js'
+	import geoJson from '../../../../static/china_geo.json'
 	export default{
 		data(){
 			return{
 				tab_index:'1',			//默认选中第一个
 				bar_01Chart:null,		//左侧的柱状图
-				bar_02Chart:null,
-				line_boxChart:null,
-				total_obj:{},
-				req:{}
+				bar_02Chart:null,		//右侧柱状图
+				line_boxChart:null,		//底部折线图
+				china_boxChart:null,	//中国地图
+				total_obj:{},			//总计数字
+				req:{},					//点击搜索传递的参数
+				left_title_list:[],		//缓存的左侧省份数据
+				left_data:[],			//缓存的左侧数据
+				map_list:[],			//缓存的地图数据
+				max_value:0,			//缓存的地图最大值
+				min_value:0,			//缓存的地图最小值
 			}
 		},
 		watch:{
 			tab_index:function(n,o){
+				this.req.select_province = '';
 				this.getList();
 			}
 		},
@@ -110,10 +117,13 @@
 						//总计
 						this.total_obj = data.total;
 						//左侧柱状图
-						var left_title_list = data.province.title_list;
-						var left_data = data.province.data;
+						if(data.province){
+							this.left_title_list = data.province.title_list;
+							this.left_data = data.province.data;
+							this.left_data.reverse();
+						}
 						var left_ljzb_list = [];
-						left_data.map(item => {
+						this.left_data.map(item => {
 							left_ljzb_list.push(item.ljzb);
 						});
 						var bar_01 = document.getElementById('bar_01');
@@ -121,10 +131,20 @@
 							this.bar_01Chart.dispose();
 						}
 						this.bar_01Chart = echarts.init(bar_01);
-						this.bar_01Chart.setOption(this.barOptions('各省销售指标排名',left_title_list,left_data,left_ljzb_list));
+						this.bar_01Chart.setOption(this.barOptions('各省销售指标排名',this.left_title_list,this.left_data,left_ljzb_list));
+						//点击事件
+						this.bar_01Chart.getZr().on('click', params => {
+							let pointInPixel = [params.offsetX, params.offsetY]
+							if (this.bar_01Chart.containPixel('grid', pointInPixel)) {
+								let yIndex = this.bar_01Chart.convertFromPixel({ seriesIndex: 0 }, [params.offsetX, params.offsetY])[1];
+								this.req.select_province = this.left_title_list[yIndex];
+								this.getList();
+							}
+						})
 						//右侧柱状图
 						var right_title_list = data.cpfl.title_list;
 						var right_data = data.cpfl.list;
+						right_data.reverse();
 						var right_ljzb_list = [];
 						right_data.map(item => {
 							right_ljzb_list.push(item.ljzb);
@@ -145,11 +165,17 @@
 						this.line_boxChart = echarts.init(line_box);
 						this.line_boxChart.setOption(this.lineOptions(day_list,day_data_list));
 						//地图
+						echarts.registerMap('china', {geoJSON: geoJson});
 						var china_box = document.getElementById('china_box');
 						if(this.china_boxChart){
 							this.china_boxChart.dispose();
 						}
 						this.china_boxChart = echarts.init(china_box);
+						if(data.map){
+							this.map_data = data.map.list;
+							this.max_value = data.map.max_value;
+							this.min_value = data.map.min_value;
+						}
 						this.china_boxChart.setOption(this.mapOptions());
 
 						var _this = this;
@@ -159,6 +185,7 @@
 							_this.line_boxChart.resize();
 							_this.china_boxChart.resize();
 						})
+
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -182,7 +209,7 @@
 							type: 'shadow'        
 						}
 					},
-					color:['#DE3F07'],
+					color:['#FC5C19'],
 					xAxis: {
 						type: 'category',
 						boundaryGap: false,
@@ -219,7 +246,7 @@
 							if(params != null && params.length > 0) {
 								for(let i =0; i < params.length; i++) {
 									tip = params[1].axisValueLabel + '</br>'
-									+ '销售指标：' + params[1].data.value + '</br>' 
+									+ '销售指标：' + params[1].data.value + '万</br>' 
 									+ '占比：' + params[1].data.zb + "%</br>"
 									+ '累计占比：' + params[1].data.ljzb + "%";
 								}
@@ -235,7 +262,7 @@
 							type: 'shadow'        
 						}
 					},
-					color:['#DE3F07','#F6BD16'],
+					color:['#FC5C19','#FC5C19'],
 					grid: {
 						containLabel: true,
 						y2: 10
@@ -272,57 +299,55 @@
 						emphasis: {
 							focus: 'series'
 						},
-						data: left_data
-					}]
-				}
-			},
+						itemStyle: {
+							color: (params) => {
+								if(this.req.select_province  === params.name){
+									return '#1296db';
+								}else {
+									return '#F6BD16';
+								}
+							}},
+							data: left_data
+						}]
+					}
+				},
 			//地图配置
 			mapOptions(){
 				return {
-					visualMap: {
-						min: 800,
-						max: 50000,
-						text: ['High', 'Low'],
-						realtime: false,
-						calculable: true,
-						inRange: {
-							color: ['lightskyblue', 'yellow', 'orangered']
+					tooltip: {
+						trigger: 'item',
+						formatter: (params) => {
+							let tip = "";
+							if(params.data){
+								tip = params.data.name + '</br>'
+								+ '销售指标：' + params.data.value + '万';
+							}else{
+								tip = '暂无信息' + '</br>'
+								+ '销售指标：' + '暂无';
+							}
+							return tip;
 						}
+					},
+					visualMap: {
+						left: 'right',
+						min: this.min_value,
+						max: this.max_value,
+						inRange: {
+							color: ['#FEDB6F','#FC5C19']
+						},
+						text: [this.max_value + '万', this.min_value + '万'],           
+						calculable: true
 					},
 					series: [
 					{
-						name: '香港18区人口密度',
 						type: 'map',
-						nameMap:{
-							'China' : '中国'
-						},
-                		label: {
-                			show: true
-                		},
-                		data: [
-                		{name: '中西区', value: 20057.34},
-                		{name: '湾仔', value: 15477.48},
-                		{name: '东区', value: 31686.1},
-                		{name: '南区', value: 6992.6},
-                		{name: '油尖旺', value: 44045.49},
-                		{name: '深水埗', value: 40689.64},
-                		{name: '九龙城', value: 37659.78},
-                		{name: '黄大仙', value: 45180.97},
-                		{name: '观塘', value: 55204.26},
-                		{name: '葵青', value: 21900.9},
-                		{name: '荃湾', value: 4918.26},
-                		{name: '屯门', value: 5881.84},
-                		{name: '元朗', value: 4178.01},
-                		{name: '北区', value: 2227.92},
-                		{name: '大埔', value: 2180.98},
-                		{name: '沙田', value: 9172.94},
-                		{name: '西贡', value: 3368},
-                		{name: '离岛', value: 806.98}
-                		]
-                	}
-                	]
-                }
-            }
-        }
-    }
+						roam: true,
+						map: 'china',
+						data:this.map_data
+					}
+					]
+				}
+			}
+		}
+	}
 </script>
