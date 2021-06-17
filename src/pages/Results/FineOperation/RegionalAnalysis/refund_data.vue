@@ -126,6 +126,7 @@
 							this.left_title_list = data.province.title_list;
 							this.left_data = data.province.data;
 							this.left_data.reverse();
+							this.left_title_list.reverse();
 						}
 						var left_ljzb_list = [];
 						this.left_data.map(item => {
@@ -136,7 +137,7 @@
 							this.bar_03Chart.dispose();
 						}
 						this.bar_03Chart = echarts.init(bar_03);
-						this.bar_03Chart.setOption(this.barOptions('各省退款指标排名',this.left_title_list,this.left_data,left_ljzb_list));
+						this.bar_03Chart.setOption(this.barOptions('1','各省退款指标排名',this.left_title_list,this.left_data,left_ljzb_list));
 						//点击事件
 						this.bar_03Chart.getZr().on('click', params => {
 							let pointInPixel = [params.offsetX, params.offsetY]
@@ -148,6 +149,7 @@
 						})
 						//右侧柱状图
 						var right_title_list = data.cpfl.title_list;
+						right_title_list.reverse();
 						var right_data = data.cpfl.list;
 						right_data.reverse();
 						var right_ljzb_list = [];
@@ -159,7 +161,7 @@
 							this.bar_04Chart.dispose();
 						}
 						this.bar_04Chart = echarts.init(bar_04);
-						this.bar_04Chart.setOption(this.barOptions('各品类退款指标排名',right_title_list,right_data,right_ljzb_list));
+						this.bar_04Chart.setOption(this.barOptions('2','各品类退款指标排名',right_title_list,right_data,right_ljzb_list));
 						//底部折线图
 						var day_list = data.day_list.day;
 						var day_data_list = data.day_list.list;
@@ -180,7 +182,7 @@
 						if(data.map){
 							this.map_data = data.map.list;
 							this.max_value = data.map.max_value;
-							this.min_value = data.map.min_value;
+							this.min_value = this.map_data.length == 1?0:data.map.min_value;
 						}
 						this.china_box_refundChart.setOption(this.mapOptions());
 
@@ -258,7 +260,7 @@
 				};
 			},
 			//柱状图配置
-			barOptions(title,left_title_list,left_data,ljzb_list){
+			barOptions(type,title,left_title_list,left_data,ljzb_list){
 				return {
 					title: {
 						text: title
@@ -271,8 +273,10 @@
 								for(let i =0; i < params.length; i++) {
 									tip = params[1].axisValueLabel + '</br>'
 									+ '退款指标：' + params[1].data.value + '万</br>' 
-									+ '占比：' + params[1].data.zb + "%</br>"
-									+ '累计占比：' + params[1].data.ljzb + "%";
+									+ '退款率：' + params[1].data.ljzb + "%";
+									if(type == '1'){
+										tip += '</br>' + '占比：' + params[1].data.zb + "%</br>";
+									}
 								}
 							}
 							return tip;
@@ -368,6 +372,7 @@
 						roam: true,
 						map: 'china',
 						data:this.map_data
+						// data:[{value: 24.6, name: "江苏省"}]
 					}
 					]
 				}

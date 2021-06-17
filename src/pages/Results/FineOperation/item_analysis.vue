@@ -778,7 +778,7 @@
 						});		
 						var visitors_analysis = document.getElementById('visitors_analysis');
 						this.visitorsAnalysisChart = echarts.init(visitors_analysis);
-						this.visitorsAnalysisChart.setOption(this.lineOptions(day,fkfx,'万'));
+						this.visitorsAnalysisChart.setOption(this.lineOptions(day,fkfx,''));
 						//买家坑产分析（左侧）
 						let mjskcfx_left = res.data.data.mjskcfx_left;
 						mjskcfx_left.list.map(item => {
@@ -786,7 +786,7 @@
 						});	
 						var production_analysis_left = document.getElementById('production_analysis_left');
 						this.productionAnalysisLeftChart = echarts.init(production_analysis_left);
-						this.productionAnalysisLeftChart.setOption(this.lineOptions(day,mjskcfx_left,'万'));
+						this.productionAnalysisLeftChart.setOption(this.lineOptions(day,mjskcfx_left,''));
 						//买家坑产分析（右侧）
 						let mjskcfx_right = res.data.data.mjskcfx_right;
 						mjskcfx_right.list.map(item => {
@@ -794,7 +794,7 @@
 						});
 						var production_analysis_right = document.getElementById('production_analysis_right');
 						this.productionAnalysisRightChart = echarts.init(production_analysis_right);
-						this.productionAnalysisRightChart.setOption(this.lineOptions(day,mjskcfx_right,'万'));
+						this.productionAnalysisRightChart.setOption(this.lineOptions(day,mjskcfx_right,''));
 						//花费分析
 						let hffx = res.data.data.hffx;
 						hffx.list.map(item => {
@@ -802,7 +802,7 @@
 						});
 						var cost_analysis = document.getElementById('cost_analysis');
 						this.costAnalysisChart = echarts.init(cost_analysis);
-						this.costAnalysisChart.setOption(this.lineOptions(day,hffx,'万'));
+						this.costAnalysisChart.setOption(this.lineOptions(day,hffx,''));
 						//转化率对比
 						let zhlfx = res.data.data.zhlfx;
 						zhlfx.list.map(item => {

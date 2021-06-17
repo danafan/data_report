@@ -121,6 +121,7 @@
 							this.left_title_list = data.province.title_list;
 							this.left_data = data.province.data;
 							this.left_data.reverse();
+							this.left_title_list.reverse();
 						}
 						var left_ljzb_list = [];
 						this.left_data.map(item => {
@@ -143,6 +144,7 @@
 						})
 						//右侧柱状图
 						var right_title_list = data.cpfl.title_list;
+						right_title_list.reverse();
 						var right_data = data.cpfl.list;
 						right_data.reverse();
 						var right_ljzb_list = [];
@@ -174,7 +176,7 @@
 						if(data.map){
 							this.map_data = data.map.list;
 							this.max_value = data.map.max_value;
-							this.min_value = data.map.min_value;
+							this.min_value = this.map_data.length == 1?0:data.map.min_value;
 						}
 						this.china_boxChart.setOption(this.mapOptions());
 
