@@ -6,10 +6,10 @@
 		</div>
 		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" :cell-style="columnStyle" max-height='600' :summary-method="getSummaries"
 		show-summary>
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" width="160" v-for="item in title_list" :sortable="item.is_sort == 1?true:false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'tjrq'?90:80" v-for="item in title_list" :sortable="item.is_sort == 1?true:false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 			<template slot-scope="scope">
 				<!-- 占比 -->
-				<div class="background_box" :style="{width:`${item.max_value == 0?0:(160/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{item.unit}}</div>
+				<div class="background_box" :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{item.unit}}</div>
 				<!-- 正负颜色 -->
 				<div class="red_color" :class="{'green_color':scope.row[item.row_field_name] < 0}" v-else-if="item.type == 2">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ""?item.unit:''}}</div>
 				<!-- 普通文字 -->

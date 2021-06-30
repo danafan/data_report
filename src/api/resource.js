@@ -177,6 +177,9 @@ let path = {
 	areaSale:'areasale/sales',										//销售数据
 	areasaleReturn:'areasale/return',								//退款指标
 	areasaleYt:'areasale/yt',										//鱼塘指标
+	ajaxCity:'common/ajaxCity',										//所有城市列表
+	weatherData:'weather/list',										//全国天气数据分析图表接口
+	weatherTableList:'weather/tablelist',							//底部天气数据表格
 
 }					
 export default{
@@ -915,6 +918,18 @@ export default{
 	//鱼塘指标
 	areasaleYt(params){
 		return http.get(path.areasaleYt, params)
+	},
+	//所有城市列表
+	ajaxCity(params){
+		return http.get(path.ajaxCity, params)
+	},
+	//全国天气数据分析图表接口
+	weatherData(params){
+		return http.get(path.weatherData, params)
+	},
+	//底部天气数据表格接
+	weatherTableList(params){
+		return http.get(path.weatherTableList, params)
 	},
 }
 

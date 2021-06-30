@@ -31,6 +31,13 @@ export function getCurrentDate(){
 	var currentDate = new Date(day1);
 	return formatDate(currentDate); 
 }
+//获得30天以前的日期
+export function lastMonthDate(){
+	var day2 = new Date();
+	day2.setTime(day2.getTime()-720*60*60*1000);
+	var currentDate = new Date(day2);
+	return formatDate(currentDate); 
+}
 
 //获得前某月的开始日期 
 export function getLastMonthStartDate(month_num){ 

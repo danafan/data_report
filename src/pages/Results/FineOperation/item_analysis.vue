@@ -103,10 +103,10 @@
 			<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange">
-			<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'yxgxmyl'?160:120" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
+			<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.type == 3 || zbhzFixed(item.row_field_name)?110:widthColumn(item.row_field_name)?90:60" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 				<template slot-scope="scope">
 					<!-- 占比 -->
-					<div class="background_box" :style="{width:`${item.max_value == 0?0:((item.row_field_name == 'yxgxmyl'?160:120)/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
+					<div class="background_box" :style="{width:`${item.max_value == 0?0:(60/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
 					<!-- 图片 -->
 					<img style="width: 80px;height: 80px" :src="scope.row.pic" v-else-if="item.type == 3 && scope.row.is_total != 1" @click="bigImg(scope.row.pic)">
 					<!-- 按钮 -->
@@ -117,7 +117,7 @@
 						<div style="color: #8D5714">{{scope.row.spid}}</div>
 					</el-tooltip>
 					<!-- 普通文字 -->
-					<div :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
+					<div class="text_content" :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -227,6 +227,11 @@
 		font-size: 14px;
 		color: #8D5714;
 	}
+}
+.text_content{
+	overflow: hidden;/*超出部分隐藏*/
+	white-space: nowrap;/*不换行*/
+	text-overflow:ellipsis;/*超出部分文字以...显示*/
 }
 .background_box{
 	padding-left: 3px;
@@ -598,6 +603,12 @@
 			//指标汇总左侧固定
 			zbhzFixed(row_field_name){
 				if(row_field_name == 'spid' || row_field_name == 'dpid' || row_field_name == 'ksbm' || row_field_name == 'gyskh'){
+					return true;
+				}
+			},
+			//宽一点
+			widthColumn(row_field_name){
+				if(row_field_name == 'total_fks' || row_field_name == 'total_fks'||  row_field_name == 'xsje' ||  row_field_name == 'xssl' ||  row_field_name == 'sd_xssl' || row_field_name == 'total_hf' || row_field_name == 'mll' || row_field_name == 'yk'){
 					return true;
 				}
 			},
