@@ -36,22 +36,8 @@
 				</div>
 			</div>
 		</div>
-		<!-- <div class="address_box">
-			<div class="address_item address_left">
-				<div>各地区温度极值</div>
-				<el-tabs v-model="map_name" @tab-click="tempClick">
-					<el-tab-pane label="区域最高温" name="max_temp">
-						<div class="map_box" id="max_temp"></div>
-					</el-tab-pane>
-					<el-tab-pane label="区域最低温" name="min_temp">区域最低温</el-tab-pane>
-				</el-tabs>
-			</div>
-			<div id="address_right_his" class="address_item address_right">
-
-			</div>
-		</div> -->
 		<div class="table_title">历史天气数据查询</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column prop="lvl1" label="省份" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="qx" label="市区" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="rq" label="日期" sortable show-overflow-tooltip align="center"></el-table-column>
@@ -125,21 +111,6 @@
 		}
 	}
 }
-// .address_box{
-// 	margin-top: 30px;
-// 	width: 100%;
-// 	display:flex;
-// 	.address_item{
-// 		border:1px solid red;
-// 		flex: 1;
-// 		height: 500px;
-// 		.map_box{
-// 			border:1px solid red;
-// 			height: 420px;
-// 			width: 100%
-// 		}
-// 	}
-// }
 .table_title{
 	height: 60px;
 	line-height: 60px;
@@ -212,6 +183,7 @@
 		methods:{
 			//分页
 			handleSizeChange(val) {
+				this.req.page = 1;
 				this.req.pagesize = val;
 				//获取列表
 				this.weatherTableList();
@@ -234,6 +206,12 @@
 				this.req.start_time = this.date?this.date[0]:'';
 				this.req.end_time = this.date?this.date[1]:'';
 				this.getData();
+				this.weatherTableList();
+			},
+			//单品分析—-指标汇总排序
+			sortChange(column){
+				this.req.sort = column.prop;
+				this.req.sort_type = column.order == 'ascending'?'0':'1';
 				this.weatherTableList();
 			},
 			getData(){
@@ -293,22 +271,9 @@
 							this.pie_content_hisChart.dispose();
 						}
 						this.pie_content_hisChart = echarts.init(pie_content_his);
-						this.pie_content_hisChart.setOption(this.pieOptions(data.cyqxzs.right,'所有地区历史穿衣指数统计'));
-
-						//区域最高温
-						
-						//历史有无不良天气统计
-						// var address_right_his = document.getElementById('address_right_his');
-						// if(this.address_right_hisChart){
-						// 	this.address_right_hisChart.dispose();
-						// }
-						// this.address_right_hisChart = echarts.init(address_right_his);
-						// this.address_right_hisChart.setOption(this.hisPieOptions(data.area.right));
-						
+						this.pie_content_hisChart.setOption(this.pieOptions(data.cyqxzs.right,'所有地区历史穿衣指数统计'));						
 						// 有效日期
 						this.effective_date = data.effective_date;
-						
-
 						window.addEventListener('resize',() => {
 							this.temperature_hisChart.resize();
 							this.wind_speed_hisChart.resize();
@@ -547,46 +512,6 @@
 					]
 				}
 			},
-			//历史有无不良天气统计
-			// hisPieOptions(data){
-			// 	return {
-			// 		title: {
-			// 			text: '历史有无不良天气统计'
-			// 		},
-			// 		tooltip: {
-			// 			trigger: 'item',
-			// 			formatter: (params) => {
-			// 				return "有无不良天气：" + params.data.name + '</br>' 
-			// 				+ "记录数：" + params.data.num + '</br>'
-			// 				+ "[记录数]的总额百分比：" + params.data.value + '%';
-			// 			},
-			// 			backgroundColor:"rgba(0,0,0,.8)",
-			// 			textStyle:{
-			// 				color:"#ffffff"
-			// 			},
-			// 			borderColor:"rgba(0,0,0,0.7)",
-			// 			axisPointer: {            
-			// 				type: 'shadow'        
-			// 			}
-			// 		},
-			// 		series: [
-			// 		{
-			// 			type: 'pie',
-			// 			radius: ['40%', '70%'],
-			// 			label:{
-			// 				formatter: (params) => {
-			// 					return params.data.value + '%';
-			// 				},
-			// 			},
-			// 			data: data
-			// 		}
-			// 		]
-			// 	}
-			// },
-			//切换各地区温度极值
-			// tempClick(e){
-			// 	this.map_name = e.name;
-			// },
 			//穿衣指数背景色
 			cyzsColor(v){
 				switch(v){

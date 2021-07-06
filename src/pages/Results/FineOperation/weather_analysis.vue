@@ -7,7 +7,7 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="城市：">
+			<el-form-item label="城市：" v-if="activeTab != 'hot_data'">
 				<el-select v-model="select_city_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in city_list" :key="item" :label="item" :value="item">
 					</el-option>
@@ -24,6 +24,9 @@
 			<el-tab-pane label="历史天气" lazy name="history_data" class="tab_pane_box">
 				<HistoryData ref="history_data"/>
 			</el-tab-pane>
+			<el-tab-pane label="热门天气" lazy name="hot_data" class="tab_pane_box">
+				<HotData ref="hot_data"/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -34,6 +37,7 @@
 	import resource from '../../../api/resource.js'
 	import FutureData from './WeatherAnalysis/future_data.vue'
 	import HistoryData from './WeatherAnalysis/history_data.vue'
+	import HotData from './WeatherAnalysis/hot_data.vue'
 	export default{
 		data(){
 			return {
@@ -62,11 +66,13 @@
 			//点击搜索
 			getList(){
 				let req = {
-					from:this.activeTab == 'future_data'?'1':'2',
+					from:this.activeTab == 'future_data'?'1':this.activeTab == 'history_data'?'2':'3',
 					province:this.select_province_list.join(','),
 					city:this.select_city_list.join(','),
 					pagesize:10,
-					page:1
+					page:1,
+					sort:"",
+					sort_type:"",
 				} 
 				this.$nextTick(() => {
 					this.$refs[this.activeTab].setReq(req);
@@ -95,7 +101,8 @@
 		},
 		components:{
 			FutureData,
-			HistoryData
+			HistoryData,
+			HotData
 		}
 	}
 </script>

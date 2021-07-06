@@ -31,7 +31,7 @@
 			</div>
 		</div>
 		<div class="table_title">未来15天天气预报</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column prop="lvl1" label="省份" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="qx" label="市区" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="rq" label="日期" sortable show-overflow-tooltip align="center"></el-table-column>
@@ -161,6 +161,7 @@
 		methods:{
 			//分页
 			handleSizeChange(val) {
+				this.req.page = 1;
 				this.req.pagesize = val;
 				//获取列表
 				this.weatherTableList();
@@ -247,6 +248,12 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//单品分析—-指标汇总排序
+			sortChange(column){
+				this.req.sort = column.prop;
+				this.req.sort_type = column.order == 'ascending'?'0':'1';
+				this.weatherTableList();
 			},
 			//底部天气数据表格
 			weatherTableList(){

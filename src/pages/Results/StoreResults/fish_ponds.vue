@@ -80,11 +80,11 @@
 		width: 100%;
 		display: flex;
 		.single_date{
-			min-width:70%;
+			min-width:60%;
 			min-height: 300px;
 		}
 		.single_total{
-			min-width:30%;
+			min-width:40%;
 			min-height: 300px;
 		}
 	}
@@ -257,6 +257,9 @@
 							day_ytdl_obj.ytmbz.push(item.ytmbz);	//鱼塘目标值
 						});
 						var single_date = document.getElementById('single_date');
+						if(this.single_dateChart){
+							this.single_dateChart.dispose();
+						}
 						this.single_dateChart = echarts.init(single_date);
 						this.single_dateChart.setOption({
 							title: {
@@ -269,11 +272,11 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = "付款日期：" + params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "万</br>"
-											+ params[1].seriesName + "：" + params[1].value + "万</br>"
-											+ params[2].seriesName + "：" + params[2].value + "万</br>" 
+											+ params[0].seriesName + "：" + params[0].value + "</br>"
+											+ params[1].seriesName + "：" + params[1].value + "</br>"
+											+ params[2].seriesName + "：" + params[2].value + "</br>" 
 											+ "鱼塘单量占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2)+"万";
+											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
 										}
 									}
 									return tip;
@@ -297,7 +300,7 @@
 								type: 'value',
 								min: 0,
 								axisLabel: {
-									formatter: '{value} 万'
+									formatter: '{value}'
 								}
 							},
 							series: [
@@ -336,11 +339,14 @@
 						total_ljytdl_obj.total_dl = total_ljytdl_list[0].total_dl;	//总单量
 						total_ljytdl_obj.ytmbz = total_ljytdl_list[0].ytmbz;	//鱼塘目标值
 						var single_total = document.getElementById('single_total');
+						if(this.single_totalChart){
+							this.single_totalChart.dispose();
+						}
 						this.single_totalChart = echarts.init(single_total);
 						this.single_totalChart.setOption({
 							title: {
 								text: '累计鱼塘单量',
-								subtext:`总单量：${total_ljytdl_obj.total_dl}万`,
+								subtext:`总单量：${total_ljytdl_obj.total_dl}`,
 								itemGap:38,
 								subtextStyle:{
 									color:"#DE5636"
@@ -352,11 +358,11 @@
 									let tip = "";
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
-											tip = params[0].seriesName + "：" + params[0].value + "万</br>"
-											+ params[1].seriesName + "：" + params[1].value + "万</br>"
-											+ "鱼塘目标值：" + `${total_ljytdl_obj.ytmbz}` + "万</br>" 
+											tip = params[0].seriesName + "：" + params[0].value + "</br>"
+											+ params[1].seriesName + "：" + params[1].value + "</br>"
+											+ "鱼塘目标值：" + `${total_ljytdl_obj.ytmbz}` + "</br>" 
 											+ "鱼塘单量占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2)+"万";
+											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
 										}
 									}
 									return tip;
@@ -387,7 +393,7 @@
 								type: 'value',
 								min: 0,
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}'
 								}
 							}],
 							series: [{
@@ -399,7 +405,7 @@
 								},
 								label:{
 									show:true,
-									formatter: '{c}万'
+									formatter: '{c}'
 								},
 								data: total_ljytdl_obj.ytdl,
 							},{
@@ -411,7 +417,7 @@
 								},
 								label:{
 									show:true,
-									formatter: '{c}万'
+									formatter: '{c}'
 								},
 								data: total_ljytdl_obj.sjdl
 							}]
@@ -424,6 +430,9 @@
 							day_ytje_obj.ytje.push(item.ytje);		//鱼塘金额
 						});
 						var money_date = document.getElementById('money_date');
+						if(this.money_dateChart){
+							this.money_dateChart.dispose();
+						}
 						this.money_dateChart = echarts.init(money_date);
 						this.money_dateChart.setOption({
 							title: {
@@ -436,10 +445,10 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = "付款日期：" + params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "万</br>"
-											+ params[1].seriesName + "：" + params[1].value + "万</br>" 
+											+ params[0].seriesName + "：" + params[0].value + "</br>"
+											+ params[1].seriesName + "：" + params[1].value + "</br>" 
 											+ "鱼塘金额占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2)+"万";
+											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
 										}
 									}
 									return tip;
@@ -463,7 +472,7 @@
 								type: 'value',
 								min: 0,
 								axisLabel: {
-									formatter: '{value} 万'
+									formatter: '{value}'
 								}
 							},
 							series: [
@@ -494,11 +503,14 @@
 						total_ljytje_obj.sjje.push(total_ljytje_list.sjje);	//实际金额
 						total_ljytje_obj.total_je = total_ljytje_list.total_je;	//总金额
 						var money_total = document.getElementById('money_total');
+						if(this.money_totalChart){
+							this.money_totalChart.dispose();
+						}
 						this.money_totalChart = echarts.init(money_total);
 						this.money_totalChart.setOption({
 							title: {
 								text: '累计鱼塘金额',
-								subtext:`总金额：${total_ljytje_obj.total_je}万`,
+								subtext:`总金额：${total_ljytje_obj.total_je}`,
 								itemGap:38,
 								subtextStyle:{
 									color:"#DE5636"
@@ -510,10 +522,10 @@
 									let tip = "";
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
-											tip = params[0].seriesName + "：" + params[0].value + "万</br>"
-											+ params[1].seriesName + "：" + params[1].value + "万</br>" 
+											tip = params[0].seriesName + "：" + params[0].value + "</br>"
+											+ params[1].seriesName + "：" + params[1].value + "</br>" 
 											+ "鱼塘金额占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2)+"万";
+											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
 										}
 									}
 									return tip;
@@ -529,7 +541,8 @@
 							},
 							color:['#5AD8A6','#F6BD16'],
 							grid:{
-								top:'30%'
+								top:'30%',
+								containLabel: true
 							},
 							legend: {
 								data: ['鱼塘金额', '实际金额'],
@@ -544,7 +557,8 @@
 								type: 'value',
 								min: 0,
 								axisLabel: {
-									formatter: '{value}万'
+									formatter: '{value}',
+									width: 500,
 								}
 							}],
 							series: [{
@@ -556,7 +570,7 @@
 								},
 								label:{
 									show:true,
-									formatter: '{c}万'
+									formatter: '{c}'
 								},
 								data: total_ljytje_obj.ytje,
 							},{
@@ -568,7 +582,7 @@
 								},
 								label:{
 									show:true,
-									formatter: '{c}万'
+									formatter: '{c}'
 								},
 								data: total_ljytje_obj.sjje
 							}]
@@ -582,6 +596,9 @@
 							shop_ytdlzb_obj.ytdlzb.push(item.ytdlzb);	//鱼塘店铺占比
 						}); 
 						var accounted = document.getElementById('accounted');
+						if(this.accountedChart){
+							this.accountedChart.dispose();
+						}
 						this.accountedChart = echarts.init(accounted);
 						this.accountedChart.setOption({
 							title: {
@@ -594,10 +611,10 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "万</br>"
-											+ params[1].seriesName + "：" + params[1].value + "万</br>"
+											+ params[0].seriesName + "：" + params[0].value + "</br>"
+											+ params[1].seriesName + "：" + params[1].value + "</br>"
 											+ params[2].seriesName + "：" + params[2].value + "%</br>" 
-											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2)+"万";
+											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
 										}
 									}
 									return tip;
@@ -630,7 +647,7 @@
 							yAxis:[{
 								type: 'value',
 								axisLabel: {
-									formatter: '{value} 万'
+									formatter: '{value}'
 								}
 							},{
 								type: 'value',
@@ -679,6 +696,9 @@
 							shop_ytjezb_obj.ytjezb.push(item.ytjezb);	//鱼塘金额占比
 						}); 
 						var amount = document.getElementById('amount');
+						if(this.amountChart){
+							this.amountChart.dispose();
+						}
 						this.amountChart = echarts.init(amount);
 						this.amountChart.setOption({
 							title: {
@@ -691,10 +711,10 @@
 									if(params != null && params.length > 0) {
 										for(let i =0; i < params.length; i++) {
 											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "万</br>"
-											+ params[1].seriesName + "：" + params[1].value + "万</br>"
+											+ params[0].seriesName + "：" + params[0].value + "</br>"
+											+ params[1].seriesName + "：" + params[1].value + "</br>"
 											+ params[2].seriesName + "：" + params[2].value + "%</br>" 
-											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2) + "万";
+											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
 										}
 									}
 									return tip;
@@ -727,7 +747,7 @@
 							yAxis:[{
 								type: 'value',
 								axisLabel: {
-									formatter: '{value} 万'
+									formatter: '{value}'
 								}
 							},{
 								type: 'value',
@@ -789,10 +809,9 @@
         								if(params != null && params.length > 0) {
         									for(let i =0; i < params.length; i++) {
         										tip = params[0].axisValueLabel + "</br>"
-        										+ params[0].seriesName + "：" + params[0].value + "万</br>"
-        										+ params[1].seriesName + "：" + params[1].value + "万</br>"
-        										+ params[2].seriesName + "：" + params[2].value + "%</br>" 
-        										+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2) + "万";
+        										+ params[0].seriesName + "：" + params[0].value + "</br>"
+        										+ params[1].seriesName + "：" + params[1].value + "</br>"
+        										+ params[2].seriesName + "：" + params[2].value + "%</br>";
         									}
         								}
         								return tip;
@@ -825,7 +844,7 @@
         						yAxis:[{
         							type: 'value',
         							axisLabel: {
-        								formatter: '{value} 万'
+        								formatter: '{value}'
         							}
         						},{
         							type: 'value',
