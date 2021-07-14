@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="省份:" style="margin-right: 20px">
+			<el-form-item label="省份:" style="margin-right: 20px" v-if="activeTab != 'hot_data'">
 				<el-select v-model="select_province_list" clearable :popper-append-to-body="false" @change="ajaxCity" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in province_list" :key="item" :label="item" :value="item">
 					</el-option>
@@ -14,7 +14,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="getList">搜索</el-button>
+				<el-button type="primary" size="small" @click="getList" v-if="activeTab != 'hot_data'">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<el-tabs v-model="activeTab" type="border-card" @tab-click="checkTab">
