@@ -80,7 +80,7 @@
 			},
 			//获取所有省份
 			ajaxProvince(){
-				resource.ajaxProvince().then(res => {
+				resource.ajaxProvince({from:12}).then(res => {
 					if (res.data.code == 1) {
 						this.province_list = res.data.data;
 					}else{

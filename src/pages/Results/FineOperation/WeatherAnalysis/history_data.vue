@@ -43,15 +43,16 @@
 			<el-table-column prop="rq" label="日期" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="zgw" label="最高温" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
-					<div :class="{'zgw_color':scope.row.is_max == '1'}">{{scope.row.zgw}}</div>
+					<div :class="{'zgw_color':scope.row.is_max == '1'}">{{scope.row.zgw}}°C</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="zdw" label="最低温" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
-					<div :class="{'zdw_color':scope.row.is_min == '1'}">{{scope.row.zdw}}</div>
+					<div :class="{'zdw_color':scope.row.is_min == '1'}">{{scope.row.zdw}}°C</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="fl" label="最高风速" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="tq" label="天气" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cyzs" label="穿衣指数" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div class="cyzs">
@@ -152,7 +153,7 @@
 				wind_speedChart:null,
 				bar_contentChart:null,
 				dataObj:{},			//底部表格数据
-				date:[lastMonthDate(),getCurrentDate()],
+				date:[],
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -195,16 +196,16 @@
 			},
 			setReq(req){
 				this.req = req;
-				this.req.start_time = this.date?this.date[0]:'';
-				this.req.end_time = this.date?this.date[1]:'';
+				this.req.start_time = this.date.length > 0?this.date[0]:'';
+				this.req.end_time = this.date.length > 0?this.date[1]:'';
 				this.getData();
 				this.weatherTableList();
 			},
 			dateChange(e){
 				this.req.page = 1;
 				this.req.pagesize = 10;
-				this.req.start_time = this.date?this.date[0]:'';
-				this.req.end_time = this.date?this.date[1]:'';
+				this.req.start_time = this.date.length > 0?this.date[0]:'';
+				this.req.end_time = this.date.length > 0?this.date[1]:'';
 				this.getData();
 				this.weatherTableList();
 			},
@@ -220,6 +221,7 @@
 						var echarts = require("echarts");
 						var data = res.data.data;
 						this.day_list = data.day;				//日期
+						this.date = [this.day_list[0],this.day_list[this.day_list.length - 1]];
 						
 						//未来每日气温
 						var zgw = data.day_weather.zgw;			//最高温

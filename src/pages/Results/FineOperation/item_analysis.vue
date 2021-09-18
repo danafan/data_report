@@ -50,142 +50,152 @@
 						<el-date-picker v-model="tjrq_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 						</el-date-picker>
 					</el-form-item>
-					<el-form-item label="店铺ID：">
-						<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-							<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					<el-form-item label="平台:">
+						<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStore" multiple filterable collapse-tags placeholder="全部">
+							<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="产品分类：">
-						<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-							<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item label="商品ID：">
-						<el-select v-model="select_spid_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入商品ID" :remote-method="getSpid" collapse-tags>
-							<el-option v-for="item in spid_list" :key="item" :label="item" :value="item">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item label="款式编码：">
-						<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
-							<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item label="供应商款号：">
-						<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
-							<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item>
-						<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
-					</el-form-item>
-				</el-form>
-				<div class="bottom_toast">
-					<div class="item_row">
-						<div class="dian"></div>
-						<div class="toast_title">每日数据更新时间：14:00</div>
-					</div>
-					<div class="item_row">
-						<div class="dian"></div>
-						<div class="toast_title">此处统计营销费用均为单品粒度花费，不包含店铺各项内部费用分摊支出</div>
-					</div>
+					<el-form-item label="店铺：">
+						<el-select v-model="select_shop_list" clearable :popper-append-to-body="false"  multiple
+						filterable
+						remote
+						reserve-keyword
+						:remote-method="checkStore" collapse-tags placeholder="全部">
+						<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="产品分类：">
+					<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+						<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="商品ID：">
+					<el-select v-model="select_spid_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入商品ID" :remote-method="getSpid" collapse-tags>
+						<el-option v-for="item in spid_list" :key="item" :label="item" :value="item">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="款式编码：">
+					<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
+						<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="供应商款号：">
+					<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
+						<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item>
+					<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
+				</el-form-item>
+			</el-form>
+			<div class="bottom_toast">
+				<div class="item_row">
+					<div class="dian"></div>
+					<div class="toast_title">每日数据更新时间：14:00</div>
+				</div>
+				<div class="item_row">
+					<div class="dian"></div>
+					<div class="toast_title">此处统计营销费用均为单品粒度花费，不包含店铺各项内部费用分摊支出</div>
 				</div>
 			</div>
 		</div>
-		<!-- 指标汇总 -->
-		<div class="title">指标汇总</div>
-		<div class="table_setting">
-			<el-button type="primary" size="small" @click="customFun('zbhz_data')" style="margin-bottom: 5px">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
-		</div>
-		<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange">
-			<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.type == 3 || zbhzFixed(item.row_field_name)?110:widthColumn(item.row_field_name)?90:70" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
-				<template slot-scope="scope">
-					<!-- 占比 -->
-					<div class="background_box" :style="{width:`${item.max_value == 0?0:(70/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
-					<!-- 图片 -->
-					<img style="width: 80px;height: 80px" :src="scope.row.pic" v-else-if="item.type == 3 && scope.row.is_total != 1" @click="bigImg(scope.row.pic)">
-					<!-- 按钮 -->
-					<el-tooltip placement="top-end" v-else-if="item.type == 4 && scope.row.is_total != 1">
-						<div slot="content">
-							<el-button type="text" size="small" @click="getDetail(scope.row.spid_url)">查看</el-button>
-						</div>
-						<div style="color: #8D5714">{{scope.row.spid}}</div>
-					</el-tooltip>
-					<!-- 普通文字 -->
-					<div class="text_content" :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="zbhzPageSizeChange" @current-change="zbhzPageChange" :current-page="zbhz_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="table_list.total" >
-			</el-pagination>
-		</div>
-		<!-- 指标汇总图片放大 -->
-		<el-dialog title="图片" :visible.sync="imageDialog" width="30%" center>
-			<img style="width: 100%" :src="big_img_url">
-			<span slot="footer" class="dialog-footer">
-				<el-button type="primary" @click="imageDialog = false">关闭</el-button>
-			</span>
-		</el-dialog>
-		<!-- 每日分析 -->
-		<div class="title">每日分析</div>
-		<el-tabs v-model="activeItemTab" @tab-click="checkItemTab">
-			<el-tab-pane label="整体数据" name="overall_data" class="tab_pane_box">
-				<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" :is_export="button_list.zt_export" @customBack="customFun"/>
-			</el-tab-pane>
-			<el-tab-pane label="搜索系列" name="search_data" class="tab_pane_box">
-				<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" :is_export="button_list.search_export" @customBack="customFun"/>
-			</el-tab-pane>
-			<el-tab-pane label="直通车系列" name="ztc_data" class="tab_pane_box">
-				<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" :is_export="button_list.ztc_export" @customBack="customFun"/>
-			</el-tab-pane>
-			<el-tab-pane label="超级推荐系列" name="cjtj_data" class="tab_pane_box">
-				<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" :is_export="button_list.cjtj_export" @customBack="customFun"/>
-			</el-tab-pane>
-		</el-tabs>
-		<!-- 折线图 -->
-		<el-tabs v-model="activeLineTab" @tab-click="checkLineTab" style="margin-top: 30px">
-			<el-tab-pane label="访客分析" name="visitors_analysis" class="tab_pane_box">
-				<div id="visitors_analysis" class="complete_line"></div>
-			</el-tab-pane>
-			<el-tab-pane label="买家坑产分析" name="production_analysis" class="tab_pane_box">
-				<div class="flex_box">
-					<div id="production_analysis_left" class="half_line"></div>
-					<div id="production_analysis_right" class="half_line"></div>
-				</div>
-			</el-tab-pane>
-			<el-tab-pane label="花费分析" name="cost_analysis" class="tab_pane_box">
-				<div id="cost_analysis" class="complete_line"></div>
-			</el-tab-pane>
-			<el-tab-pane label="转化率对比" name="ratio_comparison" class="tab_pane_box">
-				<div id="ratio_comparison" class="complete_line"></div>
-			</el-tab-pane>
-			<el-tab-pane label="收藏加购率分析" name="collection_analysis" class="tab_pane_box">
-				<div class="flex_box">
-					<div id="collection_analysis_left" class="half_line"></div>
-					<div id="collection_analysis_right" class="half_line"></div>
-				</div>
-			</el-tab-pane>
-		</el-tabs>
-		<!-- 单品分析—-指标汇总 -->
-		<el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
-			<div class="select_box">
-				<el-checkbox-group v-model="row_ids">
-					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
-				</el-checkbox-group>
-			</div>
-			<div slot="footer" class="dialog-footer">
-				<el-button size="small" @click="Restore">恢复默认</el-button>
-				<el-button size="small" @click="show_custom = false">取消</el-button>
-				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
-			</div>
-		</el-dialog>
 	</div>
+	<!-- 指标汇总 -->
+	<div class="title">指标汇总</div>
+	<div class="table_setting">
+		<el-button type="primary" size="small" @click="customFun('zbhz_data')" style="margin-bottom: 5px">自定义列表</el-button>
+		<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+	</div>
+	<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.type == 3 || zbhzFixed(item.row_field_name)?110:widthColumn(item.row_field_name)?90:70" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
+			<template slot-scope="scope">
+				<!-- 占比 -->
+				<div class="background_box" :style="{width:`${item.max_value == 0?0:(70/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
+				<!-- 图片 -->
+				<img style="width: 80px;height: 80px" :src="scope.row.pic" v-else-if="item.type == 3 && scope.row.is_total != 1" @click="bigImg(scope.row.pic)">
+				<!-- 按钮 -->
+				<el-tooltip placement="top-end" v-else-if="item.type == 4 && scope.row.is_total != 1">
+					<div slot="content">
+						<el-button type="text" size="small" @click="getDetail(scope.row.spid_url)">查看</el-button>
+					</div>
+					<div style="color: #8D5714">{{scope.row.spid}}</div>
+				</el-tooltip>
+				<!-- 普通文字 -->
+				<div class="text_content" :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
+			</template>
+		</el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination @size-change="zbhzPageSizeChange" @current-change="zbhzPageChange" :current-page="zbhz_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="table_list.total" >
+		</el-pagination>
+	</div>
+	<!-- 指标汇总图片放大 -->
+	<el-dialog title="图片" :visible.sync="imageDialog" width="30%" center>
+		<img style="width: 100%" :src="big_img_url">
+		<span slot="footer" class="dialog-footer">
+			<el-button type="primary" @click="imageDialog = false">关闭</el-button>
+		</span>
+	</el-dialog>
+	<!-- 每日分析 -->
+	<div class="title">每日分析</div>
+	<el-tabs v-model="activeItemTab" @tab-click="checkItemTab">
+		<el-tab-pane label="整体数据" name="overall_data" class="tab_pane_box">
+			<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" :is_export="button_list.zt_export" @customBack="customFun"/>
+		</el-tab-pane>
+		<el-tab-pane label="搜索系列" name="search_data" class="tab_pane_box">
+			<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" :is_export="button_list.search_export" @customBack="customFun"/>
+		</el-tab-pane>
+		<el-tab-pane label="直通车系列" name="ztc_data" class="tab_pane_box">
+			<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" :is_export="button_list.ztc_export" @customBack="customFun"/>
+		</el-tab-pane>
+		<el-tab-pane label="超级推荐系列" name="cjtj_data" class="tab_pane_box">
+			<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" :is_export="button_list.cjtj_export" @customBack="customFun"/>
+		</el-tab-pane>
+	</el-tabs>
+	<!-- 折线图 -->
+	<el-tabs v-model="activeLineTab" @tab-click="checkLineTab" style="margin-top: 30px">
+		<el-tab-pane label="访客分析" name="visitors_analysis" class="tab_pane_box">
+			<div id="visitors_analysis" class="complete_line"></div>
+		</el-tab-pane>
+		<el-tab-pane label="买家坑产分析" name="production_analysis" class="tab_pane_box">
+			<div class="flex_box">
+				<div id="production_analysis_left" class="half_line"></div>
+				<div id="production_analysis_right" class="half_line"></div>
+			</div>
+		</el-tab-pane>
+		<el-tab-pane label="花费分析" name="cost_analysis" class="tab_pane_box">
+			<div id="cost_analysis" class="complete_line"></div>
+		</el-tab-pane>
+		<el-tab-pane label="转化率对比" name="ratio_comparison" class="tab_pane_box">
+			<div id="ratio_comparison" class="complete_line"></div>
+		</el-tab-pane>
+		<el-tab-pane label="收藏加购率分析" name="collection_analysis" class="tab_pane_box">
+			<div class="flex_box">
+				<div id="collection_analysis_left" class="half_line"></div>
+				<div id="collection_analysis_right" class="half_line"></div>
+			</div>
+		</el-tab-pane>
+	</el-tabs>
+	<!-- 单品分析—-指标汇总 -->
+	<el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
+		<div class="select_box">
+			<el-checkbox-group v-model="row_ids">
+				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+			</el-checkbox-group>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="Restore">恢复默认</el-button>
+			<el-button size="small" @click="show_custom = false">取消</el-button>
+			<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+		</div>
+	</el-dialog>
+</div>
 </template>
 <style lang="less" scoped>
 .table_setting{
@@ -298,8 +308,11 @@
 				tjrq_date:[],								//统计日期
 				tjrq_start:"",								//统计日期（开始时间）
 				tjrq_end:"",								//统计日期（结束时间）
+				store_name:"",
 				shop_list:[],								//店铺列表
 				select_shop_list:[],						//选中的店铺列表
+				plat_list:[],								//平台列表
+				select_plat_ids:[],							//选中的平台列表
 				pl_list:[],									//品类列表
 				select_pl_ids:[],							//选中的品类列表
 				ks_list:[],									//款式编码列表
@@ -368,6 +381,8 @@
 			this.tjrq_date[1] = getCurrentDate();
 			this.tjrq_start = getMonthStartDate();		//统计日期（开始时间）
 			this.tjrq_end = getCurrentDate();			//统计日期（结束时间）
+			//平台列表
+			this.ajaxPlat();
 			//店铺列表
 			this.getStore();
 			//品类列表
@@ -394,9 +409,25 @@
 				})
 				return res
 			},
+			//平台列表
+			ajaxPlat(){
+				resource.ajaxPlat().then(res => {
+					if(res.data.code == 1){
+						this.plat_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//模糊查询店铺
+			checkStore(e){
+				this.store_name = e;
+				//店铺列表
+				this.getStore();
+			},
 			//店铺列表
 			getStore(){
-				resource.ajaxViewStore().then(res => {
+				resource.ajaxViewStore({name:this.store_name,platform:this.select_plat_ids.join(','),}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
@@ -459,7 +490,8 @@
 					tjrq_end:this.tjrq_end,
 					cpfl:this.select_pl_ids.join(','),
 					gyskh:this.select_gyshh_ids.join(','),
-					ks:this.select_ks_ids.join(',')
+					ks:this.select_ks_ids.join(','),
+					platform:this.select_plat_ids.join(','),
 				}
 				this.req = req;
 				//单品分析—-指标汇总

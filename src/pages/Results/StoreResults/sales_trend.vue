@@ -1,24 +1,7 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺:">
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
+			<dps @callBack="checkReq"></dps>
 			<el-form-item label="付款当日：">
 				<el-date-picker v-model="fkrq" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
 				</el-date-picker>
@@ -34,6 +17,8 @@
 					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip sortable>
 					</el-table-column>
 					<el-table-column label="店铺名称" prop="dpname" width="140" show-overflow-tooltip sortable>
+					</el-table-column>
+					<el-table-column label="平台" prop="platform" width="140" show-overflow-tooltip sortable>
 					</el-table-column>
 					<el-table-column :label="current_year + '-' + day_list[day_list.length - 2]" prop="yesterday" width="140" sortable>
 						<template slot-scope="scope">
@@ -122,14 +107,12 @@
 <script>
 	import resource from '../../../api/resource.js'
 	import {getCurrentDate} from '../../../api/nowMonth.js'
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
-				dept_list: [],								//部门列表
 				select_department_ids:[],					//选中的部门id列表
-				store_list:[],								//店铺列表
 				select_store_ids:[],						//选中的店铺列表
-				plat_list:[],								//平台列表
 				select_plat_ids:[],							//选中的平台列表
 				fkrq:getCurrentDate(),						//付款当日
 				table_data:[],								//表格数据
@@ -143,12 +126,6 @@
 		created(){
 			var now = new Date(); 				//当前日期  
 			this.current_year = now.getFullYear(); 		
-			//部门/店铺列表
-			this.AjaxViewDept();
-			//店铺列表
-			this.GetStoreList();
-			//平台列表
-			this.ajaxPlat();
 			//获取列表
 			this.getData();
 		},
@@ -167,37 +144,11 @@
 					}
 				}
 			},
-			//部门列表
-			AjaxViewDept(){
-				resource.ajaxViewDept().then(res => {
-					if(res.data.code == 1){
-						this.dept_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//店铺列表
-			GetStoreList(){
-				let dept_id = this.select_department_ids.join(',');
-				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
-					if(res.data.code == 1){
-						this.store_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//平台列表
-			ajaxPlat(){
-				resource.ajaxPlat().then(res => {
-					if(res.data.code == 1){
-						this.plat_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_department_ids = reqObj.select_department_ids;
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//获取列表
 			getData(){
@@ -285,6 +236,9 @@
 					]
 				};
 			},
+		},
+		components:{
+			dps
 		}
 	}
 </script>

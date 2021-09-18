@@ -223,6 +223,10 @@
 			tjrq:{
 				type:String,
 				default:""
+			},
+			platform:{
+				type:String,
+				default:""
 			}
 		},
 		watch:{
@@ -237,6 +241,10 @@
 			tjrq:function(n,o){
 				//获取列表
 				this.getList();
+			},
+			platform:function(n,o){
+				//获取列表
+				this.getList();
 			}
 		},
 		created(){
@@ -249,7 +257,8 @@
 				let req = {
 					dept_id:this.dept_id,
 					shop_id:this.shop_id,
-					tjrq:this.tjrq
+					tjrq:this.tjrq,
+					platform:this.platform
 				}
 				resource.targetFinish(req).then(res => {
 					if(res.data.code == 1){

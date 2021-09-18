@@ -1,18 +1,7 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺：">
-				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
+			<dps @callBack="checkReq"></dps>
 			<el-form-item label="品类:">
 				<el-select v-model="select_cate_names" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in cate_name_list" :key="item" :label="item" :value="item">
@@ -53,15 +42,15 @@
 	import SalesMoney from './AnnualReport/sales_money.vue'
 	import SalesNumber from './AnnualReport/sales_number.vue'
 	import ReturnsData from './AnnualReport/returns_data.vue'
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
 				activeTab:"sales_money",
 				menu_list:[],								//所有菜单列表
-				shop_list:[],								//店铺列表
-				select_shop_list:[],						//选中的店铺列表
-				dept_list: [],								//部门列表
+				select_store_ids:[],						//选中的店铺列表
 				select_department_ids:[],					//选中的部门id列表
+				select_plat_ids:[],							//选中的平台列表
 				cate_name_list:[],							//品类列表
 				select_cate_names:[],						//选中的品类列表
 				month_list:[{
@@ -131,10 +120,6 @@
 			let menu_list = this.$store.state.menu_list;
 			this.forMenuList(menu_list);
 			this.getIndex();
-			//部门列表
-			this.AjaxViewDept();
-			//店铺列表
-			this.GetStoreList();
 			//品类列表
 			this.ajaxCpfl();
 			this.getList();
@@ -156,27 +141,11 @@
 					}
 				})
 			},
-			//部门列表
-			AjaxViewDept(){
-				resource.ajaxViewDept().then(res => {
-					if(res.data.code == 1){
-						this.dept_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//店铺列表
-			GetStoreList(){
-				let dept_id = this.select_department_ids.join(',');
-				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
-					if(res.data.code == 1){
-						this.shop_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_department_ids = reqObj.select_department_ids;
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//品类列表
 			ajaxCpfl(){
@@ -191,13 +160,14 @@
 			//点击搜索
 			getList(){
 				this.dept_id = this.select_department_ids.join(',');
-				this.shop_id = this.select_shop_list.join(',');
+				this.shop_id = this.select_store_ids.join(',');
 				this.cpfl = this.select_cate_names.join(',');
 				this.year = this.select_years_list.join(',');
 				this.month = this.select_month_list.join(',');
 				let req = {
 					dept_id:this.dept_id,
 					shop_id:this.shop_id,
+					platform:this.select_plat_ids.join(','),
 					cpfl:this.cpfl,
 					year:this.year,
 					month:this.month
@@ -215,7 +185,8 @@
 		components:{
 			SalesMoney,
 			SalesNumber,
-			ReturnsData
+			ReturnsData,
+			dps
 		}
 	}
 </script>

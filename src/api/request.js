@@ -10,6 +10,7 @@ export function middleWare(params,type) {
     secret_key:!localStorage.getItem("secret_key")?'':localStorage.getItem("secret_key"),
     timestamp:((new Date()).getTime()/1000).toString().split('.')[0]
   };
+  console.log(target)
   // 生成签名
   var create_sign = {...params,...target};
   var keys = [];        // 所有键名
@@ -40,8 +41,8 @@ export function middleWare(params,type) {
   var token_obj = {...target,...{sign:sign}};
   var token = Base64.encode(JSON.stringify(token_obj));
   //组织参数
-  var req = {...params,...{sign:sign,token:token}};
-  // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};
+  // var req = {...params,...{sign:sign,token:token}};
+  var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};
   var get_arr = [];
   //post请求参数
   var form = new FormData();

@@ -4,7 +4,7 @@
 		<div class="center_box">
 			<div class="tab_container">
 				<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">销售金额</div>
-				<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">销售单量</div>
+				<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">销售数量</div>
 			</div>
 			<div class="money_text">{{total_obj.value}}</div>
 			<div class="tb_row">

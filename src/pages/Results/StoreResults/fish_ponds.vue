@@ -1,18 +1,7 @@
 <template>
 	<div class="container">
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺:">
-				<el-select v-model="select_store_ids" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
+			<dps @callBack="checkReq"></dps>
 			<el-form-item label="付款日期:" style="margin-right: 20px">
 				<el-date-picker
 				v-model="date"
@@ -29,9 +18,6 @@
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="fishList">搜索</el-button>
-		</el-form-item>
-		<el-form-item>
-			<el-button type="info" @click="ClearReq">清空</el-button>
 		</el-form-item>
 	</el-form>
 	<div class="tab_container">
@@ -102,6 +88,7 @@
 <script>
 	import resource from '../../../api/resource.js'
 	import {getCurrentDate,getMonthStartDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
@@ -131,10 +118,9 @@
 				},	 										//时间区间
 				date:[getCurrentDate(),getCurrentDate()],	//付款日期
 				start_time:getCurrentDate(),				//开始日期
-				end_time:getCurrentDate(),					//结束日期
-				dept_list: [],								//部门列表	
+				end_time:getCurrentDate(),					//结束日期	
 				select_department_ids:[],					//选中的部门id列表
-				store_list: [],								//店铺列表	
+				select_plat_ids:[],							//选中的平台列表
 				select_store_ids:[],						//选中的店铺id列表
 				tab_index:'1',								//表格导航
 				single_dateChart:null,						//每日鱼塘单量
@@ -145,12 +131,6 @@
 				amountChart:null,							//各店铺鱼塘金额占比
 				over_stateChart:null,						//鱼塘目标完成情况
 			}
-		},
-		created(){
-			//部门列表
-			this.AjaxViewDept();
-			//店铺列表
-			this.GetStoreList();
 		},
 		mounted(){
             //获取列表
@@ -175,32 +155,17 @@
 			}
 		},
 		methods:{
-        	//部门列表
-        	AjaxViewDept(){
-        		resource.ajaxViewDept().then(res => {
-        			if(res.data.code == 1){
-        				this.dept_list = res.data.data;
-        			}else{
-        				this.$message.warning(res.data.msg);
-        			}
-        		})
-        	},	
-			//店铺列表
-			GetStoreList(){
-				let dept_id = this.select_department_ids.join(',');
-				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
-					if(res.data.code == 1){
-						this.store_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
+        	//子组件传递过来的参数
+        	checkReq(reqObj){
+        		this.select_department_ids = reqObj.select_department_ids;
+        		this.select_plat_ids = reqObj.select_plat_ids;
+        		this.select_store_ids = reqObj.select_store_ids;
+        	},
 			//获取列表
 			fishList(){
 				let req = {
 					dept_id:this.select_department_ids.join(','),
+					platform:this.select_plat_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					start_time:this.start_time,
 					end_time:this.end_time
@@ -899,12 +864,9 @@
         				}
         			})
 },
-			//清空查询条件
-			ClearReq(){
-				this.select_department_ids = [];
-				this.select_store_ids = [];
-				this.date = [];
-			},
-		}
-	}
+},
+components:{
+	dps
+}
+}
 </script>

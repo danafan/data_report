@@ -19,7 +19,7 @@
 					7级: 棉衣、冬大衣、皮夹克、厚呢外套、呢帽、手套、羽绒服、皮袄<br/>
 					8级: 棉衣、冬大衣、皮夹克、厚呢外套、呢帽、手套、羽绒服、裘皮大衣<br/>
 				</div>
-				<el-button size="small" type="text">穿衣指数说明</el-button>
+				<el-button size="small" type="text">穿衣指数?</el-button>
 			</el-tooltip>
 			<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
@@ -30,10 +30,17 @@
 					<div class="zgw_box" v-if="scope.$index == 0 || (scope.$index)%6 == 0">
 						<div :class="{'zgw_color':scope.row['value_' + item] == scope.row.zgw_max}">{{scope.row['value_' + item]}}</div>
 						<div class="city_text" v-if="index == 0">（{{scope.row.city_name}}）</div>
+						<div v-else :class="{'zgw_color':scope.row['value_' + item] == scope.row.zgw_max}">°C</div>
 					</div>
 					<!-- 最低温 -->
-					<div :class="{'zdw_color':scope.row['value_' + item] == scope.row.zdw_min}" v-else-if="scope.$index == 1 || (scope.$index - 1)%6 == 0">
+					<div style="display:flex;justify-content: center" :class="{'zdw_color':scope.row['value_' + item] == scope.row.zdw_min}" v-else-if="scope.$index == 1 || (scope.$index - 1)%6 == 0">
 						<div :class="{'zdw_color':scope.row['value_' + item] == scope.row.zdw_min}">{{scope.row['value_' + item]}}</div>
+						<div v-if="index != 0" :class="{'zdw_color':scope.row['value_' + item] == scope.row.zdw_min}">°C</div>
+					</div>
+					<!-- 平均温 -->
+					<div style="display:flex;justify-content: center" v-else-if="scope.$index == 2 || (scope.$index - 2)%6 == 0">
+						<div>{{scope.row['value_' + item]}}</div>
+						<div v-if="index != 0">°C</div>
 					</div>
 					<!-- 穿衣指数 -->
 					<div class="content_item" v-else-if="(scope.$index + 1)%6 == 0">
@@ -143,10 +150,10 @@
 								//最低温
 								if(key_item == 'zdw'){
 									var zdw_arr = [];
-									for(var kk in dd){
-										zdw_arr.push(dd[kk]);
+									for(var ff in dd){
+										zdw_arr.push(dd[ff]);
 									}
-									zdw_arr.splice(0,1);
+									zdw_arr.splice(0,2);
 									var zdw_min = Math.min.apply(Math, zdw_arr.map((i) => {
 										return i;
 									}));
@@ -160,11 +167,10 @@
 						})
 						//导出的字段名
 						for(var k_title in this.table_content[0]){
-							if(k_title != 'zgw_max' && k_title != 'zdw_min'){
+							if(k_title != 'zgw_max' && k_title != 'zdw_min' && k_title != 'index'){
 								this.field_name_list.push(k_title);
 							}	
 						}
-						console.log(this.table_content);
 					}else{
 						this.$message.warning(res.data.msg);
 					}

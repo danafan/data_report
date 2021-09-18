@@ -244,6 +244,10 @@
 			tjrq:{
 				type:String,
 				default:""
+			},
+			platform:{
+				type:String,
+				default:""
 			}
 		},
 		watch:{
@@ -272,6 +276,18 @@
 				this.getWeekmx();
 			},
 			tjrq:function(n,o){
+				//获取列表
+				this.getList();
+				//访客流量来源（日）
+				this.getDaymx();
+				//访客流量分布（日）
+				this.getDayly();
+				//访客流量来源（周）
+				this.getWeekly();
+				//访客流量分布（周）
+				this.getWeekmx();
+			},
+			platform:function(n,o){
 				//获取列表
 				this.getList();
 				//访客流量来源（日）
@@ -325,6 +341,7 @@
 					dept_id:this.dept_id,
 					tjrq:this.tjrq,
 					shop_id:this.shop_id,
+					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
 				resource.boardFlow(req).then(res => {
@@ -385,6 +402,7 @@
 					dept_id:this.dept_id,
 					tjrq:this.tjrq,
 					shop_id:this.shop_id,
+					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
 				resource.getDayly(req).then(res => {
@@ -428,6 +446,7 @@
 					dept_id:this.dept_id,
 					tjrq:this.tjrq,
 					shop_id:this.shop_id,
+					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
 				resource.getDaymx(req).then(res => {
@@ -454,6 +473,7 @@
 					dept_id:this.dept_id,
 					tjrq:this.tjrq,
 					shop_id:this.shop_id,
+					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
 				resource.getWeekly(req).then(res => {
@@ -497,6 +517,7 @@
 					dept_id:this.dept_id,
 					tjrq:this.tjrq,
 					shop_id:this.shop_id,
+					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
 				resource.getWeekmx(req).then(res => {

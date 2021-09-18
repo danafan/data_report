@@ -37,14 +37,15 @@
 			<el-table-column prop="rq" label="日期" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="zgw" label="最高温" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
-					<div :class="{'zgw_color':scope.row.is_max == '1'}">{{scope.row.zgw}}</div>
+					<div :class="{'zgw_color':scope.row.is_max == '1'}">{{scope.row.zgw}}°C</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="zdw" label="最低温" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
-					<div :class="{'zdw_color':scope.row.is_min == '1'}">{{scope.row.zdw}}</div>
+					<div :class="{'zdw_color':scope.row.is_min == '1'}">{{scope.row.zdw}}°C</div>
 				</template>
 			</el-table-column>
+			<el-table-column prop="tq" label="天气" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="yw" label="不良天气" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div :class="{'yw_color':scope.row.yw == 1}">{{scope.row.yw == 1?'有':'无'}}</div>
@@ -259,21 +260,17 @@
 			weatherTableList(){
 				resource.weatherTableList(this.req).then(res => {
 					if(res.data.code == 1){
-						if(res.data.code == 1){
-							this.dataObj = res.data.data;
-							var zgw_max = Math.max.apply(Math, this.dataObj.data.map((item) => {return item.zgw}));
-							var zdw_max = Math.min.apply(Math, this.dataObj.data.map((item) => {return item.zdw}));
-							this.dataObj.data.map(item => {
-								if(item.zgw == zgw_max){
-									item.is_max = '1';
-								}
-								if(item.zdw == zdw_max){
-									item.is_min = '1';
-								}
-							})
-						}else{
-							this.$message.warning(res.data.msg);
-						}
+						this.dataObj = res.data.data;
+						var zgw_max = Math.max.apply(Math, this.dataObj.data.map((item) => {return item.zgw}));
+						var zdw_max = Math.min.apply(Math, this.dataObj.data.map((item) => {return item.zdw}));
+						this.dataObj.data.map(item => {
+							if(item.zgw == zgw_max){
+								item.is_max = '1';
+							}
+							if(item.zdw == zdw_max){
+								item.is_min = '1';
+							}
+						})
 					}else{
 						this.$message.warning(res.data.msg);
 					}

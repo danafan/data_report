@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="发货日期:" style="margin-right: 20px">
 				<el-date-picker
@@ -15,26 +16,12 @@
 				:picker-options="pickerOptions">
 			</el-date-picker>
 		</el-form-item>
-		<el-form-item label="项目部:" style="margin-right: 20px">
-			<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
-				<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-				</el-option>
-			</el-select>
-		</el-form-item>
-		<el-form-item label="店铺:">
-			<el-select v-model="select_store_ids" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-				<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-				</el-option>
-			</el-select>
-		</el-form-item>
+		
 		<el-form-item>
 			<el-checkbox v-model="is_assessment" true-label="1" false-label="0" border size="small">考核店铺</el-checkbox>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" @click="GetData">搜索</el-button>
-		</el-form-item>
-		<el-form-item>
-			<el-button type="info" @click="ClearReq">清空</el-button>
 		</el-form-item>
 	</el-form>
 	<!-- 数据模块 -->
@@ -140,6 +127,14 @@
 				</div>
 			</div>
 		</div>
+		<div class="column_item column_item_odd" v-if="data_list.length > 1">
+			<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in total_shop_data" :key="i.id">
+				<el-tooltip effect="dark" :content="i.field_value_str" placement="top" v-if="i.id == 1 || i.id == 183">
+					<el-button type="text" class="tooltip_but">{{i.field_value_str}}</el-button>
+				</el-tooltip>
+				<div class='tab_text' v-else>{{i.field_value_str}}</div>
+			</div>
+		</div>
 		<div class="table_list">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
 				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item" :key="i.id">
@@ -165,7 +160,6 @@
 			<el-button size="small" type="primary" @click="GetData('1','1')">保存</el-button>
 		</div>
 	</el-dialog>
-
 	<div style="margin-top: 30px;margin-bottom: 10px;font-size: 22;font-weight: bold">营销周报</div>
 	<!-- 营销周报 -->
 	<div class="table_setting">
@@ -186,6 +180,14 @@
 					<img class="sort-icon" v-if="item.sort == 1" src="../../../static/sort_up.png" @click="SortWeekFun(0,index)">
 					<img class="sort-icon" v-if="item.sort == 2" src="../../../static/sort_down.png" @click="SortWeekFun(1,index)">
 				</div>
+			</div>
+		</div>
+		<div class="column_item column_item_odd">
+			<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in total_week_data" :key="i.id">
+				<el-tooltip effect="dark" :content="i.field_value_str" placement="top" v-if="i.id == 170 || i.id == 171">
+					<el-button type="text" class="tooltip_but">{{i.field_value_str}}</el-button>
+				</el-tooltip>
+				<div class='tab_text' v-else>{{i.field_value_str}}</div>
 			</div>
 		</div>
 		<div class="table_list">
@@ -279,49 +281,49 @@
 			}
 		}
 	}
-	.table_list{
+	.column_item{
 		border-top:1px solid #D9D9D9;
+		background: #EFF1FA;
+		.column_item_text{
+			border-bottom:1px solid #D9D9D9;
+			width:100px;
+			padding-left: 5px;
+			padding-right:5px;
+			.tooltip_but{
+				width:100%;
+				height: 36px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				color: #333333;
+				overflow: hidden;
+				text-overflow: ellipsis;
+				display: -webkit-box;
+				-webkit-line-clamp: 1;
+				-webkit-box-orient: vertical;
+			}
+			.tab_text{
+				width:100%;
+				text-align: center;
+				height: 36px;
+				line-height: 36px;
+			}
+		}
+		.toast_red{
+			background:#FFA39E;
+		}
+		.toast_yellow{
+			background:#FFE58F;
+		}
+	}
+	.column_item_odd{
+		background: #F8F8F8;
+	}
+	.table_list{
 		flex:1;
 		display: flex;
 		overflow-x: scroll;
-		.column_item{
-			background: #EFF1FA;
-			.column_item_text{
-				border-bottom:1px solid #D9D9D9;
-				width:100px;
-				padding-left: 5px;
-				padding-right:5px;
-				.tooltip_but{
-					width:100%;
-					height: 36px;
-					display: flex;
-					flex-direction: column;
-					justify-content: center;
-					align-items: center;
-					color: #333333;
-					overflow: hidden;
-					text-overflow: ellipsis;
-					display: -webkit-box;
-					-webkit-line-clamp: 1;
-					-webkit-box-orient: vertical;
-				}
-				.tab_text{
-					width:100%;
-					text-align: center;
-					height: 36px;
-					line-height: 36px;
-				}
-			}
-			.toast_red{
-				background:#FFA39E;
-			}
-			.toast_yellow{
-				background:#FFE58F;
-			}
-		}
-		.column_item_odd{
-			background: #F8F8F8;
-		}
 	}
 }
 //暂无数据
@@ -340,6 +342,7 @@
 	import resource from '../../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import {exportExcel} from '../../../api/export.js'
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
@@ -370,16 +373,16 @@
 				date:[getMonthStartDate(),getCurrentDate()],//发货时间
 				start_time:getMonthStartDate(),		//开始时间
 				end_time:getCurrentDate(),			//结束时间
-				is_assessment:'0',				//是否考核店铺
-				dept_list: [],						//部门列表	
+				is_assessment:'0',					//是否考核店铺
 				select_department_ids:[],			//选中的部门id列表
-				store_list: [],						//店铺列表	
+				select_plat_ids:[],					//选中的平台列表
 				select_store_ids:[],				//选中的店铺id列表
 				xssryg:{},							//销售收入预估
 				yxfyyg:{},							//营销费用预估
 				ygz_gxmy:{},						//预估值-贡献毛益
 				ygz_gxmyl:{},						//预估值-贡献毛益率
 				label_list:[],						//表格数据（左侧表头）
+				total_shop_data:{},
 				data_list:[],						//表格数据（后面内容）
 				view_row:[],						//自定义列的内容
 				selected_ids:[],					//选中的自定义列的id
@@ -388,6 +391,7 @@
 				show_custom:false,					//是否显示自定义弹框
 				button_list:{},						//按钮权限
 				week_label_list:[],					//表格数据（营销周报，左侧表头）
+				total_week_data:{},
 				week_data_list:[],					//表格数据（营销周报，下面内容）
 				view_week_row:[],					//自定义列的内容(营销周报)
 				selected_week_ids:[],				//选中的自定义列的id(营销周报)
@@ -397,10 +401,6 @@
 			}
 		},
 		created(){
-			//部门列表
-			this.AjaxViewDept();
-			//店铺列表
-			this.GetStoreList();
 			//获取信息
 			this.GetData();
 		},
@@ -424,7 +424,9 @@
 					data_obj.table_title_list.push(item.title);
 					data_obj.field_name_list.push(item.field_name);
 				})
-				this.data_list.map(item => {
+				let total_shop_data_list = [this.total_shop_data];
+				let expor_data = [...total_shop_data_list,...this.data_list];
+				expor_data.map(item => {
 					let obj = {};
 					item.map(i => {
 						obj[i.field_name] = i.field_value_str;
@@ -445,41 +447,27 @@
 					data_obj.table_title_list.push(item.title);
 					data_obj.field_name_list.push(item.field_name);
 				})
-				this.week_data_list.map(item => {
+				let total_week_data_list = [this.total_week_data];
+				let expor_data = [...total_week_data_list,...this.week_data_list];
+				expor_data.map(item => {
 					let obj = {};
 					item.map(i => {
 						obj[i.field_name] = i.field_value_str;
 					})
 					data_obj.data_list.push(obj)
 				})
-				console.log(data_obj)
 				exportExcel(data_obj);
 			},
-			//部门列表
-			AjaxViewDept(){
-				resource.ajaxViewDept().then(res => {
-					if(res.data.code == 1){
-						this.dept_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},	
-			// 获取所有店铺
-			GetStoreList(){
-				let dept_id = this.select_department_ids.join(',');
-				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
-					if(res.data.code == 1){
-						this.store_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_department_ids = reqObj.select_department_ids;
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//获取信息
 			GetData(is_save,type){
 				let req = {
+					platform:this.select_plat_ids.join(','),
 					dept_id:this.select_department_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					start_time:this.start_time,
@@ -507,19 +495,28 @@
 							item.show_sort = false;		//是否显示排序标签
 						})
 						this.label_list = data.shop_table_list.title_names;
-						this.data_list = data.shop_table_list.list;
+						//
+						let shop_table_list_data = data.shop_table_list.list;
+						if(shop_table_list_data.length > 1){
+							this.total_shop_data = shop_table_list_data[0];
+							shop_table_list_data.splice(0,1);
+						}
+						this.data_list = shop_table_list_data;
 						this.view_row = data.view_row;
 						this.selected_ids = data.selected_ids;
 						this.button_list = data.button_list;
 						this.show_null = true;
 						this.default_data_list = JSON.stringify(data.shop_table_list.list);
-
 						data.week_table_list.title_names.map(item => {
 							item.is_show = true;		//是否显示当前行
 							item.show_sort = false;		//是否显示排序标签
 						})
 						this.week_label_list = data.week_table_list.title_names;
-						this.week_data_list = data.week_table_list.list;
+						//
+						let week_data_list_data = data.week_table_list.list;
+						this.total_week_data = week_data_list_data[0];
+						week_data_list_data.splice(0,1);
+						this.week_data_list = week_data_list_data;
 						this.view_week_row = data.week_view_row;
 						this.selected_week_ids = data.week_selected_ids;
 						this.show_week_null = true;
@@ -528,12 +525,6 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			//清空查询条件
-			ClearReq(){
-				this.select_department_ids = [];
-				this.select_store_ids = [];
-				this.date = [];
 			},
 			//切换是否显示(业绩分析)
 			CheckShow(index){
@@ -606,6 +597,9 @@
 				}
 			},
 			
+		},
+		components:{
+			dps
 		}
 	}
 </script>

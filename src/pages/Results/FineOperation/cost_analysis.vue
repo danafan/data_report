@@ -1,18 +1,7 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" clearable :popper-append-to-body="false" @change="GetStoreList" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺ID：">
-				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
+			<dps @callBack="checkReq"></dps>
 			<el-form-item label="用友店铺ID：">
 				<el-select v-model="select_yyshop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in yyshop_list" :key="item" :label="item" :value="item">
@@ -177,13 +166,13 @@
 <script>
 	import resource from '../../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
-				shop_list:[],								//店铺列表
-				select_shop_list:[],						//选中的店铺列表
-				dept_list: [],								//部门列表
+				select_store_ids:[],						//选中的店铺列表
 				select_department_ids:[],					//选中的部门id列表
+				select_plat_ids:[],							//选中的平台列表
 				yyshop_list:[],								//用友店铺列表
 				select_yyshop_list:[],						//选中的用友店铺id列表
 				xmdl_list:[],								//项目大类列表
@@ -238,10 +227,6 @@
 			}
 		},
 		created(){
-			//部门列表
-			this.AjaxViewDept();
-			//店铺列表
-			this.GetStoreList();
 			//用友店铺列表
 			this.ajaxYongyou();
 			//项目大类列表
@@ -272,27 +257,11 @@
 			mxSummary(){
 				return this.mx_total_data;
 			},
-			//部门列表
-			AjaxViewDept(){
-				resource.ajaxViewDept().then(res => {
-					if(res.data.code == 1){
-						this.dept_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//店铺列表
-			GetStoreList(){
-				let dept_id = this.select_department_ids.join(',');
-				this.select_store_ids = [];
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
-					if(res.data.code == 1){
-						this.shop_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_department_ids = reqObj.select_department_ids;
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//用友店铺列表
 			ajaxYongyou(){
@@ -327,8 +296,9 @@
 			//获取列表
 			searchFun(){
 				let req = {
+					platform:this.select_plat_ids.join(','),
 					dept_id:this.select_department_ids.join(','),
-					shop_id:this.select_shop_list.join(','),
+					shop_id:this.select_store_ids.join(','),
 					cdepcode:this.select_yyshop_list.join(','),
 					citemcname:this.select_xmdl_list.join(','),
 					citemname:this.select_xmmc_list.join(','),
@@ -482,6 +452,9 @@
 					this.dpChart.resize();
 				})
 			},
+		},
+		components:{
+			dps
 		}
 	}
 </script>
