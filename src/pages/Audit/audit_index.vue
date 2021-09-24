@@ -1,23 +1,42 @@
 <template>
 	<div>
-		<el-tabs v-model="activeTab">
-			<el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box">
-				<ToastCost/>
+		<el-tabs v-model="activeTab" @tab-click="handleClick">
+			<!-- <el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+				<ToastCost v-if="activeTab == '/total_cost'"/>
 			</el-tab-pane>
-			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box">
-				<EditRecord/>
+			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+				<EditRecord v-if="activeTab == '/edit_record'"/>
 			</el-tab-pane>
-			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box">
-				<ReviewTable/>
+			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+				<ReviewTable v-if="activeTab == '/review_table'"/>
+			</el-tab-pane>
+			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box" v-if="user_type == '1'">
+				<BargainingTable v-if="activeTab == '/bargaining_table'"/>
 			</el-tab-pane>
 			<el-tab-pane label="调价表" lazy name="/pricing_table" class="tab_pane_box">
-				<PricingTable/>
+				<PricingTable v-if="activeTab == '/pricing_table'"/>
+			</el-tab-pane>
+			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box" v-if="user_type == '1'">
+				<OperationalTable v-if="activeTab == '/operational_table'"/>
+			</el-tab-pane> -->
+
+			<el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box">
+				<ToastCost v-if="activeTab == '/total_cost'"/>
+			</el-tab-pane>
+			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box">
+				<EditRecord v-if="activeTab == '/edit_record'"/>
+			</el-tab-pane>
+			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box">
+				<ReviewTable v-if="activeTab == '/review_table'"/>
 			</el-tab-pane>
 			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box">
-				<BargainingTable/>
+				<BargainingTable v-if="activeTab == '/bargaining_table'"/>
+			</el-tab-pane>
+			<el-tab-pane label="调价表" lazy name="/pricing_table" class="tab_pane_box">
+				<PricingTable v-if="activeTab == '/pricing_table'"/>
 			</el-tab-pane>
 			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box">
-				<OperationalTable/>
+				<OperationalTable v-if="activeTab == '/operational_table'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -37,7 +56,21 @@
 	export default{
 		data(){
 			return{
-				activeTab:"/total_cost",
+				activeTab:"",
+				user_type:''
+			}
+		},
+		created(){
+			this.user_type = localStorage.getItem('user_type');
+			if(this.user_type == '1'){
+				this.activeTab = '/bargaining_table';
+			}else if(this.user_type == '2' || this.user_type == '3'){
+				this.activeTab = '/total_cost';
+			}
+		},
+		methods:{
+			handleClick(e){
+				this.activeTab = e.name;
 			}
 		},
 		components:{

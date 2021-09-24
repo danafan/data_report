@@ -11,7 +11,15 @@ let path = {
 	logDetail:'audit/log_detail',									//修改记录详情
 	auidtLog:'audit/auidt_log',										//审核表列表
 	auidtItem:'audit/auidt',										//审核
-}					
+	noZeroCost:'audit/no_zero_cost',								//调价表列表
+	uploadImage:'audit/uploadimage',								//上传图片
+	delImage:'audit/delimage',										//删除图片
+	auditApply:'audit/apply',										//调价表申请调价
+	zeroCost:'audit/zero_cost',										//首次议价表列表
+	zeroApply:'audit/zeroapply',									//首次议价表申请调价
+	ksbmDetail:'audit/ksbm_detail',									//款式详情
+	auditSetting:'audit/setting',									//审计权限
+}						
 export default{
 	//款式编码列表
 	ajaxKsbm(params){
@@ -56,6 +64,42 @@ export default{
 	//审核
 	auidtItem(params){
 		return http.post(path.auidtItem, params)
+	},
+	//调价表列表
+	noZeroCost(params){
+		return http.get(path.noZeroCost, params)
+	},
+	//上传图片
+	uploadImage(params){
+		return http.post(path.uploadImage, params)
+	},
+	//删除图片
+	delImage(params){
+		return http.post(path.delImage, params)
+	},
+	//调价表申请调价
+	auditApply(params){
+		return http.post(path.auditApply, params)
+	},
+	//首次议价表列表
+	zeroCost(params){
+		return http.get(path.zeroCost, params)
+	},
+	//首次议价表申请调价
+	zeroApply(params){
+		return http.post(path.zeroApply, params)
+	},
+	//款式详情
+	ksbmDetail(params){
+		return http.get(path.ksbmDetail, params)
+	},
+	//审计权限
+	auditGetSetting(params){
+		return http.get(path.auditSetting, params)
+	},
+	//提交审计权限
+	auditPostSetting(params){
+		return http.post(path.auditSetting, params)
 	},
 }
 

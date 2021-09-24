@@ -1,14 +1,14 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="款式编码：">
-				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="ajaxKsbm" collapse-tags>
+			<el-form-item label="新编码：">
+				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商货号：">
-				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
+			<el-form-item label="供应商款号：">
+				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -29,7 +29,7 @@
 		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
 			<el-table-column type="selection" width="55" fixed="left" :selectable="selectableFun"></el-table-column>
-			<el-table-column prop="id" label="序号" width="50" align="center" fixed="left"></el-table-column>
+			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column prop="platform" label="平台" width="120" align="center"></el-table-column>
@@ -62,8 +62,8 @@
 				<template slot-scope="scope">
 					<div v-if="scope.row.status == '0'">默认状态</div>
 					<div v-if="scope.row.status == '1'">待审批</div>
-					<div v-if="scope.row.status == '2'">审批拒绝</div>
-					<div v-if="scope.row.status == '3'">审批通过</div>
+					<div v-if="scope.row.status == '2'">审核通过</div>
+					<div v-if="scope.row.status == '3'">审批拒绝</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="approver_time" label="审核时间" width="140" align="center">
@@ -164,7 +164,7 @@
 			<div class="content_row">
 				<div class="label">文件附图：</div>
 				<div class="img_list">
-					<img class="img" :src="item" v-for="item in detailObj.pictures">
+					<img class="img" :src="detailObj.domain + item" v-for="item in detailObj.pictures">
 				</div>
 			</div>
 			<div slot="footer" class="dialog-footer">
@@ -254,7 +254,7 @@
 				select_ksbm_ids:[],		//选中的款式编码
 				gyshh_list:[],			//所有供应商款号
 				select_gyshh_ids:[],	//选中的供应商款号
-				status:'0',				//选中的状态
+				status:'1',				//选中的状态
 				status_list:[{
 					id:'0',
 					name:'全部'
@@ -343,8 +343,8 @@
 			getData(){
 				let arg = {
 					status:this.status,
-					ksbm:this.select_ksbm_ids.join('_'),
-					supplier_ksbm:this.select_gyshh_ids.join('_'),
+					ksbm:this.select_ksbm_ids.join(','),
+					supplier_ksbm:this.select_gyshh_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -469,7 +469,7 @@
 					//导出
 					var arr = [];
 					let arg = {
-						export_status:this.export_status,
+						status:this.export_status,
 						start_date:this.export_date && this.export_date.length> 0?this.export_date[0]:"",
 						end_date:this.export_date && this.export_date.length> 0?this.export_date[1]:""
 					}

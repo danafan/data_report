@@ -55,6 +55,8 @@
             watermark.set(ding_user_name,ding_user_id);
             let secret_key = res.data.data.secret_key;
             localStorage.setItem('secret_key',secret_key);
+            let user_type = res.data.data.user_type;
+            localStorage.setItem('user_type',user_type);
             this.$router.push('/home');
           }else{
             this.$message.warning(res.data.msg);

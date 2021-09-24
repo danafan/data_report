@@ -1,9 +1,15 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="款式编码：">
-				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="ajaxKsbm" collapse-tags>
+			<el-form-item label="新编码：">
+				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="状态：">
+				<el-select v-model="status" :popper-append-to-body="false" placeholder="全部">
+					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -12,37 +18,20 @@
 			</el-form-item>
 		</el-form>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="id" label="序号" width="50" align="center" fixed="left"></el-table-column>
-			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
-			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
-			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
-			<el-table-column prop="batch_price" label="批发价" width="120" align="center">
+			<el-table-column type="index" label="序号" align="center"></el-table-column>
+			<el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
+			<el-table-column prop="supplier_ksbm" label="供应商款号" align="center"></el-table-column>
+			<el-table-column prop="opreater_name" label="提交人" align="center">
 			</el-table-column>
-			<el-table-column prop="cb_price" label="原成本价" width="120" align="center"></el-table-column>
-			<el-table-column prop="edit_price" label="更新成本价" width="120" align="center"></el-table-column>
-			<el-table-column label="起始/结束时间" width="210">
-				<template slot-scope="scope">
-					<div>开始时间：{{scope.row.start_date}}</div>
-					<div>结束时间：{{scope.row.end_date}}</div>
-				</template>
+			<el-table-column prop="edit_price" label="原批发价" align="center">
 			</el-table-column>
-			<el-table-column prop="opreater_name" label="提交人" width="120" align="center">
+			<el-table-column prop="batch_price" label="批发价" align="center">
 			</el-table-column>
-			<el-table-column prop="add_time" label="提交时间" width="140" align="center">
+			<el-table-column prop="cb_price" label="成本价" align="center">
 			</el-table-column>
-			<el-table-column label="审核状态" width="120" align="center">
-				<template slot-scope="scope">
-					<div v-if="scope.row.status == '0'">默认状态</div>
-					<div v-if="scope.row.status == '1'">待审批</div>
-					<div v-if="scope.row.status == '2'">审批拒绝</div>
-					<div v-if="scope.row.status == '3'">审批通过</div>
-				</template>
+			<el-table-column prop="add_time" label="提交时间" align="center">
 			</el-table-column>
-			<el-table-column prop="approver_time" label="审核时间" width="140" align="center">
-			</el-table-column>
-			<el-table-column prop="approver" label="审核人" width="120" align="center">
-			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right">
+			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id)">查看</el-button>
 				</template>
@@ -87,7 +76,7 @@
 					<div class="content_row">
 						<div class="label">文件附图：</div>
 						<div class="img_list">
-							<img class="img" :src="item" v-for="item in detailObj.pictures">
+							<img class="img" :src="detailObj.domain + item" v-for="item in detailObj.pictures">
 						</div>
 					</div>
 					<div class="content_row">
@@ -120,8 +109,8 @@
 						<div class="label">审核状态：</div>
 						<div v-if="detailObj.status == '0'">默认状态</div>
 						<div v-if="detailObj.status == '1'">待审批</div>
-						<div v-if="detailObj.status == '2'">审批拒绝</div>
-						<div v-if="detailObj.status == '3'">审批通过</div>
+						<div v-if="detailObj.status == '2'">审批通过</div>
+						<div v-if="detailObj.status == '3'">审批拒绝</div>
 					</div>
 					<div class="content_row">
 						<div class="label">审核时间：</div>
@@ -175,6 +164,26 @@
 				pagesize:10,
 				ksbm_list:[],			//所有款式编码
 				select_ksbm_ids:[],		//选中的款式编码
+				status:'0',				//选中的状态
+				status_list:[{
+					id:'0',
+					name:'全部'
+				},{
+					id:'1',
+					name:'待审核'
+				},{
+					id:'2',
+					name:'审核通过'
+				},{
+					id:'3',
+					name:'审核拒绝'
+				},{
+					id:'4',
+					name:'批发价'
+				},{
+					id:'5',
+					name:'换挡口'
+				}],					//状态列表
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
@@ -206,7 +215,8 @@
 			//获取列表
 			getData(){
 				let arg = {
-					ksbm:this.select_ksbm_ids.join('_'),
+					ksbm:this.select_ksbm_ids.join(','),
+					status:this.status,
 					page:this.page,
 					pagesize:this.pagesize
 				}

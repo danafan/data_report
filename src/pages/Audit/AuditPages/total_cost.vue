@@ -1,14 +1,14 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="款式编码：">
-				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="ajaxKsbm" collapse-tags>
+			<el-form-item label="新编码：">
+				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商货号：">
-				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
+			<el-form-item label="供应商款号：">
+				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -16,12 +16,6 @@
 			<el-form-item label="供应商：">
 				<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="状态：">
-				<el-select v-model="status" :popper-append-to-body="false" placeholder="全部">
-					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -34,7 +28,8 @@
 			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="id" label="序号" width="50" align="center" fixed="left"></el-table-column>
+			<el-table-column type="index" label="序号" align="center" fixed="left">
+			</el-table-column>
 			<el-table-column prop="launch_day" label="上新时间" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
@@ -79,7 +74,7 @@
 				</el-input>
 			</div>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" size="small" @click="showDialog = false">取消</el-button>
+				<el-button type="primary" size="small" @click="replaceDialog = false">取消</el-button>
 				<el-button type="primary" size="small" @click="commitReplace">确认替换</el-button>
 			</div>
 		</el-dialog>
@@ -136,26 +131,6 @@
 				select_gyshh_ids:[],	//选中的供应商款号
 				gys_list:[],			//所有供应商列表
 				select_gys_ids:[],		//选中的供应商列表
-				status:'0',				//选中的状态
-				status_list:[{
-					id:'0',
-					name:'全部'
-				},{
-					id:'1',
-					name:'待审核'
-				},{
-					id:'2',
-					name:'审核通过'
-				},{
-					id:'3',
-					name:'审核拒绝'
-				},{
-					id:'4',
-					name:'批发价'
-				},{
-					id:'5',
-					name:'换挡口'
-				}],					//状态列表
 				dataObj:{},				//返回数据
 				replaceDialog:false,	//替换供应商弹框
 				old_gys:"",				//原供应商
@@ -239,10 +214,9 @@
 			//获取列表
 			getData(){
 				let arg = {
-					status:this.status,
-					ksbm:this.select_ksbm_ids.join('_'),
-					supplier_ksbm:this.select_gyshh_ids.join('_'),
-					supplier:this.select_gys_ids.join('_'),
+					ksbm:this.select_ksbm_ids.join(','),
+					supplier_ksbm:this.select_gyshh_ids.join(','),
+					supplier:this.select_gys_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize
 				}
