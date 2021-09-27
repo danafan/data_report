@@ -34,10 +34,12 @@
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column prop="platform" label="平台" width="120" align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
-			<el-table-column prop="batch_price" label="批发价" width="120" align="center">
+			<el-table-column prop="batch_price" label="原批发价" width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="edit_batch_price" label="更新批发价" width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="cb_price" label="原成本价" width="120" align="center"></el-table-column>
-			<el-table-column prop="edit_price" label="更新成本价" width="120" align="center"></el-table-column>
+			<el-table-column prop="edit_cb_price" label="更新成本价" width="120" align="center"></el-table-column>
 			<el-table-column label="起始/结束时间" width="210">
 				<template slot-scope="scope">
 					<div>开始时间：{{scope.row.start_date}}</div>
@@ -94,19 +96,19 @@
 					</div>
 					<div class="content_row">
 						<div class="label">平台：</div>
-						<div>{{detailObj.ksbm}}</div>
+						<div>{{detailObj.platform}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">新编码：</div>
 						<div>{{detailObj.ksbm}}</div>
 					</div>
 					<div class="content_row">
-						<div class="label">批发价：</div>
+						<div class="label">原批发价：</div>
 						<div>{{detailObj.batch_price}}</div>
 					</div>
 					<div class="content_row">
-						<div class="label">备注：</div>
-						<div>{{detailObj.remark}}</div>
+						<div class="label">更新批发价：</div>
+						<div>{{detailObj.edit_batch_price}}</div>
 					</div>
 				</div>
 				<div>
@@ -116,7 +118,7 @@
 					</div>
 					<div class="content_row" :class="{'is_red':detailObj.type == 0}">
 						<div class="label">更新成本价：</div>
-						<div>{{detailObj.edit_price}}</div>
+						<div>{{detailObj.edit_cb_price}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">开始时间：</div>
@@ -128,7 +130,7 @@
 					</div>
 					<div class="content_row">
 						<div class="label">是否福袋款：</div>
-						<div>{{detailObj.is_special == '0'?'否':detailObj.is_special == '1'?'是':'未指定'}}</div>
+						<div>{{detailObj.is_blessingbag == '0'?'否':detailObj.is_blessingbag == '1'?'是':'未指定'}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">是否特批：</div>
@@ -164,8 +166,13 @@
 			<div class="content_row">
 				<div class="label">文件附图：</div>
 				<div class="img_list">
-					<img class="img" :src="detailObj.domain + item" v-for="item in detailObj.pictures">
+					<el-image class="img" :src="item" v-for="item in big_img_list" :preview-src-list="big_img_list">
+					</el-image>
 				</div>
+			</div>
+			<div class="content_row">
+				<div class="label">备注：</div>
+				<div>{{detailObj.remark}}</div>
 			</div>
 			<div slot="footer" class="dialog-footer">
 				<el-button type="primary" size="small" @click="aduitFun('0')">拒绝</el-button>
@@ -189,7 +196,7 @@
 						<el-radio :label="2">选择时间导出</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="时间区间：" v-if="export_type == 2">
+				<el-form-item label="时间区间（按审核时间）：" v-if="export_type == 2">
 					<el-date-picker size="small" v-model="export_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 					</el-date-picker>
 				</el-form-item>
@@ -228,6 +235,7 @@
 	margin-bottom: 10px;
 	.label{
 		font-weight: bold;
+		width: 90px;
 	}
 	.img_list{
 		width: 400px;
@@ -302,6 +310,7 @@
 					}]
 				},	 					//时间区间
 				export_status:'0',		//导出类型
+				big_img_list:[]
 			}
 		},
 		created(){
@@ -390,6 +399,11 @@
 				resource.logDetail({id:this.select_id}).then(res => {
 					if(res.data.code == 1){
 						this.detailObj = res.data.data;
+						this.big_img_list = [];
+						this.detailObj.pictures.map(item => {
+							let img_url = this.detailObj.domain + item;
+							this.big_img_list.push(img_url);
+						})
 						this.detailDialog = true;
 					}else{
 						this.$message.warning(res.data.msg);

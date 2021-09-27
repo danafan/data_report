@@ -28,10 +28,12 @@
 			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
-			<el-table-column prop="batch_price" label="批发价" width="120" align="center">
+			<el-table-column prop="batch_price" label="原批发价" width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="edit_batch_price" label="更新批发价" width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="cb_price" label="原成本价" width="120" align="center"></el-table-column>
-			<el-table-column prop="edit_price" label="更新成本价" width="120" align="center"></el-table-column>
+			<el-table-column prop="edit_cb_price" label="更新成本价" width="120" align="center"></el-table-column>
 			<el-table-column label="起始/结束时间" width="210">
 				<template slot-scope="scope">
 					<div>开始时间：{{scope.row.start_date}}</div>
@@ -91,12 +93,12 @@
 						<div>{{detailObj.ksbm}}</div>
 					</div>
 					<div class="content_row">
-						<div class="label">批发价：</div>
+						<div class="label">原批发价：</div>
 						<div>{{detailObj.batch_price}}</div>
 					</div>
 					<div class="content_row">
-						<div class="label">备注：</div>
-						<div>{{detailObj.remark}}</div>
+						<div class="label">更新批发价：</div>
+						<div>{{detailObj.edit_batch_price}}</div>
 					</div>
 				</div>
 				<div>
@@ -106,7 +108,7 @@
 					</div>
 					<div class="content_row" :class="{'is_red':detailObj.type == 0}">
 						<div class="label">更新成本价：</div>
-						<div>{{detailObj.edit_price}}</div>
+						<div>{{detailObj.edit_cb_price}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">开始时间：</div>
@@ -118,7 +120,7 @@
 					</div>
 					<div class="content_row">
 						<div class="label">是否福袋款：</div>
-						<div>{{detailObj.is_special == '0'?'否':detailObj.is_special == '1'?'是':'未指定'}}</div>
+						<div>{{detailObj.is_blessingbag == '0'?'否':detailObj.is_blessingbag == '1'?'是':'未指定'}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">是否特批：</div>
@@ -138,8 +140,8 @@
 						<div class="label">审核状态：</div>
 						<div v-if="detailObj.status == '0'">默认状态</div>
 						<div v-if="detailObj.status == '1'">待审批</div>
-						<div v-if="detailObj.status == '2'">审批拒绝</div>
-						<div v-if="detailObj.status == '3'">审批通过</div>
+						<div v-if="detailObj.status == '2'">审批通过</div>
+						<div v-if="detailObj.status == '3'">审批拒绝</div>
 					</div>
 					<div class="content_row">
 						<div class="label">审核时间：</div>
@@ -154,14 +156,15 @@
 			<div class="content_row">
 				<div class="label">文件附图：</div>
 				<div class="img_list">
-					<img class="img" :src="detailObj.domain + item" v-for="item in detailObj.pictures">
+					<el-image class="img" :src="item" v-for="item in big_img_list" :preview-src-list="big_img_list">
+					</el-image>
 				</div>
 			</div>
 			<div class="content_row">
 				<div class="label">备注：</div>
 				<div>{{detailObj.remark}}</div>
 			</div>
-			<div class="content_row" v-if="detailObj.status == '2'">
+			<div class="content_row" v-if="detailObj.status == '3'">
 				<div class="label">拒绝原因：</div>
 				<div>{{detailObj.refuse_reason}}</div>
 			</div>
@@ -185,6 +188,7 @@
 	margin-bottom: 10px;
 	.label{
 		font-weight: bold;
+		width: 90px;
 	}
 	.img_list{
 		width: 400px;
@@ -226,6 +230,7 @@
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
+				big_img_list:[]
 			}
 		},
 		created(){
@@ -297,14 +302,17 @@
 				resource.logDetail({id:this.select_id}).then(res => {
 					if(res.data.code == 1){
 						this.detailObj = res.data.data;
+						this.big_img_list = [];
+						this.detailObj.pictures.map(item => {
+							let img_url = this.detailObj.domain + item;
+							this.big_img_list.push(img_url);
+						})
 						this.detailDialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			
-			
+			}
 		}
 	}
 </script>

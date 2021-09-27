@@ -40,8 +40,8 @@ export function middleWare(params,type) {
   var token_obj = {...target,...{sign:sign}};
   var token = Base64.encode(JSON.stringify(token_obj));
   //组织参数
-  // var req = {...params,...{sign:sign,token:token}};
-  var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};
+  var req = {...params,...{sign:sign,token:token}};
+  // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};
   // var req = {...params,...{sign:sign,admin_id:'8318',token:token}};
   var get_arr = [];
   //post请求参数

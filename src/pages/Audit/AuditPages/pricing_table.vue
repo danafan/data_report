@@ -148,7 +148,7 @@
 				remark:"",				//备注
 				show_img:[],			//显示的图片
 				start_date:"",
-				end_date:""
+				end_date:"",
 			}
 		},
 		created(){
@@ -247,6 +247,8 @@
 				this.price = "";
 				this.show_img = [];
 				this.remark = "";
+				this.start_date = "";
+				this.end_date = "";
 			},
 			//上传照片
 			uploadFile(arg){

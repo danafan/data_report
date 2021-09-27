@@ -20,9 +20,9 @@
       }
     },
     created(){
-      this.$router.push('/home'); 
+      // this.$router.push('/home'); 
       //获取code
-      // this.GetCode();
+      this.GetCode();
     },
     methods: {
       //获取code

@@ -83,10 +83,10 @@
 					<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
 				</el-menu-item-group>
 			</el-submenu>
-			<el-submenu index="123">
+			<!-- <el-submenu index="123">
 				<template slot="title">审计管理</template>
 				<el-menu-item index="/audit_index">审计管理</el-menu-item>
-			</el-submenu>
+			</el-submenu> -->
 		</el-menu>
 	</div>
 	<el-main class="main">

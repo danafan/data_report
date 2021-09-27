@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="handleClick">
-			<!-- <el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+			<el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
 				<ToastCost v-if="activeTab == '/total_cost'"/>
 			</el-tab-pane>
 			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
@@ -18,9 +18,9 @@
 			</el-tab-pane>
 			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box" v-if="user_type == '1'">
 				<OperationalTable v-if="activeTab == '/operational_table'"/>
-			</el-tab-pane> -->
+			</el-tab-pane>
 
-			<el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box">
+			<!-- <el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box">
 				<ToastCost v-if="activeTab == '/total_cost'"/>
 			</el-tab-pane>
 			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box">
@@ -37,7 +37,7 @@
 			</el-tab-pane>
 			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box">
 				<OperationalTable v-if="activeTab == '/operational_table'"/>
-			</el-tab-pane>
+			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>

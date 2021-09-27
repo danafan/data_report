@@ -87,7 +87,7 @@
 						<el-radio :label="2">选择时间导出</el-radio>
 					</el-radio-group>
 				</el-form-item>
-				<el-form-item label="时间区间：" v-if="export_type == 2">
+				<el-form-item label="时间区间（按上线时间）：" v-if="export_type == 2">
 					<el-date-picker size="small" v-model="export_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 					</el-date-picker>
 				</el-form-item>
