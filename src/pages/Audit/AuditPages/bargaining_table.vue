@@ -17,7 +17,10 @@
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="exportTable">全部导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName">
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" align="center"></el-table-column>
@@ -128,10 +131,23 @@
 		}
 	}
 }
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
+</style>
+<style type="text/css">
+.el-table .warning-row {
+	background: #F56C6C;
+	color: #333333;
+}
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
 	import UploadFile from '../../../components/upload_file.vue'
+	import {exportUp} from '../../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -155,6 +171,13 @@
 			this.getData();
 		},
 		methods:{
+			// 超时高亮提示
+			tableRowClassName({row, rowIndex}) {
+				if (row.bg_flag == 1) {
+					return 'warning-row';
+				}
+				return '';
+			},
 			//款式编码列表
 			ajaxKsbm(e){
 				if(e != ''){
@@ -184,6 +207,10 @@
 				this.page = 1;
 				//获取列表
 				this.getData();
+			},
+			//全部导出
+			exportTable(){
+				exportUp(`audit/zero_cost_export`);
 			},
 			//获取列表
 			getData(){

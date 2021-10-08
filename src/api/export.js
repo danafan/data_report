@@ -40,12 +40,18 @@ export function exportUp(url){
 		type: 'warning'
 	}).then(() => {
 		let req = {};
-		let req_arr = url.split('?')[1].split('&');
-		req_arr.map(item => {
-			req[item.split('=')[0]] = item.split('=')[1];
-		})
-		let get_str = middleWare(req,'get');
-		let open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
+		var open_url = '';
+		if(url.indexOf('?') > -1){
+			let req_arr = url.split('?')[1].split('&');
+			req_arr.map(item => {
+				req[item.split('=')[0]] = item.split('=')[1];
+			})
+			let get_str = middleWare(req,'get');
+
+			open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
+		}else{
+			open_url = `${location.origin}/api/${url}`;
+		}
 		window.open(open_url);
 	}).catch(() => {
 		Message({
