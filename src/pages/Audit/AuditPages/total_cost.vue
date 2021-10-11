@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="small" class="demo-form-inline" v-if="user_type != '1'">
 			<el-form-item label="新编码：">
 				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
@@ -24,7 +24,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="replaceDialog = true">一键替换</el-button>
+			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="user_type != '1'">一键替换</el-button>
 			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -36,7 +36,7 @@
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column label="批发价" width="120" align="center">
 				<template slot-scope="scope">
-					<el-input size="small" type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价"></el-input>
+					<el-input size="small" type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="user_type == '1'"></el-input>
 				</template>
 			</el-table-column>
 			<el-table-column prop="cb_price" label="成本价" width="120" align="center"></el-table-column>
@@ -51,7 +51,7 @@
 					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':'未指定'}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="备注" align="center">
+			<el-table-column label="备注" align="center" v-if="user_type != '1'">
 				<template slot-scope="scope">
 					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20"
 					show-word-limit placeholder="请输入备注"></el-input>
@@ -162,9 +162,11 @@
 					}]
 				},	 					//时间区间
 				export_date:[],			//导出日期区间
+				user_type:"",
 			}
 		},
 		created(){
+			this.user_type = localStorage.getItem('user_type');
 			//获取列表
 			this.getData();
 		},

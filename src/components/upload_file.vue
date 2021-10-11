@@ -2,8 +2,9 @@
 	<div>
 		<div class="imgBox">
 			<img class="upload_icon" src="../static/upload_icon.png">
-			<div class="upload_text">点击上传文件</div>
-			<input type="file" ref="imgUpload" class="upload_file" multiple @change="uploadFn">
+			<div class="upload_text">上传{{is_csv?'表格':'图片'}}</div>
+			<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv" v-if="is_csv">
+			<input type="file" ref="imgUpload" class="upload_file" accept="image/*" multiple @change="uploadFn" v-else>
 		</div>
 	</div>
 </template>
@@ -44,6 +45,10 @@
 			current_num:{
 				type:Number,
 				default:0
+			},
+			is_csv:{
+				type:Boolean,
+				default:false
 			}
 		},
 		methods:{
@@ -66,6 +71,21 @@
 							}
 						})
 					}
+				}
+			},
+			//上传表格
+			uploadCsv(){
+				if (this.$refs.csvUpload.files.length > 0) {
+					let files = this.$refs.csvUpload.files;
+					resource.uploadExcel({file:files[0]}).then(res => {
+						if(res.data.code == 1){
+							this.$emit('callbackFn',{
+								file:res.data.data
+							});
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 				}
 			}
 

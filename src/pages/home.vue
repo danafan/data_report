@@ -89,6 +89,9 @@
 					<span slot="title">{{item.menu_name}}</span>
 				</el-menu-item>
 			</div>
+			<!-- <el-menu-item index="/audit_index">
+				<span slot="title">审计管理</span>
+			</el-menu-item> -->
 		</el-menu>
 	</div>
 	<el-main class="main">

@@ -171,6 +171,13 @@
 				</div>
 			</div>
 			<div class="content_row">
+				<div class="label">下载附件：</div>
+				<el-button type="text" size="small" v-if="detailObj.excel_file != ''" @click="downCsv(detailObj.excel_file)">
+					{{detailObj.excel_file}}
+					<i class="el-icon-download el-icon--right"></i>
+				</el-button>
+			</div>
+			<div class="content_row">
 				<div class="label">备注：</div>
 				<div>{{detailObj.remark}}</div>
 			</div>
@@ -474,6 +481,10 @@
 			closeDialog(){
 				this.export_type = 1;
 				this.export_date = [];
+			},
+			//下载表格
+			downCsv(csv_url){
+				window.open(this.detailObj.domain + csv_url);
 			},
 			//导出
 			commitExport(){

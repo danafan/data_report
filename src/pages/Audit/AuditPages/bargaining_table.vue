@@ -76,7 +76,16 @@
 				<el-form-item label="更新后成本价：" required>
 					<el-input v-model="price" type="number" size="small" style="width: 120px" placeholder="请输入价格"></el-input>
 				</el-form-item>
-				<el-form-item label="文件附图：">
+				<el-form-item label="上传附件：">
+					<div class="img_list">
+						<UploadFile @callbackFn="uploadCsv" :is_csv="true" v-if="url == ''"/>
+						<div style="display:flex;align-items: center" v-else>
+							<div>{{url}}</div>
+							<i class="el-icon-circle-close" style="margin-left: 10px" @click="deteleFile(url)"></i>
+						</div>
+					</div>
+				</el-form-item>
+				<el-form-item label="上传图片：">
 					<div class="img_list">
 						<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
 							<img class="img" :src="item.domain + item.urls">
@@ -137,6 +146,20 @@
 	align-items: center;
 	justify-content: flex-end;
 }
+.upload_file{
+	border:1px solid red;
+	position: relative;
+	.upload_file {
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
+}
 </style>
 <style type="text/css">
 .el-table .warning-row {
@@ -164,6 +187,8 @@
 				price:"",				//更新后成本价
 				remark:"",				//备注
 				show_img:[],			//显示的图片
+				domain:"",				//文件前缀
+				url:""					//csv后缀
 			}
 		},
 		created(){
@@ -258,6 +283,11 @@
 				this.show_img = [];
 				this.remark = "";
 			},
+			//上传表格
+			uploadCsv(arg){
+				this.domain = arg.file.domain;
+				this.url = arg.file.urls;
+			},
 			//上传照片
 			uploadFile(arg){
 				arg.file.is_del = false;
@@ -267,7 +297,12 @@
 			deteleFile(url,index){
 				resource.delImage({url:url}).then(res => {
 					if(res.data.code == 1){
-						this.show_img.splice(index,1);
+						if(!!index || index == 0){
+							this.show_img.splice(index,1);
+						}else{
+							this.domain = "";
+							this.url = "";
+						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -288,7 +323,8 @@
 					price:this.price,
 					is_special:this.is_special,
 					pictures:img_arr.join(','),
-					remark:this.remark
+					remark:this.remark,
+					excel_file:this.url
 				}
 				resource.zeroApply(arg).then(res => {
 					if(res.data.code == 1){
