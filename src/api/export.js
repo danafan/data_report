@@ -50,8 +50,10 @@ export function exportUp(url){
 
 			open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
 		}else{
-			open_url = `${location.origin}/api/${url}`;
+			let get_str = middleWare(req,'get');
+			open_url = `${location.origin}/api/${url}?${get_str}`;
 		}
+		// console.log(open_url);
 		window.open(open_url);
 	}).catch(() => {
 		Message({

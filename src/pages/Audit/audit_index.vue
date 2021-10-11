@@ -10,6 +10,9 @@
 			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
 				<ReviewTable v-if="activeTab == '/review_table'"/>
 			</el-tab-pane>
+			<el-tab-pane label="超时表" lazy name="/timeout" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+				<Timeout v-if="activeTab == '/timeout'"/>
+			</el-tab-pane>
 			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box" v-if="user_type == '1'">
 				<BargainingTable v-if="activeTab == '/bargaining_table'"/>
 			</el-tab-pane>
@@ -37,6 +40,9 @@
 			</el-tab-pane>
 			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box">
 				<OperationalTable v-if="activeTab == '/operational_table'"/>
+			</el-tab-pane>
+			<el-tab-pane label="超时表" lazy name="/timeout" class="tab_pane_box">
+				<Timeout v-if="activeTab == '/timeout'"/>
 			</el-tab-pane> -->
 		</el-tabs>
 	</div>
@@ -53,6 +59,7 @@
 	import PricingTable from './AuditPages/pricing_table.vue'
 	import BargainingTable from './AuditPages/bargaining_table.vue'
 	import OperationalTable from './AuditPages/operational_table.vue'
+	import Timeout from './AuditPages/timeout.vue'
 	export default{
 		data(){
 			return{
@@ -79,7 +86,8 @@
 			ReviewTable,
 			PricingTable,
 			BargainingTable,
-			OperationalTable
+			OperationalTable,
+			Timeout
 		}
 	}
 </script>

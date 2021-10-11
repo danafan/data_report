@@ -74,19 +74,21 @@
 				<i class="el-icon-s-unfold collapse_icon" v-if="isCollapse" @click="isCollapse = !isCollapse"></i>
 				<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
 			</div>
-			<el-submenu :index="index.toString()" v-for="(item,index) in menu_list">
-				<template slot="title">
+			<div v-for="(item,index) in menu_list">
+				<el-submenu :index="index.toString()" v-if="item.list.length > 0">
+					<template slot="title">
+						<i :class="`el-icon-${item.icon}`"></i>
+						<span>{{item.menu_name}}</span>
+					</template>
+					<el-menu-item-group>     
+						<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
+					</el-menu-item-group>
+				</el-submenu>
+				<el-menu-item :index="`/${item.web_url}`" v-else>
 					<i :class="`el-icon-${item.icon}`"></i>
-					<span>{{item.menu_name}}</span>
-				</template>
-				<el-menu-item-group>     
-					<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
-				</el-menu-item-group>
-			</el-submenu>
-			<!-- <el-submenu index="123">
-				<template slot="title">审计管理</template>
-				<el-menu-item index="/audit_index">审计管理</el-menu-item>
-			</el-submenu> -->
+					<span slot="title">{{item.menu_name}}</span>
+				</el-menu-item>
+			</div>
 		</el-menu>
 	</div>
 	<el-main class="main">
@@ -181,6 +183,7 @@
 			background: #363D66;
 			display: flex;
 			flex-direction: column;
+			// width:180px;
 			height: 100%;
 			.dd{
 				height: 35px;

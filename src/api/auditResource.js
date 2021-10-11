@@ -19,6 +19,7 @@ let path = {
 	zeroApply:'audit/zeroapply',									//首次议价表申请调价
 	ksbmDetail:'audit/ksbm_detail',									//款式详情
 	auditSetting:'audit/setting',									//审计权限
+	overTimeTable:'audit/overtime',									//超时表
 }						
 export default{
 	//款式编码列表
@@ -100,6 +101,10 @@ export default{
 	//提交审计权限
 	auditPostSetting(params){
 		return http.post(path.auditSetting, params)
+	},
+	//超时表
+	overTimeTable(params){
+		return http.get(path.overTimeTable, params)
 	},
 }
 
