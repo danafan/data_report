@@ -180,6 +180,7 @@ let path = {
 	ajaxCity:'common/ajaxCity',										//所有城市列表
 	weatherData:'weather/list',										//全国天气数据分析图表接口
 	weatherTableList:'weather/tablelist',							//底部天气数据表格
+	ajaxCompany:'common/ajaxCompany',								//获取公司列表
 
 }					
 export default{
@@ -930,6 +931,10 @@ export default{
 	//底部天气数据表格接
 	weatherTableList(params){
 		return http.get(path.weatherTableList, params)
+	},
+	//获取公司列表
+	ajaxCompany(params){
+		return http.get(path.ajaxCompany, params)
 	},
 }
 

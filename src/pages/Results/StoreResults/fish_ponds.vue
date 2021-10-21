@@ -233,16 +233,21 @@
 							tooltip: {
 								trigger: 'axis',
 								formatter: function (params) {
+									let dataIndex = params[params.length - 1].dataIndex;
+									let fkrq = day_ytdl_obj.fkrq[dataIndex];
+									let ytdl = day_ytdl_obj.ytdl[dataIndex];
+									let sjdl = day_ytdl_obj.sjdl[dataIndex];
+									let ytmbz = day_ytdl_obj.ytmbz[dataIndex];
+									let ytdlzb = ((ytdl/(parseFloat(ytdl) + parseFloat(sjdl)))*100).toFixed(2);
+									let zdl = (parseFloat(ytdl) + parseFloat(sjdl)).toFixed(2);
 									let tip = "";
 									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = "付款日期：" + params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "</br>"
-											+ params[1].seriesName + "：" + params[1].value + "</br>"
-											+ params[2].seriesName + "：" + params[2].value + "</br>" 
-											+ "鱼塘单量占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
-										}
+										tip = "付款日期：" + fkrq + "</br>"
+										+ "鱼塘单量：" + ytdl + "</br>"
+										+ "实际单量：" + sjdl + "</br>"
+										+ "鱼塘目标值：" + ytmbz + "</br>" 
+										+ "鱼塘单量占比：" + ytdlzb + "%</br>"
+										+ "总单量：" + zdl;
 									}
 									return tip;
 								},
@@ -320,15 +325,19 @@
 							tooltip: {
 								trigger: 'axis',
 								formatter: (params) => {
+									let dataIndex = params[params.length - 1].dataIndex;
+									let ytdl = total_ljytdl_obj.ytdl[dataIndex];
+									let sjdl = total_ljytdl_obj.sjdl[dataIndex];
+									let ytmbz = total_ljytdl_obj.ytmbz;
+									let ytdlzb = ((ytdl/(parseFloat(ytdl) + parseFloat(sjdl)))*100).toFixed(2);
+									let zdl = total_ljytdl_obj.total_dl;
 									let tip = "";
 									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = params[0].seriesName + "：" + params[0].value + "</br>"
-											+ params[1].seriesName + "：" + params[1].value + "</br>"
-											+ "鱼塘目标值：" + `${total_ljytdl_obj.ytmbz}` + "</br>" 
-											+ "鱼塘单量占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
-										}
+										tip = "鱼塘单量：" + ytdl + "</br>"
+										+ "实际单量：" + sjdl + "</br>"
+										+ "鱼塘目标值：" + ytmbz + "</br>" 
+										+ "鱼塘单量占比：" + ytdlzb + "%</br>"
+										+ "总单量：" + zdl;
 									}
 									return tip;
 								},
@@ -406,15 +415,19 @@
 							tooltip: {
 								trigger: 'axis',
 								formatter: function (params) {
+									let dataIndex = params[params.length - 1].dataIndex;
+									let fkrq = day_ytje_obj.fkrq[dataIndex];
+									let ytje = day_ytje_obj.ytje[dataIndex];
+									let sjje = day_ytje_obj.sjje[dataIndex];
+									let ytjezb = ((ytje/(parseFloat(ytje) + parseFloat(sjje)))*100).toFixed(2);
+									let zje = (parseFloat(ytje) + parseFloat(sjje)).toFixed(2);
 									let tip = "";
 									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = "付款日期：" + params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "</br>"
-											+ params[1].seriesName + "：" + params[1].value + "</br>" 
-											+ "鱼塘金额占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
-										}
+										tip = "付款日期：" + fkrq + "</br>"
+										+"鱼塘金额：" + ytje + "</br>"
+										+ "实际金额：" + sjje + "</br>"
+										+ "鱼塘金额占比：" + ytjezb + "%</br>"
+										+ "总金额：" + zje;
 									}
 									return tip;
 								},
@@ -484,14 +497,17 @@
 							tooltip: {
 								trigger: 'axis',
 								formatter: (params) => {
+									let dataIndex = params[params.length - 1].dataIndex;
+									let ytje = total_ljytje_obj.ytje[dataIndex];
+									let sjje = total_ljytje_obj.sjje[dataIndex];
+									let ytjezb = ((ytje/(parseFloat(ytje) + parseFloat(sjje)))*100).toFixed(2);
+									let zje = total_ljytje_obj.total_je;
 									let tip = "";
 									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = params[0].seriesName + "：" + params[0].value + "</br>"
-											+ params[1].seriesName + "：" + params[1].value + "</br>" 
-											+ "鱼塘金额占比：" + ((params[0].value/(parseFloat(params[0].value) + parseFloat(params[1].value)))*100).toFixed(2) + "%</br>"
-											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
-										}
+										tip = "鱼塘金额：" + ytje + "</br>"
+										+ "实际金额：" + sjje + "</br>"
+										+ "鱼塘金额占比：" + ytjezb + "%</br>"
+										+ "总金额：" + zje;
 									}
 									return tip;
 								},
@@ -572,15 +588,19 @@
 							tooltip: {
 								trigger: 'axis',
 								formatter: function (params) {
+									let dataIndex = params[params.length - 1].dataIndex;
+									let dpid = shop_ytdlzb_obj.dpid[dataIndex];
+									let ytdl = shop_ytdlzb_obj.ytdl[dataIndex];
+									let sjdl = shop_ytdlzb_obj.sjdl[dataIndex];
+									let ytdlzb = shop_ytdlzb_obj.ytdlzb[dataIndex];
+									let zdl = (parseFloat(ytdl) + parseFloat(sjdl)).toFixed(2);
 									let tip = "";
 									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "</br>"
-											+ params[1].seriesName + "：" + params[1].value + "</br>"
-											+ params[2].seriesName + "：" + params[2].value + "%</br>" 
-											+ "总单量：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
-										}
+										tip = dpid + "</br>"
+										+"鱼塘单量：" + ytdl + "</br>"
+										+ "实际单量：" + sjdl + "</br>"
+										+ "鱼塘单量占比：" + ytdlzb + "%</br>"
+										+ "总单量：" + zdl;
 									}
 									return tip;
 								},
@@ -672,15 +692,19 @@
 							tooltip: {
 								trigger: 'axis',
 								formatter: function (params) {
+									let dataIndex = params[params.length - 1].dataIndex;
+									let dpid = shop_ytjezb_obj.dpid[dataIndex];
+									let ytje = shop_ytjezb_obj.ytje[dataIndex];
+									let sjje = shop_ytjezb_obj.sjje[dataIndex];
+									let ytjezb = shop_ytjezb_obj.ytjezb[dataIndex];
+									let zje = (parseFloat(ytje) + parseFloat(sjje)).toFixed(2);
 									let tip = "";
 									if(params != null && params.length > 0) {
-										for(let i =0; i < params.length; i++) {
-											tip = params[0].axisValueLabel + "</br>"
-											+ params[0].seriesName + "：" + params[0].value + "</br>"
-											+ params[1].seriesName + "：" + params[1].value + "</br>"
-											+ params[2].seriesName + "：" + params[2].value + "%</br>" 
-											+ "总金额：" + (parseFloat(params[0].value) + parseFloat(params[1].value)).toFixed(2);
-										}
+										tip = dpid + "</br>"
+										+"鱼塘金额：" + ytje + "</br>"
+										+ "实际金额：" + sjje + "</br>"
+										+ "鱼塘金额占比：" + ytjezb + "%</br>"
+										+ "总金额：" + zje;
 									}
 									return tip;
 								},
@@ -770,14 +794,17 @@
         						tooltip: {
         							trigger: 'axis',
         							formatter: function (params) {
+        								let dataIndex = params[params.length - 1].dataIndex;
+        								let dpid = shop_target_obj.dpid[dataIndex];
+        								let target = shop_target_obj.target[dataIndex];
+        								let ytdl = shop_target_obj.ytdl[dataIndex];
+        								let ytwcl = shop_target_obj.ytwcl[dataIndex];
         								let tip = "";
         								if(params != null && params.length > 0) {
-        									for(let i =0; i < params.length; i++) {
-        										tip = params[0].axisValueLabel + "</br>"
-        										+ params[0].seriesName + "：" + params[0].value + "</br>"
-        										+ params[1].seriesName + "：" + params[1].value + "</br>"
-        										+ params[2].seriesName + "：" + params[2].value + "%</br>";
-        									}
+        									tip = dpid + "</br>"
+        									+"鱼塘目标值：" + target + "</br>"
+        									+ "鱼塘单量：" + ytdl + "</br>"
+        									+ "鱼塘完成率：" + ytwcl + "%";
         								}
         								return tip;
         							},

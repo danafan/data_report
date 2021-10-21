@@ -135,20 +135,6 @@
 		}
 	}
 }
-.upload_file{
-	border:1px solid red;
-	position: relative;
-	.upload_file {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		width: 100%;
-		height: 100%;
-		opacity: 0;
-	}
-}
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
@@ -274,6 +260,8 @@
 				this.remark = "";
 				this.start_date = "";
 				this.end_date = "";
+				this.domain = "";
+				this.url = "";
 			},
 			//上传表格
 			uploadCsv(arg){

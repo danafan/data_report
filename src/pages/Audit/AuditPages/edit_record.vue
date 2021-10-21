@@ -45,9 +45,12 @@
 			</el-pagination>
 		</div>
 		<!-- 详情弹框 -->
-		<el-dialog title="基本信息" center :visible.sync="detailDialog">
+		<el-dialog :title="dialog_title" center :visible.sync="detailDialog">
 			<div class="dialog_content">
 				<div class="content_left">
+					<div class="content_row is_red" v-if="detailObj.type == 3">
+						<div class="label">下架款</div>
+					</div>
 					<div class="content_row">
 						<div class="label">供应商：</div>
 						<div>{{detailObj.supplier}}</div>
@@ -56,31 +59,29 @@
 						<div class="label">更新供应商：</div>
 						<div>{{detailObj.edit_supplier}}</div>
 					</div>
-					<div v-if="detailObj.type == '0' || detailObj.type == '1'">
-						<div class="content_row">
-							<div class="label">供应商款号：</div>
-							<div>{{detailObj.supplier_ksbm}}</div>
-						</div>
-						<div class="content_row">
-							<div class="label">新编码：</div>
-							<div>{{detailObj.ksbm}}</div>
-						</div>
-						<div class="content_row">
-							<div class="label">原成本价：</div>
-							<div>{{detailObj.cb_price}}</div>
-						</div>
-						<div class="content_row" :class="{'is_red':detailObj.type == 0}">
-							<div class="label">更新成本价：</div>
-							<div>{{detailObj.edit_cb_price}}</div>
-						</div>
-						<div class="content_row" v-if="detailObj.type == 1">
-							<div class="label">原批发价：</div>
-							<div>{{detailObj.batch_price}}</div>
-						</div>
-						<div class="content_row" :class="{'is_red':detailObj.type == 1}">
-							<div class="label">更新批发价：</div>
-							<div>{{detailObj.edit_batch_price}}</div>
-						</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3">
+						<div class="label">供应商款号：</div>
+						<div>{{detailObj.supplier_ksbm}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3">
+						<div class="label">新编码：</div>
+						<div>{{detailObj.ksbm}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1'">
+						<div class="label">原成本价：</div>
+						<div>{{detailObj.cb_price}}</div>
+					</div>
+					<div class="content_row" :class="{'is_red':detailObj.type == 0}" v-if="detailObj.type == '0' || detailObj.type == '1'">
+						<div class="label">更新成本价：</div>
+						<div>{{detailObj.edit_cb_price}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == 1">
+						<div class="label">原批发价：</div>
+						<div>{{detailObj.batch_price}}</div>
+					</div>
+					<div class="content_row" :class="{'is_red':detailObj.type == 1}" v-if="detailObj.type == '0' || detailObj.type == '1'">
+						<div class="label">更新批发价：</div>
+						<div>{{detailObj.edit_batch_price}}</div>
 					</div>
 				</div>
 				<div class="content_right">
@@ -92,30 +93,28 @@
 						<div class="label">提交时间：</div>
 						<div>{{detailObj.add_time}}</div>
 					</div>
-					<div v-if="detailObj.type == '0'">
-						<div class="content_row">
-							<div class="label">开始时间：</div>
-							<div>{{detailObj.start_date}}</div>
-						</div>
-						<div class="content_row">
-							<div class="label">结束时间：</div>
-							<div>{{detailObj.end_date}}</div>
-						</div>
-						<div class="content_row">
-							<div class="label">审核状态：</div>
-							<div v-if="detailObj.status == '0'">默认状态</div>
-							<div v-if="detailObj.status == '1'">待审批</div>
-							<div v-if="detailObj.status == '2'">审批通过</div>
-							<div v-if="detailObj.status == '3'">审批拒绝</div>
-						</div>
-						<div class="content_row">
-							<div class="label">审核时间：</div>
-							<div>{{detailObj.approver_time}}</div>
-						</div>
-						<div class="content_row">
-							<div class="label">审核人：</div>
-							<div>{{detailObj.approver}}</div>
-						</div>
+					<div class="content_row" v-if="detailObj.type == '0'">
+						<div class="label">开始时间：</div>
+						<div>{{detailObj.start_date}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0'">
+						<div class="label">结束时间：</div>
+						<div>{{detailObj.end_date}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '3'">
+						<div class="label">审核状态：</div>
+						<div v-if="detailObj.status == '0'">默认状态</div>
+						<div v-if="detailObj.status == '1'">待审批</div>
+						<div v-if="detailObj.status == '2'">审批通过</div>
+						<div v-if="detailObj.status == '3'">审批拒绝</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '3'">
+						<div class="label">审核时间：</div>
+						<div>{{detailObj.approver_time}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '3'">
+						<div class="label">审核人：</div>
+						<div>{{detailObj.approver}}</div>
 					</div>
 				</div>
 			</div>
@@ -126,11 +125,18 @@
 					</el-image>
 				</div>
 			</div>
-			<div class="content_row" v-if="detailObj.type == '0'">
+			<div class="content_row" v-if="detailObj.type != '3'">
+				<div class="label">下载附件：</div>
+				<el-button type="text" size="small" v-if="detailObj.excel_file != ''" @click="downCsv(detailObj.excel_file)">
+					{{detailObj.excel_file}}
+					<i class="el-icon-download el-icon--right"></i>
+				</el-button>
+			</div>
+			<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '3'">
 				<div class="label">备注：</div>
 				<div>{{detailObj.remark}}</div>
 			</div>
-			<div class="content_row" v-if="detailObj.status == '3'">
+			<div class="content_row" v-if="detailObj.status == '3' || detailObj.type == '3'">
 				<div class="label">拒绝原因：</div>
 				<div>{{detailObj.refuse_reason}}</div>
 			</div>
@@ -167,6 +173,9 @@
 		}
 	}
 }
+.el-dialog__body{
+	color: #ffffff!important;
+}
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
@@ -196,10 +205,14 @@
 				},{
 					id:'5',
 					name:'换挡口'
+				},{
+					id:'6',
+					name:'下架'
 				}],					//状态列表
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
+				dialog_title:"",		//详情弹窗标题
 				big_img_list:[]
 			}
 		},
@@ -258,6 +271,13 @@
 				resource.logDetail({id:id}).then(res => {
 					if(res.data.code == 1){
 						this.detailObj = res.data.data;
+						if(this.detailObj.type == 0){
+							this.dialog_title = '调价信息';
+						}else if(this.detailObj.type == 3){
+							this.dialog_title = '下架信息';
+						}else{
+							this.dialog_title = '基本信息';
+						}
 						this.big_img_list = [];
 						this.detailObj.pictures.map(item => {
 							let img_url = this.detailObj.domain + item;
@@ -268,7 +288,11 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			}
+			},
+			//下载表格
+			downCsv(csv_url){
+				window.open(this.detailObj.domain + csv_url);
+			},
 		}
 	}
 </script>

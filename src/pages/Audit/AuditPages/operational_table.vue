@@ -77,9 +77,12 @@
 			</el-pagination>
 		</div>
 		<!-- 详情弹框 -->
-		<el-dialog title="基本信息" center :visible.sync="detailDialog">
+		<el-dialog :title="dialog_title" center :visible.sync="detailDialog">
 			<div class="dialog_content">
 				<div>
+					<div class="content_row is_red" v-if="detailObj.type == 3">
+						<div class="label">下架款</div>
+					</div>
 					<div class="content_row">
 						<div class="label">供应商：</div>
 						<div>{{detailObj.supplier}}</div>
@@ -92,16 +95,16 @@
 						<div class="label">新编码：</div>
 						<div>{{detailObj.ksbm}}</div>
 					</div>
-					<div class="content_row">
+					<div class="content_row" v-if="detailObj.type != 3">
 						<div class="label">原批发价：</div>
 						<div>{{detailObj.batch_price}}</div>
 					</div>
-					<div class="content_row">
+					<div class="content_row" v-if="detailObj.type != 3">
 						<div class="label">更新批发价：</div>
 						<div>{{detailObj.edit_batch_price}}</div>
 					</div>
 				</div>
-				<div>
+				<div v-if="detailObj.type != 3">
 					<div class="content_row">
 						<div class="label">原成本价：</div>
 						<div>{{detailObj.cb_price}}</div>
@@ -153,14 +156,14 @@
 					</div>
 				</div>
 			</div>
-			<div class="content_row">
+			<div class="content_row" v-if="detailObj.type != 3">
 				<div class="label">文件附图：</div>
 				<div class="img_list">
 					<el-image class="img" :src="item" v-for="item in big_img_list" :preview-src-list="big_img_list">
 					</el-image>
 				</div>
 			</div>
-			<div class="content_row">
+			<div class="content_row" v-if="detailObj.type != 3">
 				<div class="label">下载附件：</div>
 				<el-button type="text" size="small" v-if="detailObj.excel_file != ''" @click="downCsv(detailObj.excel_file)">
 					{{detailObj.excel_file}}
@@ -237,7 +240,8 @@
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
-				big_img_list:[]
+				big_img_list:[],
+				dialog_title:""
 			}
 		},
 		created(){
@@ -313,6 +317,13 @@
 				resource.logDetail({id:this.select_id}).then(res => {
 					if(res.data.code == 1){
 						this.detailObj = res.data.data;
+						if(this.detailObj.type == 0){
+							this.dialog_title = '调价信息';
+						}else if(this.detailObj.type == 3){
+							this.dialog_title = '下架信息';
+						}else{
+							this.dialog_title = '基本信息';
+						}
 						this.big_img_list = [];
 						this.detailObj.pictures.map(item => {
 							let img_url = this.detailObj.domain + item;

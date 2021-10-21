@@ -83,9 +83,19 @@
 			</el-pagination>
 		</div>
 		<!-- 详情弹框 -->
-		<el-dialog title="基本信息" center :visible.sync="detailDialog">
+		<el-dialog :title="dialog_title" center :visible.sync="detailDialog">
+			<el-dialog width="30%" title="提示" :visible.sync="innerVisible" append-to-body>
+				<div>{{innerValue}}</div>
+				<div slot="footer" class="dialog-footer">
+					<el-button @click="innerVisible = false">取 消</el-button>
+					<el-button type="primary" @click="aduitFun('1')">确 认</el-button>
+				</div>
+			</el-dialog>
 			<div class="dialog_content">
 				<div>
+					<div class="content_row is_red" v-if="detailObj.type == 3">
+						<div class="label">下架款</div>
+					</div>
 					<div class="content_row">
 						<div class="label">供应商：</div>
 						<div>{{detailObj.supplier}}</div>
@@ -102,16 +112,16 @@
 						<div class="label">新编码：</div>
 						<div>{{detailObj.ksbm}}</div>
 					</div>
-					<div class="content_row">
+					<div class="content_row" v-if="detailObj.type != 3">
 						<div class="label">原批发价：</div>
 						<div>{{detailObj.batch_price}}</div>
 					</div>
-					<div class="content_row">
+					<div class="content_row" v-if="detailObj.type != 3">
 						<div class="label">更新批发价：</div>
 						<div>{{detailObj.edit_batch_price}}</div>
 					</div>
 				</div>
-				<div>
+				<div v-if="detailObj.type != 3">
 					<div class="content_row">
 						<div class="label">原成本价：</div>
 						<div>{{detailObj.cb_price}}</div>
@@ -163,14 +173,14 @@
 					</div>
 				</div>
 			</div>
-			<div class="content_row">
+			<div class="content_row" v-if="detailObj.type != 3">
 				<div class="label">文件附图：</div>
 				<div class="img_list">
 					<el-image class="img" :src="item" v-for="item in big_img_list" :preview-src-list="big_img_list">
 					</el-image>
 				</div>
 			</div>
-			<div class="content_row">
+			<div class="content_row" v-if="detailObj.type != 3">
 				<div class="label">下载附件：</div>
 				<el-button type="text" size="small" v-if="detailObj.excel_file != ''" @click="downCsv(detailObj.excel_file)">
 					{{detailObj.excel_file}}
@@ -183,7 +193,7 @@
 			</div>
 			<div slot="footer" class="dialog-footer">
 				<el-button type="primary" size="small" @click="aduitFun('0')">拒绝</el-button>
-				<el-button type="primary" size="small" @click="aduitFun('1')">通过</el-button>
+				<el-button type="primary" size="small" @click="thougnFun()">通过</el-button>
 			</div>
 		</el-dialog>
 		<!-- 一键审核 -->
@@ -317,7 +327,10 @@
 					}]
 				},	 					//时间区间
 				export_status:'0',		//导出类型
-				big_img_list:[]
+				big_img_list:[],
+				dialog_title:"",
+				innerVisible:false,
+				innerValue:'确认通过？',
 			}
 		},
 		created(){
@@ -406,6 +419,13 @@
 				resource.logDetail({id:this.select_id}).then(res => {
 					if(res.data.code == 1){
 						this.detailObj = res.data.data;
+						if(this.detailObj.type == 0){
+							this.dialog_title = '调价信息';
+						}else if(this.detailObj.type == 3){
+							this.dialog_title = '下架信息';
+						}else{
+							this.dialog_title = '基本信息';
+						}
 						this.big_img_list = [];
 						this.detailObj.pictures.map(item => {
 							let img_url = this.detailObj.domain + item;
@@ -416,6 +436,13 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//通过方法
+			thougnFun(){
+				if(this.detailObj.type == 3){
+					this.innerValue = "审批通过，下架款在总表中移除"
+				}
+				this.innerVisible = true;
 			},
 			//拒绝或通过
 			aduitFun(audit_type){
@@ -428,7 +455,7 @@
 						let arg = {
 							ids:this.select_id,
 							audit_type:audit_type,
-							remark:value
+							remark:!value?'':value
 						}
 						this.requestFun(arg);
 					}).catch(() => {
@@ -470,6 +497,7 @@
 						this.$message.success(res.data.msg);
 						this.detailDialog = false;
 						this.allDialog = false;
+						this.innerVisible = false;
 						//获取列表
 						this.getData();
 					}else{

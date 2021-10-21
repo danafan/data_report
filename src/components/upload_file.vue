@@ -57,11 +57,13 @@
 				if (this.$refs.imgUpload.files.length > 0) {
 					let files = this.$refs.imgUpload.files;
 					if(this.current_num + this.$refs.imgUpload.files.length > 9){
+						this.$refs.imgUpload.value = null;
 						this.$message.warning('图片最多不超过9张');
 						return;
 					}
 					for(var i = 0;i < files.length;i ++){
 						resource.uploadImage({image:files[i]}).then(res => {
+							this.$refs.imgUpload.value = null;
 							if(res.data.code == 1){
 								this.$emit('callbackFn',{
 									file:res.data.data
@@ -78,6 +80,7 @@
 				if (this.$refs.csvUpload.files.length > 0) {
 					let files = this.$refs.csvUpload.files;
 					resource.uploadExcel({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
 						if(res.data.code == 1){
 							this.$emit('callbackFn',{
 								file:res.data.data

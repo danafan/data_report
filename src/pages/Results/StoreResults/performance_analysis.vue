@@ -2,6 +2,12 @@
 	<div>
 		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="公司：">
+				<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="发货日期:" style="margin-right: 20px">
 				<el-date-picker
 				v-model="date"
@@ -16,7 +22,6 @@
 				:picker-options="pickerOptions">
 			</el-date-picker>
 		</el-form-item>
-		
 		<el-form-item>
 			<el-checkbox v-model="is_assessment" true-label="1" false-label="0" border size="small">考核店铺</el-checkbox>
 		</el-form-item>
@@ -398,9 +403,13 @@
 				show_week_null:false,				//默认不显示空提示(营销周报)
 				default_week_data_list:[],			//表格数据（营销周报，默认排序用）
 				show_week_custom:false,				//营销周报是否显示自定义弹框
+				company_list:[],					//公司列表
+				company:[],							//选中的公司
 			}
 		},
 		created(){
+			//公司列表
+			this.ajaxCompany();
 			//获取信息
 			this.GetData();
 		},
@@ -412,6 +421,16 @@
 			},
 		},
 		methods:{
+			//公司列表
+			ajaxCompany(){
+				resource.ajaxCompany().then(res => {
+					if(res.data.code == 1){
+						this.company_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//导出
 			Export(){
 				var data_obj = {
@@ -473,6 +492,7 @@
 					start_time:this.start_time,
 					end_time:this.end_time,
 					audit_flag:this.is_assessment,
+					company:this.company.join(',')
 				}
 				if(is_save == '1'){
 					if(type == '1'){

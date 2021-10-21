@@ -37,8 +37,8 @@
 			<el-table-column prop="cb_price" label="成本价" align="center"></el-table-column>
 			<el-table-column label="操作" align="center" width="120">
 				<template slot-scope="scope">
-					<div v-if="scope.row.status == '1'">审批中</div>
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status == '0'">调价</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id)">调价</el-button>
+					<el-button type="text" size="small" @click="shelveFun(scope.row.id)">下架</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -69,6 +69,9 @@
 						<el-radio :label="0">否</el-radio>
 						<el-radio :label="1">是</el-radio>
 					</el-radio-group>
+				</el-form-item>
+				<el-form-item label="批发价：">
+					<div>{{detailObj.batch_price}}</div>
 				</el-form-item>
 				<el-form-item label="成本价：">
 					<div>{{detailObj.cb_price}}</div>
@@ -276,12 +279,36 @@
 					}
 				})
 			},
+			//点击下架
+			shelveFun(id){
+				this.$prompt('', '下架备注', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消'
+				}).then(({ value }) => {
+					resource.offShelf({id:id,remark:!value?'':value}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});       
+				});
+			},
 			//关闭替换弹框
 			closeDialog(){
 				this.is_special = 0;
 				this.price = "";
 				this.show_img = [];
 				this.remark = "";
+				this.domain = "";
+				this.url = "";
 			},
 			//上传表格
 			uploadCsv(arg){

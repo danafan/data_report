@@ -24,6 +24,13 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
+			<div class="upload_box" v-if="user_type != '1'">
+				<el-button type="primary" size="small">
+					导入
+					<i class="el-icon-upload el-icon--right"></i>
+				</el-button>
+				<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+			</div>
 			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="user_type != '1'">一键替换</el-button>
 			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
@@ -114,6 +121,20 @@
 		margin-left: 10px;
 		margin-right: 10px;
 	}	
+}
+.upload_box{
+	margin-right: 10px;
+	position: relative;
+	.upload_file{
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
 }
 </style>
 <script>
@@ -309,6 +330,23 @@
 						}
 					})
 				};
+			},
+			//导入
+			uploadCsv(){
+				if (this.$refs.csvUpload.files.length > 0) {
+					let files = this.$refs.csvUpload.files;
+					resource.importGoods({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.page = 1;
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//导出
 			commitExport(){

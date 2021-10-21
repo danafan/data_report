@@ -21,6 +21,8 @@ let path = {
 	auditSetting:'audit/setting',									//审计权限
 	overTimeTable:'audit/overtime',									//超时表
 	uploadExcel:'audit/uploadexcel',								//上传表格
+	importGoods:'audit/import_goods',								//批量导入
+	offShelf:'audit/off_shelf',									//下架
 }						
 export default{
 	//款式编码列表
@@ -110,6 +112,14 @@ export default{
 	//上传表格
 	uploadExcel(params){
 		return http.post(path.uploadExcel, params)
+	},
+	//批量导入
+	importGoods(params){
+		return http.post(path.importGoods, params)
+	},
+	//下架
+	offShelf(params){
+		return http.post(path.offShelf, params)
 	},
 }
 
