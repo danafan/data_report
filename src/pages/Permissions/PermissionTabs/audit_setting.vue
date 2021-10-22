@@ -2,7 +2,7 @@
 	<div>
 		<el-form size="small" class="demo-form-inline">
 			<el-form-item :label="item.dept_name" v-for="item in list">
-				<el-select v-model="item.selected" clearable multiple filterable reserve-keyword placeholder="请输入款式编码" collapse-tags>
+				<el-select v-model="item.selected" clearable multiple filterable reserve-keyword placeholder="请选择" collapse-tags>
 					<el-option v-for="i in item.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
 					</el-option>
 				</el-select>

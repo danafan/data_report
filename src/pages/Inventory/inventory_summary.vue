@@ -18,6 +18,12 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
+			<div class="toast">
+				<div>
+					缺货数据由当天早上7:30的库存和异常订单数据生成，数据整体更新时间为11:20，内供款式有生产周期数据
+				</div>
+				<div>更新时间：{{dataObj.update_time}}</div>
+			</div>
 			<el-button type="primary" plain size="small" @click="exportTable">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -40,7 +46,7 @@
 				<el-table-column width="120" :label="item" align="center" v-for="(item,index) in feedback_day_list">
 					<template slot-scope="scope">
 						<el-input
-						@change="editFun($event,scope.row.id)"
+						@blur="editFun(scope.row.feedback_list[index],scope.row.id)"
 						size="small" 
 						type="textarea"
 						placeholder="输入反馈"
@@ -76,7 +82,11 @@
 	margin-bottom: 15px;
 	display: flex;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content:space-between;
+	.toast{
+		font-size: 12px;
+		color: red;
+	}
 }
 </style>
 <script>

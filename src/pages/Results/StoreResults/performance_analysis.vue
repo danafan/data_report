@@ -404,7 +404,7 @@
 				default_week_data_list:[],			//表格数据（营销周报，默认排序用）
 				show_week_custom:false,				//营销周报是否显示自定义弹框
 				company_list:[],					//公司列表
-				company:[],							//选中的公司
+				company:['德儿'],							//选中的公司
 			}
 		},
 		created(){
