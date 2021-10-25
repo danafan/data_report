@@ -1,6 +1,16 @@
 <template>
 	<div>
-		<el-button type="primary" size="small" @click="addRole" v-if="dataObj.button_list.add == '1'">添加</el-button>
+		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="数据权限名称：">
+				<el-input v-model="req.role_name" clearable placeholder="输入数据权限名称"></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="small" @click="getData">搜索</el-button>
+			</el-form-item>
+		</el-form>
+		<div class="buts">
+			<el-button type="primary" size="small" @click="addRole" v-if="dataObj.button_list.add == '1'">添加</el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%;margin-top: 15px" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="data_role_id" label="编号" width="120" align="center"></el-table-column>
 			<el-table-column prop="data_role_name" label="数据权限名" align="center"></el-table-column>
@@ -82,6 +92,12 @@
 </div>
 </template>
 <style lang="less" scoped>
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 .menu_list_box{
 	flex:1;
 	display: flex;
@@ -106,7 +122,8 @@
 			return{
 				req:{
 					page:1,
-					pagesize:10
+					pagesize:10,
+					role_name:""
 				},
 				dataObj:{button_list:{
 					add: 1,

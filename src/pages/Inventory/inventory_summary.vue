@@ -24,7 +24,19 @@
 				</div>
 				<div>更新时间：{{dataObj.update_time}}</div>
 			</div>
-			<el-button type="primary" plain size="small" @click="exportTable">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<div style="display:flex">
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+					<el-tooltip class="item" effect="dark" content="asd" placement="top-start">
+						<i class="el-icon-info" style="color: red"></i>
+					</el-tooltip>
+				</div>
+				<el-button type="primary" plain size="small" @click="exportTable">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column width="120" show-overflow-tooltip prop="shop_code" label="主卖店铺" align="center"></el-table-column>
@@ -86,6 +98,25 @@
 	.toast{
 		font-size: 12px;
 		color: red;
+	}
+	.upload_box{
+		margin-right: 10px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+		.item{
+			position: absolute;
+			top: -10px;
+			right: -10px;
+		}
 	}
 }
 </style>
@@ -183,6 +214,23 @@
 						message: '取消'
 					});          
 				});
+			},
+			//导入
+			uploadCsv(){
+				if (this.$refs.csvUpload.files.length > 0) {
+					let files = this.$refs.csvUpload.files;
+					resource.stockImport({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.page = 1;
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//导出
 			exportTable(){

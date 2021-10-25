@@ -22,7 +22,7 @@ let path = {
 	overTimeTable:'audit/overtime',									//超时表
 	uploadExcel:'audit/uploadexcel',								//上传表格
 	importGoods:'audit/import_goods',								//批量导入
-	offShelf:'audit/off_shelf',									//下架
+	offShelf:'audit/off_shelf',										//下架
 }						
 export default{
 	//款式编码列表

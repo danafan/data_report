@@ -383,19 +383,6 @@
 				this.imageDialog = true;
 				this.big_img_url = big_img_url;
 			},
-			// OSnow(){
-			// 	var agent = navigator.userAgent.toLowerCase();
-			// 	var isMac = /macintosh|mac os x/i.test(navigator.userAgent);
-			// 	if (agent.indexOf("win32") >= 0 || agent.indexOf("wow32") >= 0) {
-			// 		this.isMac = false;
-			// 	}
-			// 	if (agent.indexOf("win64") >= 0 || agent.indexOf("wow64") >= 0) {
-			// 		this.isMac = false;
-			// 	}
-			// 	if(isMac){
-			// 		this.isMac = true;
-			// 	}
-			// },
 			// 上传文件
 			uploadFn(type){	//1:内部核价；2:款式编码;3:店铺数据
 				if(type == '1'){

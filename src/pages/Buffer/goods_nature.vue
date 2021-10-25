@@ -7,17 +7,6 @@
 				<DecisionMaking v-if="item.web_url == 'decision_making'"/>
 			</el-tab-pane>
 		</el-tabs>
-		<!-- <el-tabs v-model="activeTab">
-			<el-tab-pane label="款式信息管理" lazy name="ks_info" class="tab_pane_box">
-				<KsInfo/>
-			</el-tab-pane>
-			<el-tab-pane label="商品信息管理" lazy name="goods_info" class="tab_pane_box">
-				<GoodsInfo/>
-			</el-tab-pane>
-			<el-tab-pane label="决策管理" lazy name="decision_making" class="tab_pane_box">
-				<DecisionMaking/>
-			</el-tab-pane>
-		</el-tabs> -->
 	</div>
 </template>
 <style lang="less" scoped>

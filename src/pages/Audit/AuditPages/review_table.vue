@@ -32,6 +32,7 @@
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
+			<el-table-column prop="kjs_shop_name" label="店铺" width="120" align="center"></el-table-column>
 			<el-table-column prop="platform" label="平台" width="120" align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
 			<el-table-column prop="batch_price" label="原批发价" width="120" align="center">
@@ -103,6 +104,10 @@
 					<div class="content_row">
 						<div class="label">供应商款号：</div>
 						<div>{{detailObj.supplier_ksbm}}</div>
+					</div>
+					<div class="content_row">
+						<div class="label">店铺：</div>
+						<div>{{detailObj.kjs_shop_name}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">平台：</div>
