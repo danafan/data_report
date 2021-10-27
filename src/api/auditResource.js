@@ -23,6 +23,7 @@ let path = {
 	uploadExcel:'audit/uploadexcel',								//上传表格
 	importGoods:'audit/import_goods',								//批量导入
 	offShelf:'audit/off_shelf',										//下架
+	onShelf:'audit/on_shelf',										//上架
 }						
 export default{
 	//款式编码列表
@@ -120,6 +121,10 @@ export default{
 	//下架
 	offShelf(params){
 		return http.post(path.offShelf, params)
+	},
+	//上架
+	onShelf(params){
+		return http.post(path.onShelf, params)
 	},
 }
 

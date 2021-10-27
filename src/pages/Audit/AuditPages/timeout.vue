@@ -12,7 +12,7 @@
 			<el-table-column prop="ksbm" label="新编码" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="是否特批" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="batch_price" label="批发价" width="120" align="center">

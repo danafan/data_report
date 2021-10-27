@@ -31,7 +31,13 @@
 						<i class="el-icon-upload el-icon--right"></i>
 					</el-button>
 					<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
-					<el-tooltip class="item" effect="dark" content="asd" placement="top-start">
+					<el-tooltip class="item" placement="top">
+						<div slot="content">
+							1、批量导入，第一行为“款式”，“备注”两个字段，填写的数据从第二行开始<br/>
+							2、导入失败原因1：数据中存在某款式编码找不到<br/>
+							3、导入失败原因2：数据中存在重复款式编码<br/>
+							4、导入失败原因3：数据不对应(款式填到备注里面了)
+						</div>
 						<i class="el-icon-info" style="color: red"></i>
 					</el-tooltip>
 				</div>

@@ -43,12 +43,12 @@
 			</el-table-column>
 			<el-table-column prop="ding_user_name" label="是否特批" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="ding_user_name" label="是否福袋款" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="opreater_name" label="提交人" width="120" align="center">
@@ -128,11 +128,11 @@
 					</div>
 					<div class="content_row">
 						<div class="label">是否福袋款：</div>
-						<div>{{detailObj.is_blessingbag == '0'?'否':detailObj.is_blessingbag == '1'?'是':'未指定'}}</div>
+						<div>{{detailObj.is_blessingbag == '0'?'否':detailObj.is_blessingbag == '1'?'是':''}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">是否特批：</div>
-						<div>{{detailObj.is_special == '0'?'否':detailObj.is_special == '1'?'是':'未指定'}}</div>
+						<div>{{detailObj.is_special == '0'?'否':detailObj.is_special == '1'?'是':''}}</div>
 					</div>
 				</div>
 				<div>

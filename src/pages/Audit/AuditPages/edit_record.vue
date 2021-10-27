@@ -48,8 +48,9 @@
 		<el-dialog :title="dialog_title" center :visible.sync="detailDialog">
 			<div class="dialog_content">
 				<div class="content_left">
-					<div class="content_row is_red" v-if="detailObj.type == 3">
-						<div class="label">下架款</div>
+					<div class="content_row is_red" v-if="detailObj.type == 3 || detailObj.type == 4">
+						<div class="label" v-if="detailObj.type == 3">下架款</div>
+						<div class="label" v-if="detailObj.type == 4">上架款</div>
 					</div>
 					<div class="content_row">
 						<div class="label">供应商：</div>
@@ -59,15 +60,27 @@
 						<div class="label">更新供应商：</div>
 						<div>{{detailObj.edit_supplier}}</div>
 					</div>
-					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3">
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3 || detailObj.type == 4">
 						<div class="label">供应商款号：</div>
 						<div>{{detailObj.supplier_ksbm}}</div>
 					</div>
-					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3">
+					<div class="content_row" v-if="detailObj.type == 4">
+						<div class="label">店铺：</div>
+						<div>{{detailObj.kjs_shop_name}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == 4">
+						<div class="label">平台：</div>
+						<div>{{detailObj.platform}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3 || detailObj.type == 4">
 						<div class="label">新编码：</div>
 						<div>{{detailObj.ksbm}}</div>
 					</div>
-					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1'">
+					<div class="content_row" v-if="detailObj.type == 4">
+						<div class="label">是否特批：</div>
+						<div>{{detailObj.is_special == 0?'否':'是'}}</div>
+					</div>
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 4">
 						<div class="label">原成本价：</div>
 						<div>{{detailObj.cb_price}}</div>
 					</div>
@@ -75,7 +88,7 @@
 						<div class="label">更新成本价：</div>
 						<div>{{detailObj.edit_cb_price}}</div>
 					</div>
-					<div class="content_row" v-if="detailObj.type == 1">
+					<div class="content_row" v-if="detailObj.type == 1 || detailObj.type == 4">
 						<div class="label">原批发价：</div>
 						<div>{{detailObj.batch_price}}</div>
 					</div>
@@ -125,7 +138,7 @@
 					</el-image>
 				</div>
 			</div>
-			<div class="content_row" v-if="detailObj.type != '3'">
+			<div class="content_row" v-if="detailObj.type != '3' && detailObj.type != '4'">
 				<div class="label">下载附件：</div>
 				<el-button type="text" size="small" v-if="detailObj.excel_file != ''" @click="downCsv(detailObj.excel_file)">
 					{{detailObj.excel_file}}
@@ -208,6 +221,9 @@
 				},{
 					id:'6',
 					name:'下架'
+				},{
+					id:'7',
+					name:'上架'
 				}],					//状态列表
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框

@@ -14,6 +14,9 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
+				<el-checkbox v-model="is_off_shelf">已下架</el-checkbox>
+			</el-form-item>
+			<el-form-item>
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 		</el-form>
@@ -29,7 +32,7 @@
 			<el-table-column prop="ksbm" label="新编码" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="是否特批" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="batch_price" label="批发价" width="120" align="center">
@@ -37,8 +40,11 @@
 			<el-table-column prop="cb_price" label="成本价" align="center"></el-table-column>
 			<el-table-column label="操作" align="center" width="120">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)">调价</el-button>
-					<el-button type="text" size="small" @click="shelveFun(scope.row.id)">下架</el-button>
+					<div v-if='scope.row.is_off_shelf == 0'>
+						<el-button type="text" size="small" @click="getDetail(scope.row.id)">调价</el-button>
+						<el-button type="text" size="small" @click="shelveFun(scope.row.id)">下架</el-button>
+					</div>
+					<el-button type="text" size="small" @click="upCliFun(scope.row.id)" v-else>上架</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -183,6 +189,7 @@
 				select_ksbm_ids:[],		//选中的款式编码
 				gyshh_list:[],			//所有供应商款号
 				select_gyshh_ids:[],	//选中的供应商款号
+				is_off_shelf:false,		//是否已下架
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},
@@ -245,6 +252,7 @@
 				let arg = {
 					ksbm:this.select_ksbm_ids.join(','),
 					supplier_ksbm:this.select_gyshh_ids.join(','),
+					is_off_shelf:this.is_off_shelf?'1':'0',
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -299,6 +307,29 @@
 						type: 'info',
 						message: '取消'
 					});       
+				});
+			},
+			//上架
+			upCliFun(id){
+				this.$confirm('确认上架?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					resource.onShelf({id:id}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					});
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
 				});
 			},
 			//关闭替换弹框

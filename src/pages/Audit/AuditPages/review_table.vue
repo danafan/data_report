@@ -13,7 +13,7 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="状态：">
+			<el-form-item label="状态：" v-if="user_type != '4'">
 				<el-select v-model="status" :popper-append-to-body="false" placeholder="全部">
 					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
@@ -24,7 +24,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="allAudit">一键审批</el-button>
+			<el-button type="primary" size="small" @click="allAudit" v-if="user_type != '4'">一键审批</el-button>
 			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
@@ -49,12 +49,12 @@
 			</el-table-column>
 			<el-table-column prop="ding_user_name" label="是否福袋款" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="ding_user_name" label="是否特批" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="opreater_name" label="提交人" width="120" align="center">
@@ -73,7 +73,7 @@
 			</el-table-column>
 			<el-table-column prop="approver" label="审核人" width="120" align="center">
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right">
+			<el-table-column label="操作" align="center" fixed="right" v-if="user_type != '4'">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status == '1'">审核</el-button>
 				</template>
@@ -145,11 +145,11 @@
 					</div>
 					<div class="content_row">
 						<div class="label">是否福袋款：</div>
-						<div>{{detailObj.is_blessingbag == '0'?'否':detailObj.is_blessingbag == '1'?'是':'未指定'}}</div>
+						<div>{{detailObj.is_blessingbag == '0'?'否':detailObj.is_blessingbag == '1'?'是':''}}</div>
 					</div>
 					<div class="content_row">
 						<div class="label">是否特批：</div>
-						<div>{{detailObj.is_special == '0'?'否':detailObj.is_special == '1'?'是':'未指定'}}</div>
+						<div>{{detailObj.is_special == '0'?'否':detailObj.is_special == '1'?'是':''}}</div>
 					</div>
 				</div>
 				<div>
@@ -336,9 +336,12 @@
 				dialog_title:"",
 				innerVisible:false,
 				innerValue:'确认通过？',
+				user_type:"",
 			}
 		},
 		created(){
+			this.user_type = localStorage.getItem('user_type');
+			this.status = this.user_type == '4'?'2':'1';
 			//获取列表
 			this.getData();
 		},

@@ -20,18 +20,21 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
+				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
+			</el-form-item>
+			<el-form-item>
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<div class="upload_box" v-if="user_type != '1'">
+			<div class="upload_box" v-if="user_type != '1' && user_type != '4'">
 				<el-button type="primary" size="small">
 					导入
 					<i class="el-icon-upload el-icon--right"></i>
 				</el-button>
 				<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
 			</div>
-			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="user_type != '1'">一键替换</el-button>
+			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="user_type != '1' && user_type != '4'">一键替换</el-button>
 			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -43,25 +46,25 @@
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column label="批发价" width="120" align="center">
 				<template slot-scope="scope">
-					<el-input size="small" type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="user_type == '1'"></el-input>
+					<el-input size="small" type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="user_type == '1' && user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
 			<el-table-column prop="cb_price" label="成本价" width="120" align="center"></el-table-column>
 			<el-table-column prop="difference" label="差值" width="120" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="是否特批" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="ding_user_name" label="是否福袋款" width="120" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column label="备注" align="center" v-if="user_type != '1'">
 				<template slot-scope="scope">
 					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20"
-					show-word-limit placeholder="请输入备注"></el-input>
+					show-word-limit placeholder="请输入备注" :disabled="user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -152,6 +155,7 @@
 				select_gyshh_ids:[],	//选中的供应商款号
 				gys_list:[],			//所有供应商列表
 				select_gys_ids:[],		//选中的供应商列表
+				is_zero_batch:false,	//是否零批发价
 				dataObj:{},				//返回数据
 				replaceDialog:false,	//替换供应商弹框
 				old_gys:"",				//原供应商
@@ -240,6 +244,7 @@
 					ksbm:this.select_ksbm_ids.join(','),
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					supplier:this.select_gys_ids.join(','),
+					is_zero_batch:!this.is_zero_batch?0:1,
 					page:this.page,
 					pagesize:this.pagesize
 				}

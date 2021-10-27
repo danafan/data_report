@@ -25,7 +25,7 @@
 			<el-table-column prop="cb_price" label="成本价" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="是否福袋款" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':'未指定'}}</div>
+					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" align="center" width="120">

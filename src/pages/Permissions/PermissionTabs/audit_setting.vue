@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<el-form size="small" class="demo-form-inline">
+			<el-form-item label="财务部">
+				<el-select v-model="finance_list.selected" clearable multiple filterable reserve-keyword placeholder="请选择" collapse-tags>
+					<el-option v-for="i in finance_list.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item :label="item.dept_name" v-for="item in list">
 				<el-select v-model="item.selected" clearable multiple filterable reserve-keyword placeholder="请选择" collapse-tags>
 					<el-option v-for="i in item.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
@@ -19,7 +25,8 @@
 	export default{
 		data(){
 			return{
-				list:[],
+				finance_list:{},	//财务权限
+				list:[],			//审计权限
 			}
 		},
 		created(){
@@ -30,6 +37,7 @@
 			getInfo(){
 				resource.auditGetSetting().then(res => {
 					if(res.data.code == 1){
+						this.finance_list = res.data.data.finance_list;
 						this.list = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -49,8 +57,12 @@
 							let dept_user = item.dept_id + '-' + item.selected.join('_');
 							dept_users_arr.push(dept_user);
 						}
-					})
-					resource.auditPostSetting({dept_users:dept_users_arr.join(',')}).then(res => {
+					});
+					let arg = {
+						dept_users:	dept_users_arr.join(','),
+						finance_users:this.finance_list.selected
+					};
+					resource.auditPostSetting(arg).then(res => {
 						if(res.data.code == 1){
 							this.$message.success(res.data.msg);
 						//获取详情

@@ -7,7 +7,7 @@
 			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
 				<EditRecord v-if="activeTab == '/edit_record'"/>
 			</el-tab-pane>
-			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
 				<ReviewTable v-if="activeTab == '/review_table'"/>
 			</el-tab-pane>
 			<el-tab-pane label="超时表" lazy name="/timeout" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
