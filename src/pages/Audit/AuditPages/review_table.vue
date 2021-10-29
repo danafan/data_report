@@ -25,7 +25,7 @@
 		</el-form>
 		<div class="buts">
 			<el-button type="primary" size="small" @click="allAudit" v-if="user_type != '4'">一键审批</el-button>
-			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="exportExcel">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
 			<el-table-column type="selection" width="55" fixed="left" :selectable="selectableFun"></el-table-column>
@@ -375,6 +375,14 @@
 				this.page = 1;
 				//获取列表
 				this.getData();
+			},
+			//导出
+			exportExcel(){
+				if(this.user_type != '4'){
+					this.exportDialog = true;
+				}else{
+					exportUp(`audit/auidt_log_export`);
+				}
 			},
 			//获取列表
 			getData(){

@@ -13,10 +13,10 @@ module.exports = {
 			}
 		}
 	},
+	assetsDir: "web",
 	lintOnSave: true,
 	chainWebpack: (config)=>{
 		config.resolve.alias
 		.set('vendor',resolve('./src/vendor'))
 	}
-	// assetsDir: "admin"
 }

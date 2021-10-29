@@ -16,7 +16,7 @@
 			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box" v-if="user_type == '1'">
 				<BargainingTable v-if="activeTab == '/bargaining_table'"/>
 			</el-tab-pane>
-			<el-tab-pane label="调价表" lazy name="/pricing_table" class="tab_pane_box">
+			<el-tab-pane label="调价表" lazy name="/pricing_table" class="tab_pane_box" v-if="user_type != '4'">
 				<PricingTable v-if="activeTab == '/pricing_table'"/>
 			</el-tab-pane>
 			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box" v-if="user_type == '1'">
@@ -71,7 +71,7 @@
 			this.user_type = localStorage.getItem('user_type');
 			if(this.user_type == '1'){
 				this.activeTab = '/bargaining_table';
-			}else if(this.user_type == '2' || this.user_type == '3'){
+			}else if(this.user_type == '2' || this.user_type == '3' || this.user_type == '4'){
 				this.activeTab = '/total_cost';
 			}
 		},

@@ -4,106 +4,108 @@
 			<el-header class="header">
 				<div class="gxk">德儿网络数据中心</div>
 				<div class="user_set">
-					<el-popover
-					@show="getList"
-					placement="bottom"
-					width="460"
-					trigger="hover">
-					<div>
-						<el-form :inline="true" size="small" class="demo-form-inline">
-							<el-form-item label="状态：">
-								<el-select v-model="message_req.status" clearable :popper-append-to-body="false" size="small" placeholder="全部">
-									<el-option label="已读" :value="1">
-									</el-option>
-									<el-option label="未读" :value="0">
-									</el-option>
-								</el-select>
-							</el-form-item>
-							<el-form-item>
-								<el-button type="primary" size="small" @click="getList">搜索</el-button>
-							</el-form-item>
-						</el-form>
-						<el-table :data="messageObj.data" size="small">
-							<el-table-column align="center" prop="type" label="消息类型"></el-table-column>
-							<el-table-column width="150" align="center" prop="title" label="标题">
-							</el-table-column>
-							<el-table-column width="100" align="center" prop="add_time" label="消息时间"></el-table-column>
-							<el-table-column align="center" label="状态">
-								<template slot-scope="scope">
-									<el-button type="text" size="small" @click="messageDetail(scope.row)">{{scope.row.status == 1?'已读':'未读'}}</el-button>
-								</template>
-							</el-table-column>
-						</el-table>
-						<div class="page">
-							<el-pagination
-							@current-change="pageChange"
-							:current-page="message_req.page"
-							:pager-count="5"
-							layout="total, prev, pager, next"
-							:total="messageObj.total"
-							>
-						</el-pagination>
-					</div> 
-				</div>
-				<el-button slot="reference" type="text">
-					<div class="message_box">
-						<img class="message_icon" src="../static/message_icon.png">
-						<div class="num" v-if="readnum > 0">{{readnum}}</div>
+					<el-popover @show="getList" placement="bottom" width="460" trigger="hover">
+						<div>
+							<el-form :inline="true" size="small" class="demo-form-inline">
+								<el-form-item label="状态：">
+									<el-select v-model="message_req.status" clearable :popper-append-to-body="false" size="small" placeholder="全部">
+										<el-option label="已读" :value="1">
+										</el-option>
+										<el-option label="未读" :value="0">
+										</el-option>
+									</el-select>
+								</el-form-item>
+								<el-form-item>
+									<el-button type="primary" size="small" @click="getList">搜索</el-button>
+								</el-form-item>
+							</el-form>
+							<el-table :data="messageObj.data" size="small">
+								<el-table-column align="center" prop="type" label="消息类型"></el-table-column>
+								<el-table-column width="150" align="center" prop="title" label="标题">
+								</el-table-column>
+								<el-table-column width="100" align="center" prop="add_time" label="消息时间"></el-table-column>
+								<el-table-column align="center" label="状态">
+									<template slot-scope="scope">
+										<el-button type="text" size="small" @click="messageDetail(scope.row)">{{scope.row.status == 1?'已读':'未读'}}</el-button>
+									</template>
+								</el-table-column>
+							</el-table>
+							<div class="page">
+								<el-pagination
+								@current-change="pageChange"
+								:current-page="message_req.page"
+								:pager-count="5"
+								layout="total, prev, pager, next"
+								:total="messageObj.total"
+								>
+							</el-pagination>
+						</div> 
 					</div>
-				</el-button>
-			</el-popover>
-			<div class="line"></div>
-			<img class="admin_logo" src="../static/admin_logo.png">
-			<div class="header_text">{{ding_user_name}}</div>
-		</div>
-	</el-header>
-	<el-container class="content_box">
-		<div class="left_box">
-			<el-menu
-			@select="handleSelect" 
-			:router="true" 
-			:unique-opened="true" 
-			:collapse="isCollapse" 
-			:default-active="activeIndex"
-			background-color="#363D66"
-			text-color="#ffffff"
-			active-text-color="#ffffff"
-			:collapse-transition="false"
-			>
-			<div class="dd" :class="{'start_dd':isCollapse}">
-				<i class="el-icon-s-unfold collapse_icon" v-if="isCollapse" @click="isCollapse = !isCollapse"></i>
-				<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
+					<el-button slot="reference" type="text">
+						<div class="message_box">
+							<img class="message_icon" src="../static/message_icon.png">
+							<div class="num" v-if="readnum > 0">{{readnum}}</div>
+						</div>
+					</el-button>
+				</el-popover>
+				<div class="line"></div>
+				<img class="admin_logo" src="../static/admin_logo.png">
+				<div class="header_text">{{ding_user_name}}</div>
 			</div>
-			<div v-for="(item,index) in menu_list">
-				<el-submenu :index="index.toString()" v-if="item.list.length > 0">
-					<template slot="title">
+		</el-header>
+		<el-container class="content_box">
+			<div class="left_box">
+				<el-menu
+				@select="handleSelect" 
+				:router="true" 
+				:unique-opened="true" 
+				:collapse="isCollapse" 
+				:default-active="activeIndex"
+				background-color="#363D66"
+				text-color="#ffffff"
+				active-text-color="#ffffff"
+				:collapse-transition="false"
+				>
+				<div class="dd" :class="{'start_dd':isCollapse}">
+					<i class="el-icon-s-unfold collapse_icon" v-if="isCollapse" @click="isCollapse = !isCollapse"></i>
+					<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
+				</div>
+				<template v-for="(item,index) in menu_list">
+					<el-submenu :index="index.toString()" v-if="item.list.length > 0">
+						<template slot="title">
+							<i :class="`el-icon-${item.icon}`"></i>
+							<span>{{item.menu_name}}</span>
+						</template>
+						<el-menu-item-group> 
+							<el-menu-item v-for="(menu,id) in item.list" :index="`/${menu.web_url}`">{{menu.menu_name}}</el-menu-item>
+						</el-menu-item-group>
+						<!-- <template v-for="(menu,id) in item.list">
+							<el-submenu :index="menu.menu_name" v-if="menu.list.length > 0">
+								<template slot="title">{{menu.menu_name}}</template>
+								<el-menu-item :index="`/${c_menu.web_url}`" v-for="c_menu in menu.list">{{c_menu.menu_name}}</el-menu-item>
+							</el-submenu>
+							<el-menu-item-group v-else> 
+								<el-menu-item :index="`/${menu.web_url}`">{{menu.menu_name}}</el-menu-item>
+							</el-menu-item-group>
+						</template> -->
+					</el-submenu>
+					<el-menu-item :index="`/${item.web_url}`" v-else>
 						<i :class="`el-icon-${item.icon}`"></i>
-						<span>{{item.menu_name}}</span>
-					</template>
-					<el-menu-item-group>     
-						<el-menu-item :index="`/${menu.web_url}`" v-for="menu in item.list">{{menu.menu_name}}</el-menu-item>
-					</el-menu-item-group>
-				</el-submenu>
-				<el-menu-item :index="`/${item.web_url}`" v-else>
-					<i :class="`el-icon-${item.icon}`"></i>
-					<span slot="title">{{item.menu_name}}</span>
-				</el-menu-item>
-			</div>
-			<!-- <el-menu-item index="/audit_index">
-				<span slot="title">审计管理</span>
-			</el-menu-item> -->
-		</el-menu>
-	</div>
-	<el-main class="main">
-		<img class="welcome_icon" src="../static/welcome_img.png" v-if="show_welcome">
-		<el-card class="el_card" v-else>
-			<keep-alive>
-				<router-view v-if="$route.meta.keepAlive"></router-view>
-			</keep-alive>
-			<router-view v-if="!$route.meta.keepAlive"></router-view>
-		</el-card>
-	</el-main>
-</el-container>
+						<span slot="title">{{item.menu_name}}</span>
+					</el-menu-item>
+				</template>
+			</el-menu>
+		</div>
+		<el-main class="main">
+			<img class="welcome_icon" src="../static/welcome_img.png" v-if="show_welcome">
+			<el-card class="el_card" v-else>
+				<keep-alive>
+					<router-view v-if="$route.meta.keepAlive"></router-view>
+				</keep-alive>
+				<router-view v-if="!$route.meta.keepAlive"></router-view>
+			</el-card>
+		</el-main>
+	</el-container>
 </el-container>
 </div>
 </template>
@@ -114,7 +116,10 @@
 	left: 0;
 	width: 100%;
 	height: 100%;
+	display:flex;
+	flex-direction: column;
 	.header{
+		height: 120px;
 		background:#fff !important;
 		display: flex;
 		align-items: center;
@@ -184,10 +189,6 @@
 		height: 600px;
 		.left_box{
 			background: #363D66;
-			display: flex;
-			flex-direction: column;
-			// width:180px;
-			height: 100%;
 			.dd{
 				height: 35px;
 				display: flex;

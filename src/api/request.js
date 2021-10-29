@@ -4,14 +4,18 @@ import { Message } from 'element-ui';
 
 //中间处理
 export function middleWare(params,type) { 
-  var target = {
-    ding_user_id:!localStorage.getItem("ding_user_id")?'':localStorage.getItem("ding_user_id"),
-    login_token:!localStorage.getItem("login_token")?'':localStorage.getItem("login_token"),
-    secret_key:!localStorage.getItem("secret_key")?'':localStorage.getItem("secret_key"),
-    timestamp:((new Date()).getTime()/1000).toString().split('.')[0]
-  };
+  var ding_user_id = !localStorage.getItem("ding_user_id")?'':localStorage.getItem("ding_user_id");
+  var login_token = !localStorage.getItem("login_token")?'':localStorage.getItem("login_token");
+  var secret_key = !localStorage.getItem("secret_key")?'':localStorage.getItem("secret_key");
+
   // 生成签名
-  var create_sign = {...params,...target};
+  var sign_target = {
+    ding_user_id:ding_user_id,
+    login_token:login_token,
+    secret_key:secret_key,
+    timestamp:((new Date()).getTime()/1000).toString().split('.')[0]
+  }
+  var create_sign = {...params,...sign_target};
   var keys = [];        // 所有键名
   var sort_obj = {};    // 排好序的参数对象
   
@@ -27,23 +31,28 @@ export function middleWare(params,type) {
   })
   var sign_arr = [];
   for(let key in sort_obj){
-    // sign_arr.push(`${key}=${sort_obj[key]}`);
     if(key != 'image' && key != 'file'){
       sign_arr.push(`${key}=${sort_obj[key]}`);
     }
   }
-  
   //sign
   var sign = md5(sign_arr.join('&'));
-  //token
+
+   //token
+  var token_target = {
+    login_token:login_token,
+    secret_key:secret_key,
+    timestamp:((new Date()).getTime()/1000).toString().split('.')[0]
+  }
   var Base64 = require('js-base64').Base64;
-  var token_obj = {...target,...{sign:sign}};
+  var token_obj = {...token_target,...{sign:sign}};
   var token = Base64.encode(JSON.stringify(token_obj));
+  
   //组织参数
   var req = {...params,...{sign:sign,token:token}};
-  // var req = {...params,...{sign:sign,admin_id:'15619443646473471',token:token}};  //审计
-  // var req = {...params,...{sign:sign,admin_id:'16079081946334179',token:token}}; //运营
-  // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}}; //普通
+  // var req = {...params,...{sign:sign,admin_id:'15619443646473471',token:token}};   //审计
+  // var req = {...params,...{sign:sign,admin_id:'16079081946334179',token:token}};   //运营
+  // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};   //普通
   
   var get_arr = [];
   //post请求参数
