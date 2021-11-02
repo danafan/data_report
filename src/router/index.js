@@ -27,7 +27,7 @@ Vue.use(Router)
 const router = new Router({
   routes: [
   {
-    path: '/home',
+    path: '/',
     component: home,
     children:[
     { path: '/store_data',name:"店铺日数据", component: store_data},

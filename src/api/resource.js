@@ -3,7 +3,8 @@ let path = {
 	messageList:'message/list',										//获取消息列表
 	messageRead:'message/read',										//读取消息
 	unreadnum:'message/unreadnum',									//未读消息数
-	login:'login',													//获取用户id
+	dingLogin:'ding_login',											//钉钉获取用户信息
+	login:'login',													//浏览器获取用户信息
 	quit:'quit',													//推出
 	getMenu:'access/mymenu',										//获取所有菜单列表
 	jsapi:'jsapi',													//获取用户权限
@@ -196,7 +197,11 @@ export default{
 	unreadnum(params){
 		return http.get(path.unreadnum, params)
 	},
-	//获取用户id
+	//钉钉获取用户信息
+	dingLogin(params){
+		return http.get(path.dingLogin, params)
+	},
+	//浏览器获取用户信息
 	login(params){
 		return http.post(path.login, params)
 	},

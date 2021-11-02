@@ -4,6 +4,8 @@
 			<el-header class="header">
 				<div class="gxk">德儿网络数据中心</div>
 				<div class="user_set">
+					<el-button type="primary" size="small" icon="el-icon-document-add" circle></el-button>
+					<!-- <el-button type="primary" size="small" @click="newWindow" style="margin-right: 15px">新窗口<i class="el-icon-document-add el-icon--right"></i></el-button> -->
 					<el-popover @show="getList" placement="bottom" width="460" trigger="hover">
 						<div>
 							<el-form :inline="true" size="small" class="demo-form-inline">
@@ -262,7 +264,6 @@
 			$route(n){
 				if(n.path != '/home'){
 					this.show_welcome = false;
-					this.handleSelect(n.path);
 				};
 			}
 		},
@@ -305,25 +306,36 @@
 						})
 				}
 				this.$router.push('/' + row.web_url);
-					// this.$router.push('/supplement?show_zng=true');
-				},
+			},
 			//获取菜单列表
 			getMenuList(){
 				resource.getMenu().then(res => {
 					if(res.data.code == 1){
 						let menu_list = res.data.data;
 						this.$store.commit('menuList',menu_list);
+						let query = this.$route.query;
+						if(!!query.level2_url){
+							this.activeIndex = `/${query.level2_url}`;
+							this.$router.push(`/${query.level2_url}`);
+							this.$store.commit('currentTab',query.level3_url);
+						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
 			},
-			handleSelect(index){
-				if(index == '/data_role_user' || index == '/role_user'){
-					this.activeIndex = '/permssions_index';
+			//打开新窗口
+			newWindow(){
+				var level2_url = window.location.hash.split('/')[1];
+				var level3_url = this.$store.state.current_tab;
+				if(!this.$store.state.is_ding_talk){  //不是钉钉环境
+					window.open(`${window.location.href}?level2_url=${level2_url}&level3_url=${level3_url}`);
 				}else{
-					this.activeIndex = index;
+					window.open(`${location.origin}/code_login?code=${code}&level2_url=${level2_url}&level3_url=${level3_url}`);
 				}
+			},
+			handleSelect(index){
+				this.activeIndex = index;
 			}
 		}
 	}

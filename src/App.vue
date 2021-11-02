@@ -7,6 +7,7 @@
 <script>
   import watermark from './api/watermark.js'
   import resource from './api/resource.js'
+  import * as dd from 'dingtalk-jsapi';
   export default {
     provide () {
       return {
@@ -19,12 +20,53 @@
       }
     },
     created(){ 
+      if(!this.$store.state.is_ding_talk){  //不是钉钉环境
+        //获取浏览器用户信息
+        this.GetUserInfo();
+      }else{
+         //获取code
+         this.GetCode();
+       }
+     },
+     methods: {
       //获取code
-      this.GetUserId();
-    },
-    methods: {
-      //获取用户信息
-      GetUserId(){
+      GetCode(){
+        dd.ready(() => {
+          dd.runtime.permission.requestAuthCode({
+            corpId: "ding7828fff434921f5b",
+            onSuccess: res =>{
+                //获取钉钉用户信息
+                let code = res.code;
+                this.GetDingUserInfo(code);
+              },
+              onFail : err => {
+                alert('dd error: ' + JSON.stringify(err));
+              }
+            });
+        });
+      },
+      //钉钉获取用户信息
+      GetDingUserInfo(code){
+        resource.dingLogin({code:code}).then(res => {
+          if(res.data.code == 1){
+            let login_token = res.data.data.login_token;
+            localStorage.setItem('login_token',login_token);
+            let ding_user_name = res.data.data.ding_user_name;
+            localStorage.setItem('ding_user_name',ding_user_name);
+            let ding_user_id = res.data.data.ding_user_id;
+            localStorage.setItem('ding_user_id',ding_user_id);
+            watermark.set(ding_user_name,ding_user_id);
+            let secret_key = res.data.data.secret_key;
+            localStorage.setItem('secret_key',secret_key);
+            let user_type = res.data.data.user_type;
+            localStorage.setItem('user_type',user_type);
+          }else{
+            this.$message.warning(res.data.msg);
+          }
+        })
+      },
+      //获取浏览器用户信息
+      GetUserInfo(){
         resource.login().then(res => {
           if(res.data.code == 1){
             let login_token = res.data.data.login_token;
@@ -38,7 +80,6 @@
             localStorage.setItem('secret_key',secret_key);
             let user_type = res.data.data.user_type;
             localStorage.setItem('user_type',user_type);
-            this.$router.push('/home');
           }else{
             this.$message.warning(res.data.msg);
           }
