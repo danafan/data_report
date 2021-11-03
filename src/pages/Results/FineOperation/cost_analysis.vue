@@ -14,6 +14,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="费用类型：">
+				<el-select v-model="type" :popper-append-to-body="false">
+					<el-option label="实际" :value="0"></el-option>
+					<el-option label="充值" :value="1"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="项目名称：">
 				<el-select v-model="select_xmmc_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in xmmc_list" :key="item" :label="item" :value="item">
@@ -204,6 +210,7 @@
 					}]
 				},	 										//时间区间
 				date:[getMonthStartDate(),getCurrentDate()],//制单日期
+				type:0,										//费用类型
 				table_data:[],								//上面表格信息
 				max_list:{},								//最大值对象
 				total_data:[],								//合计行
@@ -303,7 +310,8 @@
 					citemcname:this.select_xmdl_list.join(','),
 					citemname:this.select_xmmc_list.join(','),
 					start_time:this.date?this.date[0]:'',
-					end_time:this.date?this.date[1]:''
+					end_time:this.date?this.date[1]:'',
+					type:this.type
 				}
 				resource.yxfyList(req).then(res => {
 					if(res.data.code == 1){

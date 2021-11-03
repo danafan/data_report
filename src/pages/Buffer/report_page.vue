@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-tabs v-model="activeTab">
+		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane label="店铺销售情况" lazy name="store_sales" class="tab_pane_box">
 				<StoreSales/>
 			</el-tab-pane>
@@ -21,8 +21,22 @@
 	export default{
 		data(){
 			return{
-				activeTab:"store_sales",
+				activeTab:"",
 				menu_list:[]
+			}
+		},
+		created(){
+			this.getIndex();
+		},
+		methods:{
+			getIndex(){
+				let current_tab = this.$store.state.current_tab;
+				this.activeTab = current_tab == ''?'store_sales':current_tab;
+			},
+			//切换tab
+			checkTab(e){
+				this.activeTab = e.name;
+				this.$store.commit('currentTab',e.name);
 			}
 		},
 		components:{

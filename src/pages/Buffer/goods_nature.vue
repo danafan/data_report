@@ -44,13 +44,15 @@
 				this.ss.map(item => {
 					if (item.web_url == 'goods_nature') {
 						this.menu_list = item.list;
-						this.activeTab = this.menu_list[0].web_url;
+						let current_tab = this.$store.state.current_tab;
+						this.activeTab = current_tab == ''?this.menu_list[0].web_url:current_tab;
 					}
 				})
 			},
 			//切换tab
 			checkTab(e){
 				this.activeTab = e.name;
+				this.$store.commit('currentTab',e.name);
 			}
 		},
 		components:{

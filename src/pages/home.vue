@@ -1,11 +1,10 @@
 <template>
-	<div>
+	<div @contextmenu="showMenu">
 		<el-container class="box">
 			<el-header class="header">
 				<div class="gxk">德儿网络数据中心</div>
 				<div class="user_set">
-					<el-button type="primary" size="small" icon="el-icon-document-add" circle></el-button>
-					<!-- <el-button type="primary" size="small" @click="newWindow" style="margin-right: 15px">新窗口<i class="el-icon-document-add el-icon--right"></i></el-button> -->
+					<el-button type="primary" size="small" icon="el-icon-document-add" circle style="margin-right: 15px" @click="newWindow"></el-button>
 					<el-popover @show="getList" placement="bottom" width="460" trigger="hover">
 						<div>
 							<el-form :inline="true" size="small" class="demo-form-inline">
@@ -109,6 +108,8 @@
 		</el-main>
 	</el-container>
 </el-container>
+<vue-context-menu :contextMenuData="contextMenuData"
+@home="newWindow"></vue-context-menu>
 </div>
 </template>
 <style lang="less" scoped>
@@ -225,8 +226,15 @@
 	}
 }
 </style>
+<style type="text/css">
+	.btn-wrapper-simple{
+		height: 24px !important;
+	}
+</style>
 <script>
+	import watermark from '../api/watermark.js'
 	import resource from '../api/resource.js'
+	import * as dd from 'dingtalk-jsapi';
 	export default{
 		data(){
 			return{
@@ -241,33 +249,102 @@
 					type:"",
 					status:0
 				},
-				messageObj:{
-
-				}
-			}
-		},
-		created(){
-			//未读消息数
-			this.unreadnum();
-		},
-		mounted(){
-			this.ding_user_name = localStorage.getItem('ding_user_name');
-			//获取菜单列表
-			this.getMenuList();
-		},	
-		computed:{
-			menu_list(){
-				return this.$store.state.menu_list;
-			}
-		},
-		watch:{
-			$route(n){
-				if(n.path != '/home'){
-					this.show_welcome = false;
-				};
-			}
-		},
-		methods:{
+				messageObj:{},
+				contextMenuData: {
+					menuName: 'demo',
+         			//菜单显示的位置
+         			axis: {
+         				x: null,
+         				y: null
+         			},
+         			//菜单选项
+         			menulists: [{
+           				fnHandler: 'home', 
+           				btnName: '打开新窗口' 
+           			}]
+           		}
+           	}
+           },
+           created(){
+			if(!this.$store.state.is_ding_talk){  //浏览器
+        		//获取浏览器用户信息
+        		this.GetUserInfo();
+      		}else{  //钉钉
+         		//获取code
+         		this.GetCode();
+         	}
+         },
+         computed:{
+         	menu_list(){
+         		return this.$store.state.menu_list;
+         	}
+         },
+         watch:{
+         	$route(n){
+         		if(n.path != '/'){
+         			this.show_welcome = false;
+         		};
+         	}
+         },
+         methods:{
+         	showMenu () {
+         		event.preventDefault()
+         		var x = event.clientX
+         		var y = event.clientY
+         		this.contextMenuData.axis = {
+         			x, y
+         		}
+         	},
+			//获取code
+			GetCode(){
+				dd.ready(() => {
+					dd.runtime.permission.requestAuthCode({
+						corpId: "ding7828fff434921f5b",
+						onSuccess: res =>{
+                			//获取钉钉用户信息
+                			let code = res.code;
+                			this.GetDingUserInfo(code);
+                		},
+                		onFail : err => {
+                			alert('dd error: ' + JSON.stringify(err));
+                		}
+                	});
+				});
+			},
+      		//钉钉获取用户信息
+      		GetDingUserInfo(code){
+      			resource.dingLogin({code:code}).then(res => {
+      				if(res.data.code == 1){
+      					this.localStorageData(res.data.data);
+      				}else{
+      					this.$message.warning(res.data.msg);
+      				}
+      			})
+      		},
+      		//获取浏览器用户信息
+      		GetUserInfo(){
+      			resource.login().then(res => {
+      				if(res.data.code == 1){
+      					this.localStorageData(res.data.data);
+      				}else{
+      					this.$message.warning(res.data.msg);
+      				}
+      			})
+      		},
+      		//浏览器缓存数据
+      		localStorageData(data){
+      			localStorage.setItem('login_token',data.login_token);
+      			localStorage.setItem('ding_user_name',data.ding_user_name);
+      			this.ding_user_name = localStorage.getItem('ding_user_name');
+      			localStorage.setItem('ding_user_id',data.ding_user_id);
+      			watermark.set(data.ding_user_name,data.ding_user_id);
+      			localStorage.setItem('secret_key',data.secret_key);
+      			localStorage.setItem('user_type',data.user_type);
+      			//未读消息数
+      			this.unreadnum();
+				//获取菜单列表
+				this.getMenuList();
+			},
 			//未读消息数
 			unreadnum(){
 				resource.unreadnum().then(res => {
@@ -328,14 +405,28 @@
 			newWindow(){
 				var level2_url = window.location.hash.split('/')[1];
 				var level3_url = this.$store.state.current_tab;
-				if(!this.$store.state.is_ding_talk){  //不是钉钉环境
+				if(!this.$store.state.is_ding_talk){  //浏览器
 					window.open(`${window.location.href}?level2_url=${level2_url}&level3_url=${level3_url}`);
-				}else{
-					window.open(`${location.origin}/code_login?code=${code}&level2_url=${level2_url}&level3_url=${level3_url}`);
+				}else{	//钉钉
+					dd.ready(() => {
+						dd.runtime.permission.requestAuthCode({
+							corpId: "ding7828fff434921f5b",
+							onSuccess: res =>{
+               			 		//获取钉钉用户信息
+               			 		let code = res.code;
+               			 		window.open(`${location.origin}/code_login?code=${code}&level2_url=${level2_url}&level3_url=${level3_url}`);
+               			 	},
+               			 	onFail : err => {
+               			 		alert('dd error: ' + JSON.stringify(err));
+               			 	}
+               			 });
+					});
 				}
 			},
+			//切换导航
 			handleSelect(index){
 				this.activeIndex = index;
+				this.$store.commit('currentTab','');
 			}
 		}
 	}

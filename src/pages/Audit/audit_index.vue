@@ -68,16 +68,18 @@
 			}
 		},
 		created(){
+			var current_tab = this.$store.state.current_tab;
 			this.user_type = localStorage.getItem('user_type');
 			if(this.user_type == '1'){
-				this.activeTab = '/bargaining_table';
+				this.activeTab = current_tab == ''?'/bargaining_table':current_tab;
 			}else if(this.user_type == '2' || this.user_type == '3' || this.user_type == '4'){
-				this.activeTab = '/total_cost';
+				this.activeTab = current_tab == ''?'/total_cost':current_tab;
 			}
 		},
 		methods:{
 			handleClick(e){
 				this.activeTab = e.name;
+				this.$store.commit('currentTab',e.name);
 			}
 		},
 		components:{
