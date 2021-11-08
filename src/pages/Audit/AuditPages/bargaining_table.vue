@@ -180,6 +180,7 @@
 	import resource from '../../../api/auditResource.js'
 	import UploadFile from '../../../components/upload_file.vue'
 	import {exportUp} from '../../../api/export.js'
+	import * as dd from 'dingtalk-jsapi';
 	export default{
 		data(){
 			return{

@@ -114,7 +114,7 @@
 					table_title:"每日业绩报告",
 					table_title_list:[],
 					field_name_list:[],
-					data_list:this.table_data
+					data_list:[]
 				};
 				var total_obj = {};
 				this.title_list.map((item,i) => {
@@ -122,7 +122,7 @@
 					data_obj.table_title_list.push(item.row_name);
 					total_obj[item.row_field_name] = this.total_data[i];
 				})
-				data_obj.data_list.push(total_obj);
+				data_obj.data_list = [...this.table_data,...[total_obj]];
 				switch(this.page_type){
 					case 'overall_data':
 					data_obj.table_title = "整体数据报表";

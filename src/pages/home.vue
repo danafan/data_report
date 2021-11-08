@@ -227,9 +227,9 @@
 }
 </style>
 <style type="text/css">
-	.btn-wrapper-simple{
-		height: 24px !important;
-	}
+.btn-wrapper-simple{
+	height: 24px !important;
+}
 </style>
 <script>
 	import watermark from '../api/watermark.js'
@@ -259,15 +259,15 @@
          			},
          			//菜单选项
          			menulists: [{
-           				fnHandler: 'home', 
-           				btnName: '打开新窗口' 
-           			}]
-           		}
-           	}
-           },
-           created(){
+         				fnHandler: 'home', 
+         				btnName: '打开新窗口' 
+         			}]
+         		}
+			}
+		},
+		created(){
 			if(!this.$store.state.is_ding_talk){  //浏览器
-        		//获取浏览器用户信息
+        		//获取浏览器用户信息()
         		this.GetUserInfo();
       		}else{  //钉钉
          		//获取code
@@ -287,14 +287,6 @@
          	}
          },
          methods:{
-         	showMenu () {
-         		event.preventDefault()
-         		var x = event.clientX
-         		var y = event.clientY
-         		this.contextMenuData.axis = {
-         			x, y
-         		}
-         	},
 			//获取code
 			GetCode(){
 				dd.ready(() => {
@@ -395,12 +387,23 @@
 							this.activeIndex = `/${query.level2_url}`;
 							this.$router.push(`/${query.level2_url}`);
 							this.$store.commit('currentTab',query.level3_url);
+						}else{
+							this.activeIndex = `${this.$route.path}`;
+							this.$router.push(`${this.$route.path}`);
 						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
 			},
+			showMenu () {
+         		event.preventDefault();
+         		var x = event.clientX;
+         		var y = event.clientY;
+         		this.contextMenuData.axis = {
+         			x, y
+         		};
+         	},
 			//打开新窗口
 			newWindow(){
 				var level2_url = window.location.hash.split('/')[1];

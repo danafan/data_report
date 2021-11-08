@@ -34,7 +34,10 @@
 				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="title">各店目标达成情况</div>
+		<div class="table_setting">
+			<div class="title">各店目标达成情况</div>
+			<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getSummaries" show-summary>
 			<el-table-column label="制单日期" prop="month" width="160" sortable>
 			</el-table-column>
@@ -141,12 +144,17 @@
 	</div>
 </template>
 <style lang="less" scoped>
-.title{
+.table_setting{
 	margin-top: 30px;
-	margin-bottom: 20px;
-	font-size: 18px;
-	font-weight: bold;
+	margin-bottom: 15px;
+	display: flex;
+	justify-content: space-between;
+	.title{
+		font-size: 18px;
+		font-weight: bold;
+	}
 }
+
 .background_box{
 	padding-left: 3px;
 	white-space:nowrap;
@@ -172,6 +180,7 @@
 <script>
 	import resource from '../../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {exportExcel} from '../../../api/export.js'
 	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
@@ -244,6 +253,16 @@
 			this.searchFun();
 		},
 		methods:{
+			//导出
+			Export(){
+				var data_obj = {
+					table_title:"营销费用分析",
+					table_title_list:['制单日期','店铺ID','用友店铺ID','使用金额','月目标','月目标使用率','累计目标','累计目标达成率'],
+					field_name_list:['month','dpid','cdepname','md','ymb_yxfy','ymb_syl','rmb_yxfy','ljrmbdcl'],
+					data_list:this.table_data
+				};
+				exportExcel(data_obj);
+			},
 			//总计行
 			getSummaries(){
 				return this.total_data;

@@ -106,7 +106,7 @@
 			var now = new Date();
 			var nowYear = now.getFullYear();
 			var nowMonth = now.getMonth();
-			this.select_month_list = [nowMonth - 1 < 10?'0' + (nowMonth - 1):nowMonth - 1,nowMonth < 10?'0' + nowMonth:nowMonth,nowMonth + 1 < 10?'0' + (nowMonth + 1):nowMonth + 1];
+			this.select_month_list = [nowMonth - 1 < 10?'0' + (nowMonth - 1):nowMonth - 1,nowMonth < 10?'0' + nowMonth:nowMonth.toString(),nowMonth + 1 < 10?'0' + (nowMonth + 1):(nowMonth + 1).toString()];
 			for(var i = 0;i < 3;i ++){
 				let obj = {
 					id:nowYear - i,

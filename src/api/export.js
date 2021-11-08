@@ -1,5 +1,7 @@
 import { MessageBox,Message } from 'element-ui';
 import {middleWare} from './request.js'
+import * as dd from 'dingtalk-jsapi';
+import store from '../store/index.js'
 
 function formatJson(filterVal, jsonData) {
 	return jsonData.map(v => filterVal.map(j => v[j]))
@@ -33,34 +35,53 @@ export function exportExcel(data_obj) {
 	});
 }
 
+function exportSet(url,req){
+	var open_url = '';
+	if(url.indexOf('?') > -1){
+		let req_arr = url.split('?')[1].split('&');
+		req_arr.map(item => {
+			req[item.split('=')[0]] = item.split('=')[1];
+		})
+		let get_str = middleWare(req,'get');
+
+		open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
+	}else{
+		let get_str = middleWare(req,'get');
+		open_url = `${location.origin}/api/${url}?${get_str}`;
+	}
+	window.open(open_url);
+}
+
 export function exportUp(url){
 	MessageBox.confirm('确认导出?', '提示', {
 		confirmButtonText: '确定',
 		cancelButtonText: '取消',
 		type: 'warning'
 	}).then(() => {
-		let req = {};
-		var open_url = '';
-		if(url.indexOf('?') > -1){
-			let req_arr = url.split('?')[1].split('&');
-			req_arr.map(item => {
-				req[item.split('=')[0]] = item.split('=')[1];
-			})
-			let get_str = middleWare(req,'get');
-
-			open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
-		}else{
-			let get_str = middleWare(req,'get');
-			open_url = `${location.origin}/api/${url}?${get_str}`;
-		}
-		// console.log(open_url);
-		window.open(open_url);
-	}).catch(() => {
-		Message({
-			type: 'info',
-			message: '取消导出'
-		});          
-	});
+		if(!!store.state.is_ding_talk){  //钉钉
+        	//获取code
+        	dd.ready(() => {
+        		dd.runtime.permission.requestAuthCode({
+        			corpId: "ding7828fff434921f5b",
+        			onSuccess: res =>{
+                		//获取钉钉用户信息
+                		let code = res.code;
+                		exportSet(url,{code:code});
+                	},
+                	onFail : err => {
+                		alert('dd error: ' + JSON.stringify(err));
+                	}
+                });
+        	});
+        }else{
+        	exportSet(url,{});
+        }
+    }).catch(() => {
+    	Message({
+    		type: 'info',
+    		message: '取消导出'
+    	});          
+    });
 }
 
 export function exportPost(data,name){
