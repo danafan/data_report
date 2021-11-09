@@ -255,11 +255,30 @@
 		methods:{
 			//导出
 			Export(){
+				let data_list = JSON.parse(JSON.stringify(this.table_data));
+				data_list.map(item => {
+					item.md = item.md + '万';
+					item.ymb_yxfy = item.ymb_yxfy + '万';
+					item.ymb_syl = item.ymb_syl + '%';
+					item.rmb_yxfy = item.rmb_yxfy + '万';
+					item.ljrmbdcl = item.ljrmbdcl + '%';
+				})
+				let total_data = {
+					month:this.total_data[0],
+					dpid:this.total_data[1],
+					cdepname:this.total_data[2],
+					md:this.total_data[3],
+					ymb_yxfy:this.total_data[4],
+					ymb_syl:this.total_data[5],
+					rmb_yxfy:this.total_data[6],
+					ljrmbdcl:this.total_data[7]
+				};
+				data_list.push(total_data);
 				var data_obj = {
 					table_title:"营销费用分析",
 					table_title_list:['制单日期','店铺ID','用友店铺ID','使用金额','月目标','月目标使用率','累计目标','累计目标达成率'],
 					field_name_list:['month','dpid','cdepname','md','ymb_yxfy','ymb_syl','rmb_yxfy','ljrmbdcl'],
-					data_list:this.table_data
+					data_list:data_list
 				};
 				exportExcel(data_obj);
 			},

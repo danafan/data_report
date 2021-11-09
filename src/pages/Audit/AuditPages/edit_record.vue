@@ -72,7 +72,7 @@
 						<div class="label">平台：</div>
 						<div>{{detailObj.platform}}</div>
 					</div>
-					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3 || detailObj.type == 4">
+					<div class="content_row" v-if="(detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3 || detailObj.type == 4) || (detailObj.type == 2 && detailObj.ksbm != '')">
 						<div class="label">新编码：</div>
 						<div>{{detailObj.ksbm}}</div>
 					</div>

@@ -388,6 +388,9 @@
 							this.$router.push(`/${query.level2_url}`);
 							this.$store.commit('currentTab',query.level3_url);
 						}else{
+							if(this.$route.path != '/'){
+								this.show_welcome = false;
+							}
 							this.activeIndex = `${this.$route.path}`;
 							this.$router.push(`${this.$route.path}`);
 						}

@@ -4,6 +4,13 @@ import { Message } from 'element-ui';
 
 //中间处理
 export function middleWare(params,type) { 
+
+  for(let k in params){
+    if(params[k] != ""){
+      params[k] = params[k].toString().replace(/\s+/g,"");
+    }
+  }
+
   var ding_user_id = !localStorage.getItem("ding_user_id")?'':localStorage.getItem("ding_user_id");
   var login_token = !localStorage.getItem("login_token")?'':localStorage.getItem("login_token");
   var secret_key = !localStorage.getItem("secret_key")?'':localStorage.getItem("secret_key");
@@ -26,7 +33,7 @@ export function middleWare(params,type) {
   // 键名排序
   var sort_keys = keys.sort(); 
   sort_keys.map(item => {
-    let val = create_sign[item];
+    var val = create_sign[item];
     sort_obj[item] = val;
   })
   var sign_arr = [];
@@ -39,7 +46,7 @@ export function middleWare(params,type) {
   var sign = md5(sign_arr.join('&'));
 
    //token
-  var token_target = {
+   var token_target = {
     login_token:login_token,
     secret_key:secret_key,
     timestamp:((new Date()).getTime()/1000).toString().split('.')[0]

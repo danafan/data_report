@@ -24,6 +24,7 @@ let path = {
 	importGoods:'audit/import_goods',								//批量导入
 	offShelf:'audit/off_shelf',										//下架
 	onShelf:'audit/on_shelf',										//上架
+	editOneSupplier:'audit/edit_one_supplier',						//修改单个款式的供应商接口
 }						
 export default{
 	//款式编码列表
@@ -125,6 +126,10 @@ export default{
 	//上架
 	onShelf(params){
 		return http.post(path.onShelf, params)
+	},
+	//修改单个款式的供应商接口
+	editOneSupplier(params){
+		return http.post(path.editOneSupplier, params)
 	},
 }
 

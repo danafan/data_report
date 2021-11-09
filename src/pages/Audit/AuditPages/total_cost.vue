@@ -41,7 +41,11 @@
 			<el-table-column type="index" label="序号" align="center" fixed="left">
 			</el-table-column>
 			<el-table-column prop="launch_day" label="上新时间" width="120" align="center"></el-table-column>
-			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
+			<el-table-column label="供应商" width="120" align="center">
+				<template slot-scope="scope">
+					<el-input size="small" v-model="scope.row.supplier" @focus="onFocus(scope.row.supplier)" @change="editSupplier($event,scope.row)" placeholder="输入供应商" :disabled="user_type == '1' || user_type == '4'"></el-input>
+				</template>
+			</el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column label="批发价" width="120" align="center">
@@ -188,6 +192,7 @@
 				},	 					//时间区间
 				export_date:[],			//导出日期区间
 				user_type:"",
+				current_supplier:"",	//当前点击的供应商
 			}
 		},
 		created(){
@@ -335,6 +340,36 @@
 						}
 					})
 				};
+			},
+			//获取焦点
+			onFocus(e){
+				this.current_supplier = e;
+			},
+			//单独修改供应商
+			editSupplier(e,row){
+				this.$confirm(`原供应商${this.current_supplier} 更新供应商${e}?`, '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						id:row.id,
+						supplier:e
+					}
+					resource.editOneSupplier(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}).catch(() => {
+					row.supplier = this.current_supplier;
+					this.$message({
+						type: 'info',
+						message: '取消更改'
+					});          
+				});
 			},
 			//导入
 			uploadCsv(){
