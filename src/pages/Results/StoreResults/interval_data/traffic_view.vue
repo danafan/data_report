@@ -45,8 +45,8 @@
 			</div>
 		</div>
 		<div class="tab_container">
-			<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">日统计</div>
-			<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">周统计</div>
+			<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">周期</div>
+			<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">去年</div>
 		</div>
 		<div class="charts_box" v-show="tab_index == '1'">
 			<div class="charts_item" id="dayly"></div>
@@ -242,8 +242,8 @@
 				default:""
 			},
 			tjrq:{
-				type:String,
-				default:""
+				type:Array,
+				default:[]
 			},
 			platform:{
 				type:String,
@@ -339,12 +339,13 @@
 			getList(){
 				let req = {
 					dept_id:this.dept_id,
-					tjrq:this.tjrq,
+					start_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[0],
+					end_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[1],
 					shop_id:this.shop_id,
 					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
-				resource.boardFlow(req).then(res => {
+				resource.boardPeriodFlow(req).then(res => {
 					if(res.data.code == 1){
 						this.label_list = res.data.data.title_names[0];
 						this.label_list.map(item => {	
@@ -400,12 +401,13 @@
 			getDayly(){
 				let req = {
 					dept_id:this.dept_id,
-					tjrq:this.tjrq,
+					start_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[0],
+					end_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[1],
 					shop_id:this.shop_id,
 					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
-				resource.getDayly(req).then(res => {
+				resource.getPeriodDayly(req).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let fk_num_list = res.data.data.fk_num_list;  //访客数
@@ -444,12 +446,13 @@
 				let req = {
 					select_llly:new_req?new_req.select_llly:'',
 					dept_id:this.dept_id,
-					tjrq:this.tjrq,
+					start_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[0],
+					end_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[1],
 					shop_id:this.shop_id,
 					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
-				resource.getDaymx(req).then(res => {
+				resource.getPeriodDaymx(req).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let fk_num_list = res.data.data.fk_num_list;  //访客数
@@ -471,12 +474,13 @@
 			getWeekly(){
 				let req = {
 					dept_id:this.dept_id,
-					tjrq:this.tjrq,
+					start_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[0],
+					end_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[1],
 					shop_id:this.shop_id,
 					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
-				resource.getWeekly(req).then(res => {
+				resource.getPeriodWeekly(req).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let fk_num_list = res.data.data.fk_num_list;  //访客数
@@ -515,12 +519,13 @@
 				let req = {
 					select_llly:new_req?new_req.select_llly:'',
 					dept_id:this.dept_id,
-					tjrq:this.tjrq,
+					start_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[0],
+					end_tjrq:!this.tjrq || this.tjrq.length == 0?'':this.tjrq[1],
 					shop_id:this.shop_id,
 					platform:this.platform,
 					llly:this.llly_list.join(',')
 				}
-				resource.getWeekmx(req).then(res => {
+				resource.getPeriodWeekmx(req).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let fk_num_list = res.data.data.fk_num_list;  //访客数

@@ -15,6 +15,12 @@
 				:picker-options="pickerOptions">
 			</el-date-picker>
 		</el-form-item>
+		<el-form-item label="公司：">
+			<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
 		<dps @callBack="checkReq"></dps>
 		<el-form-item>
 			<el-checkbox v-model="is_assessment" true-label="1" false-label="0" border size="small">考核店铺</el-checkbox>
@@ -232,12 +238,17 @@
 				default_data_list:[],				//表格数据（备用）
 				view_table_list:[],					//折线图列表
 				show_custom:false,
-				button_list:{}
+				button_list:{},
+				company:['德儿'],							//选中的公司
 			}
 		},
 		mounted(){
 			//获取信息
 			this.GetData();
+		},
+		created(){
+			//公司列表
+			this.ajaxCompany();
 		},
 		watch:{
 			//发货时间
@@ -276,6 +287,16 @@
 				this.select_plat_ids = reqObj.select_plat_ids;
 				this.select_store_ids = reqObj.select_store_ids;
 			},
+			//公司列表
+			ajaxCompany(){
+				resource.ajaxCompany().then(res => {
+					if(res.data.code == 1){
+						this.company_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取信息
 			GetData(is_save){
 				let req = {
@@ -284,7 +305,8 @@
 					shop_id:this.select_store_ids.join(','),
 					start_time:this.start_time,
 					end_time:this.end_time,
-					audit_flag:this.is_assessment
+					audit_flag:this.is_assessment,
+					company:this.company.join(',')
 				}
 				if(is_save == '1'){
 					req.row_ids = this.selected_ids.join(',')

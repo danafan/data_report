@@ -7,6 +7,7 @@
 				<FishPonds v-if="item.web_url == 'fish_ponds'"/>
 				<StoreData v-if="item.web_url == 'store_data'"/>
 				<SalesTrend v-if="item.web_url == 'sales_trend'"/>
+				<IntervalData v-if="item.web_url == 'interval_data'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -22,6 +23,7 @@
 	import FishPonds from './StoreResults/fish_ponds.vue'
 	import StoreData from './StoreResults/store_data.vue'
 	import SalesTrend from './StoreResults/sales_trend.vue'
+	import IntervalData from './StoreResults/interval_data.vue'
 	export default{
 		data(){
 			return{
@@ -64,7 +66,8 @@
 			DailyPerformance,
 			FishPonds,
 			StoreData,
-			SalesTrend
+			SalesTrend,
+			IntervalData
 		}
 	}
 </script>

@@ -263,9 +263,9 @@
          				btnName: '打开新窗口' 
          			}]
          		}
-			}
-		},
-		created(){
+         	}
+         },
+         created(){
 			if(!this.$store.state.is_ding_talk){  //浏览器
         		//获取浏览器用户信息()
         		this.GetUserInfo();
@@ -283,6 +283,9 @@
          	$route(n){
          		if(n.path != '/'){
          			this.show_welcome = false;
+         			if(n.path != '/data_management'){
+         				this.activeIndex = '/form_data';
+         			}
          		};
          	}
          },
@@ -382,7 +385,7 @@
 					if(res.data.code == 1){
 						let menu_list = res.data.data;
 						this.$store.commit('menuList',menu_list);
-						let query = this.$route.query;
+						var query = this.$route.query;
 						if(!!query.level2_url){
 							this.activeIndex = `/${query.level2_url}`;
 							this.$router.push(`/${query.level2_url}`);
@@ -391,8 +394,23 @@
 							if(this.$route.path != '/'){
 								this.show_welcome = false;
 							}
-							this.activeIndex = `${this.$route.path}`;
-							this.$router.push(`${this.$route.path}`);
+							//数据填报-数据管理
+							if(this.$route.path == '/data_management'){
+								this.activeIndex = '/form_data';
+							}else{
+								this.activeIndex = `${this.$route.path}`;
+							}
+							var query_list = [];
+							for(let k in query){
+								let s = k + '=' + query[k];
+								query_list.push(s);
+							}
+							if(query_list.length > 0){
+								this.$router.push(`${this.$route.path}?${query_list.join('&')}`);
+							}else{
+								this.$router.push(`${this.$route.path}`);
+							}
+							
 						}
 					}else{
 						this.$message.warning(res.data.msg);
@@ -400,13 +418,13 @@
 				})
 			},
 			showMenu () {
-         		event.preventDefault();
-         		var x = event.clientX;
-         		var y = event.clientY;
-         		this.contextMenuData.axis = {
-         			x, y
-         		};
-         	},
+				event.preventDefault();
+				var x = event.clientX;
+				var y = event.clientY;
+				this.contextMenuData.axis = {
+					x, y
+				};
+			},
 			//打开新窗口
 			newWindow(){
 				var level2_url = window.location.hash.split('/')[1];

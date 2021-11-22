@@ -22,6 +22,9 @@ const inventory_summary = resolve=>require(['@/pages/Inventory/inventory_summary
 const permssions_index = resolve=>require(['@/pages/Permissions/permissions_index'],resolve)
 const role_user = resolve=>require(['@/pages/Permissions/PermissionTabs/role_user'],resolve)
 const data_role_user = resolve=>require(['@/pages/Permissions/PermissionTabs/data_role_user'],resolve)
+//表单管理
+const form_data = resolve=>require(['@/pages/FormData/form_data'],resolve)
+const data_management = resolve=>require(['@/pages/FormData/data_management'],resolve)
 Vue.use(Router)
 
 const router = new Router({
@@ -45,6 +48,8 @@ const router = new Router({
     { path: '/permssions_index',name:"权限管理", component: permssions_index},
     { path: '/role_user',name:"角色人员", component: role_user},
     { path: '/data_role_user',name:"数据权限人员", component: data_role_user},
+    { path: '/form_data',name:"表单管理", component: form_data},
+    { path: '/data_management',name:"数据管理", component: data_management},
     ]
   }
   ]

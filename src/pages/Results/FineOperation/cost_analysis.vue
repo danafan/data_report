@@ -2,6 +2,12 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
+			<el-form-item label="公司：">
+				<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="用友店铺ID：">
 				<el-select v-model="select_yyshop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in yyshop_list" :key="item" :label="item" :value="item">
@@ -240,6 +246,7 @@
 				mx_table_data:[],							//明细
 				mx_max_list:{},						
 				mx_total_data:[],	
+				company:['德儿'],							//选中的公司
 			}
 		},
 		created(){
@@ -251,6 +258,8 @@
 			this.ajaxXmmc();
 			//获取列表
 			this.searchFun();
+			//公司列表
+			this.ajaxCompany();
 		},
 		methods:{
 			//导出
@@ -338,6 +347,16 @@
 					}
 				})
 			},
+			//公司列表
+			ajaxCompany(){
+				resource.ajaxCompany().then(res => {
+					if(res.data.code == 1){
+						this.company_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取列表
 			searchFun(){
 				let req = {
@@ -349,7 +368,8 @@
 					citemname:this.select_xmmc_list.join(','),
 					start_time:this.date?this.date[0]:'',
 					end_time:this.date?this.date[1]:'',
-					type:this.type
+					type:this.type,
+					company:this.company.join(',')
 				}
 				resource.yxfyList(req).then(res => {
 					if(res.data.code == 1){

@@ -109,14 +109,20 @@ let path = {
 	ksinfoModify:'ksinfo/modify',									//款式信息管理列表-修正数量
 	ksinfoSet:'ksinfo/set',											//款式信息管理列表-设置内部核价
 	ksinfoDetail:'ksinfo/detail',									//款式信息管理列表-下钻
-	boardShop:'board/shop',											//店铺看板
+	boardShop:'board/shop',											//店铺看板(店铺日数据)
+	boardPeriodShop:'board/period_shop',							//店铺看板(店铺期间数据)
 	targetFinish:'board/targetFinish',								//目标完成情况
-	boardFlow:'board/flow',											//流量看板（表格）
+	boardFlow:'board/flow',											//流量看板（店铺日数据）
+	boardPeriodFlow:'board/period_flow',							//流量看板（店铺期间数据）
 	ajaxllly:'Common/ajaxllly',										//流量来源列表
-	getDaymx:'board/daymx',											//访客流量来源（日）
-	getDayly:'board/dayly',											//访客流量明细（日）
+	getDaymx:'board/daymx',											//访客流量分布（日）
+	getDayly:'board/dayly',											//访客流量来源（日）
+	getWeekmx:'board/weekmx',										//访客流量分布（周）
 	getWeekly:'board/weekly',										//访客流量来源（周）
-	getWeekmx:'board/weekmx',										//访客流量明细（周）
+	getPeriodDaymx:'board/period_daymx',							//访客流量分布（日，店铺期间数据）
+	getPeriodDayly:'board/period_dayly',							//访客流量来源（日，店铺期间数据）
+	getPeriodWeekmx:'board/period_weekmx',							//访客流量分布（周，店铺期间数据）
+	getPeriodWeekly:'board/period_weekly',							//访客流量来源（周，店铺期间数据）
 	ajaxReportsJxrrq:'Common/ajaxreportsjxrrq',						//获取分析报告的写入日期
 	trialSetXjrq:'trial/setxjrq',									//设置下架日期（试销）
 	setXjrq:'replenish/setxjrq',									//设置下架日期（补货）
@@ -649,18 +655,26 @@ export default{
 	ksinfoDetail(params){
 		return http.get(path.ksinfoDetail, params)
 	},	
-	//店铺看板
+	//店铺看板（店铺日数据）
 	boardShop(params){
 		return http.get(path.boardShop, params)
-	},		
+	},	
+	//店铺看板（店铺期间数据）
+	boardPeriodShop(params){
+		return http.get(path.boardPeriodShop, params)
+	},	
 	//目标完成情况
 	targetFinish(params){
 		return http.get(path.targetFinish, params)
 	},	
-	//流量看板（表格）
+	//流量看板（店铺日数据）
 	boardFlow(params){
 		return http.get(path.boardFlow, params)
 	},		
+	//流量看板（店铺期间数据）
+	boardPeriodFlow(params){
+		return http.get(path.boardPeriodFlow, params)
+	},
 	//流量来源列表	
 	ajaxllly(params){
 		return http.get(path.ajaxllly, params)
@@ -680,6 +694,22 @@ export default{
 	//访客流量明细（周）
 	getWeekmx(params){
 		return http.get(path.getWeekmx, params)
+	},
+	//访客流量分布（日,店铺期间数据）	
+	getPeriodDaymx(params){
+		return http.get(path.getPeriodDaymx, params)
+	},
+	//访客流量来源（日,店铺期间数据）		
+	getPeriodDayly(params){
+		return http.get(path.getPeriodDayly, params)
+	},
+	//访客流量分布（周,店铺期间数据）
+	getPeriodWeekmx(params){
+		return http.get(path.getPeriodWeekmx, params)
+	},
+	//访客流量来源（周,店铺期间数据）
+	getPeriodWeekly(params){
+		return http.get(path.getPeriodWeekly, params)
 	},
 	//获取分析报告写入日期
 	ajaxReportsJxrrq(params){
