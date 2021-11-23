@@ -10,7 +10,7 @@
 		</el-form>
 		<div class="buts">
 			<el-checkbox true-label="1" false-label="0" v-model="is_self" @change="searchData">仅查看我创建的</el-checkbox>
-			<el-button type="primary" icon="el-icon-plus" size="small" @click="createForm" v-if="dataObj.button_list.add_form == 1">创建表单</el-button>
+			<el-button type="primary" icon="el-icon-plus" size="small" @click="createFormFun" v-if="dataObj.button_list.add_form == 1">创建表单</el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="form_name" label="表单名" align="center"></el-table-column>
@@ -50,7 +50,7 @@
 			</el-pagination>
 		</div>
 		<!-- 创建/编辑表单 -->
-		<el-dialog title="调价信息" @close="closeDialog" :close-on-click-modal="false" :visible.sync="formDialog">
+		<el-dialog :title="`${dialog_type == '1'?'创建':(dialog_type == '2'?'编辑':'复制')}表单`" @close="closeDialog" :close-on-click-modal="false" :visible.sync="formDialog">
 			<el-form size="small" class="demo-form-inline">
 				<el-form-item label="表单名称：">
 					<el-input style="width:220px" clearable v-model="form_name" placeholder="请输入表单名称"></el-input>
@@ -111,7 +111,7 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" size="small" @click="formDialog = false">取消</el-button>
+				<el-button size="small" @click="formDialog = false">取消</el-button>
 				<el-button type="primary" size="small" @click="dealFun">提交</el-button>
 			</div>
 		</el-dialog>
@@ -253,7 +253,7 @@
 				this.getData();
 			},
 			//点击创建表单
-			createForm(){
+			createFormFun(){
 				this.formDialog = true;
 				this.dialog_type = '1';
 			},
