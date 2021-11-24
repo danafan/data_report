@@ -14,6 +14,9 @@ let path = {
 	formtableDel:'formtable/del',			//删除数据
 	formtableClear:'formtable/clear',		//清空数据
 	formtableImport:'formtable/import',		//批量上传
+	formSend:'form/send',					//提醒未提交人
+	submitLog:'form/submit_log',			//我的提交（已提交）
+	submitData:'form/submit_data',			//提交记录对应的数据列表
 }						
 export default{
 	//表单列表接口
@@ -83,6 +86,18 @@ export default{
 	//批量上传
 	formtableImport(params){
 		return http.post(path.formtableImport, params)
+	},
+	//提醒未提交人
+	formSend(params){
+		return http.post(path.formSend, params)
+	},
+	//我的提交（已提交）
+	submitLog(params){
+		return http.get(path.submitLog, params)
+	},
+	//提交记录对应的数据列表
+	submitData(params){
+		return http.get(path.submitData, params)
 	},
 }
 

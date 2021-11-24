@@ -1,13 +1,8 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="名称：">
-				<el-input style="width:220px" clearable v-model="name" placeholder="请输入表单名或表单管理员名"></el-input>
-			</el-form-item>
-			<el-form-item>
-				<el-button type="primary" size="small" @click='searchData'>搜索</el-button>
-			</el-form-item>
-		</el-form>
+		<el-input placeholder="请输入表单名或表单管理员名" style="width:280px" size="small"  clearable v-model="name">
+			<el-button slot="append" size="small" icon="el-icon-search" @click="searchData"></el-button>
+		</el-input>
 		<div class="buts">
 			<el-checkbox true-label="1" false-label="0" v-model="is_self" @change="searchData">仅查看我创建的</el-checkbox>
 			<el-button type="primary" icon="el-icon-plus" size="small" @click="createFormFun" v-if="dataObj.button_list.add_form == 1">创建表单</el-button>
@@ -119,6 +114,7 @@
 </template>
 <style lang='less' scoped>
 .buts{
+	margin-top: 15px;
 	margin-bottom: 15px;
 	display: flex;
 	align-items: center;
@@ -175,7 +171,7 @@
 }
 </style>
 <script>
-	import resource from '../../api/formDataResource.js'
+	import resource from '../../../api/formDataResource.js'
 	import draggable from 'vuedraggable'
 	export default{
 		data(){

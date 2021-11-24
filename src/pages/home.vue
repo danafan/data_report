@@ -283,8 +283,8 @@
          	$route(n){
          		if(n.path != '/'){
          			this.show_welcome = false;
-         			if(n.path != '/data_management'){
-         				this.activeIndex = '/form_data';
+         			if(n.path == '/data_management' || n.path == '/commit_data'){
+         				this.activeIndex = '/data_fill';
          			}
          		};
          	}
@@ -395,8 +395,8 @@
 								this.show_welcome = false;
 							}
 							//数据填报-数据管理
-							if(this.$route.path == '/data_management'){
-								this.activeIndex = '/form_data';
+							if(this.$route.path == '/data_management' || this.$route.path == 'commit_data'){
+								this.activeIndex = '/data_fill';
 							}else{
 								this.activeIndex = `${this.$route.path}`;
 							}

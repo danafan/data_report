@@ -37,6 +37,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="品牌：" v-if="isShow('pp')">
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入品牌" :remote-method="ajaxPp" collapse-tags>
+					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="季节：" v-if="isShow('jj')">
 				<el-select v-model="select_jj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option label="春" value="春"></el-option>
@@ -231,6 +237,8 @@
 				select_gyshh_ids:[],						//选中的供应商货号
 				pl_list:[],									//品类列表
 				select_pl_ids:[],							//选中的品类列表
+				pp_list:[],									//品牌列表
+				select_pp_list:[],							//选中的品牌列表
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
 				select_jyhpxz_id:"",						//选中的建议货品性质
@@ -307,6 +315,11 @@
 				operator_list:[],							//操作人列表
 				select_operator_ids:[],						//选中的操作人列表
 				req_list:[{
+					name:'pp',
+					data_name:'select_pp_list',
+					is_arr:true,
+					tags:['5','6']
+				},{
 					name:'jj',
 					data_name:'select_jj_ids',
 					is_arr:true,
@@ -483,6 +496,10 @@
 				//采购决策列表
 				this.getCgjc();
 			}
+			if(this.page_type == '5' || this.page_type == '6'){
+				//获取品牌列表
+				this.ajaxPp();
+			}
 			if(this.page_type == '6' || this.page_type == '7'){
 				//买手列表
 				this.getMs();
@@ -586,6 +603,18 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//品牌列表
+			ajaxPp(e){
+				if(e != ''){
+					resource.ajaxPp({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.pp_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//款式编码
 			getKsbm(e){
@@ -735,6 +764,11 @@
 			},
 			//判断条件是否显示
 			isShow(type){
+				if(type == 'pp'){			//品牌
+					if(this.page_type == '5' || this.page_type == '6'){
+						return true;
+					}
+				}
 				if(type == 'jj'){			//季节
 					if(this.page_type == '6' || this.page_type == '7'){
 						return true;

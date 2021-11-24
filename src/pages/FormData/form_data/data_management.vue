@@ -1,5 +1,6 @@
 <template>
 	<div>
+		<el-button icon="el-icon-arrow-left" size="small" @click="$router.go(-1)">数据管理</el-button>
 		<!-- 进度管理 -->
 		<el-card v-if="!!headerObj.start_time">
 			<div class="title">进度管理</div>
@@ -47,12 +48,12 @@
 			</div>
 			<!-- 按钮部分 -->
 			<div style="margin-top: 15px">
-				<el-button-group>
+				<el-button-group v-if="tableObj.info.status != '0' && tableObj.info.user_type != '3'">
 					<el-button type="primary" plain icon="el-icon-delete" size="small" :disabled="multipleSelection.length == 0" @click="delData">删除</el-button>
 					<el-button type="primary" plain icon="el-icon-brush" size="small" @click="clearData">清空</el-button>
 				</el-button-group>
 				&nbsp
-				<el-button-group>
+				<el-button-group v-if="tableObj.info.status != '0' && tableObj.info.user_type != '3'">
 					<el-button type="primary" plain icon="el-icon-plus" size="small" @click="addData">添加</el-button>
 					<el-button type="primary" plain icon="el-icon-download" size="small" @click="allAddData">批量添加</el-button>
 				</el-button-group>
@@ -65,7 +66,7 @@
 				<div class="input_row" v-for="(i,index) in selected_filter_list">
 					<!-- 文本或数字 -->
 					<el-input :type="i.type" placeholder="请输入关键词搜索" size="small" style="width: 320px" v-model="i.value" class="input-with-select" v-if="i.type == 'text' || i.type == 'number'">
-						<el-select v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" placeholder="全部">
+						<el-select :ref="i.column_name" v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" @change="selectChange($event,i,index)">
 							<el-option v-for="item in filter_list" :key="item.column_name" :label="item.title" :value="item.column_name" :disabled="item.is_disabled">
 							</el-option>
 						</el-select>
@@ -73,7 +74,7 @@
 					</el-input>
 					<!-- 日期 -->
 					<div class="date_row" v-else>
-						<el-select v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" placeholder="全部">
+						<el-select :ref="i.column_name" v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" @change="selectChange($event,i,index)">
 							<el-option v-for="item in filter_list" :key="item.column_name" :label="item.title" :value="item.column_name" :disabled="item.is_disabled">
 							</el-option>
 						</el-select>
@@ -98,7 +99,7 @@
 			<el-table-column :prop="item.column_name" :label="item.title"v-for="item in tableObj.title_list"></el-table-column>
 			<el-table-column label="操作" align="center" width="120" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="editData(scope.row.id)">修改数据</el-button>
+					<el-button type="text" size="small" @click="editData(scope.row.id)" v-if="tableObj.info.status != '0' && tableObj.info.user_type != '3'">修改数据</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -110,7 +111,7 @@
 	<!-- 查看进度详情弹窗 -->
 	<el-dialog title="进度详情" width="700px" :visible.sync="detail_dialog">
 		<div class="detail_top">
-			<el-button type="info" plain size="small">提醒未提交人</el-button>
+			<el-button type="info" plain size="small" :disabled="detailObj.message_status == '0'" @click="send">提醒未提交人</el-button>
 			<el-input placeholder="输入填写人进行搜索" style="width: 240px" v-model="fill_name" size="small" class="input-with-select">
 				<el-button slot="append" icon="el-icon-search" @click="searchDetailList"></el-button>
 			</el-input>
@@ -134,43 +135,43 @@
 		<div class="data_dialog_desc">DRID（默认当天清空重写第二天更新）</div>
 		<div class="data_content">
 			<el-form size="small" >
-			<el-form-item :label="item.title" v-for="item in fields_list">
-				<el-input type="text" placeholder="请输入文字" size="small" v-model="item.value" v-if="item.type == 'text'" style="width: 280px">
-				</el-input>
-				<el-input type="number" placeholder="请输入数字" size="small" v-model="item.value" v-if="item.type == 'number'" style="width: 280px">
-				</el-input>
-				<el-date-picker v-model="item.value" value-format="yyyy-MM-dd" type="date" placeholder="请选择日期" v-if="item.type == 'date'" style="width: 280px">
-				</el-date-picker>
-		</el-form-item>
-	</el-form>
-	</div>
-	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="data_dialog = false">取消</el-button>
-		<el-button type="primary" size="small" @click="commitData">提交</el-button>
-	</div>
-</el-dialog>
+				<el-form-item :label="item.title" v-for="item in fields_list">
+					<el-input type="text" placeholder="请输入文字" size="small" v-model="item.value" v-if="item.type == 'text'" style="width: 280px">
+					</el-input>
+					<el-input type="number" placeholder="请输入数字" size="small" v-model="item.value" v-if="item.type == 'number'" style="width: 280px">
+					</el-input>
+					<el-date-picker v-model="item.value" value-format="yyyy-MM-dd" type="date" placeholder="请选择日期" v-if="item.type == 'date'" style="width: 280px">
+					</el-date-picker>
+				</el-form-item>
+			</el-form>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="data_dialog = false">取消</el-button>
+			<el-button type="primary" size="small" @click="commitData">提交</el-button>
+		</div>
+	</el-dialog>
 	<!-- 批量提交 -->
 	<el-dialog title="批量提交" :visible.sync="all_dialog">
 		<div>
 			<el-button type="primary" plain icon="el-icon-download" size="small" @click="downTemplate">下载Excel模版</el-button>
-				<div class="upload_box">
-					<!-- 未上传 -->
-					<div class="box_border" v-if="!files">
-						<div class="upload_ele">
-							<i class="el-icon-folder-opened" style="font-size: 32px"></i>
-							<div>点击上传文件</div>
-							<div>每次批量导入仅限100000行数据</div>
-						</div>
-						<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+			<div class="upload_box">
+				<!-- 未上传 -->
+				<div class="box_border" v-if="!files">
+					<div class="upload_ele">
+						<i class="el-icon-folder-opened" style="font-size: 32px"></i>
+						<div>点击上传文件</div>
+						<div>每次批量导入仅限100000行数据</div>
 					</div>
-					<!-- 已上传 -->
-					<div class="box_border" v-else>
-						<div style="display:flex;align-items: center">
-							<div>{{files.name}}</div>
-							<i class="el-icon-circle-close" style="margin-left: 10px" @click="files = null"></i>
-						</div>
+					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+				</div>
+				<!-- 已上传 -->
+				<div class="box_border" v-else>
+					<div style="display:flex;align-items: center">
+						<div>{{files.name}}</div>
+						<i class="el-icon-circle-close" style="margin-left: 10px" @click="files = null"></i>
 					</div>
 				</div>
+			</div>
 		</div>
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="all_dialog = false">取消</el-button>
@@ -284,6 +285,7 @@
 	margin-top: 30px;
 	padding:10px;
 	.box_border{
+		background:#ffffff;
 		position: relative;
 		border:1px dashed #606266;
 		border-radius: 5px;
@@ -312,9 +314,9 @@
 }
 </style>
 <script>
-	import resource from '../../api/formDataResource.js'
-	import UpLoadFile from '../../components/upload_file.vue'
-	import {exportUp} from '../../api/export.js'
+	import resource from '../../../api/formDataResource.js'
+	import UpLoadFile from '../../../components/upload_file.vue'
+	import {exportUp} from '../../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -415,8 +417,35 @@
 					}
 				})
 			},
+			//切换筛选项
+			selectChange(e,ie){
+			 	let old_column_name = this.$refs[ie.column_name][0].value;
+			 	let new_column_name = e;
+			 	for(var i = 0; i < this.filter_list.length; i++){
+					if(this.filter_list[i].column_name == old_column_name){
+						this.filter_list[i].is_disabled = false;
+					}
+					if(this.filter_list[i].column_name == new_column_name){
+						this.filter_list[i].is_disabled = true;
+					}
+					if(this.filter_list[i].column_name == ie.select_column_name){
+						let type = this.filter_list[i].type;
+						for (var j = 0; j < this.selected_filter_list.length; j++) {
+							if(this.selected_filter_list[j].select_column_name == ie.select_column_name){
+								this.selected_filter_list[j].type = type;
+							}
+						}
+					}
+				}
+			},
 			//删除筛选项
 			delFilter(index){
+				var select_column_name = this.selected_filter_list[index].select_column_name;
+				for(var i = 0; i < this.filter_list.length; i++){
+					if(this.filter_list[i].column_name == select_column_name){
+						this.filter_list[i].is_disabled = false;
+					}
+				}
 				this.selected_filter_list.splice(index,1);
 			},
 			//新增筛选项
@@ -430,13 +459,14 @@
 						var aj = this.selected_filter_list[j];
 						var select_column_name = aj.select_column_name;
 						if(select_column_name == column_name){
-							obj.is_disabled = true;
 							isExist = true;
 							break;
 						}
 					}
 					if(!isExist){
 						result.push(JSON.parse(JSON.stringify(obj)));
+					}else{
+						obj.is_disabled = true;
 					}
 				}
 				if(result.length > 0){
@@ -448,7 +478,7 @@
 						}
 					}
 				}else{
-					console.log('没有更多了')
+					this.$message.warning('没有更多了')
 				}
 			},
 			//获取列表数据
@@ -498,56 +528,56 @@
 			//点击删除
 			delData(){
 				this.$confirm('确认删除该数据?', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消',
-		          type: 'warning'
-		        }).then(() => {
-		          var ids = [];
-		          this.multipleSelection.map(item => {
-		          	ids.push(item.id);
-		          });
-		          let arg = {
-		          	form_id:this.form_id,
-		          	del_ids:ids.join(',')
-		          }
-		          resource.formtableDel(arg).then(res => {
-		          	if(res.data.code == 1){
-						this.$message.success(res.data.msg);
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					var ids = [];
+					this.multipleSelection.map(item => {
+						ids.push(item.id);
+					});
+					let arg = {
+						form_id:this.form_id,
+						del_ids:ids.join(',')
+					}
+					resource.formtableDel(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
 						//获取列表数据
 						this.getData();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
-		          })
-		        }).catch(() => {
-		          this.$message({
-		            type: 'info',
-		            message: '取消'
-		          });          
-		        });
+				})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
+				});
 			},
 			//点击清空
 			clearData(){
 				this.$confirm('确认清除所有数据?', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消',
-		          type: 'warning'
-		        }).then(() => {
-		          resource.formtableClear({form_id:this.form_id}).then(res => {
-		          	if(res.data.code == 1){
-						this.$message.success(res.data.msg);
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					resource.formtableClear({form_id:this.form_id}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
 						//获取列表数据
 						this.getData();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
-		          })
-		        }).catch(() => {
-		          this.$message({
-		            type: 'info',
-		            message: '取消'
-		          });          
-		        });
+				})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
+				});
 			},
 			//点击添加数据(get)
 			addData(){
@@ -620,17 +650,17 @@
 			//下载模版
 			downTemplate(){
 				this.$confirm('确认下载模版?', '提示', {
-		          confirmButtonText: '确定',
-		          cancelButtonText: '取消',
-		          type: 'warning'
-		        }).then(() => {
-		          window.open(this.tableObj.info.domain + this.tableObj.info.excel_url)
-		        }).catch(() => {
-		          this.$message({
-		            type: 'info',
-		            message: '取消'
-		          });          
-		        });
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					window.open(this.tableObj.info.domain + this.tableObj.info.excel_url)
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
+				});
 			},
 			//上传表格
 			uploadCsv(){
@@ -663,6 +693,16 @@
 			exportTable(){
 				exportUp(`formtable/export?form_id=${this.form_id}`);
 			},
+			//提醒未提交人
+			send(){
+				resource.formSend({form_id:this.form_id}).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
+			}
 		},
 		components:{
 			UpLoadFile

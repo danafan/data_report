@@ -188,6 +188,7 @@ let path = {
 	weatherData:'weather/list',										//全国天气数据分析图表接口
 	weatherTableList:'weather/tablelist',							//底部天气数据表格
 	ajaxCompany:'common/ajaxCompany',								//获取公司列表
+	ajaxPp:'common/ajaxPp',											//获取品牌列表
 
 }					
 export default{
@@ -970,6 +971,10 @@ export default{
 	//获取公司列表
 	ajaxCompany(params){
 		return http.get(path.ajaxCompany, params)
+	},
+	//获取品牌列表
+	ajaxPp(params){
+		return http.get(path.ajaxPp, params)
 	},
 }
 
