@@ -49,7 +49,7 @@ const router = new Router({
     { path: '/permssions_index',name:"权限管理", component: permssions_index},
     { path: '/role_user',name:"角色人员", component: role_user},
     { path: '/data_role_user',name:"数据权限人员", component: data_role_user},
-    { path: '/data_fill',name:"数据填报", component: data_fill},
+    { path: '/data_fill',name:"数据填报", component: data_fill,meta:{keepAlive:true}},
     { path: '/data_management',name:"数据管理", component: data_management},
     { path: '/commit_data',name:"表单数据", component: commit_data},
     ]

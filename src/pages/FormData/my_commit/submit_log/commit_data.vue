@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<el-button icon="el-icon-arrow-left" size="small" @click="$router.go(-1)">我的提交</el-button>
-		<div class="title">表单数据</div>
+		<el-button icon="el-icon-arrow-left" size="small" @click="$router.go(-1)">返回</el-button>
+		<div class="title">{{form_name}}</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column :prop="item.column_name" :label="item.title" align="center" v-for="item in dataObj.title_list"></el-table-column>
 		</el-table>
@@ -26,6 +26,7 @@
 			return{
 				log_id:"",
 				form_id:"",
+				form_name:"",
 				page:1,
 				pagesize:10,
 				dataObj:{}
@@ -34,6 +35,7 @@
 		created(){
 			this.log_id = this.$route.query.log_id;
 			this.form_id = this.$route.query.form_id;
+			this.form_name = this.$route.query.form_name;
 			this.submitData();
 		},
 		methods:{

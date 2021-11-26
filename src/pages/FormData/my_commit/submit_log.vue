@@ -6,7 +6,7 @@
 			<el-table-column prop="ding_user_name" label="表单创建者" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getLog(scope.row.log_id,scope.row.form_id)">查看记录</el-button>
+					<el-button type="text" size="small" @click="getLog(scope.row)">查看记录</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -73,8 +73,11 @@
 				})
 			},
 			//查看记录
-			getLog(log_id,form_id){
-				this.$router.push(`/commit_data?log_id=${log_id}&form_id=${form_id}`)
+			getLog(item){
+				let log_id = item.log_id;
+				let form_id = item.form_id;
+				let form_name = item.form_name;
+				this.$router.push(`/commit_data?log_id=${log_id}&form_id=${form_id}&form_name=${form_name}`)
 			}
 		}
 	}

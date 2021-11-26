@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="handleClick">
-			<el-tab-pane label="数据管理" lazy name="/form_data" class="tab_pane_box">
+			<el-tab-pane label="表单管理" lazy name="/form_data" class="tab_pane_box">
 				<FormData/>
 			</el-tab-pane>
 			<el-tab-pane label="我的提交" lazy name="/my_commit" class="tab_pane_box">

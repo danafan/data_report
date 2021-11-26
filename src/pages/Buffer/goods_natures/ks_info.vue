@@ -190,8 +190,7 @@
 		<div>
 			<div class="imgBox" v-if="filename_all == ''">
 				<div class="text">请选择上传文件</div>
-				<input type="file" ref="fileUploads" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn('2')" v-if="isMac">
-				<input type="file" ref="fileUploads" class="upload_file" accept="application/vnd.ms-excel" @change="uploadFn('2')" v-else/>
+				<input type="file" ref="fileUploads" class="upload_file" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn('2')">
 			</div>
 			<div class="file_name_box" v-else>
 				<div class="file_name">{{filename_all}}</div>
@@ -213,8 +212,7 @@
 		<div>
 			<div class="imgBox" v-if="filename_upload == ''">
 				<div class="text">请选择上传文件</div>
-				<input type="file" ref="fileUploadss" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn('3')" v-if="isMac">
-				<input type="file" ref="fileUploadss" class="upload_file" accept="application/vnd.ms-excel" @change="uploadFn('3')" v-else/>
+				<input type="file" ref="fileUploadss" class="upload_file" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn('3')">
 			</div>
 			<div class="file_name_box" v-else>
 				<div class="file_name">{{filename_upload}}</div>
@@ -363,7 +361,6 @@
 				showSearchAll:false,
 				filename_all:'',							//已上传的文件名
 				file_all:null,								//已上传的文件
-				isMac:true,									//判断系统
 				all_search:false,							//是否是批量查询
 				imageDialog:false,							//是否显示放大图片弹框
 				big_img_url:"",								//放大的图片地址

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-button icon="el-icon-arrow-left" size="small" @click="$router.go(-1)">数据管理</el-button>
+		<el-button icon="el-icon-arrow-left" size="small" @click="$router.go(-1)">返回</el-button>
 		<!-- 进度管理 -->
 		<el-card v-if="!!headerObj.start_time">
 			<div class="title">进度管理</div>
@@ -48,12 +48,12 @@
 			</div>
 			<!-- 按钮部分 -->
 			<div style="margin-top: 15px">
-				<el-button-group v-if="tableObj.info.status != '0' && tableObj.info.user_type != '3'">
+				<el-button-group v-if="tableObj.info.status == '1' || (tableObj.info.status == '0' && tableObj.info.user_type != '3')">
 					<el-button type="primary" plain icon="el-icon-delete" size="small" :disabled="multipleSelection.length == 0" @click="delData">删除</el-button>
 					<el-button type="primary" plain icon="el-icon-brush" size="small" @click="clearData">清空</el-button>
 				</el-button-group>
 				&nbsp
-				<el-button-group v-if="tableObj.info.status != '0' && tableObj.info.user_type != '3'">
+				<el-button-group v-if="tableObj.info.status == '1' || (tableObj.info.status == '0' && tableObj.info.user_type != '3')">
 					<el-button type="primary" plain icon="el-icon-plus" size="small" @click="addData">添加</el-button>
 					<el-button type="primary" plain icon="el-icon-download" size="small" @click="allAddData">批量添加</el-button>
 				</el-button-group>
@@ -132,7 +132,7 @@
 	</el-dialog>
 	<!-- 添加/编辑数据 -->
 	<el-dialog :title="data_dialog_type == '1'?'添加数据':'编辑数据'" width="700px" :visible.sync="data_dialog">
-		<div class="data_dialog_desc">DRID（默认当天清空重写第二天更新）</div>
+		<div class="data_dialog_desc">{{form_name}}</div>
 		<div class="data_content">
 			<el-form size="small" >
 				<el-form-item :label="item.title" v-for="item in fields_list">
@@ -151,7 +151,7 @@
 		</div>
 	</el-dialog>
 	<!-- 批量提交 -->
-	<el-dialog title="批量提交" :visible.sync="all_dialog">
+	<el-dialog title="批量提交" :visible.sync="all_dialog" :modal-append-to-body="false">
 		<div>
 			<el-button type="primary" plain icon="el-icon-download" size="small" @click="downTemplate">下载Excel模版</el-button>
 			<div class="upload_box">
@@ -160,9 +160,10 @@
 					<div class="upload_ele">
 						<i class="el-icon-folder-opened" style="font-size: 32px"></i>
 						<div>点击上传文件</div>
-						<div>每次批量导入仅限100000行数据</div>
+						<div>每次批量导入仅限10000行数据</div>
+						<div style="font-size: 12px;color: red" v-if="is">如不能选择xlsx/xls文件，请在浏览器打开新窗口选择</div>
 					</div>
-					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+					<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel" @change="uploadCsv">
 				</div>
 				<!-- 已上传 -->
 				<div class="box_border" v-else>
@@ -269,8 +270,13 @@
 	}
 }
 .data_dialog_desc{
+	background: #606266;
+	height: 38px;
+	line-height: 38px;
 	margin-bottom: 30px;
-	color: red;
+	color: #ffffff;
+	font-weight: bold;
+	padding-left: 15px;
 }
 .data_content{
 	max-height: 500px;
@@ -320,6 +326,7 @@
 	export default{
 		data(){
 			return{
+				form_name:"",
 				form_id:"",
 				headerObj:{},				//数据管理头部信息
 				detail_dialog:false,		//查看进度详情
@@ -343,19 +350,30 @@
 				id:"",						//点击的数据id
 				all_dialog:false,			//批量添加
 				files:null,					//上传的文件
+				is:false
 			}
 		},
 		created(){
 			let query = this.$route.query;
+			let form_name = this.$route.form_name;
 			this.form_id = query.id;
+			this.form_name = query.form_name;
 			//数据管理头部信息
 			this.formTableHearder();
 			//获取筛选条件
 			this.getFilter();
 			//获取列表数据
 			this.getData();
+			this.isMac()
 		},
 		methods:{
+			isMac() { 
+				let is_ding_talk = this.$store.state.is_ding_talk
+				let is_mac_os = /macintosh|mac os x/i.test(navigator.userAgent); 
+				if(is_ding_talk == true && is_mac_os == true){
+					this.is = true;
+				}
+			},
 			//数据管理头部信息
 			formTableHearder(){
 				resource.formTableHearder({form_id:this.form_id}).then(res => {
@@ -419,9 +437,9 @@
 			},
 			//切换筛选项
 			selectChange(e,ie){
-			 	let old_column_name = this.$refs[ie.column_name][0].value;
-			 	let new_column_name = e;
-			 	for(var i = 0; i < this.filter_list.length; i++){
+				let old_column_name = this.$refs[ie.column_name][0].value;
+				let new_column_name = e;
+				for(var i = 0; i < this.filter_list.length; i++){
 					if(this.filter_list[i].column_name == old_column_name){
 						this.filter_list[i].is_disabled = false;
 					}
@@ -675,11 +693,18 @@
 					this.$message.warning('请先上传文件!');
 					return;
 				}
+				const loading = this.$loading({
+					lock: true,
+					text: '拼命加载中...',
+					background: 'rgba(255, 255, 255, 0.6)',
+					spinner: 'el-icon-loading'
+				});
 				let arg = {
 					form_id:this.form_id,
 					file:this.files
 				}
 				resource.formtableImport(arg).then(res => {
+					loading.close();
 					if(res.data.code == 1){
 						this.all_dialog = false;
 						this.page = 1;

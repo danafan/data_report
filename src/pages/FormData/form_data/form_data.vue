@@ -24,7 +24,7 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="$router.push(`/data_management?id=${scope.row.id}`)">数据管理</el-button>
+					<el-button type="text" size="small" @click="$router.push(`/data_management?id=${scope.row.id}&form_name=${scope.row.form_name}`)">数据管理</el-button>
 					<el-tooltip class="item" effect="dark" placement="bottom-start">
 						<div slot="content">
 							<div>
@@ -48,7 +48,7 @@
 		<el-dialog :title="`${dialog_type == '1'?'创建':(dialog_type == '2'?'编辑':'复制')}表单`" @close="closeDialog" :close-on-click-modal="false" :visible.sync="formDialog">
 			<el-form size="small" class="demo-form-inline">
 				<el-form-item label="表单名称：">
-					<el-input style="width:220px" clearable v-model="form_name" placeholder="请输入表单名称"></el-input>
+					<el-input style="width:220px" clearable v-model="form_name" placeholder="请输入表单名称" :disabled="dialog_type == '2'"></el-input>
 				</el-form-item>
 				<el-form-item label="数据库对应表名称：">
 					<el-input style="width:220px" clearable v-model="table_name" placeholder="请输入数据库对应表名称"></el-input>
@@ -85,7 +85,7 @@
 												<el-input v-model="item.title" placeholder="字段名称"></el-input>
 											</div>
 											<div class="type">类型：
-												<el-select v-model="item.type" :popper-append-to-body="false">
+												<el-select v-model="item.type" :popper-append-to-body="false" :disabled="item.is_old">
 													<el-option v-for="i in type_list" :key="i.type" :label="i.name" :value="i.type">
 													</el-option>
 												</el-select>
@@ -211,8 +211,6 @@
 		created(){
 			//获取列表
 			this.getData();
-			//获取钉钉用户列表
-			this.ajaxUser();
 		},
 		methods:{
 			//搜索
@@ -252,19 +250,53 @@
 			createFormFun(){
 				this.formDialog = true;
 				this.dialog_type = '1';
+				//获取钉钉用户列表
+				this.ajaxUser();
 			},
 			//点击编辑表单
 			editForm(id,type){
 				this.dialog_type = type;
 				this.form_id = id;
+				resource.ajaxUser().then(res => {
+					if(res.data.code == 1){
+						this.user_data = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				}).then(() => {
+					//获取表单详情
+					this.getFormDetail(id);
+				});
+			},
+			//获取表单详情
+			getFormDetail(id){
 				resource.formEditGet({form_id:id}).then(res => {
 					if(res.data.code == 1){
 						let data = res.data.data;
 						this.form_name = data.form_name;
 						this.table_name = data.form_table_name;
-						this.selected_users = data.selected_users;
-						this.selected_admins = data.selected_admins;
-						this.structure_list = data.fields;
+						this.status = data.status;
+						let selected_users = data.selected_users;
+						selected_users.map(item => {
+							this.user_data.map(i => {
+								if(item == i.ding_user_id){
+									this.selected_users.push(item);
+								}
+							})
+						})
+						let selected_admins = data.selected_admins;
+						selected_admins.map(item => {
+							this.user_data.map(i => {
+								if(item == i.ding_user_id){
+									this.selected_admins.push(item);
+								}
+							})
+						})
+						let structure_list = data.fields;
+						structure_list.map(item => {
+							item.is_old = true;
+						});
+						this.structure_list = structure_list;
 						this.formDialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
