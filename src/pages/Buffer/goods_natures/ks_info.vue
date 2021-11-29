@@ -167,8 +167,7 @@
 		<div>
 			<div class="imgBox" v-if="filename == ''">
 				<div class="text">请选择上传文件</div>
-				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn('1')" v-if="isMac">
-				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.ms-excel" @change="uploadFn('1')" v-else/>
+				<input type="file" ref="fileUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn('1')">
 			</div>
 			<div class="file_name_box" v-else>
 				<div class="file_name">{{filename}}</div>

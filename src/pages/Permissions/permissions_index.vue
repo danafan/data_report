@@ -7,6 +7,7 @@
 				<DataPermssion v-if="item.web_url == 'data_permssion'"/>
 				<Management v-if="item.web_url == 'management'"/>
 				<AuditSetting v-if="item.web_url == 'audit_setting'"/>
+				<SPermssionSetting v-if="item.web_url == 's_permssion_setting'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -22,6 +23,7 @@
 	import DataPermssion from './PermissionTabs/data_permssion.vue'
 	import Management from './PermissionTabs/management.vue'
 	import AuditSetting from './PermissionTabs/audit_setting.vue'
+	import SPermssionSetting from './PermissionTabs/s_permssion_setting.vue'
 	export default{
 		data(){
 			return{
@@ -64,7 +66,8 @@
 			AccessPermssion,
 			DataPermssion,
 			Management,
-			AuditSetting
+			AuditSetting,
+			SPermssionSetting
 		}
 	}
 </script>

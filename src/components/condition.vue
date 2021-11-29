@@ -49,6 +49,7 @@
 					<el-option label="夏" value="夏"></el-option>
 					<el-option label="秋" value="秋"></el-option>
 					<el-option label="冬" value="冬"></el-option>
+					<el-option label="四季" value="四季"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="预警值：" v-if="isShow('yjz')">

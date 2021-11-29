@@ -48,10 +48,10 @@
 		<el-dialog :title="`${dialog_type == '1'?'创建':(dialog_type == '2'?'编辑':'复制')}表单`" @close="closeDialog" :close-on-click-modal="false" :visible.sync="formDialog">
 			<el-form size="small" class="demo-form-inline">
 				<el-form-item label="表单名称：">
-					<el-input style="width:220px" clearable v-model="form_name" placeholder="请输入表单名称" :disabled="dialog_type == '2'"></el-input>
+					<el-input style="width:220px" clearable v-model="form_name" placeholder="请输入表单名称"></el-input>
 				</el-form-item>
 				<el-form-item label="数据库对应表名称：">
-					<el-input style="width:220px" clearable v-model="table_name" placeholder="请输入数据库对应表名称"></el-input>
+					<el-input style="width:220px" clearable v-model="table_name" placeholder="请输入数据库对应表名称" :disabled="dialog_type == '2'"></el-input>
 				</el-form-item>
 				<el-form-item label="数据填报人：" v-if="dialog_type != '3'">
 					<el-select v-model="selected_users" clearable :popper-append-to-body="false" multiple filterable placeholder="选择数据填报人" style="width:280px">
@@ -305,7 +305,7 @@
 			},
 			//获取钉钉用户列表
 			ajaxUser(){
-				resource.ajaxUser().then(res => {
+				resource.ajaxUser({form:'14'}).then(res => {
 					if(res.data.code == 1){
 						this.user_data = res.data.data;
 					}else{
@@ -346,14 +346,24 @@
 				if(this.form_name == ""){
 					this.$message.warning('请输入表单名称');
 					return;
+				}else if(this.form_name.indexOf('_') > 1){
+					this.$message.warning('表单名称不能包含下划线');
+					return;
 				}else if(this.table_name == ""){
 					this.$message.warning('请输入数据库对应表名称');
+					return;
+				}else if(this.table_name.indexOf('_') > 1){
+					this.$message.warning('数据库对应表名称不能包含下划线');
 					return;
 				}
 				//判断是否有未填写的字段名
 				for(let i = 0;i < this.structure_list.length;i ++){
 					if(this.structure_list[i].title == ""){
 						this.$message.warning('表结构有未完成信息！');
+						return;
+					}
+					if(this.structure_list[i].title.indexOf('_') > 1){
+						this.$message.warning('表结构标题不能包含下划线！');
 						return;
 					}
 				}

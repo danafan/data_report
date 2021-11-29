@@ -41,7 +41,7 @@
 			</div>
 		</el-card>
 		<!-- 表单数据 -->
-		<el-card style="margin-top: 15px;height: 1001px;">
+		<el-card style="margin-top: 15px">
 			<div class="form_data_title">
 				<div class="title">表单数据</div>
 				<div class="desc form_desc">（全部数据：{{tableObj.info.total_num}}条，今日提交数据：{{tableObj.info.today_num}}条）</div>
@@ -66,7 +66,7 @@
 				<div class="input_row" v-for="(i,index) in selected_filter_list">
 					<!-- 文本或数字 -->
 					<el-input :type="i.type" placeholder="请输入关键词搜索" size="small" style="width: 320px" v-model="i.value" class="input-with-select" v-if="i.type == 'text' || i.type == 'number'">
-						<el-select :ref="i.column_name" v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" @change="selectChange($event,i,index)">
+						<el-select v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" @change="selectChange">
 							<el-option v-for="item in filter_list" :key="item.column_name" :label="item.title" :value="item.column_name" :disabled="item.is_disabled">
 							</el-option>
 						</el-select>
@@ -74,7 +74,7 @@
 					</el-input>
 					<!-- 日期 -->
 					<div class="date_row" v-else>
-						<el-select :ref="i.column_name" v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" @change="selectChange($event,i,index)">
+						<el-select v-model="i.select_column_name" size="small" style="width: 120px" slot="prepend" :popper-append-to-body="false" @change="selectChange">
 							<el-option v-for="item in filter_list" :key="item.column_name" :label="item.title" :value="item.column_name" :disabled="item.is_disabled">
 							</el-option>
 						</el-select>
@@ -436,22 +436,18 @@
 				})
 			},
 			//切换筛选项
-			selectChange(e,ie){
-				let old_column_name = this.$refs[ie.column_name][0].value;
-				let new_column_name = e;
+			selectChange(){
 				for(var i = 0; i < this.filter_list.length; i++){
-					if(this.filter_list[i].column_name == old_column_name){
-						this.filter_list[i].is_disabled = false;
-					}
-					if(this.filter_list[i].column_name == new_column_name){
-						this.filter_list[i].is_disabled = true;
-					}
-					if(this.filter_list[i].column_name == ie.select_column_name){
-						let type = this.filter_list[i].type;
-						for (var j = 0; j < this.selected_filter_list.length; j++) {
-							if(this.selected_filter_list[j].select_column_name == ie.select_column_name){
-								this.selected_filter_list[j].type = type;
-							}
+					var column_name = this.filter_list[i].column_name;
+					for(var j = 0; j < this.selected_filter_list.length; j++){
+						var select_column_name = this.selected_filter_list[j].select_column_name;
+						if(select_column_name == column_name){
+							this.filter_list[i].is_disabled = true;
+							this.selected_filter_list[j].type = this.filter_list[i].type;
+							this.selected_filter_list[j].value = '';
+							break;
+						}else{
+							this.filter_list[i].is_disabled = false;
 						}
 					}
 				}
@@ -514,10 +510,10 @@
 				}
 				this.selected_filter_list.map(item => {
 					if(item.type != 'date' && item.value != ""){	
-						arg[item.column_name] = item.value;
+						arg[item.select_column_name] = item.value;
 					}
 					if(item.type == 'date' && item.value != '' && !!item.value){
-						arg[item.column_name] = item.value[0] + '_' + item.value[1];
+						arg[item.select_column_name] = item.value[0] + '_' + item.value[1];
 					}
 				})
 				resource.formTableList(arg).then(res => {
@@ -630,35 +626,43 @@
 			//添加提交
 			commitData(){
 				var arg = {form_id:this.form_id};
+				var is_next = true;
 				this.fields_list.map(item => {
-					if(!!item.value){
+					if(item.value == null || item.value == ''){
+						this.$message.warning(`请填写${item.title}`);
+						is_next = false;
+						return;
+					}else{
 						arg[item.column_name] = item.value;
 					}
 				})
-				if(this.data_dialog_type == '1'){	//创建
-					resource.formTableAddPost(arg).then(res => {
-						if(res.data.code == 1){
-							this.$message.success(res.data.msg);
-							//获取列表数据
-							this.getData();
-							this.data_dialog = false;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{	//修改
-					arg.id = this.id;
-					resource.formtableEditPost(arg).then(res => {
-						if(res.data.code == 1){
-							this.$message.success(res.data.msg);
-							//获取列表数据
-							this.getData();
-							this.data_dialog = false;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
+				if(!!is_next){
+					if(is_next && this.data_dialog_type == '1'){	//创建
+						resource.formTableAddPost(arg).then(res => {
+							if(res.data.code == 1){
+								this.$message.success(res.data.msg);
+								//获取列表数据
+								this.getData();
+								this.data_dialog = false;
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+					}else{	//修改
+						arg.id = this.id;
+						resource.formtableEditPost(arg).then(res => {
+							if(res.data.code == 1){
+								this.$message.success(res.data.msg);
+								//获取列表数据
+								this.getData();
+								this.data_dialog = false;
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+					}
 				}
+
 			},
 			//点击批量添加
 			allAddData(){

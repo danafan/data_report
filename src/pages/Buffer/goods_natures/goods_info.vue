@@ -119,8 +119,7 @@
 		<div>
 			<div class="imgBox" v-if="filename == ''">
 				<div class="text">请选择上传文件</div>
-				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn" v-if="isMac">
-				<input type="file" ref="fileUpload" class="upload_file" accept="application/vnd.ms-excel" @change="uploadFn" v-else/>
+				<input type="file" ref="fileUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn">
 			</div>
 			<div class="file_name_box" v-else>
 				<div class="file_name">{{filename}}</div>
@@ -248,7 +247,6 @@ center>
 				detail_page_size:10,
 				showSearch:false,							//批量查询弹框是否显示
 				filename:'',								//已上传的文件名
-				isMac:true,									//判断系统
 				all_search:false,							//是否是批量查询
 				imageDialog:false,							//是否显示放大图片弹框
 				big_img_url:"",								//放大的图片地址
@@ -260,20 +258,6 @@ center>
 			this.getList();
 		},
 		methods:{
-			//判断mac还是windows
-			// OSnow(){
-			// 	var agent = navigator.userAgent.toLowerCase();
-			// 	var isMac = /macintosh|mac os x/i.test(navigator.userAgent);
-			// 	if (agent.indexOf("win32") >= 0 || agent.indexOf("wow32") >= 0) {
-			// 		this.isMac = false;
-			// 	}
-			// 	if (agent.indexOf("win64") >= 0 || agent.indexOf("wow64") >= 0) {
-			// 		this.isMac = false;
-			// 	}
-			// 	if(isMac){
-			// 		this.isMac = true;
-			// 	}
-			// },
 			//放大图片
 			bigImg(big_img_url){
 				this.imageDialog = true;
