@@ -189,6 +189,7 @@ let path = {
 	weatherTableList:'weather/tablelist',							//底部天气数据表格
 	ajaxCompany:'common/ajaxCompany',								//获取公司列表
 	ajaxPp:'common/ajaxPp',											//获取品牌列表
+	specialSetting:'buffer/specialSetting',							//特殊权限设置
 
 }					
 export default{
@@ -975,6 +976,14 @@ export default{
 	//获取品牌列表
 	ajaxPp(params){
 		return http.get(path.ajaxPp, params)
+	},
+	//特殊权限设置（get）
+	specialSettingGet(params){
+		return http.get(path.specialSetting, params)
+	},
+	//特殊权限设置（post）
+	specialSettingPost(params){
+		return http.post(path.specialSetting, params)
 	},
 }
 

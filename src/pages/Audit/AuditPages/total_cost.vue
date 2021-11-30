@@ -19,6 +19,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="">
+				<el-select v-model="from" :popper-append-to-body="false" placeholder="全部">
+					<el-option v-for="item in from_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item v-if="user_type != '4'">
 				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
 			</el-form-item>
@@ -159,6 +165,14 @@
 				select_gyshh_ids:[],	//选中的供应商款号
 				gys_list:[],			//所有供应商列表
 				select_gys_ids:[],		//选中的供应商列表
+				from_list:[{
+					id:'1',
+					name:'德儿'
+				},{
+					id:'2',
+					name:'乎达'
+				}],						//所有的平台
+				from:'1',				//选中的平台
 				is_zero_batch:false,	//是否零批发价
 				dataObj:{},				//返回数据
 				replaceDialog:false,	//替换供应商弹框
@@ -250,6 +264,7 @@
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					supplier:this.select_gys_ids.join(','),
 					is_zero_batch:!this.is_zero_batch?0:1,
+					from:this.from,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -375,7 +390,7 @@
 			uploadCsv(){
 				if (this.$refs.csvUpload.files.length > 0) {
 					let files = this.$refs.csvUpload.files;
-					resource.importGoods({file:files[0]}).then(res => {
+					resource.importGoods({file:files[0],from:this.from}).then(res => {
 						this.$refs.csvUpload.value = null;
 						if(res.data.code == 1){
 							this.$message.success(res.data.msg);
@@ -397,7 +412,8 @@
 					var arr = [];
 					let arg = {
 						start_date:this.export_date && this.export_date.length> 0?this.export_date[0]:"",
-						end_date:this.export_date && this.export_date.length> 0?this.export_date[1]:""
+						end_date:this.export_date && this.export_date.length> 0?this.export_date[1]:"",
+						from:this.from
 					}
 					for(var item in arg){
 						let str = item + '=' + arg[item];

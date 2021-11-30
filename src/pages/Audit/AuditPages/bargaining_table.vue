@@ -13,6 +13,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="">
+				<el-select v-model="from" :popper-append-to-body="false" placeholder="全部">
+					<el-option v-for="item in from_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-checkbox v-model="is_off_shelf">已下架</el-checkbox>
 			</el-form-item>
@@ -190,6 +196,14 @@
 				select_ksbm_ids:[],		//选中的款式编码
 				gyshh_list:[],			//所有供应商款号
 				select_gyshh_ids:[],	//选中的供应商款号
+				from_list:[{
+					id:'1',
+					name:'德儿'
+				},{
+					id:'2',
+					name:'乎达'
+				}],						//所有的平台
+				from:'1',				//选中的平台
 				is_off_shelf:false,		//是否已下架
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框
@@ -254,6 +268,7 @@
 					ksbm:this.select_ksbm_ids.join(','),
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					is_off_shelf:this.is_off_shelf?'1':'0',
+					from:this.from,
 					page:this.page,
 					pagesize:this.pagesize
 				}

@@ -39,6 +39,16 @@ export function lastMonthDate(){
 	return formatDate(currentDate); 
 }
 
+//获得某天以前的日期
+export function lastXDate(x){
+	let num = x*24;
+	var dayx = new Date();
+	dayx.setTime(dayx.getTime()-num*60*60*1000);
+	var currentDate = new Date(dayx);
+	return formatDate(currentDate); 
+}
+
+
 //获得前某月的开始日期 
 export function getLastMonthStartDate(month_num){ 
 	var lastMonthStartDate = new Date(nowYear, nowMonth - month_num, 1); 

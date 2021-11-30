@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="handleClick">
-			<el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box">
+			<el-tab-pane label="成本表" lazy name="/total_cost" class="tab_pane_box">
 				<ToastCost v-if="activeTab == '/total_cost'"/>
 			</el-tab-pane>
 			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
@@ -21,6 +21,9 @@
 			</el-tab-pane>
 			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box" v-if="user_type == '1'">
 				<OperationalTable v-if="activeTab == '/operational_table'"/>
+			</el-tab-pane>
+			<el-tab-pane label="数据分析表" lazy name="/aduit_data_analysis" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+				<AduitDataAnalysis v-if="activeTab == '/aduit_data_analysis'"/>
 			</el-tab-pane>
 
 			<!-- <el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box">
@@ -60,6 +63,7 @@
 	import BargainingTable from './AuditPages/bargaining_table.vue'
 	import OperationalTable from './AuditPages/operational_table.vue'
 	import Timeout from './AuditPages/timeout.vue'
+	import AduitDataAnalysis from './AuditPages/aduit_data_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -89,7 +93,8 @@
 			PricingTable,
 			BargainingTable,
 			OperationalTable,
-			Timeout
+			Timeout,
+			AduitDataAnalysis
 		}
 	}
 </script>

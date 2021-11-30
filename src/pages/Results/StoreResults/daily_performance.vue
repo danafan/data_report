@@ -237,6 +237,7 @@
 				show_null:false,					//默认不显示空提示
 				default_data_list:[],				//表格数据（备用）
 				view_table_list:[],					//折线图列表
+				company_list:[],					//公司列表
 				show_custom:false,
 				button_list:{},
 				company:['德儿'],							//选中的公司

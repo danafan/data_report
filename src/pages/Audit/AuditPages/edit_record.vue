@@ -13,6 +13,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="">
+				<el-select v-model="from" :popper-append-to-body="false" placeholder="全部">
+					<el-option v-for="item in from_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
@@ -225,6 +231,14 @@
 					id:'7',
 					name:'上架'
 				}],					//状态列表
+				from_list:[{
+					id:'1',
+					name:'德儿'
+				},{
+					id:'2',
+					name:'乎达'
+				}],						//所有的平台
+				from:'1',				//选中的平台
 				dataObj:{},				//返回数据
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
@@ -259,6 +273,7 @@
 			getData(){
 				let arg = {
 					ksbm:this.select_ksbm_ids.join(','),
+					from:this.from,
 					status:this.status,
 					page:this.page,
 					pagesize:this.pagesize

@@ -305,7 +305,7 @@
 			},
 			//获取钉钉用户列表
 			ajaxUser(){
-				resource.ajaxUser({form:'14'}).then(res => {
+				resource.ajaxUser({from:'14'}).then(res => {
 					if(res.data.code == 1){
 						this.user_data = res.data.data;
 					}else{

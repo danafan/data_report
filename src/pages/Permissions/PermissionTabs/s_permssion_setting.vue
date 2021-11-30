@@ -2,8 +2,8 @@
 	<div>
 		<el-form size="small" class="demo-form-inline">
 			<el-form-item label="财务部">
-				<el-select v-model="finance_list.selected" clearable multiple filterable reserve-keyword placeholder="请选择" collapse-tags>
-					<el-option v-for="i in finance_list.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
+				<el-select v-model="special_list" clearable multiple filterable reserve-keyword placeholder="请选择">
+					<el-option v-for="i in user_data" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -15,66 +15,60 @@
 
 </style>
 <script>
-	import resource from '../../../api/auditResource.js'
+	import form_data_resource from '../../../api/formDataResource.js'
+	import resource from '../../../api/resource.js'
 	export default{
 		data(){
 			return{
-				finance_list:{},	//财务权限
-				list:[],			//审计权限
+				user_data:[],		//钉钉用户列表
+				special_list:[],	//选中的权限列表
 			}
 		},
 		created(){
-			this.getInfo();
+			//获取钉钉用户列表
+			this.ajaxUser();
 		},
 		methods:{
 			//获取钉钉用户列表
 			ajaxUser(){
-				resource.ajaxUser({form:'14'}).then(res => {
+				form_data_resource.ajaxUser().then(res => {
 					if(res.data.code == 1){
 						this.user_data = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
+				}).then(() => {
+					//获取详情
+					this.specialSettingGet();
 				});
 			},
 			//获取详情
-			getInfo(){
-				resource.auditGetSetting().then(res => {
+			specialSettingGet(){
+				resource.specialSettingGet().then(res => {
 					if(res.data.code == 1){
-						this.finance_list = res.data.data.finance_list;
-						this.list = res.data.data.list;
+						this.special_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
-			//提交
+			//保存
 			save(){
 				this.$confirm('确认保存?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					var dept_users_arr = [];
-					this.list.map(item => {
-						if(item.selected.length > 0){
-							let dept_user = item.dept_id + '-' + item.selected.join('_');
-							dept_users_arr.push(dept_user);
-						}
-					});
-					let arg = {
-						dept_users:	dept_users_arr.join(','),
-						finance_users:this.finance_list.selected
-					};
-					resource.auditPostSetting(arg).then(res => {
+					let req = {
+						buffer_manager:this.special_list.join(',')
+					}
+					resource.specialSettingPost(req).then(res => {
 						if(res.data.code == 1){
 							this.$message.success(res.data.msg);
-						//获取详情
-						this.getInfo();
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				});
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					});
 				}).catch(() => {
 					this.$message({
 						type: 'info',
@@ -82,6 +76,7 @@
 					});          
 				});
 			}
+
 		}
 	}
 </script>

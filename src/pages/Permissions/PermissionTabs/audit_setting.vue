@@ -1,14 +1,14 @@
 <template>
-	<div>
+	<div class="aduit_box">
 		<el-form size="small" class="demo-form-inline">
 			<el-form-item label="财务部">
-				<el-select v-model="finance_list.selected" clearable multiple filterable reserve-keyword placeholder="请选择" collapse-tags>
+				<el-select v-model="finance_list.selected" clearable multiple filterable reserve-keyword placeholder="请选择">
 					<el-option v-for="i in finance_list.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item :label="item.dept_name" v-for="item in list">
-				<el-select v-model="item.selected" clearable multiple filterable reserve-keyword placeholder="请选择" collapse-tags>
+				<el-select v-model="item.selected" clearable multiple filterable reserve-keyword placeholder="请选择">
 					<el-option v-for="i in item.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
 					</el-option>
 				</el-select>
@@ -18,7 +18,10 @@
 	</div>
 </template>
 <style lang="less" scoped>
-
+.aduit_box{
+	max-height: 750px;
+	overflow-y: scroll;
+}
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
