@@ -83,7 +83,7 @@
 			</el-pagination>
 		</div>
 		<!-- 替换弹框 -->
-		<el-dialog title="替换供应商" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="replaceDialog">
+		<el-dialog :title="`【${this.from =='1'?'德儿':'乎达'}】替换供应商`" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="replaceDialog">
 			<div class="dialog_row">
 				<el-select v-model="old_gys" size="small" clearable :popper-append-to-body="false" filterable remote placeholder="搜索原供应商" :remote-method="getGys">
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
@@ -342,7 +342,8 @@
 				}else{
 					let arg = {
 						old_supplier:this.old_gys,
-						new_supplier:this.new_gys
+						new_supplier:this.new_gys,
+						from:this.from
 					}
 					resource.editSupplier(arg).then(res => {
 						if(res.data.code == 1){

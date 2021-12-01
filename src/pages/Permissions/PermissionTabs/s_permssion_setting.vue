@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-form size="small" class="demo-form-inline">
-			<el-form-item label="财务部">
+			<el-form-item label="缓冲机制-所有部门数据权限">
 				<el-select v-model="special_list" clearable multiple filterable reserve-keyword placeholder="请选择">
 					<el-option v-for="i in user_data" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
 					</el-option>
