@@ -51,7 +51,7 @@
 			//产品编码
 			ajaxKsbm(e){
 				if(e != ''){
-					resource.ajaxKsbm({name:e}).then(res => {
+					resource.ajaxKsbm({name:e,from:16}).then(res => {
 						if(res.data.code == 1){
 							this.ks_list = res.data.data;
 						}else{

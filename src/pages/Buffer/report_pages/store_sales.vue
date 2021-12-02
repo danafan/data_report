@@ -89,7 +89,7 @@
 			},
 			//店铺列表
 			getStoreList(){
-				resource.ajaxViewStore().then(res => {
+				resource.ajaxViewStore({from:1}).then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
 					}else{

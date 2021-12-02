@@ -144,7 +144,7 @@
 							this.lcb_axisChart.dispose();
 						}
 						this.lcb_axisChart = echarts.init(lcb_axis);
-						this.lcb_axisChart.setOption(this.axisOption('零成本',dept_list,no_zero_list,day_list));
+						this.lcb_axisChart.setOption(this.axisOption('零成本',dept_list,zero_list,day_list));
 
 
 						window.addEventListener('resize',() => {

@@ -551,7 +551,7 @@
 		methods:{
 			//部门列表
 			getDept(){
-				resource.ajaxViewDept({from:this.page_type}).then(res => {
+				resource.ajaxViewDept({from:1}).then(res => {
 					if(res.data.code == 1){
 						this.dept_list = res.data.data;
 					}else{
@@ -563,7 +563,7 @@
 			getStore(){
 				this.select_store_ids = [];
 				let dept_id = this.select_dept_ids.join(',');
-				resource.ajaxViewStore({dept_id:dept_id,from:this.page_type}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{

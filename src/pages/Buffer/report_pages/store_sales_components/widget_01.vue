@@ -95,7 +95,7 @@
 			//产品编码
 			ajaxKsbm(e){
 				if(e != ''){
-					resource.ajaxKsbm({name:e}).then(res => {
+					resource.ajaxKsbm({name:e,from:16}).then(res => {
 						if(res.data.code == 1){
 							this.ks_list = res.data.data;
 						}else{
@@ -107,7 +107,7 @@
 			//供应商列表
 			ajaxGys(e){
 				if(e != ''){
-					resource.ajaxGys({name:e}).then(res => {
+					resource.ajaxGys({name:e,from:16}).then(res => {
 						if(res.data.code == 1){
 							this.gys_list = res.data.data;
 						}else{
@@ -119,7 +119,7 @@
 			//供应商货号
 			ajaxGyshh(e){
 				if(e != ''){
-					resource.ajaxGyshh({name:e}).then(res => {
+					resource.ajaxGyshh({name:e,from:16}).then(res => {
 						if(res.data.code == 1){
 							this.gyshh_list = res.data.data;
 						}else{
