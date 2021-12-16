@@ -7,7 +7,7 @@ export function middleWare(params,type) {
 
   for(let k in params){
     if(typeof(params[k])=='string' && params[k] != ""){
-      params[k] = params[k].toString().replace(/\s+/g,"");
+      params[k] = params[k].toString().replace(/(^\s*)|(\s*$)/g,"");
     }
   }
 
@@ -51,14 +51,14 @@ export function middleWare(params,type) {
     secret_key:secret_key,
     timestamp:((new Date()).getTime()/1000).toString().split('.')[0]
   }
-  var Base64 = require('js-base64').Base64;
+  var Base64 = require('js-base64').Base64; 
   var token_obj = {...token_target,...{sign:sign}};
   var token = Base64.encode(JSON.stringify(token_obj));
   
   //组织参数
   var req = {...params,...{sign:sign,token:token}};
-  // var req = {...params,...{sign:sign,admin_id:'15619443646473471',token:token}};   //审计
-  // var req = {...params,...{sign:sign,admin_id:'16079081946334179',token:token}};   //运营
+  // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}};   //审计
+  // var req = {...params,...{sign:sign,admin_id:'16242415743283525',token:token}};   //运营
   // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};   //普通
   
   var get_arr = [];

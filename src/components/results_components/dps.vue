@@ -2,10 +2,13 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="项目部:" style="margin-right: 20px">
-				<el-select v-model="select_department_ids" :popper-append-to-body="false" @change="getStoreList" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
+				<el-cascader
+				ref="cascader"
+				:options="dept_list"
+				:props="props"
+				@change="getIds"
+				filterable
+				clearable></el-cascader>
 			</el-form-item>
 			<el-form-item label="平台:">
 				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStoreList" multiple filterable collapse-tags placeholder="全部">
@@ -38,6 +41,12 @@
 				store_list: [],						//店铺列表	
 				select_store_ids:[],				//选中的店铺id列表
 				store_name:"",						//输入的店铺名称
+				props:{
+					multiple:true,
+					value:'dept_id',
+					label:'dept_name',
+					children:'list',
+				}
 			}
 		},
 		created(){
@@ -49,7 +58,7 @@
 			this.getStoreList()
 		},
 		watch:{
-			//部门
+			//项目部
 			select_department_ids:function(n,o){
 				this.emitCallBack();
 			},
@@ -63,6 +72,42 @@
 			}
 		},
 		methods:{
+			getIds(){
+				this.$nextTick(()=>{
+					var arr = [];
+					let select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
+					select_department.map(s => {
+					if(!!s.parent){	//最后一层有父级
+						var m = s.parent;
+						if(!!m.checked){ //倒数第二层被全选了
+							if(!!m.parent){ //倒数第二层有父级
+								var d = m.parent;
+								if(!!d.checked){ //倒数第三层被全选了
+									if(arr.indexOf(d.value) == -1){
+										arr.push(d.value);
+									}
+								}else{
+									if(arr.indexOf(m.value) == -1){
+										arr.push(m.value);
+									}
+								}
+							}else{
+								if(arr.indexOf(m.value) == -1){
+									arr.push(m.value);
+								}
+							}
+						}else{
+							arr.push(s.value);
+						}
+					}else{	//只有一层
+						arr.push(s.value);
+					}
+				})
+					this.select_department_ids = arr;
+					//店铺列表
+					this.getStoreList();
+				});
+			},
 			//向父组件传递参数
 			emitCallBack(){
 				let obj = {

@@ -13,14 +13,14 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="small" @click="getList">搜索</el-button>
+			</el-form-item>
 			<el-form-item label="">
-				<el-select v-model="from" :popper-append-to-body="false" placeholder="全部">
+				<el-select v-model="from" :popper-append-to-body="false" @change="changeFrom" placeholder="全部">
 					<el-option v-for="item in from_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
-			</el-form-item>
-			<el-form-item>
-				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -254,6 +254,11 @@
 				this.page = val;
 				//获取列表
 				this.getData();
+			},
+			changeFrom(v){
+				this.from = v;
+				//获取列表
+				this.getData()
 			},
 			//点击调价
 			getDetail(id){

@@ -367,13 +367,13 @@
 			this.isMac()
 		},
 		methods:{
-			isMac() { 
-				let is_ding_talk = this.$store.state.is_ding_talk
-				let is_mac_os = /macintosh|mac os x/i.test(navigator.userAgent); 
-				if(is_ding_talk == true && is_mac_os == true){
-					this.is = true;
-				}
-			},
+  			isMac() { 
+  				let is_ding_talk = this.$store.state.is_ding_talk
+  				let is_mac_os = /macintosh|mac os x/i.test(navigator.userAgent); 
+  				if(is_ding_talk == true && is_mac_os == true){
+  					this.is = true;
+  				}
+  			},
 			//数据管理头部信息
 			formTableHearder(){
 				resource.formTableHearder({form_id:this.form_id}).then(res => {
@@ -526,7 +526,7 @@
 			},
 			//表格分页
 			handleSizeChange(val) {
-				this.page_size = val;
+				this.pagesize = val;
 				//获取列表
 				this.getData();
 			},

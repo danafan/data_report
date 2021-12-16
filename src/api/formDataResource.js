@@ -3,6 +3,7 @@ let path = {
 	formList:'form/list',					//表单列表接口
 	ajaxUser:'common/ajaxUser',				//获取钉钉用户列表	
 	formAdd:'form/add',						//创建/复制表单	
+	copyForm:'form/copy',					//复制表单（Get）
 	formEdit:'form/edit',					//编辑表单	
 	formDel:'form/del',						//删除表单
 	formTableList:'formtable/list',			//数据管理列表
@@ -30,6 +31,10 @@ export default{
 	//创建表单和复制表单	
 	formAdd(params){
 		return http.post(path.formAdd, params)
+	},
+	//复制表单(get)
+	copyForm(params){
+		return http.get(path.copyForm, params)
 	},
 	//编辑表单（get）
 	formEditGet(params){

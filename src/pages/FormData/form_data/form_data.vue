@@ -28,10 +28,10 @@
 					<el-tooltip class="item" effect="dark" placement="bottom-start">
 						<div slot="content">
 							<div>
-								<el-button type="text" size="small" @click="editForm(scope.row.id,'2')" v-if="scope.row.user_type == '1' || scope.row.user_type == '2'">编辑</el-button></br>
+								<el-button type="text" size="small" @click="editForm(scope.row.id)" v-if="scope.row.user_type == '1' || scope.row.user_type == '2'">编辑</el-button></br>
 							</div>
 							<div v-if="scope.row.user_type == '1'">
-								<el-button type="text" size="small" @click="editForm(scope.row.id,'3')">复制表单</el-button></br>
+								<el-button type="text" size="small" @click="copyFormFun(scope.row.id)">复制表单</el-button></br>
 							</div>
 							<el-button type="text" size="small" @click="delForm(scope.row.id)" v-if="scope.row.user_type == '1'">删除</el-button>
 						</div>
@@ -51,7 +51,7 @@
 					<el-input style="width:220px" clearable v-model="form_name" placeholder="请输入表单名称"></el-input>
 				</el-form-item>
 				<el-form-item label="数据库对应表名称：">
-					<el-input style="width:220px" clearable v-model="table_name" placeholder="请输入数据库对应表名称" :disabled="dialog_type == '2'"></el-input>
+					<el-input style="width:220px" clearable v-model="table_name" placeholder="请输入数据库对应表名称" disabled></el-input>
 				</el-form-item>
 				<el-form-item label="数据填报人：" v-if="dialog_type != '3'">
 					<el-select v-model="selected_users" clearable :popper-append-to-body="false" multiple filterable placeholder="选择数据填报人" style="width:280px">
@@ -249,15 +249,16 @@
 			//点击创建表单
 			createFormFun(){
 				this.formDialog = true;
+				this.table_name = this.getFormName();
 				this.dialog_type = '1';
 				//获取钉钉用户列表
 				this.ajaxUser();
 			},
 			//点击编辑表单
-			editForm(id,type){
-				this.dialog_type = type;
+			editForm(id){
+				this.dialog_type = '2';
 				this.form_id = id;
-				resource.ajaxUser().then(res => {
+				resource.ajaxUser({from:'14'}).then(res => {
 					if(res.data.code == 1){
 						this.user_data = res.data.data;
 					}else{
@@ -313,6 +314,41 @@
 					}
 				});
 			},
+			//点击复制表单
+			copyFormFun(id){
+				this.dialog_type = '3';
+				resource.copyForm({form_id:id}).then(res => {
+					if(res.data.code == 1){
+						let data = res.data.data;
+						this.form_name = data.form_name;
+						this.table_name = this.getFormName();
+						let structure_list = data.fields;
+						structure_list.map(item => {
+							item.is_old = true;
+						});
+						this.structure_list = structure_list;
+						this.formDialog = true;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//组装数据库对应表名称
+			getFormName(){
+				var now = new Date(); 				//当前日期  
+				var nowYear = now.getYear(); 		//当前年 
+				nowYear += (nowYear < 2000) ? 1900 : 0;
+				var nowMonth = now.getMonth(); 		//当前月 
+				nowMonth += 1;
+				var nowDay = now.getDate(); 		//当前日 
+				var nowHours = now.getHours();
+				nowHours = nowHours < 10?`0${nowHours}`:nowHours;
+				var nowMinutes = now.getMinutes();
+				nowMinutes = nowMinutes < 10?`0${nowMinutes}`:nowMinutes;
+				var nowSeconds = now.getSeconds();
+				nowSeconds = nowSeconds < 10?`0${nowSeconds}`:nowSeconds;
+				return `deer_${nowYear}${nowMonth}${nowDay}${nowHours}${nowMinutes}${nowSeconds}`
+			},
 			//关闭弹窗
 			closeDialog(){
 				this.form_name = "";			//表单名称
@@ -346,14 +382,8 @@
 				if(this.form_name == ""){
 					this.$message.warning('请输入表单名称');
 					return;
-				}else if(this.form_name.indexOf('_') > 1){
-					this.$message.warning('表单名称不能包含下划线');
-					return;
 				}else if(this.table_name == ""){
 					this.$message.warning('请输入数据库对应表名称');
-					return;
-				}else if(this.table_name.indexOf('_') > 1){
-					this.$message.warning('数据库对应表名称不能包含下划线');
 					return;
 				}
 				//判断是否有未填写的字段名

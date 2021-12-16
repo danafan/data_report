@@ -1,35 +1,35 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline" v-if="user_type != '1'">
-			<el-form-item label="新编码：">
+		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="新编码：" v-if="user_type != '1'">
 				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商款号：">
+			<el-form-item label="供应商款号：" v-if="user_type != '1'">
 				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商：">
+			<el-form-item label="供应商：" v-if="user_type != '1'">
 				<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item v-if="user_type != '4' && user_type != '1'">
+				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
+			</el-form-item>
+			<el-form-item v-if="user_type != '1'">
+				<el-button type="primary" size="small" @click="getList">搜索</el-button>
+			</el-form-item>
 			<el-form-item label="">
-				<el-select v-model="from" :popper-append-to-body="false" placeholder="全部">
+				<el-select v-model="from" :popper-append-to-body="false" @change="changeFrom" placeholder="全部">
 					<el-option v-for="item in from_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
-			</el-form-item>
-			<el-form-item v-if="user_type != '4'">
-				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
-			</el-form-item>
-			<el-form-item>
-				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
@@ -256,6 +256,11 @@
 				this.page = 1;
 				//获取列表
 				this.getData();
+			},
+			changeFrom(v){
+				this.from = v;
+				//获取列表
+				this.getData()
 			},
 			//获取列表
 			getData(){
