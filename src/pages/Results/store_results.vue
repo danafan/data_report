@@ -9,6 +9,9 @@
 				<SalesTrend v-if="item.web_url == 'sales_trend'"/>
 				<IntervalData v-if="item.web_url == 'interval_data'"/>
 			</el-tab-pane>
+			<!-- <el-tab-pane label="目标完成报告" lazy name="target_complete" class="tab_pane_box">
+				<TargetComplete/>
+			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>
@@ -19,6 +22,7 @@
 </style>
 <script>
 	import PerformanceAnalysis from './StoreResults/performance_analysis.vue'
+	import TargetComplete from './StoreResults/target_complete.vue'
 	import DailyPerformance from './StoreResults/daily_performance.vue'
 	import FishPonds from './StoreResults/fish_ponds.vue'
 	import StoreData from './StoreResults/store_data.vue'
@@ -63,6 +67,7 @@
 		},
 		components:{
 			PerformanceAnalysis,
+			TargetComplete,
 			DailyPerformance,
 			FishPonds,
 			StoreData,

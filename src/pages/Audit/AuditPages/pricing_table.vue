@@ -78,7 +78,7 @@
 						</div>
 					</div>
 				</el-form-item>
-				<el-form-item label="上传图片：">
+				<el-form-item label="上传图片：" required>
 					<div class="img_list">
 						<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
 							<img class="img" :src="item.domain + item.urls">
@@ -324,6 +324,10 @@
 						return;
 					};
 				};
+				if(this.show_img.length == 0){
+					this.$message.warning('请上传图片!');
+						return;
+				}
 				var img_arr = [];
 				this.show_img.map(item => {
 					img_arr.push(item.urls);

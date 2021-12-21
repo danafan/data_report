@@ -190,6 +190,7 @@ let path = {
 	ajaxCompany:'common/ajaxCompany',								//获取公司列表
 	ajaxPp:'common/ajaxPp',											//获取品牌列表
 	specialSetting:'buffer/specialSetting',							//特殊权限设置
+	targetComplete:'PerformanceReport/target',						//目标完成报告报表
 
 }					
 export default{
@@ -984,6 +985,10 @@ export default{
 	//特殊权限设置（post）
 	specialSettingPost(params){
 		return http.post(path.specialSetting, params)
+	},
+	//目标完成报告报表
+	targetComplete(params){
+		return http.get(path.targetComplete, params)
 	},
 }
 
