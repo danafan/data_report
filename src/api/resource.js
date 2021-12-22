@@ -190,7 +190,8 @@ let path = {
 	ajaxCompany:'common/ajaxCompany',								//获取公司列表
 	ajaxPp:'common/ajaxPp',											//获取品牌列表
 	specialSetting:'buffer/specialSetting',							//特殊权限设置
-	targetComplete:'PerformanceReport/target',						//目标完成报告报表
+	targetCompleteChart:'PerformanceReport/targetChart',			//目标完成报告报（仪表盘折线图）
+	targetTable:'PerformanceReport/target',							//目标完成报告报（表格）
 
 }					
 export default{
@@ -987,8 +988,12 @@ export default{
 		return http.post(path.specialSetting, params)
 	},
 	//目标完成报告报表
-	targetComplete(params){
-		return http.get(path.targetComplete, params)
+	targetCompleteChart(params){
+		return http.get(path.targetCompleteChart, params)
+	},
+	//目标完成报告报表（表格）
+	targetTable(params){
+		return http.get(path.targetTable, params)
 	},
 }
 

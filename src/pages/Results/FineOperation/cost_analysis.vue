@@ -247,6 +247,7 @@
 				mx_max_list:{},						
 				mx_total_data:[],	
 				company:['德儿'],							//选中的公司
+				company_list:[]
 			}
 		},
 		created(){

@@ -3,15 +3,13 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<PerformanceAnalysis v-if="item.web_url == 'performance_analysis'"/>
+				<TargetComplete v-if="item.web_url == 'target_complete'"/>
 				<DailyPerformance v-if="item.web_url == 'daily_performance'"/>
 				<FishPonds v-if="item.web_url == 'fish_ponds'"/>
 				<StoreData v-if="item.web_url == 'store_data'"/>
 				<SalesTrend v-if="item.web_url == 'sales_trend'"/>
 				<IntervalData v-if="item.web_url == 'interval_data'"/>
 			</el-tab-pane>
-			<!-- <el-tab-pane label="目标完成报告" lazy name="target_complete" class="tab_pane_box">
-				<TargetComplete/>
-			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>
