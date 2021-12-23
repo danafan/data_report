@@ -8,6 +8,7 @@
 				:props="props"
 				@change="getIds"
 				filterable
+				collapse-tags
 				clearable></el-cascader>
 			</el-form-item>
 			<el-form-item label="平台:">

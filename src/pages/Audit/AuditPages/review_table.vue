@@ -27,7 +27,7 @@
 			<el-button type="primary" size="small" @click="allAudit" v-if="user_type != '4'">一键审批</el-button>
 			<el-button type="primary" plain size="small" @click="exportExcel">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
+		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange" :row-class-name="tableRowClassName">
 			<el-table-column type="selection" width="55" fixed="left" :selectable="selectableFun"></el-table-column>
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
@@ -346,6 +346,13 @@
 			this.getData();
 		},
 		methods:{
+			// 超时高亮提示
+			tableRowClassName({row, rowIndex}) {
+				if (row.price_flag == 1) {
+					return 'warning-row';
+				}
+				return '';
+			},
 			//款式编码列表
 			ajaxKsbm(e){
 				if(e != ''){
