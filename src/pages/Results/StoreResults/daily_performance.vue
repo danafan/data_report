@@ -81,6 +81,15 @@
 			<el-button size="small" type="primary" @click="GetData('1')">保存</el-button>
 		</div>
 	</el-dialog>
+	<!-- 折线图放大 -->
+	<div class="echarts_box" v-show="show_box">
+		<div class="close_icon">
+			<i class="el-icon-circle-close" @click="closeBox"></i>
+		</div>
+		<div class="lbx">
+			<div class="echarts_container" id="echarts_container"></div>
+		</div>
+	</div>
 </div>
 </template>
 <style lang="less" scoped>
@@ -189,6 +198,37 @@
 	font-size:18px;
 	color: #D9D9D9;
 }
+.echarts_box{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 100%;
+	height: 100%;
+	background:#fff;
+	z-index: 999;
+	display:flex;
+	flex-direction: column;
+	.close_icon{
+		padding-top: 20px;
+		padding-right: 20px;
+		height: 60px;
+		display:flex;
+		justify-content: flex-end;
+		font-size: 20px;
+	}
+	.lbx{
+		flex: 100%;
+		width: 100%;
+		display:flex;
+		align-items: center;
+		justify-content: center;
+		.echarts_container{
+			height: 60%;
+			width: 60%;
+		}
+	}
+	
+}
 </style>
 <script>
 	import resource from '../../../api/resource.js'
@@ -240,7 +280,8 @@
 				company_list:[],					//公司列表
 				show_custom:false,
 				button_list:{},
-				company:['德儿'],							//选中的公司
+				company:['德儿'],					//选中的公司
+				show_box:false,						//默认放大折线图不显示
 			}
 		},
 		mounted(){
@@ -358,39 +399,7 @@
 								})
 								var ele = document.getElementById('id_' + index);
 								var myChart = echarts.init(ele);
-								myChart.setOption({
-									title: {
-										text: item.title
-									},
-									color:['#c23531','#2f4554', '#61a0a8'],
-									tooltip: {
-										trigger: 'axis',
-										formatter (params) {
-											var relVal = params[0].name
-											for (var i = 0, l = params.length; i < l; i++) {
-												let circle = `<i class="iconfont icon-yuan" style="margin-right:4px;font-size:14px;color:${params[i].color}">o</i>`
-												relVal += '<br/>' + circle + params[i].seriesName + ' : ' + params[i].value + item.unit
-											}
-											return relVal
-										}
-									},
-									legend: {
-										x:'right',      
-										y:'top',      
-										data: legend_data
-									},
-									xAxis: {
-										type: 'category',
-										boundaryGap: false,
-										data: xAxis_data,
-										name:"日期"
-									},
-									yAxis: {
-										type: 'value',
-										name:"单位（"+ item.unit +"）"
-									},
-									series: series_data
-								})
+								myChart.setOption(this.axisOption(item,xAxis_data,series_data,legend_data,'1'))
 								window.addEventListener('resize',function(){
 									myChart.resize();
 								})
@@ -400,6 +409,71 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//折线图配置
+			axisOption(item,xAxis_data,series_data,legend_data,type){
+				return {
+					title: {
+						text: item.title
+					},
+					color:['#c23531','#2f4554', '#61a0a8'],
+					tooltip: {
+						trigger: 'axis',
+						formatter (params) {
+							var relVal = params[0].name
+							for (var i = 0, l = params.length; i < l; i++) {
+								let circle = `<i class="iconfont icon-yuan" style="margin-right:4px;font-size:14px;color:${params[i].color}">o</i>`
+								relVal += '<br/>' + circle + params[i].seriesName + ' : ' + params[i].value + item.unit
+							}
+							return relVal
+						}
+					},
+					toolbox: type=='1'?{
+						feature: {
+							myTool2: {
+								show: true,
+								title: '全屏',
+								icon: 'path://M896 512V212.48L212.48 896H512v128H0V512h128v299.52L811.52 128H512V0h512v512h-128z',
+								onclick:  () => {
+									this.show_box = true;
+									this.$nextTick(() => {
+										var echarts = require("echarts");
+
+										let echarts_container = document.getElementById('echarts_container');
+										var echartsChart = echarts.getInstanceByDom(echarts_container);
+										if (echartsChart == null) { 
+											echartsChart = echarts.init(echarts_container);
+										}
+										echartsChart.setOption(this.axisOption(item,xAxis_data,series_data,legend_data,'2'));
+									});
+									window.addEventListener('resize',function(){
+										echartsChart.resize();
+									})
+								}
+							}
+						}
+					}:{},
+					legend: {
+						x:'center',      
+						y:'top',      
+						data: legend_data
+					},
+					xAxis: {
+						type: 'category',
+						boundaryGap: false,
+						data: xAxis_data,
+						name:"日期"
+					},
+					yAxis: {
+						type: 'value',
+						name:"单位（"+ item.unit +"）"
+					},
+					series: series_data
+				}
+			},
+			//关闭放大框
+			closeBox(){
+				this.show_box = false;
 			},
 			//清空折线图
 			ClearEcharts(){

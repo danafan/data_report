@@ -2,6 +2,7 @@ import { MessageBox,Message } from 'element-ui';
 import {middleWare} from './request.js'
 import * as dd from 'dingtalk-jsapi';
 import store from '../store/index.js'
+import axios from './index.js'
 
 function formatJson(filterVal, jsonData) {
 	return jsonData.map(v => filterVal.map(j => v[j]))
@@ -36,20 +37,33 @@ export function exportExcel(data_obj) {
 }
 
 function exportSet(url,req){
-	var open_url = '';
+	var get_str = middleWare(req,'get');
+
+	var val_open_url = '';	//验证
+	var open_url = '';		//导出
+
 	if(url.indexOf('?') > -1){
 		let req_arr = url.split('?')[1].split('&');
 		req_arr.map(item => {
 			req[item.split('=')[0]] = item.split('=')[1];
 		})
-		let get_str = middleWare(req,'get');
-
-		open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}`;
+		val_open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}&export_flag=1`;//验证
+		open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}&export_flag=2`;//导出
 	}else{
-		let get_str = middleWare(req,'get');
-		open_url = `${location.origin}/api/${url}?${get_str}`;
+		val_open_url = `${location.origin}/api/${url}?${get_str}&export_flag=1`;//验证
+		open_url = `${location.origin}/api/${url}?${get_str}&export_flag=2`;//导出
 	}
-	window.open(open_url);
+	//导出前验证
+	axios.get(val_open_url).then(res => {
+		if(res.data.code == 1){
+			window.open(open_url);
+		}else{
+			Message({
+				type: 'warning',
+				message: res.data.msg
+			});
+		}
+	})
 }
 
 export function exportUp(url){

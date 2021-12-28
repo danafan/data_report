@@ -34,10 +34,10 @@
 		<el-button type="primary" size="small" @click="customFun" style="margin-bottom: 5px">自定义列表</el-button>
 	</div>
 	<el-table :data="table_list" size="small" style="width: 100%" :class="{'margin_bottom':dashboard_data.length > 0}" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle"  @sort-change="sortChange">
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip :fixed="item.is_fixed == 1" :width="item.is_fixed == 1?110:70">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1" width="80">
 			<template slot-scope="scope">
-				<div class="background_box" :style="{width:`${item.max_value == 0?0:(70/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.$index != 0">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
-				<div class="text_content" :class="{'is_total':item.row_field_name == 'spid'}" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
+				<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.$index != 0">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
+				<div class="text_content" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -64,6 +64,12 @@
 	</el-dialog>
 </div>
 </template>
+<style>
+.el-table .cell {
+	word-break: keep-all !important;
+	white-space: nowrap !important;
+}
+</style>
 <style lang="less" scoped>
 .table_setting{
 	margin-bottom: 5px;
@@ -75,6 +81,11 @@
 	display:flex;
 	align-items: center;
 	justify-content: space-evenly;
+}
+.text_content{
+	overflow:hidden;
+	text-overflow:ellipsis;
+	white-space:nowrap
 }
 .margin_bottom{
 	margin-bottom: 60px;
@@ -152,6 +163,32 @@
 			},
 		},
 		methods:{
+			//顶部悬浮
+			renderHeader(h, data) {
+				return h("span", [
+					h(
+						"el-tooltip",
+						{
+							attrs: {
+								class: "item",
+								effect: "dark",
+								content: data.column.label,
+								placement: "top",
+							},
+						},
+						[h("span", data.column.label)]
+						),
+					]);
+			},
+			//千分位展示
+			getQianNumber(number) {
+				const num = String(number)
+				const reg = /\d{1,3}(?=(\d{3})+$)/g
+				const res = num.replace(/^(-?)(\d+)((\.\d+)?)$/, function(match, s1, s2, s3){
+					return s1 + s2.replace(reg, '$&,') + s3
+				})
+				return res
+			},
 			//点击搜索
 			searchFun(){
 				//获取列表（表格）
@@ -353,13 +390,6 @@
 					return true;
 				}
 			},
-			//宽一点
-			// widthColumn(row_field_name){
-			// 	if(row_field_name == 'ymb_xssr'||  row_field_name == 'xsje' ||  row_field_name == 'xssl' ||  row_field_name == 'sd_xssl' || row_field_name == 'total_hf' || row_field_name == 'mll' || row_field_name == 'yk'){
-			// 		return true;
-			// 	}
-			// },
-			
 			// 仪表盘
 			option(item){
 				return {
