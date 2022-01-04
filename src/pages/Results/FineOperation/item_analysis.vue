@@ -631,7 +631,7 @@
 			},
 			//指标汇总左侧固定
 			zbhzFixed(row_field_name){
-				if(row_field_name == 'spid' || row_field_name == 'dpid' || row_field_name == 'ksbm' || row_field_name == 'gyskh'){
+				if(row_field_name == 'spid' || row_field_name == 'dpid' || row_field_name == 'ksbm' || row_field_name == 'gyskh' || row_field_name == 'pic'){
 					return true;
 				}
 			},

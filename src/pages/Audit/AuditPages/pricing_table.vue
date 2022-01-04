@@ -61,7 +61,7 @@
 					<div>{{detailObj.cb_price}}</div>
 				</el-form-item>
 				<el-form-item label="更新后成本价：" required>
-					<el-input v-model="price" type="number" size="small" style="width: 120px" placeholder="请输入价格"></el-input>
+					<el-input v-model="price" @mousewheel.native.prevent type="number" size="small" style="width: 120px" placeholder="请输入价格"></el-input>
 				</el-form-item>
 				<el-form-item label="是否福袋款：" required>
 					<el-radio-group v-model="is_blessingbag">

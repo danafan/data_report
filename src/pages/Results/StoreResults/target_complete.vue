@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div style="min-height: 600px">
 		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="公司：">
@@ -31,10 +31,10 @@
 	</el-form>
 	<!-- 表格 -->
 	<div class="table_setting">
-		<el-button type="primary" size="small" @click="customFun" style="margin-bottom: 5px">自定义列表</el-button>
+		<el-button type="primary" size="small" @click="show_custom = true" style="margin-bottom: 5px">自定义列表</el-button>
 	</div>
-	<el-table :data="table_list" size="small" style="width: 100%" :class="{'margin_bottom':dashboard_data.length > 0}" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle"  @sort-change="sortChange">
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1" width="80">
+		<el-table :data="data_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary>
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
 			<template slot-scope="scope">
 				<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.$index != 0">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
 				<div class="text_content" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
@@ -44,15 +44,15 @@
 	<!-- 仪表 -->
 	<div id="cate_row" class="cate_row"></div>
 	<!-- 各店销售收入完成情况 -->
-	<div id="axis_01" class="axis_box"></div>
+	<div id="axis_01" class="axis_box" v-show="show_axis_01"></div>
 	<!-- 各店毛利额完成情况 -->
-	<div id="axis_02" class="axis_box"></div>
+	<div id="axis_02" class="axis_box" v-show="show_axis_02"></div>
 	<!-- 各店营销费用完成情况 -->
-	<div id="axis_03" class="axis_box"></div>
+	<div id="axis_03" class="axis_box" v-show="show_axis_03"></div>
 	<!-- 自定义列表 -->
 	<el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
 		<div>
-			<el-checkbox-group v-model="row_ids">
+			<el-checkbox-group v-model="selected_ids">
 				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
 			</el-checkbox-group>
 		</div>
@@ -137,14 +137,17 @@
 				company:['德儿'],					//选中的公司
 				is_assessment:'0',					//是否考核店铺
 				dashboard_data:[],					//仪表盘列表
-				table_list:[],						//列表数据
+				data_list:[],						//列表数据
 				title_list:[],						//列
 				selected_ids:[],					//自定义已选中的id
 				row_ids:[],							//可提交的自定义ids
 				view_row:[],						//自定义
-				sort:"",
-				sort_type:"",
+				total:[],							//总计
+				total_list:[],						//总计（用于导出）
 				show_custom:false,					//自定义列表
+				show_axis_01:true,
+				show_axis_02:true,
+				show_axis_03:true,
 			}
 		},
 		created(){
@@ -189,6 +192,10 @@
 				})
 				return res
 			},
+			//表格总计行
+			getWeekSummaries(param) {
+				return this.total;
+			},
 			//点击搜索
 			searchFun(){
 				//获取列表（表格）
@@ -221,43 +228,32 @@
 					start_time:this.start_time,
 					end_time:this.end_time,
 					audit_flag:this.is_assessment,
-					company:this.company.join(','),
-					sort:this.sort,
-					sort_type:this.sort_type
+					company:this.company.join(',')
 				}
 				resource.targetTable(req).then(res => {
 					if(res.data.code == 1){
-						this.table_list = res.data.data.data;			//列表行数据
-						this.title_list = res.data.data.title_list;		//列表列数据
-						this.selected_ids = res.data.data.selected_ids;	//自定义已选中的id
-						this.view_row = res.data.data.view_row;			//自定义
+						let table_list_data = res.data.data;
+						this.title_list = table_list_data.title_list;
+						this.data_list = table_list_data.data;
+						this.total = table_list_data.total;
+						this.total_list[0] = table_list_data.total_list;
+						this.view_row = table_list_data.view_row;
+						this.selected_ids = table_list_data.selected_ids;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
-			//表格排序
-			sortChange(column){
-				this.sort = column.prop;
-				this.sort_type = column.order == 'ascending'?'0':'1';
-				//获取表格
-				this.targetTable();
-			},
-			//单品分析—-指标汇总自定义列表
-			customFun(page_type){
-				this.row_ids = this.selected_ids;
-				this.show_custom = true;
-			},
 			//单品分析—-指标汇总恢复默认
 			Restore(){
-				this.row_ids = [];
+				this.selected_ids = [];
 				this.view_row.map(item => {
-					this.row_ids.push(item.row_id)
+					this.selected_ids.push(item.row_id)
 				})
 			},
 			//自定义列
 			setColumns(){
-				resource.setColumns({menu_id:'54',row_ids:this.row_ids.join(',')}).then(res => {
+				resource.setColumns({menu_id:'54',row_ids:this.selected_ids.join(',')}).then(res => {
 					if(res.data.code == 1){
 						this.$message.success(res.data.msg);
 						this.show_custom = false;
@@ -322,6 +318,11 @@
 							this.axis_01Chart = echarts.init(axis_01);
 						}
 						this.axis_01Chart.setOption(this.axisOption(title,legend,xssr_dpid,xssr_dpmc,xssr_ymb,xssr_xssryg,xssr_wcl));
+						if(xssryg_chart.length > 1){
+							this.show_axis_01 = true;
+						}else{
+							this.show_axis_01 = false;
+						}
 						//各店毛利额完成情况
 						var title = '各店毛利额完成情况（有月目标的店铺）';
 						var	legend = ['毛利额月目标','毛利额','毛利额月完成率预估'];
@@ -344,6 +345,11 @@
 							this.axis_02Chart = echarts.init(axis_02);
 						}
 						this.axis_02Chart.setOption(this.axisOption(title,legend,mle_dpid,mle_dpmc,mle_ymb,mle_mle,mle_wcl));
+						if(mle_chart.length > 1){
+							this.show_axis_02 = true;
+						}else{
+							this.show_axis_02 = false;
+						}
 						//各店营销费用完成情况
 						var title = '各店营销费用完成情况（有月目标的店铺）';
 						var	legend = ['营销费用月目标','营销费用预估','营销费用月完成率预估'];
@@ -366,6 +372,11 @@
 							this.axis_03Chart = echarts.init(axis_03);
 						}
 						this.axis_03Chart.setOption(this.axisOption(title,legend,yxfy_dpid,yxfy_dpmc,yxfy_ymb,yxfy_yxfyyg,yxfy_wcl));
+						if(yxfy_chart.length > 1){
+							this.show_axis_03 = true;
+						}else{
+							this.show_axis_03 = false;
+						}
 
 						var _this = this;
 						window.addEventListener('resize',() => {
@@ -377,18 +388,6 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			//第一行样式
-			columnStyle({ row, column, rowIndex, columnIndex }) {
-				if(rowIndex == 0){
-					return 'color: #8D5714';
-				}
-			},
-			//左侧固定
-			tableFixed(row_field_name){
-				if(row_field_name == 'dpid' || row_field_name == 'dpmc'){
-					return true;
-				}
 			},
 			// 仪表盘
 			option(item){

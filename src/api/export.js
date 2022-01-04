@@ -36,23 +36,20 @@ export function exportExcel(data_obj) {
 	});
 }
 
-function exportSet(url,req){
-	var get_str = middleWare(req,'get');
-
-	var val_open_url = '';	//验证
-	var open_url = '';		//导出
-
-	if(url.indexOf('?') > -1){
-		let req_arr = url.split('?')[1].split('&');
-		req_arr.map(item => {
-			req[item.split('=')[0]] = item.split('=')[1];
-		})
-		val_open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}&export_flag=1`;//验证
-		open_url = `${location.origin}/api/${url.split('?')[0]}?${get_str}&export_flag=2`;//导出
-	}else{
-		val_open_url = `${location.origin}/api/${url}?${get_str}&export_flag=1`;//验证
-		open_url = `${location.origin}/api/${url}?${get_str}&export_flag=2`;//导出
+function exportSet(url,req,code){
+	//验证参数加密
+	var val_get_str = middleWare({...req,...{export_flag:1}},'get');
+	//导出参数加密
+	let arg = {
+		export_flag:2
 	}
+	if(!!code){
+		arg.code = code;
+	}
+	var get_str = middleWare({...req,...arg},'get');
+
+	var val_open_url = `${location.origin}/api/${url}?${val_get_str}`;//验证
+	var open_url = `${location.origin}/api/${url}?${get_str}`;//导出
 	//导出前验证
 	axios.get(val_open_url).then(res => {
 		if(res.data.code == 1){
@@ -72,6 +69,17 @@ export function exportUp(url){
 		cancelButtonText: '取消',
 		type: 'warning'
 	}).then(() => {
+		var new_url = url;
+		var arg = {};
+		if(url.indexOf('?') > -1){
+			//处理url
+			new_url = url.split('?')[0];
+			//处理参数
+			let req_arr = url.split('?')[1].split('&');
+			req_arr.map(item => {
+				arg[item.split('=')[0]] = item.split('=')[1];
+			});
+		}
 		if(!!store.state.is_ding_talk){  //钉钉
         	//获取code
         	dd.ready(() => {
@@ -80,7 +88,7 @@ export function exportUp(url){
         			onSuccess: res =>{
                 		//获取钉钉用户信息
                 		let code = res.code;
-                		exportSet(url,{code:code});
+                		exportSet(new_url,arg,code);
                 	},
                 	onFail : err => {
                 		alert('dd error: ' + JSON.stringify(err));
@@ -88,7 +96,7 @@ export function exportUp(url){
                 });
         	});
         }else{
-        	exportSet(url,{});
+        	exportSet(new_url,arg);
         }
     }).catch(() => {
     	Message({

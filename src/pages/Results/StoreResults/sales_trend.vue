@@ -14,6 +14,7 @@
 			<div class="left_box">
 				<div class="title">各店目标达成情况</div>
 				<el-table :data="table_data" size="small" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' width="50%" :summary-method="getSummaries" show-summary :cell-style="columnStyle">
+					<el-table-column type="index" label="序号" width="60"> </el-table-column>
 					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip sortable>
 					</el-table-column>
 					<el-table-column label="店铺名称" prop="dpname" width="140" show-overflow-tooltip sortable>

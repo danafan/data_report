@@ -34,7 +34,7 @@
 		<el-card class="module_item">
 			<div class="title">销售收入预估
 				<el-tooltip class="item" effect="dark" :content="xssryg.remark" placement="top-start">
-					<i class="el-icon-warning" style="color: #FFE58F"></i>
+					<i class="el-icon-warning" style="color: #FFE58F" v-if="xssryg.remark != ''"></i>
 				</el-tooltip>
 			</div>
 			<div class="value">{{xssryg.xssryg}}万</div>
@@ -58,7 +58,7 @@
 		<el-card class="module_item">
 			<div class="title">营销费用预估
 				<el-tooltip class="item" effect="dark" :content="yxfyyg.remark" placement="top-start">
-					<i class="el-icon-warning" style="color: #FFE58F"></i>
+					<i class="el-icon-warning" style="color: #FFE58F" v-if="yxfyyg.remark != ''"></i>
 				</el-tooltip>
 			</div>
 			<div class="value">{{yxfyyg.yxfyyg}}万</div>
@@ -111,6 +111,18 @@
 				<div class="content_val">{{ygz_gxmyl.rlj_gxmyl}}%</div>
 			</div>
 		</el-card>
+		<el-card class="module_item">
+			<div class="title">净利润预估
+				<el-tooltip class="item" effect="dark" :content="jlryg.remark" placement="top-start">
+					<i class="el-icon-warning" style="color: #FFE58F" v-if="jlryg.remark != ''"></i>
+				</el-tooltip>
+			</div>
+			<div class="value">{{jlryg.jlryg}}万</div>
+			<div class="content_row">
+				<div class="label">净利润率</div>
+				<div class="content_val">{{jlryg.jlrl}}%</div>
+			</div>
+		</el-card>
 	</div>
 	<!-- 上面表格 -->
 	<div class="table_setting">
@@ -118,9 +130,9 @@
 		<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<el-table :data="data_list" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getSummaries" show-summary :cell-style="columnStyle">
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1" width="80">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
 			<template slot-scope="scope">
-				<div class="text_content">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
+				<div class="text_content">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{item.unit}}</div>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -133,7 +145,7 @@
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="Restore">恢复默认</el-button>
 			<el-button size="small" @click="Restore('is_close')">取消</el-button>
-			<el-button size="small" type="primary" @click="GetData('1','1')">保存</el-button>
+			<el-button size="small" type="primary" @click="setColumns('2')">保存</el-button>
 		</div>
 	</el-dialog>
 	<!-- 营销周报 -->
@@ -144,9 +156,9 @@
 	</div>
 	<!-- 表格 -->
 	<el-table :data="week_data_list" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary>
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in week_title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1" width="80">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in week_title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
 			<template slot-scope="scope">
-				<div class="text_content">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
+				<div class="text_content">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{item.unit}}</div>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -159,7 +171,7 @@
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="RestoreWeek">恢复默认</el-button>
 			<el-button size="small" @click="RestoreWeek('is_close')">取消</el-button>
-			<el-button size="small" type="primary" @click="GetData('1','2')">保存</el-button>
+			<el-button size="small" type="primary" @click="setColumns('1')">保存</el-button>
 		</div>
 	</el-dialog>
 </div>
@@ -170,7 +182,7 @@
 	margin-bottom: 20px;
 	width: 100%;
 	display: flex;
-	justify-content: space-between;
+	justify-content: space-around;
 	.module_item{
 		width: 262px;
 		.title{
@@ -252,6 +264,7 @@
 				yxfyyg:{},							//营销费用预估
 				ygz_gxmy:{},						//预估值-贡献毛益
 				ygz_gxmyl:{},						//预估值-贡献毛益率
+				jlryg:{},							//净利润预估
 				button_list:{},						//按钮权限
 				title_list:[],						//表头
 				data_list:[],						//表格数据
@@ -339,11 +352,20 @@
 			},
 			//导出
 			Export(){
+				// 加单位
+				let table_list = JSON.parse(JSON.stringify(this.data_list));
+				let total_list = JSON.parse(JSON.stringify(this.total_list));
+				let data_list = [...table_list,...total_list];
+				data_list.map(item => {
+					this.title_list.map(i => {
+						item[i.row_field_name] += i.unit;
+					})
+				});
 				var data_obj = {
 					table_title:"业绩分析报告",
 					table_title_list:[],
 					field_name_list:[],
-					data_list:[...this.data_list,...this.total_list]
+					data_list:table_list.length > 1?data_list:table_list
 				};
 				this.title_list.map(item => {
 					data_obj.table_title_list.push(item.row_name);
@@ -353,11 +375,20 @@
 			},
 			//营销周报导出
 			ExportWeek(){
+				// 加单位
+				let table_list = JSON.parse(JSON.stringify(this.week_data_list));
+				let total_list = JSON.parse(JSON.stringify(this.week_total_list));
+				let data_list = [...table_list,...total_list];
+				data_list.map(item => {
+					this.week_title_list.map(i => {
+						item[i.row_field_name] += i.unit;
+					})
+				});
 				var data_obj = {
 					table_title:"营销周报报告",
 					table_title_list:[],
 					field_name_list:[],
-					data_list:[...this.week_data_list,...this.week_total_list]
+					data_list:table_list.length > 1?data_list:table_list
 				};
 				this.week_title_list.map(item => {
 					data_obj.table_title_list.push(item.row_name);
@@ -372,7 +403,7 @@
 				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//获取信息
-			GetData(is_save,type){
+			GetData(){
 				let req = {
 					platform:this.select_plat_ids.join(','),
 					dept_id:this.select_department_ids.join(','),
@@ -382,41 +413,57 @@
 					audit_flag:this.is_assessment,
 					company:this.company.join(',')
 				}
-				if(is_save == '1'){
-					if(type == '1'){
-						req.row_ids = this.selected_ids.join(',')
-					}else{
-						req.week_row_ids = this.week_selected_ids.join(',')
-					}
-				}
 				resource.performanceReport(req).then(res => {
 					if(res.data.code == 1){
-						this.show_custom = false;
-						this.show_week_custom = false;
-						let data = res.data.data;
-						this.xssryg = data.top.xssryg;
-						this.yxfyyg = data.top.yxfyyg;
-						this.ygz_gxmy = data.top.ygz_gxmy;
-						this.ygz_gxmyl = data.top.ygz_gxmyl;
-						this.button_list = data.button_list;
+						//按钮权限
+						this.button_list = res.data.data.button_list;
+						//顶部几个模块
+						let top_data = res.data.data.top;
+						this.xssryg = top_data.xssryg;		//销售收入预估
+						this.yxfyyg = top_data.yxfyyg;		//营销费用预估
+						this.ygz_gxmy = top_data.ygz_gxmy;	//预估值-贡献毛益
+						this.ygz_gxmyl = top_data.ygz_gxmyl;//预估值-贡献毛益率
+						this.jlryg = top_data.jlryg;		//净利润预估
 						//第一个表格
-						this.title_list = data.table_list.title_list;
-						this.data_list = data.table_list.list;
-						this.total = data.table_list.total;
-						this.total_list[0] = data.table_list.total_list;
-						this.view_row = data.table_list.view_row;
-						this.selected_ids = data.table_list.selected_ids;
+						let table_list_data = res.data.data.table_list;
+						this.title_list = table_list_data.title_list;
+						this.data_list = table_list_data.list;
+						this.total = table_list_data.total;
+						this.total_list[0] = table_list_data.total_list;
+						this.view_row = table_list_data.view_row;
+						this.selected_ids = table_list_data.selected_ids;
 						//第二个表格
-						this.week_title_list = data.week_table_list.title_list;
-						this.week_data_list = data.week_table_list.list;
-						this.week_total = data.week_table_list.total;
-						this.week_total_list[0] = data.week_table_list.total_list;
-						this.week_view_row = data.week_table_list.view_row;
-						this.week_selected_ids = data.week_table_list.selected_ids;
+						let week_table_list_data = res.data.data.week_table_list;
+						this.week_title_list = week_table_list_data.title_list;
+						this.week_data_list = week_table_list_data.list;
+						this.week_total = week_table_list_data.total;
+						this.week_total_list[0] = week_table_list_data.total_list;
+						this.week_view_row = week_table_list_data.view_row;
+						this.week_selected_ids = week_table_list_data.selected_ids;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//自定义列
+			setColumns(menu_id){
+				var row_ids = [];
+				if(menu_id == '2'){
+					row_ids = this.selected_ids.join(',')
+				}else if(menu_id == '1'){
+					row_ids = this.week_selected_ids.join(',')
+				}
+				resource.setColumns({menu_id:menu_id,row_ids:row_ids}).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.show_custom = false;
+						this.show_week_custom = false;
+						//获取列表
+						this.GetData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
 			},
 			//切换是否显示(业绩分析)
 			CheckShow(index){
@@ -426,48 +473,6 @@
 			CheckWeekShow(index){
 				this.week_label_list[index].show_sort = !this.week_label_list[index].show_sort;
 			},
-			// 排序(业绩分析)
-			// SortFun(sort,index){
-			// 	this.label_list.map((item,i) => {
-			// 		if(i == index){
-			// 			item.sort = sort;
-			// 		}else{
-			// 			item.sort = 0;
-			// 		}
-			// 	})
-			// 	if(sort == 0){
-			// 		this.data_list = JSON.parse(this.default_data_list);
-			// 	}else{
-			// 		this.data_list.sort(this.Compare(sort,index));
-			// 	}
-			// },
-			// 排序(营销周报)
-			// SortWeekFun(sort,index){
-			// 	this.week_label_list.map((item,i) => {
-			// 		if(i == index){
-			// 			item.sort = sort;
-			// 		}else{
-			// 			item.sort = 0;
-			// 		}
-			// 	})
-			// 	if(sort == 0){
-			// 		this.week_data_list = JSON.parse(this.default_week_data_list);
-			// 	}else{
-			// 		this.week_data_list.sort(this.Compare(sort,index));
-			// 	}
-			// },
-			// 排序
-			// Compare(sort,index){
-			// 	return function(arr1, arr2){
-			// 		var val1 = arr1[index].value;
-			// 		var val2 = arr2[index].value;
-			// 		if(sort == 1){
-			// 			return val1 - val2;
-			// 		}else if(sort == 2){
-			// 			return val2 - val1;
-			// 		}
-			// 	}
-			// },
 			//恢复默认
 			Restore(type){
 				this.selected_ids = [];

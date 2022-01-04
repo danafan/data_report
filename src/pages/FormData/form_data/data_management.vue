@@ -600,7 +600,11 @@
 					if(res.data.code == 1){
 						let fields_list = res.data.data.fields;
 						fields_list.map(item => {
-							item.value = "";
+							if(item.type == 'number'){
+								item.value = 0;
+							}else{
+								item.value = "";
+							}
 						})
 						this.fields_list = fields_list;
 						this.data_dialog = true;
@@ -628,7 +632,7 @@
 				var arg = {form_id:this.form_id};
 				var is_next = true;
 				this.fields_list.map(item => {
-					if(item.value == null || item.value == ''){
+					if(item.type == 'date' && (item.value == null || item.value == '')){
 						this.$message.warning(`请填写${item.title}`);
 						is_next = false;
 						return;
