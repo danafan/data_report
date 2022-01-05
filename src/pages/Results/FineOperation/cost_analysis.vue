@@ -3,13 +3,13 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
 			<el-form-item label="公司：">
-				<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部" @change="ajaxXmmc">
 					<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="用友店铺ID：">
-				<el-select v-model="select_yyshop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_yyshop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部" @change="ajaxXmmc">
 					<el-option v-for="item in yyshop_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -340,7 +340,14 @@
 			},
 			//项目名称列表
 			ajaxXmmc(){
-				resource.ajaxXmmc().then(res => {
+				let arg = {
+					dept_id:this.select_department_ids.join(','),
+					shop_id:this.select_store_ids.join(','),
+					platform:this.select_plat_ids.join(','),
+					cdepcode:this.select_yyshop_list.join(','),
+					company:this.company.join(',')
+				}
+				resource.ajaxXmmc(arg).then(res => {
 					if(res.data.code == 1){
 						this.xmmc_list = res.data.data;
 					}else{

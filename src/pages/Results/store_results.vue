@@ -19,7 +19,7 @@
 }
 </style>
 <script>
-	import PerformanceAnalysis from './StoreResults/performance_analysis.vue'
+	import PerformanceAnalysis from './StoreResults/performance_analysis_test.vue'
 	import TargetComplete from './StoreResults/target_complete.vue'
 	import DailyPerformance from './StoreResults/daily_performance.vue'
 	import FishPonds from './StoreResults/fish_ponds.vue'
