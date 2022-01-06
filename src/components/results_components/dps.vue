@@ -20,9 +20,7 @@
 			<el-form-item label="店铺：">
 				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false"  multiple
 				filterable
-				remote
-				reserve-keyword
-				:remote-method="checkStore" collapse-tags placeholder="全部">
+				collapse-tags placeholder="全部">
 				<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 				</el-option>
 			</el-select>
@@ -138,18 +136,18 @@
 					}
 				})
 			},
-			//模糊查询店铺
-			checkStore(e){
-				this.store_name = e;
-				//店铺列表
-				this.getStoreList('1');
-			},
+			// //模糊查询店铺
+			// checkStore(e){
+			// 	this.store_name = e;
+			// 	//店铺列表
+			// 	this.getStoreList('1');
+			// },
 			// 获取所有店铺
-			getStoreList(type){
+			getStoreList(){
 				let dept_id = this.select_department_ids.join(',');
-				if(type != '1'){
-					this.select_store_ids = [];
-				}
+				// if(type != '1'){
+				// 	this.select_store_ids = [];
+				// }
 				resource.ajaxViewStore({dept_id:dept_id,name:this.store_name,platform:this.select_plat_ids.join(',')}).then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;

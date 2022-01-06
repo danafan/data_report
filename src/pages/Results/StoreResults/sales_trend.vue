@@ -13,7 +13,7 @@
 		<div class="row_box">
 			<div class="left_box">
 				<div class="title">各店目标达成情况</div>
-				<el-table :data="table_data" size="small" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' width="50%" :summary-method="getSummaries" show-summary :cell-style="columnStyle">
+				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :summary-method="getSummaries" show-summary :cell-style="columnStyle">
 					<el-table-column type="index" label="序号" width="60"> </el-table-column>
 					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip sortable>
 					</el-table-column>
@@ -53,9 +53,14 @@
 		</div>
 	</div>
 </template>
+<style type="text/css">
+	.el-table--mini td{
+		padding: 5px 0!important;
+	}
+</style>
 <style lang="less" scoped>
 .title{
-	margin-top: 30px;
+	// margin-top: 30px;
 	margin-bottom: 20px;
 	font-size: 18px;
 	font-weight: bold;
@@ -75,7 +80,7 @@
 .right_box{
 	flex: 1;
 	.list_box{
-		height: 600px;
+		height: 1000px;
 		width: 100%;
 		overflow: scroll;
 		.row_right{

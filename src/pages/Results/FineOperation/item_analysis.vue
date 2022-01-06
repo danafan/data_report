@@ -73,9 +73,7 @@
 			<el-form-item label="店铺：">
 				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false"  multiple
 				filterable
-				remote
-				reserve-keyword
-				:remote-method="checkStore" collapse-tags placeholder="全部">
+				 collapse-tags placeholder="全部">
 				<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 				</el-option>
 			</el-select>
@@ -415,12 +413,12 @@
 					}
 				})
 			},
-			//模糊查询店铺
-			checkStore(e){
-				this.store_name = e;
-				//店铺列表
-				this.getStore();
-			},
+			// //模糊查询店铺
+			// checkStore(e){
+			// 	this.store_name = e;
+			// 	//店铺列表
+			// 	this.getStore();
+			// },
 			//店铺列表
 			getStore(){
 				resource.ajaxViewStore({name:this.store_name,platform:this.select_plat_ids.join(','),}).then(res => {
@@ -491,6 +489,7 @@
 				}
 				this.req = req;
 				//单品分析—-指标汇总
+				this.zbhz_page = 1;
 				this.dpAnalysis();
 				//每日分析下面的折线图
 				this.dayDpAnalysis();

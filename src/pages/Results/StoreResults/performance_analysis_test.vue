@@ -111,6 +111,18 @@
 				<div class="content_val">{{ygz_gxmyl.rlj_gxmyl}}%</div>
 			</div>
 		</el-card>
+		<el-card class="module_item">
+			<div class="title">净利润预估
+				<el-tooltip class="item" effect="dark" :content="jlryg.remark" placement="top-start">
+					<i class="el-icon-warning" style="color: #FFE58F" v-if="jlryg.remark != ''"></i>
+				</el-tooltip>
+			</div>
+			<div class="value">{{jlryg.jlryg}}万</div>
+			<div class="content_row">
+				<div class="label">净利润率</div>
+				<div class="content_val">{{jlryg.jlrl}}%</div>
+			</div>
+		</el-card>
 	</div>
 	<div class="table_setting">
 		<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
@@ -134,21 +146,22 @@
 		</div>
 		<div class="column_item column_item_odd" v-if="data_list.length > 1">
 			<div class="column_item_text" v-for="i in total_shop_data">
-				<div class='tab_text'>{{i}}</div>
+				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
 		<div class="table_list">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
 				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item">
-					<el-tooltip effect="dark" :content="i.val.toString()" placement="top">
+					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 1 || i.id == 183">
 						<el-button type="text" class="tooltip_but">{{i.val}}</el-button>
 					</el-tooltip>
+					<div class='tab_text' v-else>{{i.val}}</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- 没有数据 -->
-	<div class="data_null" v-if="show_null && data_list.length == 0">暂无数据</div>
+	<div class="data_null" v-if="data_list.length == 0">暂无数据</div>
 	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_ids">
@@ -158,7 +171,7 @@
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="Restore">恢复默认</el-button>
 			<el-button size="small" @click="Restore('is_close')">取消</el-button>
-			<el-button size="small" type="primary" @click="GetData('1','1')">保存</el-button>
+			<el-button size="small" type="primary" @click="setColumns('2')">保存</el-button>
 		</div>
 	</el-dialog>
 	<div style="margin-top: 30px;margin-bottom: 10px;font-size: 22;font-weight: bold">营销周报</div>
@@ -171,39 +184,36 @@
 	<div class="table_container" v-if="week_data_list.length > 0">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in week_label_list" :key="index" @mouseenter="CheckWeekShow(index)" @mouseleave="CheckWeekShow(index)">
-				<div class="label_title">{{item.title}}
+				<div class="label_title">{{item.row_name}}
 					<el-tooltip class="item" effect="dark" :content="item.remark" placement="top-start" v-if="item.remark != ''">
 						<i class="el-icon-warning" style="color: #FFE58F"></i>
 					</el-tooltip>
 				</div>
-				<div v-if="item.show_sort">
+				<div v-show="item.show_sort">
 					<img class="sort-icon" v-if="item.sort == 0" src="../../../static/sort_icon.png" @click="SortWeekFun(2,index)">
 					<img class="sort-icon" v-if="item.sort == 1" src="../../../static/sort_up.png" @click="SortWeekFun(0,index)">
 					<img class="sort-icon" v-if="item.sort == 2" src="../../../static/sort_down.png" @click="SortWeekFun(1,index)">
 				</div>
 			</div>
 		</div>
-		<div class="column_item column_item_odd">
-			<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in total_week_data" :key="i.id">
-				<el-tooltip effect="dark" :content="i.field_value_str" placement="top" v-if="i.id == 170 || i.id == 171">
-					<el-button type="text" class="tooltip_but">{{i.field_value_str}}</el-button>
-				</el-tooltip>
-				<div class='tab_text' v-else>{{i.field_value_str}}</div>
+		<div class="column_item column_item_odd" v-if="week_data_list.length > 1">
+			<div class="column_item_text" v-for="i in total_week_data">
+				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
 		<div class="table_list">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in week_data_list" :key="index">
-				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item" :key="i.id">
-					<el-tooltip effect="dark" :content="i.field_value_str" placement="top" v-if="i.id == 170 || i.id == 171">
-						<el-button type="text" class="tooltip_but">{{i.field_value_str}}</el-button>
+				<div class="column_item_text" v-for="i in item">
+					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 170 || i.id == 171">
+						<el-button type="text" class="tooltip_but">{{i.val}}</el-button>
 					</el-tooltip>
-					<div class='tab_text' v-else>{{i.field_value_str}}</div>
+					<div class='tab_text' v-else>{{i.val}}</div>
 				</div>
 			</div>
 		</div>
 	</div>
 	<!-- 没有数据 -->
-	<div class="data_null" v-if="show_week_null && week_data_list.length == 0">暂无数据</div>
+	<div class="data_null" v-if="week_data_list.length == 0">暂无数据</div>
 	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_week_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_week_ids">
@@ -213,7 +223,7 @@
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="RestoreWeek">恢复默认</el-button>
 			<el-button size="small" @click="RestoreWeek('is_close')">取消</el-button>
-			<el-button size="small" type="primary" @click="GetData('1','2')">保存</el-button>
+			<el-button size="small" type="primary" @click="setColumns('1')">保存</el-button>
 		</div>
 	</el-dialog>
 </div>
@@ -304,6 +314,14 @@
 				-webkit-line-clamp: 1 !important;
 				-webkit-box-orient: vertical !important;
 			}
+			.total_text{
+				font-weight: bold;
+				color: #FF993C;
+				width:100%;
+				text-align: center;
+				height: 36px;
+				line-height: 36px;
+			}
 			.tab_text{
 				width:100%;
 				text-align: center;
@@ -378,30 +396,32 @@
 				select_department_ids:[],			//选中的部门id列表
 				select_plat_ids:[],					//选中的平台列表
 				select_store_ids:[],				//选中的店铺id列表
+				company_list:[],					//公司列表
+				company:['德儿'],					//选中的公司
 				xssryg:{},							//销售收入预估
 				yxfyyg:{},							//营销费用预估
 				ygz_gxmy:{},						//预估值-贡献毛益
 				ygz_gxmyl:{},						//预估值-贡献毛益率
+				jlryg:{},							//净利润预估
 				label_list:[],						//表格数据（左侧表头）
 				shop_table_list_data:[],			//表格数据（原始）
 				total_shop_data:[],					//总计
+				total_list:[],						//导出用
 				data_list:[],						//表格数据（更新后）
 				default_data_list:[],				//表格数据（默认排序用）
 				view_row:[],						//自定义列的内容
 				selected_ids:[],					//选中的自定义列的id
-				show_null:false,					//默认不显示空提示
 				show_custom:false,					//是否显示自定义弹框
 				button_list:{},						//按钮权限
 				week_label_list:[],					//表格数据（营销周报，左侧表头）
-				total_week_data:{},
-				week_data_list:[],					//表格数据（营销周报，下面内容）
+				week_table_list_data:[],			//表格数据（原始）
+				week_data_list:[],					//表格数据（后面内容）
+				default_week_data_list:[],			//表格数据（营销周报，默认排序用）
+				total_week_data:[],					//总计
+				week_total_list:[],					//总计（导出用）
 				view_week_row:[],					//自定义列的内容(营销周报)
 				selected_week_ids:[],				//选中的自定义列的id(营销周报)
-				show_week_null:false,				//默认不显示空提示(营销周报)
-				default_week_data_list:[],			//表格数据（营销周报，默认排序用）
 				show_week_custom:false,				//营销周报是否显示自定义弹框
-				company_list:[],					//公司列表
-				company:['德儿'],							//选中的公司
 			}
 		},
 		created(){
@@ -430,47 +450,48 @@
 			},
 			//导出
 			Export(){
+				// 加单位
+				let table_list = JSON.parse(JSON.stringify(this.shop_table_list_data));
+				let total_list = JSON.parse(JSON.stringify(this.total_list));
+				let data_list = [...table_list,...total_list];
+				
+				data_list.map(item => {
+					this.label_list.map(i => {
+						item[i.row_field_name] += i.unit;
+					})
+				});
 				var data_obj = {
 					table_title:"业绩分析报告",
 					table_title_list:[],
 					field_name_list:[],
-					data_list:[]
+					data_list:table_list.length > 1?data_list:table_list
 				};
 				this.label_list.map(item => {
-					data_obj.table_title_list.push(item.title);
-					data_obj.field_name_list.push(item.field_name);
-				})
-				let total_shop_data_list = [this.total_shop_data];
-				let expor_data = [...total_shop_data_list,...this.data_list];
-				expor_data.map(item => {
-					let obj = {};
-					item.map(i => {
-						obj[i.field_name] = i.field_value_str;
-					})
-					data_obj.data_list.push(obj)
+					data_obj.table_title_list.push(item.row_name);
+					data_obj.field_name_list.push(item.row_field_name);
 				})
 				exportExcel(data_obj);
 			},
 			//营销周报导出
 			ExportWeek(){
+				// 加单位
+				let table_list = JSON.parse(JSON.stringify(this.week_table_list_data));
+				let total_list = JSON.parse(JSON.stringify(this.week_total_list));
+				let data_list = [...table_list,...total_list];
+				data_list.map(item => {
+					this.week_label_list.map(i => {
+						item[i.row_field_name] += i.unit;
+					})
+				});
 				var data_obj = {
 					table_title:"营销周报报告",
 					table_title_list:[],
 					field_name_list:[],
-					data_list:[]
+					data_list:table_list.length > 1?data_list:table_list
 				};
 				this.week_label_list.map(item => {
-					data_obj.table_title_list.push(item.title);
-					data_obj.field_name_list.push(item.field_name);
-				})
-				let total_week_data_list = [this.total_week_data];
-				let expor_data = [...total_week_data_list,...this.week_data_list];
-				expor_data.map(item => {
-					let obj = {};
-					item.map(i => {
-						obj[i.field_name] = i.field_value_str;
-					})
-					data_obj.data_list.push(obj)
+					data_obj.table_title_list.push(item.row_name);
+					data_obj.field_name_list.push(item.row_field_name);
 				})
 				exportExcel(data_obj);
 			},
@@ -480,8 +501,28 @@
 				this.select_plat_ids = reqObj.select_plat_ids;
 				this.select_store_ids = reqObj.select_store_ids;
 			},
+			//自定义列
+			setColumns(menu_id){
+				var row_ids = [];
+				if(menu_id == '2'){
+					row_ids = this.selected_ids.join(',')
+				}else if(menu_id == '1'){
+					row_ids = this.selected_week_ids.join(',')
+				}
+				resource.setColumns({menu_id:menu_id,row_ids:row_ids}).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.show_custom = false;
+						this.show_week_custom = false;
+						//获取列表
+						this.GetData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
+			},
 			//获取信息
-			GetData(is_save,type){
+			GetData(){
 				let req = {
 					platform:this.select_plat_ids.join(','),
 					dept_id:this.select_department_ids.join(','),
@@ -491,23 +532,17 @@
 					audit_flag:this.is_assessment,
 					company:this.company.join(',')
 				}
-				if(is_save == '1'){
-					if(type == '1'){
-						req.row_ids = this.selected_ids.join(',')
-					}else{
-						req.week_row_ids = this.selected_week_ids.join(',')
-					}
-				}
 				resource.performanceReport(req).then(res => {
 					if(res.data.code == 1){
-						this.show_custom = false;
-						this.show_week_custom = false;
+						this.show_null = true;
 						let data = res.data.data;
+						this.button_list = data.button_list;
 						// 顶部几块
 						this.xssryg = data.top.xssryg;
 						this.yxfyyg = data.top.yxfyyg;
 						this.ygz_gxmy = data.top.ygz_gxmy;
 						this.ygz_gxmyl = data.top.ygz_gxmyl;
+						this.jlryg = data.top.jlryg;		
 						//左侧表头
 						data.table_list.title_list.map(item => {
 							item.show_sort = false;		//是否显示排序标签
@@ -519,24 +554,25 @@
 						this.clTableData(this.shop_table_list_data);
 						this.default_data_list = this.data_list;
 						this.total_shop_data = data.table_list.total;
-						this.view_row = data.view_row;
-						this.selected_ids = data.selected_ids;
-						this.button_list = data.button_list;
-						this.show_null = true;
+						this.total_list[0] = data.table_list.total_list;
+						this.view_row = data.table_list.view_row;
+						this.selected_ids = data.table_list.selected_ids;
+						
 						// 营销周报部分
-						// data.week_table_list.title_names.map(item => {
-						// 	item.show_sort = false;		//是否显示排序标签
-						// })
-						// this.week_label_list = data.week_table_list.title_names;
-						// //
-						// let week_data_list_data = data.week_table_list.list;
-						// this.total_week_data = week_data_list_data[0];
-						// week_data_list_data.splice(0,1);
-						// this.week_data_list = week_data_list_data;
-						// this.view_week_row = data.week_view_row;
-						// this.selected_week_ids = data.week_selected_ids;
-						// this.show_week_null = true;
-						// this.default_week_data_list = JSON.stringify(data.week_table_list.list);
+						// 左侧表头
+						data.week_table_list.title_list.map(item => {
+							item.show_sort = false;		//是否显示排序标签
+							item.sort = 0;				//默认排序
+						})
+						this.week_label_list = data.week_table_list.title_list;
+						//表格数据
+						this.week_table_list_data = data.week_table_list.list;	//原始
+						this.clTableWeekData(this.week_table_list_data);
+						this.default_week_data_list = this.week_data_list;
+						this.total_week_data = data.week_table_list.total;
+						this.week_total_list[0] = data.week_table_list.total_list;
+						this.view_week_row = data.week_table_list.view_row;
+						this.selected_week_ids = data.week_table_list.selected_ids;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -562,7 +598,7 @@
 				if(sort == 0){
 					this.clTableData(this.shop_table_list_data);
 				}else{
-					this.Compare(sort,this.label_list[index].row_field_name)
+					this.Compare(sort,this.label_list[index].row_field_name,this.shop_table_list_data,'1')
 				}
 			},
 			// 排序(营销周报)
@@ -575,14 +611,14 @@
 					}
 				})
 				if(sort == 0){
-					this.week_data_list = JSON.parse(this.default_week_data_list);
+					this.clTableWeekData(this.week_table_list_data);
 				}else{
-					this.week_data_list.sort(this.Compare(sort,index));
+					this.Compare(sort,this.week_label_list[index].row_field_name,this.week_table_list_data,'2')
 				}
 			},
 			// 排序
-			Compare(sort,k){
-				let ss = JSON.parse(JSON.stringify(this.shop_table_list_data));
+			Compare(sort,k,table_data,type){
+				let ss = JSON.parse(JSON.stringify(table_data));
 				ss.sort((a, b) => {
 					if(sort == 1){
 						return a[k] - b[k];
@@ -590,12 +626,18 @@
 						return b[k] - a[k];
 					}
 				});
-				this.clTableData(ss);
+				if(type == '1'){
+					this.clTableData(ss);
+				}else{
+					this.clTableWeekData(ss);
+				}
+				
 			},
 			//处理上面表格的数据
-			clTableData(shop_table_list_data){
+			clTableData(table_data){
+				var ss = JSON.parse(JSON.stringify(table_data));
 				this.data_list = [];
-				shop_table_list_data.map(item => {
+				ss.map(item => {
 					var item_values = Object.values(item);
 					var arr = [];
 					item_values.map((i,id) => {
@@ -607,6 +649,23 @@
 					})
 					this.data_list.push(arr)
 				});
+			},
+			//处理下面面表格的数据
+			clTableWeekData(table_data){
+				var ss = JSON.parse(JSON.stringify(table_data));
+				this.week_data_list = [];
+				ss.map(item => {
+					var item_values_week = Object.values(item);
+					var arr_week = [];
+					item_values_week.map((i,id) => {
+						let oo = {
+							id:this.week_label_list[id].row_id,
+							val:i + this.week_label_list[id].unit
+						}
+						arr_week.push(oo);
+					})
+					this.week_data_list.push(arr_week)
+				});	
 			},
 			//恢复默认
 			Restore(type){
