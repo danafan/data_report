@@ -21,12 +21,12 @@
 					</el-table-column>
 					<el-table-column label="平台" prop="platform" width="140" show-overflow-tooltip sortable>
 					</el-table-column>
-					<el-table-column :label="current_year + '-' + day_list[day_list.length - 2]" prop="yesterday" width="140" sortable>
+					<el-table-column :label="date.pre_day" prop="yesterday" width="140" sortable>
 						<template slot-scope="scope">
 							<div class="background_box" :style="{width:`${max_list.yesterday_max == 0?0:(140/max_list.yesterday_max)*Math.abs(scope.row.yesterday)}px`,background:'#FEDB6F'}">{{scope.row.yesterday.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="current_year + '-' + day_list[day_list.length - 1]" prop="today" width="140" sortable>
+					<el-table-column :label="date.today" prop="today" width="140" sortable>
 						<template slot-scope="scope">
 							<div class="background_box" :style="{width:`${max_list.max_today == 0?0:(140/max_list.max_today)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}">{{scope.row.today.toFixed(2)}}万</div>
 						</template>
@@ -54,9 +54,9 @@
 	</div>
 </template>
 <style type="text/css">
-	.el-table--mini td{
-		padding: 5px 0!important;
-	}
+.el-table--mini td{
+	padding: 5px 0!important;
+}
 </style>
 <style lang="less" scoped>
 .title{
@@ -125,13 +125,11 @@
 				max_list:{},								//最大值
 				total_data:[],								//总计行
 				day_list:[],								//所有日期列表
-				current_year:"",							//当前年
 				right_list:[],	
+				date:{}
 			}
 		},
-		created(){
-			var now = new Date(); 				//当前日期  
-			this.current_year = now.getFullYear(); 		
+		created(){	
 			//获取列表
 			this.getData();
 		},
@@ -167,6 +165,7 @@
 				resource.recentSales(req).then(res => {
 					if(res.data.code == 1){
 						let data = res.data.data;
+						this.date = data.date;
 						this.table_data = data.left_list.list;
 						this.max_list = data.left_list.max_list;
 						this.total_data = data.left_list.total_data;

@@ -37,7 +37,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
+				<el-button type="primary" size="small" @click="getData">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="table_setting">
@@ -132,7 +132,7 @@
 			<el-tab-pane label="明细" name="mx" class="tab_pane_box">
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="项目名称：">
-						<el-select v-model="selected_mx_xmmc_list" clearable multiple collapse-tags placeholder="全部" @change="changeXmmc">
+						<el-select v-model="selected_mx_xmmc_list" filterable clearable multiple collapse-tags placeholder="全部" @change="changeXmmc">
 							<el-option v-for="item in mx_xmmc_list" :key="item" :label="item" :value="item">
 							</el-option>
 						</el-select>
@@ -268,10 +268,10 @@
 			this.ajaxXmdl();
 			//项目名称列表
 			this.ajaxXmmc();
-			//获取列表
-			this.searchFun();
 			//公司列表
 			this.ajaxCompany();
+			//获取列表
+			this.getData();
 		},
 		methods:{
 			//导出
@@ -363,7 +363,8 @@
 				resource.ajaxXmmc(arg).then(res => {
 					if(res.data.code == 1){
 						this.xmmc_list = res.data.data;
-						this.mx_xmmc_list = res.data.data;
+						//处理底部项目名称
+						this.mx_xmmc_list = this.xmmc_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -371,6 +372,9 @@
 			},
 			//切换明细项目名称
 			changeXmmc(v){
+				if(v.length == 0 && this.mx_xmmc_list.length > 0){
+					v = this.mx_xmmc_list;
+				}
 				var arr = [];
 				var total_num = 0;
 				this.default_mx_table_data.map(item => {
@@ -395,10 +399,7 @@
 				})
 			},
 			//获取列表
-			searchFun(){
-				//处理底部项目名称
-				this.selected_mx_xmmc_list = this.select_xmmc_list;
-				this.mx_xmmc_list = this.select_xmmc_list.length == 0?this.xmmc_list:this.select_xmmc_list;
+			getData(){
 				let req = {
 					platform:this.select_plat_ids.join(','),
 					dept_id:this.select_department_ids.join(','),
@@ -411,6 +412,9 @@
 					type:this.type,
 					company:this.company.join(',')
 				}
+				// //处理底部项目名称
+				this.mx_xmmc_list = this.select_xmmc_list.length == 0?this.xmmc_list:this.select_xmmc_list;
+				this.selected_mx_xmmc_list = this.mx_xmmc_list.length == this.xmmc_list.length?[]:this.mx_xmmc_list;
 				resource.yxfyList(req).then(res => {
 					if(res.data.code == 1){
 						var data = res.data.data;
