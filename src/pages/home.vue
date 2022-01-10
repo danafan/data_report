@@ -80,15 +80,6 @@
 						<el-menu-item-group> 
 							<el-menu-item v-for="(menu,id) in item.list" :index="`/${menu.web_url}`">{{menu.menu_name}}</el-menu-item>
 						</el-menu-item-group>
-						<!-- <template v-for="(menu,id) in item.list">
-							<el-submenu :index="menu.menu_name" v-if="menu.list.length > 0">
-								<template slot="title">{{menu.menu_name}}</template>
-								<el-menu-item :index="`/${c_menu.web_url}`" v-for="c_menu in menu.list">{{c_menu.menu_name}}</el-menu-item>
-							</el-submenu>
-							<el-menu-item-group v-else> 
-								<el-menu-item :index="`/${menu.web_url}`">{{menu.menu_name}}</el-menu-item>
-							</el-menu-item-group>
-						</template> -->
 					</el-submenu>
 					<el-menu-item :index="`/${item.web_url}`" v-else>
 						<i :class="`el-icon-${item.icon}`"></i>

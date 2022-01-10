@@ -31,6 +31,13 @@ export function getCurrentDate(){
 	var currentDate = new Date(day1);
 	return formatDate(currentDate); 
 }
+//获得今日
+export function getNowDate(){
+	// var day7 = new Date();
+	// day7.setTime(day7.getTime()-24*60*60*1000);
+	// var currentDate = new Date(day1);
+	return formatDate(new Date()); 
+}
 //获得30天以前的日期
 export function lastMonthDate(){
 	var day2 = new Date();
