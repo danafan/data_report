@@ -28,6 +28,8 @@ const data_management = resolve=>require(['@/pages/FormData/form_data/data_manag
 const commit_data = resolve=>require(['@/pages/FormData/my_commit/submit_log/commit_data'],resolve)
 //下架款登记反馈
 const shelves_feedback = resolve=>require(['@/pages/ShelvesFeedBack/shelves_feedback'],resolve)
+//店铺信息
+const store_info = resolve=>require(['@/pages/StoreInfo/store_info'],resolve)
 Vue.use(Router)
 
 const router = new Router({
@@ -55,6 +57,7 @@ const router = new Router({
     { path: '/data_management',name:"数据管理", component: data_management},
     { path: '/commit_data',name:"表单数据", component: commit_data},
     { path: '/shelves_feedback',name:"下架款登记反馈", component: shelves_feedback},
+    { path: '/store_info',name:"店铺信息", component: store_info},
     ]
   }
   ]

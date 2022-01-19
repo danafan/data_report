@@ -72,7 +72,7 @@
 					<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
 				</div>
 				<template v-for="(item,index) in menu_list">
-					<el-submenu :index="index.toString()" v-if="item.list.length > 0">
+					<el-submenu :index="index.toString()" v-if="item.list.length > 0 && item.show_type == 0">
 						<template slot="title">
 							<i :class="`el-icon-${item.icon}`"></i>
 							<span>{{item.menu_name}}</span>

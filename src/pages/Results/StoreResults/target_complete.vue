@@ -33,14 +33,48 @@
 	<div class="table_setting">
 		<el-button type="primary" size="small" @click="show_custom = true" style="margin-bottom: 5px">自定义列表</el-button>
 	</div>
-		<el-table :data="data_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary>
+	<!-- 表格 -->
+	<div class="table_container" v-if="data_list.length > 0">
+		<div class="table_header">
+			<div class="header_item" v-for="(item,index) in label_list" :key="index" @mouseenter="CheckShow(index)" @mouseleave="CheckShow(index)">
+				<div class="label_title">{{item.row_name}}
+					<el-tooltip class="item" effect="dark" :content="item.remark" placement="top-start" v-if="item.remark != ''">
+						<i class="el-icon-warning" style="color: #FFE58F"></i>
+					</el-tooltip>
+				</div>
+				<div v-show="item.show_sort">
+					<img class="sort-icon" v-if="item.sort == 0" src="../../../static/sort_icon.png" @click="SortFun(2,index)">
+					<img class="sort-icon" v-if="item.sort == 1" src="../../../static/sort_up.png" @click="SortFun(0,index)">
+					<img class="sort-icon" v-if="item.sort == 2" src="../../../static/sort_down.png" @click="SortFun(1,index)">
+				</div>
+			</div>
+		</div>
+		<div class="column_item column_item_odd" v-if="data_list.length > 1">
+			<div class="column_item_text" v-for="i in total_shop_data">
+				<div class='total_text'>{{i}}</div>
+			</div>
+		</div>
+		<div class="table_list">
+			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
+				<div class="column_item_text" v-for="i in item">
+					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 472 || i.id == 473">
+						<el-button type="text" class="tooltip_but">{{i.val}}</el-button>
+					</el-tooltip>
+					<div class='tab_text' v-else>{{i.val}}</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<!-- 没有数据 -->
+	<div class="data_null" v-if="data_list.length == 0">暂无数据</div>
+	<!-- <el-table :data="data_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary>
 		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
 			<template slot-scope="scope">
 				<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.$index != 0">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
 				<div class="text_content" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
 			</template>
 		</el-table-column>
-	</el-table>
+	</el-table> -->
 	<!-- 仪表 -->
 	<div id="cate_row" class="cate_row"></div>
 	<!-- 各店销售收入完成情况 -->
@@ -95,6 +129,90 @@
 	width: 100%;
 	min-height: 600px;
 }
+// 表格
+.table_container{
+	margin-top: 5px;
+	width: 100%;
+	display: flex;
+	font-size:14px;
+	.table_header{
+		border-top:1px solid #fff;
+		border-right:1px solid #D9D9D9;
+		.header_item{
+			border-bottom:1px solid #fff;
+			height: 37px;
+			line-height: 37px;
+			color: #333333;
+			font-weight: 600;
+			position: relative;
+			padding-right:40px;
+			.sort-icon{
+				position: absolute;
+				top: 10px;
+				right: 5px;
+				width:16px;
+				height: 16px;
+			}
+		}
+	}
+	.column_item{
+		border-top:1px solid #D9D9D9;
+		background: #EFF1FA;
+		.column_item_text{
+			border-bottom:1px solid #D9D9D9;
+			width:100px;
+			padding-left: 5px;
+			padding-right:5px;
+			.tooltip_but{
+				width:100%;
+				height: 36px;
+				display: flex;
+				flex-direction: column;
+				justify-content: center;
+				align-items: center;
+				color: #333333;
+				overflow: hidden !important;
+				text-overflow: ellipsis !important;
+				display: -webkit-box !important;
+				-webkit-line-clamp: 1 !important;
+				-webkit-box-orient: vertical !important;
+			}
+			.total_text{
+				font-weight: bold;
+				color: #FF993C;
+				width:100%;
+				text-align: center;
+				height: 36px;
+				line-height: 36px;
+			}
+			.tab_text{
+				width:100%;
+				text-align: center;
+				height: 36px;
+				line-height: 36px;
+			}
+		}
+	}
+	.column_item_odd{
+		background: #F8F8F8;
+	}
+	.table_list{
+		flex:1;
+		display: flex;
+		overflow-x: scroll;
+	}
+}
+//暂无数据
+.data_null{
+	margin-top: 20px;
+	border:1px solid #D9D9D9;
+	width:100%;
+	text-align: center;
+	height: 80px;
+	line-height: 80px;
+	font-size:18px;
+	color: #D9D9D9;
+}
 </style>
 <script>
 	import resource from '../../../api/resource.js'
@@ -137,14 +255,23 @@
 				company:['德儿'],					//选中的公司
 				is_assessment:'0',					//是否考核店铺
 				dashboard_data:[],					//仪表盘列表
-				data_list:[],						//列表数据
-				title_list:[],						//列
-				selected_ids:[],					//自定义已选中的id
-				row_ids:[],							//可提交的自定义ids
-				view_row:[],						//自定义
-				total:[],							//总计
-				total_list:[],						//总计（用于导出）
-				show_custom:false,					//自定义列表
+				// data_list:[],						//列表数据
+				// title_list:[],						//列
+				// selected_ids:[],					//自定义已选中的id
+				// row_ids:[],							//可提交的自定义ids
+				// view_row:[],						//自定义
+				// total:[],							//总计
+				// total_list:[],						//总计（用于导出）
+				// show_custom:false,					//自定义列表
+				label_list:[],						//表格数据（左侧表头）
+				shop_table_list_data:[],			//表格数据（原始）
+				total_shop_data:[],					//总计
+				total_list:[],						//导出用
+				data_list:[],						//表格数据（更新后）
+				default_data_list:[],				//表格数据（默认排序用）
+				view_row:[],						//自定义列的内容
+				selected_ids:[],					//选中的自定义列的id
+				show_custom:false,					//是否显示自定义弹框
 				show_axis_01:true,
 				show_axis_02:true,
 				show_axis_03:true,
@@ -232,17 +359,54 @@
 				}
 				resource.targetTable(req).then(res => {
 					if(res.data.code == 1){
-						let table_list_data = res.data.data;
-						this.title_list = table_list_data.title_list;
-						this.data_list = table_list_data.data;
-						this.total = table_list_data.total;
-						this.total_list[0] = table_list_data.total_list;
-						this.view_row = table_list_data.view_row;
-						this.selected_ids = table_list_data.selected_ids;
+						// let table_list_data = res.data.data;
+						// this.title_list = table_list_data.title_list;
+						// this.data_list = table_list_data.data;
+						// this.total = table_list_data.total;
+						// this.total_list[0] = table_list_data.total_list;
+						// this.view_row = table_list_data.view_row;
+						// this.selected_ids = table_list_data.selected_ids;
+
+						let data = res.data.data;
+						//左侧表头
+						data.title_list.map(item => {
+							item.show_sort = false;		//是否显示排序标签
+							item.sort = 0;				//默认排序
+						})
+						this.label_list = data.title_list;
+						//表格数据
+						this.shop_table_list_data = data.data;	//原始
+						this.clTableData(this.shop_table_list_data);
+						this.default_data_list = this.data_list;
+						this.total_shop_data = data.total;
+						this.total_list[0] = data.total_list;
+						this.view_row = data.view_row;
+						this.selected_ids = data.selected_ids;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
+			},
+			//处理表格的数据
+			clTableData(table_data){
+				var ss = JSON.parse(JSON.stringify(table_data));
+				this.data_list = [];
+				ss.map(item => {
+					var item_values = Object.values(item);
+					var arr = [];
+					item_values.map((i,id) => {
+						let oo = {
+							id:this.label_list[id].row_id,
+							val:i + this.label_list[id].unit
+						}
+						arr.push(oo);
+					})
+					this.data_list.push(arr)
+				});
+			},
+			//切换是否显示(业绩分析)
+			CheckShow(index){
+				this.label_list[index].show_sort = !this.label_list[index].show_sort;
 			},
 			//单品分析—-指标汇总恢复默认
 			Restore(){
@@ -280,12 +444,16 @@
 						var echarts = require("echarts");
 						//仪表盘数据
 						this.dashboard_data = res.data.data.dashboard;
-						for(var i = 0;i < this.dashboard_data.length;i ++){
+						if(this.dashboard_data.length == 0){
+							//清空图表
+							this.ClearEcharts();
+						}else{
+							for(var i = 0;i < this.dashboard_data.length;i ++){
 							//判断是否包含当前元素
 							let cur_ele = document.getElementById('id_' + i);
 							if(!cur_ele){	//不包含则创建
 								let div = '<div style="height:300px;float:left;width:320px;margin-bottom:10px;margin-right:30px" id='+"id_"+i+' class="echarts_div"></div>';
-								document.getElementById('cate_row').insertAdjacentHTML("beforeBegin",div);
+								document.getElementById('cate_row').insertAdjacentHTML("beforeBegin",div); 
 							}
 						}
 						this.dashboard_data.map((item,index) => {
@@ -296,6 +464,8 @@
 							}
 							myChart.setOption(this.option(item));
 						});
+					}
+
 						//各店销售收入完成情况
 						var title = '各店销售收入完成情况（有月目标的店铺）';
 						var	legend = ['销售收入月目标','销售收入预估','销售收入月完成率预估'];
@@ -388,7 +558,31 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
+},
+ClearEcharts(){
+	var child= document.getElementsByClassName("echarts_div");
+	child.removeNode = [];
+	if (child.length != undefined) {
+		var len = child.length;
+		for (var i = 0; i < len; i++) {
+			child.removeNode.push({
+				parent: child[i].parentNode,
+				inner: child[i].outerHTML,
+				next: child[i].nextSibling
+			});
+		}
+		for (var i = 0; i < len; i++){
+			child[0].parentNode.removeChild(child[0]);
+		}
+	} else {
+		child.removeNode.push({
+			parent: child.parentNode,
+			inner: child.outerHTML,
+			next: child.nextSibling
+		});
+		child.parentNode.removeChild(child);
+	}
+},
 			// 仪表盘
 			option(item){
 				return {
