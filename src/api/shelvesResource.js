@@ -3,12 +3,15 @@ let path = {
 	offShelfList:'offshelf/kslist',					//下架款筛选列表
 	offShelfExport:'offshelf/export',				//【下架款登记-去重】-导入接口
 	offShelfDjList:'offshelf/list',					//下架款登记列表-去重
+	exportUnique:'offshelf/export_unique',			//去重导出
 	offshelfAll:'offshelf/all',						//下架款登记列表-明细
+	exportDetailed:'offshelf/export_detailed',		//明细导出
 	ysggList:'offshelf/ysgg',						//所有颜色规格列表
 	offshelfAdd:'offshelf/add',						//录入
 	offshelfDel:'offshelf/del',						//删除
 	ajaxShops:'offshelf/ajax_shops',				//获取店铺列表
 	dpksList:'offshelf/dpks_list',					//款式编码对应店铺款式编码列表
+
 	
 }						
 export default{
@@ -24,9 +27,17 @@ export default{
 	offShelfDjList(params){
 		return http.get(path.offShelfDjList, params)
 	},
+	//去重导出
+	exportUnique(params){
+		return http.post(path.exportUnique, params)
+	},
 	//下架款登记列表（明细）
 	offshelfAll(params){
 		return http.get(path.offshelfAll, params)
+	},
+	//明细导出
+	exportDetailed(params){
+		return http.post(path.exportDetailed, params)
 	},
 	//所有颜色规格列表
 	ysggList(params){

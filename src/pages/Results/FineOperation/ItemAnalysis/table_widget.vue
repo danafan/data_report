@@ -6,7 +6,12 @@
 		</div>
 		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" :cell-style="columnStyle" max-height='600' :summary-method="getSummaries"
 		show-summary>
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="item.row_field_name == 'tjrq'?90:80" v-for="item in title_list" :sortable="item.is_sort == 1?true:false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
+		<el-table-column :prop="item.row_field_name" :width="item.row_field_name == 'tjrq'?90:80" v-for="item in title_list" :sortable="item.is_sort == 1?true:false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
+			<template slot="header" slot-scope="scope">
+				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+					<div class="text_content">{{item.row_name}}</div>
+				</el-tooltip>
+			</template>
 			<template slot-scope="scope">
 				<!-- 占比 -->
 				<div class="background_box" :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.row.is_total != 1">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{item.unit}}</div>
@@ -31,6 +36,11 @@
 	height: 28px;
 	display:flex;
 	align-items: center;
+}
+.text_content{
+	overflow: hidden;/*超出部分隐藏*/
+	white-space: nowrap;/*不换行*/
+	text-overflow:ellipsis;/*超出部分文字以...显示*/
 }
 .is_total{
 	color: #8D5714;

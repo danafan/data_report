@@ -132,6 +132,7 @@
 // 表格
 .table_container{
 	margin-top: 5px;
+	margin-bottom: 30px;
 	width: 100%;
 	display: flex;
 	font-size:14px;
@@ -404,9 +405,36 @@
 					this.data_list.push(arr)
 				});
 			},
-			//切换是否显示(业绩分析)
+			//切换是否显示
 			CheckShow(index){
 				this.label_list[index].show_sort = !this.label_list[index].show_sort;
+			},
+			// 排序
+			SortFun(sort,index){
+				this.label_list.map((item,i) => {
+					if(i == index){
+						item.sort = sort;
+					}else{
+						item.sort = 0;
+					}
+				})
+				if(sort == 0){
+					this.clTableData(this.shop_table_list_data);
+				}else{
+					this.Compare(sort,this.label_list[index].row_field_name,this.shop_table_list_data)
+				}
+			},
+			// 排序
+			Compare(sort,k,table_data){
+				let ss = JSON.parse(JSON.stringify(table_data));
+				ss.sort((a, b) => {
+					if(sort == 1){
+						return a[k] - b[k];
+					}else if(sort == 2){
+						return b[k] - a[k];
+					}
+				});
+				this.clTableData(ss);
 			},
 			//单品分析—-指标汇总恢复默认
 			Restore(){

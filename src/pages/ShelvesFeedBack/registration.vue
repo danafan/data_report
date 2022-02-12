@@ -17,6 +17,7 @@
 				导入
 				<i class="el-icon-upload el-icon--right"></i>
 			</el-button>
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="add_time" show-overflow-tooltip label="提交日期" align="center"></el-table-column>
@@ -141,14 +142,16 @@
 </style>
 <script>
 	import resource from '../../api/shelvesResource.js'
+	import {exportPost} from '../../api/export.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../api/nowMonth.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
 				page:1,
 				pagesize:15,
 				ksbm:"",									//款式编码
-				date:[getNowDate(),getNowDate()],		//查询日期
+				date:[getCurrentDate(),getNowDate()],		//查询日期
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -240,6 +243,28 @@
 					})
 				}
 			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						ksbm:this.ksbm,
+						add_time:this.date && this.date.length > 0?this.date[0]:"",
+						end_date:this.date && this.date.length > 0?this.date[1]:"",
+					}
+					resource.exportUnique(arg).then(res => {
+						exportPost("\ufeff" + res.data,'下架款登记-去重');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//点击主列表的录入
 			showDetail(id){
 				this.getStoreList();
@@ -317,6 +342,7 @@
 				//获取列表
 				this.getList();
 			},
+
 		}
 	}
 </script>

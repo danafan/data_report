@@ -25,26 +25,29 @@
 				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column width="160" show-overflow-tooltip prop="dpmc" label="店铺名称" align="center"></el-table-column>
-				<el-table-column width="120" show-overflow-tooltip prop="zdmc" label="站点名称" align="center"></el-table-column>
-				<el-table-column width="160" show-overflow-tooltip prop="ksbm" label="线上款式编码" align="center"></el-table-column>
-				<el-table-column width="120" show-overflow-tooltip label="款式链接" align="center">
-					<template slot-scope="scope">
-						<el-button type="text" size="small" @click="openWindow(scope.row.url)">{{scope.row.url}}</el-button>
-					</template>
-				</el-table-column>
-				<el-table-column width="160" prop="add_time" label="提交日期" align="center"></el-table-column>
-				<el-table-column width="160" prop="dpysgg" show-overflow-tooltip label="下架颜色尺码" align="center"></el-table-column>
-				<el-table-column width="160" prop="off_reason" show-overflow-tooltip label="下架原因" align="center"></el-table-column>
-				<el-table-column width="120" show-overflow-tooltip label="执行结果" align="center">
-					<template slot-scope="scope">
-						<div>{{scope.row.zxjg == 0?'未处理':scope.row.zxjg == 1?'已下架':'不下架'}}</div>
-					</template>
-				</el-table-column>
-				<el-table-column width="160" prop="qksm" show-overflow-tooltip label="情况说明" align="center"></el-table-column>
-				<el-table-column width="160" prop="zxr" show-overflow-tooltip label="执行人" align="center"></el-table-column>
-				<el-table-column width="160" prop="zx_time" show-overflow-tooltip label="执行时间" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="zdmc" label="站点名称" align="center"></el-table-column>
+			<el-table-column width="160" show-overflow-tooltip prop="ksbm" label="线上款式编码" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip label="款式链接" align="center">
+				<template slot-scope="scope">
+					<el-button type="text" size="small" @click="openWindow(scope.row.url)">{{scope.row.url}}</el-button>
+				</template>
+			</el-table-column>
+			<el-table-column width="160" prop="add_time" label="提交日期" align="center"></el-table-column>
+			<el-table-column width="160" prop="dpysgg" show-overflow-tooltip label="下架颜色尺码" align="center"></el-table-column>
+			<el-table-column width="160" prop="off_reason" show-overflow-tooltip label="下架原因" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip label="执行结果" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.zxjg == 0?'未处理':scope.row.zxjg == 1?'已下架':'不下架'}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="160" prop="qksm" show-overflow-tooltip label="情况说明" align="center"></el-table-column>
+			<el-table-column width="160" prop="zxr" show-overflow-tooltip label="执行人" align="center"></el-table-column>
+			<el-table-column width="160" prop="zx_time" show-overflow-tooltip label="执行时间" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-size="pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -53,11 +56,18 @@
 	</div>
 </template>
 <style lang="less" scoped>
-
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 </style>
 <script>
 	import resource from '../../api/shelvesResource.js'
+	import {exportPost} from '../../api/export.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../api/nowMonth.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -107,6 +117,30 @@
 				this.page = 1;
 				//获取列表
 				this.getList();
+			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						dpmc:this.dpmc,
+						ksbm:this.ksbm,
+						zxjg:this.zxjg,
+						add_time:this.date && this.date.length > 0?this.date[0]:"",
+						end_date:this.date && this.date.length > 0?this.date[1]:"",
+					}
+					resource.exportDetailed(arg).then(res => {
+						exportPost("\ufeff" + res.data,'下架款登记-明细');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//获取店铺列表
 			getStoreList(){
