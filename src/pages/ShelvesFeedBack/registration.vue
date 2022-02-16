@@ -13,7 +13,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="show_dialog = true">
+			<el-button type="primary" size="small" @click="show_dialog = true" v-if="button_list.export == 1">
 				导入
 				<i class="el-icon-upload el-icon--right"></i>
 			</el-button>
@@ -56,7 +56,7 @@
 			<el-form size="small">
 				<el-form-item label="店铺名称：" required>
 					<el-select v-model="editArg.dpmc" clearable :popper-append-to-body="false" filterable placeholder="全部">
-						<el-option v-for="item in store_list" :key="item" :label="item" :value="item">
+						<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -177,6 +177,7 @@
 					}]
 				},	 										//时间区间
 				dataObj:{},									//返回数据
+				button_list:{},
 				show_dialog:false,							//导入
 				store_list:[],								//所有店铺列表
 				show_row_dialog:false,						//录入的弹窗
@@ -326,6 +327,7 @@
 				resource.offShelfDjList(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

@@ -6,7 +6,7 @@
 			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="dpmc" clearable filterable placeholder="全部">
-					<el-option v-for="item in store_list" :key="item" :label="item" :value="item">
+					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 					</el-option>
 				</el-select>
 			</el-form-item>
