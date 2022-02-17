@@ -13,7 +13,7 @@
 			<el-tab-pane label="超时表" lazy name="/timeout" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
 				<Timeout v-if="activeTab == '/timeout'"/>
 			</el-tab-pane>
-			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box" v-if="user_type == '1'">
+			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box" v-if="user_type != '4'">
 				<BargainingTable v-if="activeTab == '/bargaining_table'"/>
 			</el-tab-pane>
 			<el-tab-pane label="调价表" lazy name="/pricing_table" class="tab_pane_box" v-if="user_type != '4'">

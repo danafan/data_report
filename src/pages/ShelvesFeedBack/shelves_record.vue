@@ -48,6 +48,11 @@
 			<el-table-column width="160" prop="qksm" show-overflow-tooltip label="情况说明" align="center"></el-table-column>
 			<el-table-column width="160" prop="zxr" show-overflow-tooltip label="执行人" align="center"></el-table-column>
 			<el-table-column width="160" prop="zx_time" show-overflow-tooltip label="执行时间" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip label="验证状态" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.is_check == 0?'未验证':scope.row.is_check == 1?'已验证':'其他'}}</div>
+				</template>
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-size="pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">

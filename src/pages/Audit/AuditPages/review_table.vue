@@ -198,7 +198,7 @@
 			</div>
 			<div slot="footer" class="dialog-footer">
 				<el-button type="primary" size="small" @click="aduitFun('0')">拒绝</el-button>
-				<el-button type="primary" size="small" @click="thougnFun()">通过</el-button>
+				<el-button type="primary" size="small" @click="thougnFun">通过</el-button>
 			</div>
 		</el-dialog>
 		<!-- 一键审核 -->
@@ -464,6 +464,8 @@
 			thougnFun(){
 				if(this.detailObj.type == 3){
 					this.innerValue = "审批通过，下架款在总表中移除"
+				}else{
+					this.innerValue = "确认通过？"
 				}
 				this.innerVisible = true;
 			},
