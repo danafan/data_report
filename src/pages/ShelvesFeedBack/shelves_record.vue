@@ -17,6 +17,14 @@
 					<el-option label="不下架" value="2"></el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="验证状态：">
+				<el-select v-model="is_check" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option label="未验证" value="0"></el-option>
+					<el-option label="已下架" value="1"></el-option>
+					<el-option label="未下架" value="2"></el-option>
+					<el-option label="其他" value="3"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="查询时间：">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
@@ -50,7 +58,10 @@
 			<el-table-column width="160" prop="zx_time" show-overflow-tooltip label="执行时间" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip label="验证状态" align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.is_check == 0?'未验证':scope.row.is_check == 1?'已验证':'其他'}}</div>
+					<div v-if="scope.row.is_check == 0">未验证</div>
+					<div v-if="scope.row.is_check == 1">已下架</div>
+					<div v-if="scope.row.is_check == 2">未下架</div>
+					<div v-if="scope.row.is_check == 3">其他</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -82,6 +93,7 @@
 				store_list:[],	//所有店铺列表
 				dpmc:"",		//选中的店铺列表
 				zxjg:"",		//执行结果
+				is_check:"",	//验证状态
 				date:[getCurrentDate(),getNowDate()],		//查询日期
 				pickerOptions: {
 					shortcuts: [{
@@ -134,6 +146,7 @@
 						dpmc:this.dpmc,
 						ksbm:this.ksbm,
 						zxjg:this.zxjg,
+						is_check:this.is_check,
 						add_time:this.date && this.date.length > 0?this.date[0]:"",
 						end_date:this.date && this.date.length > 0?this.date[1]:"",
 					}
@@ -163,6 +176,7 @@
 					dpmc:this.dpmc,
 					ksbm:this.ksbm,
 					zxjg:this.zxjg,
+					is_check:this.is_check,
 					add_time:this.date && this.date.length > 0?this.date[0]:"",
 					end_date:this.date && this.date.length > 0?this.date[1]:"",
 					page:this.page,

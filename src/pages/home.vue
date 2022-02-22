@@ -72,7 +72,7 @@
 					<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
 				</div>
 				<template v-for="(item,index) in menu_list">
-					<el-submenu :index="index.toString()" v-if="item.list.length > 0 && (item.show_type == 0 || item.show_type == 2)">
+					<el-submenu :index="`/${item.web_url}`" v-if="item.list.length > 0 && (item.show_type == 0 || item.show_type == 2)">
 						
 						<template slot="title">
 							<i :class="`el-icon-${item.icon}`"></i>
@@ -85,9 +85,9 @@
 						</div>
 						
 						<div v-if="item.show_type == 2">
-							<el-submenu :index="thirdItem.web_url" v-for="thirdItem in item.list">
+							<el-submenu :index="`/${thirdItem.web_url}`" v-for="thirdItem in item.list">
 								<template slot="title">{{thirdItem.menu_name}}</template>
-								<el-menu-item :index="ziItem.web_url" v-for="ziItem in thirdItem.list">{{ziItem.menu_name}}</el-menu-item>
+								<el-menu-item :index="`/${ziItem.web_url}`" v-for="ziItem in thirdItem.list">{{ziItem.menu_name}}</el-menu-item>
 							</el-submenu>
 						</div>
 					</el-submenu>
@@ -411,7 +411,6 @@
 							}else{
 								this.$router.push(`${this.$route.path}`);
 							}
-							
 						}
 					}else{
 						this.$message.warning(res.data.msg);

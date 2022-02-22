@@ -31,7 +31,8 @@ const shelves_feedback = resolve=>require(['@/pages/ShelvesFeedBack/shelves_feed
 //店铺信息
 const store_info = resolve=>require(['@/pages/StoreInfo/store_info'],resolve)
 //运营中心
-const new_data = resolve=>require(['@/pages/Operations/GoodsInfo/new_data'],resolve)
+const new_data = resolve=>require(['@/pages/Operations/GoodsInfo/new_data'],resolve)    //上新数据
+const delivery_data = resolve=>require(['@/pages/Operations/GoodsInfo/delivery_data'],resolve)    //发货数据
 Vue.use(Router)
 
 const router = new Router({
@@ -61,6 +62,7 @@ const router = new Router({
     { path: '/shelves_feedback',name:"下架款登记反馈", component: shelves_feedback},
     { path: '/store_info',name:"店铺信息", component: store_info},
     { path: '/new_data',name:"上新数据", component: new_data},
+    { path: '/delivery_data',name:"上新数据", component: delivery_data},
     ]
   }
   ]

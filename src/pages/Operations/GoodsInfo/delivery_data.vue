@@ -1,30 +1,13 @@
 <template>
 	<div>
+		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="changePlatform" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺：">
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="款式：">
-				<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags style="width: 280px">
-					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="上新日期：">
+			<el-form-item label="筛选日期：">
 				<el-date-picker v-model="sx_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" @click="searchFn">搜索</el-button>
+				<el-button type="primary" @click="getData">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
@@ -32,20 +15,22 @@
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column type="index" label="序号" width="60" fixed="left"> </el-table-column>
-			<el-table-column width="120" show-overflow-tooltip prop="goods_title" label="标题" align="center"></el-table-column>
-			<el-table-column prop="platform" label="平台" align="center"></el-table-column>
-			<el-table-column width="120" show-overflow-tooltip prop="shop" label="店铺" align="center"></el-table-column>
-			<el-table-column prop="spid" label="商品ID" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="platform" label="平台" align="center"></el-table-column>
+			<el-table-column prop="dept_name" label="项目部" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="shop_name" label="店铺" align="center"></el-table-column>
+			<el-table-column prop="ksbm" width="120" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
+			<el-table-column prop="cpfl" label="品类" align="center"></el-table-column>
+			<el-table-column prop="sfsl" label="实发数量" align="center"></el-table-column>
 			<el-table-column width="100" show-overflow-tooltip label="图片" align="center">
 				<template slot-scope="scope">
-					<img style="width: 80px;height: 80px" :src="scope.row.goods_photo" @click="bigImg(scope.row.goods_photo)">
+					<img style="width: 80px;height: 80px" :src="scope.row.tp" @click="bigImg(scope.row.tp)">
 				</template>
 			</el-table-column>
-			<el-table-column prop="ksbm" label="款式编码" align="center">
+			<el-table-column prop="fhrq" width="160" label="日期" align="center">
 			</el-table-column>
-			<el-table-column prop="price" label="价格" align="center">
+			<el-table-column prop="dpj" label="吊牌价" align="center">
 			</el-table-column>
-			<el-table-column width="150" prop="add_day" label="上新日期" align="center">
+			<el-table-column width="150" prop="sl" label="库存" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -70,20 +55,19 @@
 }
 </style>
 <script>
-	import dpsResource from '../../../api/resource.js'
 	import resource from '../../../api/operationResource.js'
 	import {exportPost} from '../../../api/export.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import { MessageBox,Message } from 'element-ui';
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
-			return{
-				plat_list:[],			//平台列表
-				select_plat_ids:[],		//选中的平台
-				store_list:[],			//店铺列表
-				select_store_ids:[],	//选中的店铺列表
-				ks_list:[],				//款式编码列表
-				select_ks_ids:[],		//选中的款式编码
+			return {
+				page:1,
+				pagesize:10,
+				select_department_ids:[],	//选中的项目部列表
+				select_plat_ids:[],			//选中的平台列表
+				select_store_ids:[],		//选中的店铺列表
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -109,63 +93,21 @@
 					}]
 				},	 					//时间区间
 				sx_date:[getCurrentDate(),getCurrentDate()],				//上新日期
-				pagesize:10,
-				page:1,
-				dataObj:{},				//返回数据
+				dataObj:{},
 				imageDialog:false,
 				big_img_url:""
 			}
 		},
 		created(){
-			//平台列表
-			this.ajaxPlat();
-			//店铺列表
-			this.getStoreList();
 			//点击搜索
 			this.getData();
 		},
 		methods:{
-			//平台列表
-			ajaxPlat(){
-				dpsResource.ajaxPlat().then(res => {
-					if(res.data.code == 1){
-						this.plat_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//切换平台
-			changePlatform(){
-				this.select_store_ids = [];
-				//店铺列表
-				this.getStoreList();
-			},
-			//获取所有店铺
-			getStoreList(){
-				let arg = {
-					platform:this.select_plat_ids.join(','),
-					from:2
-				}; 
-				dpsResource.ajaxViewStore(arg).then(res => {
-					if(res.data.code == 1){
-						this.store_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//款式编码
-			getKsbm(e){
-				if(e != ''){
-					resource.ksbmList({ksbm:e}).then(res => {
-						if(res.data.code == 1){
-							this.ks_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_department_ids = reqObj.select_department_ids;
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//点击搜索
 			searchFn(){
@@ -178,13 +120,13 @@
 				let arg = {
 					page:this.page,
 					pagesize:this.pagesize,
+					dept_id:this.select_department_ids.join(','),
 					platform:this.select_plat_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
-					ksbm:this.select_ks_ids.join(','),
 					start_date:this.sx_date && this.sx_date.length> 0?this.sx_date[0]:"",
 					end_date:this.sx_date && this.sx_date.length> 0?this.sx_date[1]:""
 				}
-				resource.newOnshelfList(arg).then(res => {
+				resource.operateKsale(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 					}else{
@@ -216,14 +158,14 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
+						dept_id:this.select_department_ids.join(','),
 						platform:this.select_plat_ids.join(','),
 						shop_id:this.select_store_ids.join(','),
-						ksbm:this.select_ks_ids.join(','),
 						start_date:this.sx_date && this.sx_date.length> 0?this.sx_date[0]:"",
 						end_date:this.sx_date && this.sx_date.length> 0?this.sx_date[1]:""
 					}
-					resource.newOnshelfExport(arg).then(res => {
-						exportPost("\ufeff" + res.data,'上新数据');
+					resource.deliverExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'发货数据');
 					})
 				}).catch(() => {
 					Message({
@@ -232,30 +174,9 @@
 					});          
 				});
 			},
+		},
+		components:{
+			dps
 		}
 	}
 </script>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
