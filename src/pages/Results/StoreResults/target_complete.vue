@@ -253,7 +253,7 @@
 				select_plat_ids:[],					//选中的平台列表
 				select_store_ids:[],				//选中的店铺id列表
 				company_list:[],					//公司列表
-				company:['德儿'],					//选中的公司
+				company:[],					//选中的公司
 				is_assessment:'0',					//是否考核店铺
 				dashboard_data:[],					//仪表盘列表
 				// data_list:[],						//列表数据

@@ -281,7 +281,7 @@
 				week_selected_ids:[],				//选中的自定义列的id
 				show_week_custom:false,				//营销周报是否显示自定义弹框
 				company_list:[],					//公司列表
-				company:['德儿'],					//选中的公司
+				company:[],					//选中的公司
 			}
 		},
 		created(){

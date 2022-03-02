@@ -397,7 +397,7 @@
 				select_plat_ids:[],					//选中的平台列表
 				select_store_ids:[],				//选中的店铺id列表
 				company_list:[],					//公司列表
-				company:['德儿'],					//选中的公司
+				company:[],							//选中的公司
 				xssryg:{},							//销售收入预估
 				yxfyyg:{},							//营销费用预估
 				ygz_gxmy:{},						//预估值-贡献毛益

@@ -154,7 +154,7 @@
 				company_list:[],					//公司列表
 				show_custom:false,
 				button_list:{},
-				company:['德儿'],					//选中的公司
+				company:[],					//选中的公司
 				show_box:false,						//默认放大折线图不显示
 			}
 		},

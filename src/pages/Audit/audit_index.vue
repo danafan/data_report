@@ -4,7 +4,7 @@
 			<el-tab-pane label="成本表" lazy name="/total_cost" class="tab_pane_box">
 				<ToastCost v-if="activeTab == '/total_cost'"/>
 			</el-tab-pane>
-			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
+			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
 				<EditRecord v-if="activeTab == '/edit_record'"/>
 			</el-tab-pane>
 			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box" v-if="user_type == '2' || user_type == '3' || user_type == '4'">

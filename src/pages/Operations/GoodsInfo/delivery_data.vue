@@ -7,30 +7,40 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" @click="getData">搜索</el-button>
+				<el-button type="primary" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column type="index" label="序号" width="60" fixed="left"> </el-table-column>
-			<el-table-column width="120" show-overflow-tooltip prop="platform" label="平台" align="center"></el-table-column>
-			<el-table-column prop="dept_name" label="项目部" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="shop_name" label="店铺" align="center"></el-table-column>
 			<el-table-column prop="ksbm" width="120" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
 			<el-table-column prop="cpfl" label="品类" align="center"></el-table-column>
-			<el-table-column prop="sfsl" label="实发数量" align="center"></el-table-column>
+			<el-table-column sortable="custom" prop="fh_sfsl" label="实发数量(发货)" align="center" width="130"></el-table-column>
+			<el-table-column sortable="custom" prop="fk_sfsl" label="实发数量(付款)" align="center" width="130"></el-table-column>
 			<el-table-column width="100" show-overflow-tooltip label="图片" align="center">
 				<template slot-scope="scope">
 					<img style="width: 80px;height: 80px" :src="scope.row.tp" @click="bigImg(scope.row.tp)">
 				</template>
 			</el-table-column>
-			<el-table-column prop="fhrq" width="160" label="日期" align="center">
+			<el-table-column prop="cjsj" width="160" align="center">
+				<template slot="header" slot-scope="scope">
+					<div style="display:flex;align-items: center;justify-content: center">
+						<div>上市日期</div>
+						<el-tooltip class="item" effect="dark" content="SCM产品资料中的创建日期为上市日期" placement="top-start">
+
+							<i class="el-icon-warning" style="color: #FFE58F"></i>
+						</el-tooltip>
+					</div>
+				</template>
 			</el-table-column>
 			<el-table-column prop="dpj" label="吊牌价" align="center">
 			</el-table-column>
-			<el-table-column width="150" prop="sl" label="库存" align="center">
+			<el-table-column width="150" prop="zcsjkc" label="主仓库存" align="center">
+			</el-table-column>
+			<el-table-column width="150" prop="jhckc" label="进货仓库存" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -65,6 +75,8 @@
 			return {
 				page:1,
 				pagesize:10,
+				sort_field:"",//排序字段名
+				sort_type:"",	// 排序方式
 				select_department_ids:[],	//选中的项目部列表
 				select_plat_ids:[],			//选中的平台列表
 				select_store_ids:[],		//选中的店铺列表
@@ -115,11 +127,13 @@
 				//获取列表
 				this.getData();
 			},
-			//点击搜索
+			//获取列表
 			getData(){
 				let arg = {
 					page:this.page,
 					pagesize:this.pagesize,
+					sort_field:this.sort_field,
+					sort_type:this.sort_type,
 					dept_id:this.select_department_ids.join(','),
 					platform:this.select_plat_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
@@ -133,6 +147,14 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//排序
+			sortChange(v){
+				this.page = 1;
+				this.sort_field = !v.order?'':v.prop;
+				this.sort_type = !v.order?'':v.order == "ascending"?'0':'1';
+				//获取列表
+				this.getData();
 			},
 			//分页
 			handleSizeChange(val) {
@@ -158,6 +180,8 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
+						sort_field:this.sort_field,
+						sort_type:this.sort_type,
 						dept_id:this.select_department_ids.join(','),
 						platform:this.select_plat_ids.join(','),
 						shop_id:this.select_store_ids.join(','),

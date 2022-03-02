@@ -255,7 +255,7 @@
 				default_mx_table_data:[],
 				mx_max_list:{},						
 				mx_total_data:[],	
-				company:['德儿'],							//选中的公司
+				company:[],							//选中的公司
 				company_list:[],
 				mx_xmmc_list:[],							//明细-所有项目名称
 				selected_mx_xmmc_list:[],					//明细-选中的项目名称
