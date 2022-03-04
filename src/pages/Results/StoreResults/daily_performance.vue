@@ -382,7 +382,7 @@
 							next: child[i].nextSibling
 						});
 					}
-					for (var i = 0; i < len; i++){
+					for (var j = 0; j < len; j++){
 						child[0].parentNode.removeChild(child[0]);
 					}
 				} else {

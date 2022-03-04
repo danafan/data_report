@@ -3,8 +3,10 @@ let path = {
 	ksbmList:'newonshelf/ajsx_ks',					//获取款式编码
 	newOnshelfList:'newonshelf/list',				//获取上新数据列表
 	newOnshelfExport:'newonshelf/export',			//上新数据导出
-	operateKsale:'operate/ks_sale',					//发货数据列表
-	deliverExport:'operate/deliver_export',			//发货数据导出
+	operateFhSale:'operate/fh_sale',				//款式销量（发货）接口
+	fhSaleExport:'operate/fh_sale_export',			//款式销量（发货）数据导出接口
+	operateFkSale:'operate/fk_sale',				//款式销量（付款）接口
+	fkSaleExport:'operate/fk_sale_export',			//款式销量（付款）数据导出接口
 }						
 export default{
 	//获取款式编码
@@ -19,13 +21,21 @@ export default{
 	newOnshelfExport(params){
 		return http.post(path.newOnshelfExport, params)
 	},
-	//发货数据列表
-	operateKsale(params){
-		return http.get(path.operateKsale, params)
+	//款式销量（发货）接口
+	operateFhSale(params){
+		return http.get(path.operateFhSale, params)
 	},
-	//发货数据导出
-	deliverExport(params){
-		return http.post(path.deliverExport, params)
+	//款式销量（发货）数据导出接口
+	fhSaleExport(params){
+		return http.post(path.fhSaleExport, params)
+	},
+	//款式销量（付款）接口
+	operateFkSale(params){
+		return http.get(path.operateFkSale, params)
+	},
+	//款式销量（付款）数据导出接口
+	fkSaleExport(params){
+		return http.post(path.fkSaleExport, params)
 	},
 }
 

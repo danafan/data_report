@@ -31,7 +31,7 @@
 	</el-form>
 	<!-- 数据模块 -->
 	<div class="data_module">
-		<el-card class="module_item">
+		<el-card class="module_item" v-if="xssryg">
 			<div class="title">销售收入预估
 				<el-tooltip class="item" effect="dark" :content="xssryg.remark" placement="top-start">
 					<i class="el-icon-warning" style="color: #FFE58F"></i>
@@ -55,7 +55,7 @@
 				<div class="content_val">{{xssryg.zqnwcl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item">
+		<el-card class="module_item" v-if="yxfyyg">
 			<div class="title">营销费用预估
 				<el-tooltip class="item" effect="dark" :content="yxfyyg.remark" placement="top-start">
 					<i class="el-icon-warning" style="color: #FFE58F"></i>
@@ -79,7 +79,7 @@
 				<div class="content_val">{{yxfyyg.zqnsyl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item">
+		<el-card class="module_item" v-if="ygz_gxmy">
 			<div class="title">预估值-贡献毛益</div>
 			<div class="value">{{ygz_gxmy.ygz_gxmy}}万</div>
 			<div class="content_row">
@@ -99,7 +99,7 @@
 				<div class="content_val">{{ygz_gxmy.zqnwcl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item">
+		<el-card class="module_item" v-if="ygz_gxmyl">
 			<div class="title">预估值-贡献毛益率</div>
 			<div class="value">{{ygz_gxmyl.gxmylyg}}%</div>
 			<div class="content_row">
@@ -111,7 +111,7 @@
 				<div class="content_val">{{ygz_gxmyl.rlj_gxmyl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item">
+		<el-card class="module_item" v-if="jlryg">
 			<div class="title">净利润预估
 				<el-tooltip class="item" effect="dark" :content="jlryg.remark" placement="top-start">
 					<i class="el-icon-warning" style="color: #FFE58F" v-if="jlryg.remark != ''"></i>
