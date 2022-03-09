@@ -25,7 +25,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="cjsj" width="160" align="center">
-				<template slot="header" slot-scope="scope">
+				<template slot="header">
 					<div style="display:flex;align-items: center;justify-content: center">
 						<div>上市日期</div>
 						<el-tooltip class="item" effect="dark" content="SCM产品资料中的创建日期为上市日期" placement="top-start">

@@ -13,25 +13,32 @@
 		<div class="row_box">
 			<div class="left_box">
 				<div class="title">各店目标达成情况</div>
-				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :summary-method="getSummaries" show-summary :cell-style="columnStyle">
-					<el-table-column type="index" label="序号" width="60"> </el-table-column>
-					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip sortable>
-					</el-table-column>
-					<el-table-column label="店铺名称" prop="dpname" width="140" show-overflow-tooltip sortable>
-					</el-table-column>
-					<el-table-column label="平台" prop="platform" width="140" show-overflow-tooltip sortable>
-					</el-table-column>
-					<el-table-column :label="date.pre_day" prop="yesterday" width="140" sortable>
+				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :cell-style="columnStyle" @sort-change="sortChange">
+					<el-table-column label="序号" width="60">
 						<template slot-scope="scope">
-							<div class="background_box" :style="{width:`${max_list.yesterday_max == 0?0:(140/max_list.yesterday_max)*Math.abs(scope.row.yesterday)}px`,background:'#FEDB6F'}">{{scope.row.yesterday.toFixed(2)}}万</div>
+							<div v-if="scope.$index == 0">总计</div>
+							<div v-else>{{scope.$index}}</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="date.today" prop="today" width="140" sortable>
+					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="店铺名称" prop="dpname" width="140" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="平台" prop="platform" width="140" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column :label="date.pre_day" prop="yesterday" width="140"  sortable="custom">
 						<template slot-scope="scope">
-							<div class="background_box" :style="{width:`${max_list.max_today == 0?0:(140/max_list.max_today)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}">{{scope.row.today.toFixed(2)}}万</div>
+							<div class="background_box" :style="{width:`${max_list.yesterday_max == 0?0:(140/max_list.yesterday_max)*Math.abs(scope.row.yesterday)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.yesterday.toFixed(2)}}万</div>
+							<div v-else>{{scope.row.yesterday.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="变化率" prop="bhl" width="140" show-overflow-tooltip sortable>
+					<el-table-column :label="date.today" prop="today" width="140"  sortable="custom">
+						<template slot-scope="scope">
+							<div class="background_box" :style="{width:`${max_list.max_today == 0?0:(140/max_list.max_today)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.today.toFixed(2)}}万</div>
+							<div v-else>{{scope.row.today.toFixed(2)}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="变化率" prop="bhl" width="140" show-overflow-tooltip  sortable="custom">
 						<template slot-scope="scope">
 							<div>{{scope.row.bhl.toFixed(2)}}%</div>
 						</template>
@@ -41,7 +48,7 @@
 			<div class="right_box">
 				<div class="title">近期趋势变化</div>
 				<div class="list_box">
-					<div class="row_right" v-for="item in right_list">
+					<div class="row_right" v-for="(item,index) in right_list" :key="index">
 						<div class="name_box">
 							<div class="name_text">{{item.name}}</div>
 						</div>
@@ -120,6 +127,8 @@
 				select_department_ids:[],					//选中的部门id列表
 				select_store_ids:[],						//选中的店铺列表
 				select_plat_ids:[],							//选中的平台列表
+				sort_field:"",
+				sort_type:"",
 				fkrq:getCurrentDate(),						//付款当日
 				table_data:[],								//表格数据
 				max_list:{},								//最大值
@@ -134,12 +143,23 @@
 			this.getData();
 		},
 		methods:{
-			//总计行
-			getSummaries(){
-				return this.total_data;
+			// 监听排序
+			sortChange(e){
+				if(!e.order){
+					this.sort_field = "";
+					this.sort_type = "";
+				}else if(e.order == "descending"){
+					this.sort_type = 0;
+					this.sort_field = e.prop;
+				}else if(e.order == "ascending"){
+					this.sort_type = 1;
+					this.sort_field = e.prop;
+				}
+				//获取列表
+				this.getData();
 			},
 			//区分颜色的列的样式
-			columnStyle({ row, column, rowIndex, columnIndex }) {
+			columnStyle({ row, columnIndex }) {
 				if(columnIndex == 4){
 					if(row.bhl < 0){
 						return 'color: #0CB618';
@@ -161,6 +181,8 @@
 					shop_id:this.select_store_ids.join(','),
 					platform:this.select_plat_ids.join(','),
 					fkrq:this.fkrq?this.fkrq:'',
+					sort_field:this.sort_field,
+					sort_type:this.sort_type,
 				}
 				resource.recentSales(req).then(res => {
 					if(res.data.code == 1){
@@ -168,7 +190,6 @@
 						this.date = data.date;
 						this.table_data = data.left_list.list;
 						this.max_list = data.left_list.max_list;
-						this.total_data = data.left_list.total_data;
 						this.day_list = data.day;
 						this.right_list = data.right_list;
 						var echarts = require("echarts");
@@ -180,9 +201,9 @@
 								var myChart = echarts.init(roseCharts[i]);
 								myChart.setOption(this.pieOptions(this.right_list[i].xjse));
 								chart_list.push(myChart);
-							};
+							}
 							window.addEventListener('resize',() => {
-								chart_list.map((item,index) => {
+								chart_list.map((item) => {
 									item.resize();
 								})
 							})
