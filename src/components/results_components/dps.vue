@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="项目部:" style="margin-right: 20px">
+			<el-form-item label="项目部:" style="margin-right: 20px" v-if="show_dept">
 				<el-cascader
 				ref="cascader"
 				:options="dept_list"
@@ -17,17 +17,31 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="店铺：">
+			<el-form-item>
+				<el-select v-model="select_store_key" class="input_key" :popper-append-to-body="false">
+					<el-option label="店铺名称" :value="1">
+					</el-option>
+					<el-option label="店铺ID" :value="2">
+					</el-option>
+				</el-select>：
 				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false"  multiple
 				filterable
 				collapse-tags placeholder="全部">
-				<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+				<el-option v-for="item in store_list" :key="item.dept_id" :label="select_store_key == 1?item.shop_name:item.dept_name" :value="item.dept_id">
 				</el-option>
 			</el-select>
 		</el-form-item>
 	</el-form>
 </div>
 </template>
+<style>
+.input_key{
+	width: 100px!important;
+}
+.input_key input{
+	border:none!important;
+}
+</style>
 <script>
 	import resource from '../../api/resource.js'
 	export default{
@@ -37,15 +51,21 @@
 				select_department_ids:[],			//选中的部门id列表
 				plat_list:[],						//平台列表
 				select_plat_ids:[],					//选中的平台列表
+				select_store_key:1,					//店铺的key值
 				store_list: [],						//店铺列表	
 				select_store_ids:[],				//选中的店铺id列表
-				store_name:"",						//输入的店铺名称
 				props:{
 					multiple:true,
 					value:'dept_id',
 					label:'dept_name',
 					children:'list',
 				}
+			}
+		},
+		props:{
+			show_dept:{
+				type:Boolean,
+				default:true
 			}
 		},
 		created(){
@@ -58,17 +78,20 @@
 		},
 		watch:{
 			//项目部
-			select_department_ids:function(n,o){
+			select_department_ids:function(){
 				this.emitCallBack();
 			},
 			// 平台
-			select_plat_ids:function(n,o){
+			select_plat_ids:function(){
 				this.emitCallBack();
 			},
 			//店铺
-			select_store_ids:function(n,o){
+			select_store_ids:function(){
 				this.emitCallBack();
-			}
+			},
+			select_store_key:function(){
+				this.select_store_ids = [];
+			},
 		},
 		methods:{
 			getIds(){
@@ -76,12 +99,12 @@
 					var arr = [];
 					let select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
 					select_department.map(s => {
-					if(!!s.parent){	//最后一层有父级
+					if(s.parent){	//最后一层有父级
 						var m = s.parent;
-						if(!!m.checked){ //倒数第二层被全选了
-							if(!!m.parent){ //倒数第二层有父级
+						if(m.checked){ //倒数第二层被全选了
+							if(m.parent){ //倒数第二层有父级
 								var d = m.parent;
-								if(!!d.checked){ //倒数第三层被全选了
+								if(d.checked){ //倒数第三层被全选了
 									if(arr.indexOf(d.value) == -1){
 										arr.push(d.value);
 									}
@@ -136,19 +159,11 @@
 					}
 				})
 			},
-			// //模糊查询店铺
-			// checkStore(e){
-			// 	this.store_name = e;
-			// 	//店铺列表
-			// 	this.getStoreList('1');
-			// },
 			// 获取所有店铺
 			getStoreList(){
+				this.select_store_ids = [];
 				let dept_id = this.select_department_ids.join(',');
-				// if(type != '1'){
-				// 	this.select_store_ids = [];
-				// }
-				resource.ajaxViewStore({dept_id:dept_id,name:this.store_name,platform:this.select_plat_ids.join(',')}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id,platform:this.select_plat_ids.join(',')}).then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
 					}else{

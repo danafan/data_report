@@ -1,18 +1,7 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="changePlatform" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺：">
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
+			<dps @callBack="checkReq" :show_dept="false"></dps>
 			<el-form-item label="款式：">
 				<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags style="width: 280px">
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
@@ -70,17 +59,15 @@
 }
 </style>
 <script>
-	import dpsResource from '../../../api/resource.js'
 	import resource from '../../../api/operationResource.js'
 	import {exportPost} from '../../../api/export.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import { MessageBox,Message } from 'element-ui';
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
-				plat_list:[],			//平台列表
 				select_plat_ids:[],		//选中的平台
-				store_list:[],			//店铺列表
 				select_store_ids:[],	//选中的店铺列表
 				ks_list:[],				//款式编码列表
 				select_ks_ids:[],		//选中的款式编码
@@ -117,43 +104,14 @@
 			}
 		},
 		created(){
-			//平台列表
-			this.ajaxPlat();
-			//店铺列表
-			this.getStoreList();
 			//点击搜索
 			this.getData();
 		},
 		methods:{
-			//平台列表
-			ajaxPlat(){
-				dpsResource.ajaxPlat().then(res => {
-					if(res.data.code == 1){
-						this.plat_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//切换平台
-			changePlatform(){
-				this.select_store_ids = [];
-				//店铺列表
-				this.getStoreList();
-			},
-			//获取所有店铺
-			getStoreList(){
-				let arg = {
-					platform:this.select_plat_ids.join(','),
-					from:2
-				}; 
-				dpsResource.ajaxViewStore(arg).then(res => {
-					if(res.data.code == 1){
-						this.store_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//款式编码
 			getKsbm(e){
@@ -232,6 +190,8 @@
 					});          
 				});
 			},
+		},components:{
+			dps
 		}
 	}
 </script>

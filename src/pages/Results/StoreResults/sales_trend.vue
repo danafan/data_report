@@ -13,11 +13,38 @@
 		<div class="row_box">
 			<div class="left_box">
 				<div class="title">各店目标达成情况</div>
-				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :cell-style="columnStyle" @sort-change="sortChange">
+				<el-table :data="total_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" width="50%" :row-class-name="tableRowClassName" :cell-style="columnStyle" @sort-change="sortChange" v-if="total_data.length > 0">
+					<el-table-column label="序号" width="60">
+						<template>
+							<div>总计</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="店铺名称" prop="dpname" width="140" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column label="平台" prop="platform" width="140" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column :label="date.pre_day" prop="yesterday" width="140"  sortable="custom">
+						<template slot-scope="scope">
+							<div>{{scope.row.yesterday.toFixed(2)}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column :label="date.today" prop="today" width="140"  sortable="custom">
+						<template slot-scope="scope">
+							<div>{{scope.row.today.toFixed(2)}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="变化率" prop="bhl" width="140" show-overflow-tooltip  sortable="custom">
+						<template slot-scope="scope">
+							<div>{{scope.row.bhl.toFixed(2)}}%</div>
+						</template>
+					</el-table-column>
+				</el-table>
+				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :cell-style="columnStyle" @sort-change="sortChange" :show-header="total_data.length == 0">
 					<el-table-column label="序号" width="60">
 						<template slot-scope="scope">
-							<div v-if="scope.$index == 0">总计</div>
-							<div v-else>{{scope.$index}}</div>
+							<div>{{scope.$index}}</div>
 						</template>
 					</el-table-column>
 					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip>
@@ -55,7 +82,7 @@
 						<div class="sales_div"></div>
 					</div>
 				</div>
-				
+
 			</div>
 		</div>
 	</div>
@@ -64,6 +91,9 @@
 .el-table--mini td{
 	padding: 5px 0!important;
 }
+.el-table .warning-row {
+    background: #f0f9eb;
+  }
 </style>
 <style lang="less" scoped>
 .title{
@@ -143,6 +173,11 @@
 			this.getData();
 		},
 		methods:{
+			tableRowClassName({rowIndex}) {
+				if (rowIndex === 0) {
+					return 'warning-row';
+				}
+			},	
 			// 监听排序
 			sortChange(e){
 				if(!e.order){
@@ -188,7 +223,13 @@
 					if(res.data.code == 1){
 						let data = res.data.data;
 						this.date = data.date;
+						this.total_data = [];
 						this.table_data = data.left_list.list;
+						if(this.table_data.length > 0){
+							this.total_data.push(this.table_data[0])
+							this.table_data.splice(0,1);
+						}
+						
 						this.max_list = data.left_list.max_list;
 						this.day_list = data.day;
 						this.right_list = data.right_list;
