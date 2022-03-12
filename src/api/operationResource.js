@@ -7,6 +7,8 @@ let path = {
 	fhSaleExport:'operate/fh_sale_export',			//款式销量（发货）数据导出接口
 	operateFkSale:'operate/fk_sale',				//款式销量（付款）接口
 	fkSaleExport:'operate/fk_sale_export',			//款式销量（付款）数据导出接口
+	saleAnalysisTable:'operate/sale_analysis_table',//数据分析/销售分析表格
+	saleAnalysisChart:'operate/sale_analysis_chart',//数据分析/销售分析图表
 }						
 export default{
 	//获取款式编码
@@ -36,6 +38,14 @@ export default{
 	//款式销量（付款）数据导出接口
 	fkSaleExport(params){
 		return http.post(path.fkSaleExport, params)
+	},
+	//数据分析/销售分析表格
+	saleAnalysisTable(params){
+		return http.get(path.saleAnalysisTable, params)
+	},
+	//数据分析/销售分析图表
+	saleAnalysisChart(params){
+		return http.get(path.saleAnalysisChart, params)
 	},
 }
 
