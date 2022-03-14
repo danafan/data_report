@@ -72,7 +72,7 @@
 					<i class="el-icon-s-fold collapse_icon" v-else @click="isCollapse = !isCollapse"></i>
 				</div>
 				<template v-for="(item,index) in menu_list">
-					<el-submenu :index="`/${item.web_url}`" v-if="item.list.length > 0">
+					<el-submenu :index="`/${item.web_url}`" v-if="item.show_type == 2">
 						<template slot="title">
 							<i :class="`el-icon-${item.icon}`"></i>
 							<span>{{item.menu_name}}</span>
@@ -99,7 +99,7 @@
 		</div>
 		<el-main class="main">
 			<img class="welcome_icon" src="../static/welcome_img.png" v-if="show_welcome">
-			<el-card class="el_card" v-else>
+			<el-card class="el_card" id='scroll_content' v-else>
 				<keep-alive>
 					<router-view v-if="$route.meta.keepAlive"></router-view>
 				</keep-alive>

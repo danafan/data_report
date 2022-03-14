@@ -60,7 +60,7 @@ const router = new Router({
     { path: '/data_fill',name:"数据填报", component: data_fill,meta:{keepAlive:true}},
     { path: '/data_management',name:"数据管理", component: data_management},
     { path: '/commit_data',name:"表单数据", component: commit_data},
-    { path: '/shelves_feedback',name:"下架款登记反馈", component: shelves_feedback},
+    { path: '/shelves_feedback',name:"下架款登记", component: shelves_feedback},
     { path: '/store_info',name:"店铺信息", component: store_info},
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},

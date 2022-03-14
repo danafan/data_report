@@ -1,5 +1,6 @@
 <template>
 	<div>
+		
 		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="公司：">
@@ -9,7 +10,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="付款日期：">
-				<el-date-picker v-model="select_day" type="date" value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions" :clearable="false">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -17,22 +18,24 @@
 			</el-form-item>
 		</el-form>
 		<!-- 表格数据 -->
-		<el-table size="small" :data="tableData" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500">
+		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries">
 			<el-table-column prop="shop_name" label="店铺" align="center"></el-table-column>
 			<el-table-column prop="xsds" label="销售单数" align="center" sortable></el-table-column>
-			<!-- <el-table-column prop="kjs_shop_name" label="净销售单数" align="center"></el-table-column> -->
 			<el-table-column prop="xsje" label="销售金额" width="120" align="center" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.xsje}}万</div>
 				</template>
 			</el-table-column>
-			<!-- <el-table-column prop="ksbm" label="净销售额" align="center"></el-table-column> -->
 			<el-table-column prop="yfsl" label="应发数量" width="120" align="center" sortable>
 			</el-table-column>
 			<el-table-column prop="sfsl" label="实发数量" width="120" align="center" sortable>
 			</el-table-column>
 			<el-table-column prop="wfhsl" label="未发货数量" align="center" sortable></el-table-column>
-			<el-table-column prop="kdj" label="客单价" align="center" sortable></el-table-column>
+			<el-table-column prop="kdj" label="客单价" align="center" sortable>
+				<template slot-scope="scope">
+					<div>{{scope.row.kdj}}元</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="ytds" label="鱼塘单量" align="center" sortable></el-table-column>
 			<el-table-column prop="ytzb" label="鱼塘占比" align="center" sortable>
 				<template slot-scope="scope">
@@ -40,47 +43,37 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		<div class="charts_row">
-			<!-- <div class="tab_container">
-				<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">销售数据</div>
-				<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">鱼塘数据</div>
-			</div> -->
-			<el-form :inline="true" size="small" class="demo-form-inline">
-				<el-form-item>
-					<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions" :clearable="false" @change="getChartsData">
-					</el-date-picker>
-				</el-form-item>
-			</el-form>
-		</div>
 		<el-tabs v-model="tab_index" type="card">
 			<el-tab-pane label="销售数据" name="1">
+				<div id="saleToastContainer" class="toastContainer"></div>
 				<div id="saleContainer"></div>
 			</el-tab-pane>
-			<el-tab-pane label="销售数据" name="2">
+			<el-tab-pane label="鱼塘数据" name="2">
+				<div id="ytToastContainer" class="toastContainer"></div>
 				<div id="ytContainer"></div>
 			</el-tab-pane>
 		</el-tabs>
-		<!-- <div id="saleContainer" class="saleContainer" v-show="tab_index == '1'"></div>
-			<div id="ytContainer" class="ytContainer" v-show="tab_index == '2'"></div> -->
+		<div class="scroll_top" @click="scrollTop">
+			<i class="el-icon-top" style="font-size: 26px"></i>
 		</div>
-	</template>
-	<script>
-		import resource from '../../../api/resource.js'
-		import operationResource from '../../../api/operationResource.js'
-		import dps from '../../../components/results_components/dps.vue'
-		import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate,lastXDate} from '../../../api/nowMonth.js'
-		var echarts = require("echarts");
-		export default{
-			data(){
-				return{
+	</div>
+
+</template>
+<script>
+	import resource from '../../../api/resource.js'
+	import operationResource from '../../../api/operationResource.js'
+	import dps from '../../../components/results_components/dps.vue'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate,lastXDate} from '../../../api/nowMonth.js'
+	var echarts = require("echarts");
+	export default{
+		data(){
+			return{
 				company_list:[],					//公司列表
 				company:[],							//选中的公司
 				select_department_ids:[],			//选中的部门id列表
 				select_plat_ids:[],					//选中的平台列表
 				select_store_ids:[],				//选中的店铺id列表
-				select_day:getNowDate(),			//付款日期
-				tableData:[],						//表格数据
-				date:[lastXDate(6),getNowDate()],							//图表日期
+				date:[lastXDate(6),getNowDate()],	//日期
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -104,13 +97,16 @@
 							picker.$emit('pick', [start, end]);
 						}
 					}]
-				},	 										//时间区间
-				tab_index:'1',								//图表默认类型
+				},	 								//时间区间
+				tab_index:'1',						//图表默认类型（1:销售数据；2:鱼塘数据）
+				tableData:[],						//表格数据
 				day_list:[],						//日期列表
-				saleDataList:[],
-				ytDataList:[],
-				myChart:null,
-				ytChart:null
+				saleDataList:[],					//销售数据图表列表
+				ytDataList:[],						//鱼塘数据图表列表
+				sale_min:0,							//销售数据比例最小值（用于折线图显示）
+				yt_min:0,							//鱼塘数据比例最小值（用于折线图显示）
+				total_sale_min:0,					//销售数据总计最小值
+				total_yt_min:0,						//鱼塘数据总计最小值
 			}
 		},
 		created(){
@@ -125,9 +121,9 @@
 			tab_index:function(n,o){
 				this.$nextTick(() => {
 					if(n == '1'){
-						this.ddd();
+						this.drawingSaleAxis();
 					}else{
-						this.ccc();
+						this.drawingYtAxis();
 					}
 				})
 			}
@@ -163,7 +159,8 @@
 					shop_id:this.select_store_ids.join(','),
 					platform:this.select_plat_ids.join(','),
 					company:this.company.join(','),
-					select_day:this.select_day
+					start_date:this.date[0],
+					end_date:this.date[1],
 				}
 				operationResource.saleAnalysisTable(arg).then(res => {
 					if(res.data.code == 1){
@@ -172,6 +169,34 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			// 表尾合计行加单位
+			getSummaries(param) {
+				const { columns, data } = param;
+				const sums = [];
+				columns.forEach((column, index) => {
+					if (index === 0) {
+						sums[index] = '合计';
+						return;
+					}
+					const values = data.map(item => Number(item[column.property]));
+					sums[index] = values.reduce((prev, curr) => {
+						return prev + curr;
+					}, 0);
+					if(index == 2 || index == 6){
+						sums[index] = sums[index].toFixed(2);
+					}
+					if(index == 2){
+						sums[index] = sums[index] += '万';
+					}
+					if(index == 6){
+						sums[index] += '元';
+					}
+					if(index == 8){
+						sums[index] += '%';
+					}
+				});
+				return sums;
 			},
 			// 获取图表数据
 			getChartsData(){
@@ -185,25 +210,61 @@
 				}
 				operationResource.saleAnalysisChart(arg).then(res => {
 					if(res.data.code == 1){
+						let saleToastEle = document.getElementById('saleToastContainer');
+						let saleToastChart = echarts.getInstanceByDom(saleToastEle);
+						if (saleToastChart != null) { 
+							saleToastChart.dispose();
+						}
+						let ytToastEle = document.getElementById('ytToastContainer');
+						let ytToastChart = echarts.getInstanceByDom(ytToastEle);
+						if (ytToastChart != null) { 
+							ytToastChart.dispose();
+						}
+						for(let i = 1;i < this.saleDataList.length;i ++){
+							let ele = document.getElementById('id_' + i);
+							if(ele){
+								let myChart = echarts.getInstanceByDom(ele);
+								if (myChart != null) { 
+									myChart.dispose();
+								}
+							}
+						}
+						for(let j = 1;j < this.ytDataList.length;j ++){
+							let ytEle = document.getElementById('ytid_' + j);
+							if(ytEle){
+								let ytChart = echarts.getInstanceByDom(ytEle);
+								if (ytChart != null) { 
+									ytChart.dispose();
+								}
+							}
+							
+						}
 						this.day_list = res.data.data.day_list;	//日期列表（公用）
-						//销售数据列表
+						//销售数据
 						this.saleDataList = res.data.data.chart_list.sale;
-						// this.saleDataList.push(res.data.data.chart_list.sale[0]);
-						//鱼塘数据列表
+						this.sale_min = res.data.data.chart_list.sale_min;
+						this.total_sale_min = res.data.data.chart_list.total_sale_min;
+						//鱼塘数据
 						this.ytDataList = res.data.data.chart_list.yt;
-						// this.ytDataList.push(res.data.data.chart_list.yt[0]);
-						this.ddd();
-						// this.ccc();
-						
+						this.yt_min = res.data.data.chart_list.yt_min;
+						this.total_yt_min = res.data.data.chart_list.total_yt_min;
+						if(this.tab_index == '1'){
+							this.drawingSaleAxis();
+						}else{
+							this.drawingYtAxis();
+						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
 			},
-			ddd(){
-				for(var i = 0;i < this.saleDataList.length;i ++){
-					let div = '<div style="height:860px;float:left;width:46%;margin-bottom:10px;margin-right:30px" id='+"id_"+i+' class="echarts_div"></div>';
-					document.getElementById('saleContainer').insertAdjacentHTML("beforeBegin",div);
+			// 销售数据
+			drawingSaleAxis(){
+				for(var i = 1;i < this.saleDataList.length;i ++){
+					if(!document.getElementById('id_' + i)){
+						let div = '<div style="height:360px;float:left;width:30%;margin-bottom:10px;margin-right:30px" id='+"id_"+i+' class="echarts_div"></div>';
+						document.getElementById('saleContainer').insertAdjacentHTML("beforeBegin",div);
+					};
 				}
 				this.saleDataList.map((item,index) => {
 					var legend_data = [];
@@ -213,6 +274,7 @@
 						let obj = {
 							name: item.name,
 							type: item.name == '销售额环比' || item.name == '销售单数环比'?'line':'bar',
+							yAxisIndex:item.name == '销售额环比' || item.name == '销售单数环比'?1:0,
 							emphasis: {
 								focus: 'series'
 							},
@@ -220,26 +282,30 @@
 						}
 						series_data.push(obj)
 					})
-					var ele = document.getElementById('id_' + index);
-					let myChart = echarts.getInstanceByDom(ele)
-					if (myChart == null) { 
-						myChart = echarts.init(ele);
+					if(index == 0){
+						var ele = document.getElementById('saleToastContainer');
+						let myChart = echarts.getInstanceByDom(ele)
+						if (myChart == null) { 
+							myChart = echarts.init(ele);
+						}
+						myChart.setOption(this.chartsOptions(item,series_data,legend_data))
+					}else{
+						var ele = document.getElementById('id_' + index);
+						let myChart = echarts.getInstanceByDom(ele)
+						if (myChart == null) { 
+							myChart = echarts.init(ele);
+						}
+						myChart.setOption(this.chartsOptions(item,series_data,legend_data))
 					}
-
-					// if(this.myChart){
-					// 	this.myChart.dispose();
-					// }
-					// var myChart = echarts.init(ele);
-					myChart.setOption(this.chartsOptions(item,series_data,legend_data))
 				})
-				// window.addEventListener('resize',function(){
-				// 	this.myChart.resize();
-				// })
 			},
-			ccc(){
-				for(var i = 0;i < this.ytDataList.length;i ++){
-					let div = '<div style="height:860px;float:left;width:46%;margin-bottom:10px;margin-right:30px" id='+"ytid_"+i+' class="echarts_div"></div>';
-					document.getElementById('ytContainer').insertAdjacentHTML("beforeBegin",div);
+			//鱼塘数据
+			drawingYtAxis(){
+				for(var i = 1;i < this.ytDataList.length;i ++){
+					if(!document.getElementById('ytid_' + i)){
+						let div = '<div style="height:360px;float:left;width:30%;margin-bottom:10px;margin-right:30px" id='+"ytid_"+i+' class="echarts_div"></div>';
+						document.getElementById('ytContainer').insertAdjacentHTML("beforeBegin",div);
+					}
 				}
 				this.ytDataList.map((item,index) => {
 					var legend_data = [];
@@ -249,6 +315,7 @@
 						let obj = {
 							name: item.name,
 							type: item.name == '鱼塘占比' || item.name == '销售单数环比'?'line':'bar',
+							yAxisIndex:item.name == '鱼塘占比' || item.name == '销售单数环比'?1:0,
 							emphasis: {
 								focus: 'series'
 							},
@@ -256,37 +323,68 @@
 						}
 						series_data.push(obj)
 					})
-					var ele = document.getElementById('ytid_' + index);
-					let ytChart = echarts.getInstanceByDom(ele)
-					if (ytChart == null) { 
-						ytChart = echarts.init(ele);
+					if(index == 0){
+						var ele = document.getElementById('ytToastContainer');
+						let myChart = echarts.getInstanceByDom(ele)
+						if (myChart == null) { 
+							myChart = echarts.init(ele);
+						}
+						myChart.setOption(this.chartsOptions(item,series_data,legend_data))
+					}else{
+						var ele = document.getElementById('ytid_' + index);
+						let ytChart = echarts.getInstanceByDom(ele)
+						if (ytChart == null) { 
+							ytChart = echarts.init(ele);
+						}
+						ytChart.setOption(this.chartsOptions(item,series_data,legend_data))
 					}
-					// if(this.ytChart){
-					// 	this.ytChart.dispose();
-					// }
-					// var ytChart = echarts.init(ele);
-					ytChart.setOption(this.chartsOptions(item,series_data,legend_data))
 				})
-				// window.addEventListener('resize',function(){
-				// 	this.ytChart.resize();
-				// })
 			},
+			// 图表绘制
 			chartsOptions(item,series_data,legend_data){
+				var min = 0;
+				if(item.title == '总计'){
+					if(this.tab_index == '1'){
+						min = this.total_sale_min;
+					}else{
+						min = this.total_yt_min;
+					}
+				}else{
+					if(this.tab_index == '1'){
+						min = this.sale_min;
+					}else{
+						min = this.yt_min;
+					}
+				}
 				return {
 					title: {
 						text: item.title
 					},
 					tooltip: {
 						trigger: 'axis',
-						axisPointer: {
-							type: 'shadow'
-						}
+						formatter (params) {
+							var relVal = params[0].name
+							for (var i = 0, l = params.length; i < l; i++) {
+								relVal += '<br/>' + params[i].seriesName + ' : ' + params[i].value + item.list[i].unit
+							}
+							return relVal
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
 					},
 					legend: {
-						data: legend_data
+						data: legend_data,
+						top:"10%",
+						left:0
 					},
 					grid:{
-						y2:300
+						y2:90,
+						top:'25%',
+						left: '80',
+						right: '80',
 					},
 					xAxis: [{
 						type: 'category',
@@ -305,13 +403,18 @@
 						}
 					},{
 						type: 'value',
-						min: 0,
+						min: min,
 						axisLabel: {
 							formatter: '{value} %'
 						}
 					}],
 					series: series_data
 				}
+			},
+			//回到顶部
+			scrollTop(){
+				console.log("asd")
+				document.getElementById('scroll_content').scrollTop = 0;
 			}
 		},
 		components:{
@@ -320,6 +423,12 @@
 	}
 </script>
 <style lang="less" scoped>
+.scroll_top{
+	position: fixed;
+	bottom: 40px;
+	right: 40px;
+}
+
 .charts_row{
 	margin-top:30px;
 	display:flex;
@@ -344,6 +453,10 @@
 		}
 	}
 }
+.toastContainer{
+	width: 100%;
+	height: 360px;
+}
 .saleContainer{
 	width: 100%;
 	display:flex;
@@ -354,6 +467,7 @@
 	display:flex;
 	flex-wrap: wrap;
 }
+
 </style>
 
 
