@@ -3,7 +3,12 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<SalesAnalysis v-if="item.web_url == 'sales_analysis'"/>
+				<!-- <DataStatistical v-if="item.web_url == 'data_statistical'"/> -->
 			</el-tab-pane>
+			<el-tab-pane label="数据统计" lazy name="hhh" class="tab_pane_box">
+				<DataStatistical/>
+			</el-tab-pane>
+			
 		</el-tabs>
 	</div>
 </template>
@@ -14,6 +19,7 @@
 </style>
 <script>
 	import SalesAnalysis from './OperationsDataAnalysis/sales_analysis.vue'
+	import DataStatistical from './OperationsDataAnalysis/data_statistical.vue'
 	export default{
 		data(){
 			return{
@@ -53,6 +59,7 @@
 		},
 		components:{
 			SalesAnalysis,
+			DataStatistical
 		}
 	}
 </script>

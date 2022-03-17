@@ -1,6 +1,5 @@
 <template>
 	<div>
-		
 		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="公司：">
@@ -193,7 +192,8 @@
 						sums[index] += '元';
 					}
 					if(index == 8){
-						sums[index] += '%';
+						let dd =  (sums[7]/(sums[7] + sums[1])).toFixed(2);
+						sums[index] = dd += '%';
 					}
 				});
 				return sums;

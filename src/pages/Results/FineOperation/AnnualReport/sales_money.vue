@@ -289,6 +289,7 @@
 						});
 						//每月销售金额年同比
 						this.xsje_month_ntb = res.data.data.xsje_month_ntb;
+						console.log(this.xsje_month_ntb)
 						this.xsje_year_ntb = res.data.data.xsje_year_ntb;
 						this.xsje_month_ntb.map(item => {
 							item.label = {

@@ -9,6 +9,7 @@ let path = {
 	fkSaleExport:'operate/fk_sale_export',			//款式销量（付款）数据导出接口
 	saleAnalysisTable:'operate/sale_analysis_table',//数据分析/销售分析表格
 	saleAnalysisChart:'operate/sale_analysis_chart',//数据分析/销售分析图表
+	dataStatistics:'operate/data_statistics',		//数据分析/数据统计
 }						
 export default{
 	//获取款式编码
@@ -46,6 +47,10 @@ export default{
 	//数据分析/销售分析图表
 	saleAnalysisChart(params){
 		return http.get(path.saleAnalysisChart, params)
+	},
+	//数据分析/数据统计
+	dataStatistics(params){
+		return http.get(path.dataStatistics, params)
 	},
 }
 
