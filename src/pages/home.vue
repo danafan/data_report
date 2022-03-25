@@ -81,7 +81,6 @@
 							<div v-if="child.show_type == 1">
 								<el-menu-item :index="`/${child.web_url}`">{{child.menu_name}}</el-menu-item>
 							</div>
-
 							<div v-if="child.show_type == 2">
 								<el-submenu :index="`/${child.web_url}`">
 									<template slot="title">{{child.menu_name}}</template>
@@ -95,6 +94,10 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
+				<el-menu-item index="/target_sales_management">
+					<i class="el-icon-s-finance"></i>
+					<span slot="title">目标销售额管理</span>
+				</el-menu-item>
 			</el-menu>
 		</div>
 		<el-main class="main">

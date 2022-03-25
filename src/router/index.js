@@ -34,6 +34,8 @@ const store_info = resolve=>require(['@/pages/StoreInfo/store_info'],resolve)
 const new_data = resolve=>require(['@/pages/Operations/GoodsInfo/new_data'],resolve)    //上新数据
 const delivery_data = resolve=>require(['@/pages/Operations/GoodsInfo/delivery_data'],resolve)    //发货数据
 const operations_data_analysis = resolve=>require(['@/pages/Operations/operations_data_analysis'],resolve)    //发货数据
+//目标销售额管理
+const target_sales_management = resolve=>require(['@/pages/TargetSales/target_sales_management'],resolve)
 Vue.use(Router)
 
 const router = new Router({
@@ -65,6 +67,7 @@ const router = new Router({
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},
     { path: '/operations_data_analysis',name:"运营中心数据分析", component: operations_data_analysis},
+    { path: '/target_sales_management',name:"目标销售额管理", component: target_sales_management},
     ]
   }
   ]

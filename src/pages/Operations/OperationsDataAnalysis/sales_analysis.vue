@@ -189,7 +189,8 @@
 						sums[index] = sums[index] += '万';
 					}
 					if(index == 6){
-						sums[index] += '元';
+						let cc =  (parseFloat(sums[2].split('万')[0]*10000)/sums[1]).toFixed(2);
+						sums[index] = cc + '元';
 					}
 					if(index == 8){
 						let dd =  (sums[7]/(sums[7] + sums[1])).toFixed(2);
