@@ -4,25 +4,25 @@
 			<div class="form_widget">
 				<el-form size="small" label-width="95px" label-position="left">
 					<el-form-item label="一级部门：" required>
-						<el-select v-model="active_level1" clearable :popper-append-to-body="false" filterable placeholder="请选择一级部门" @change="changeDept">
+						<el-select v-model="dept_1_id" :popper-append-to-body="false" filterable placeholder="请选择一级部门" @change="changeDept">
 							<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="二级部门：" required>
-						<el-select v-model="active_level2" clearable :popper-append-to-body="false" filterable placeholder="请选择二级部门">
+						<el-select v-model="dept_2_id" :popper-append-to-body="false" filterable placeholder="请选择二级部门" @change="changeDept2">
 							<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="店铺名称：" required>
-						<el-select v-model="active_store_id" clearable :popper-append-to-body="false" filterable placeholder="请选择店铺" @change="changeStore">
+						<el-select v-model="shop_name" :popper-append-to-body="false" filterable placeholder="请选择店铺" @change="changeStore">
 							<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="主账号ID：">
-						<el-input placeholder="选择店铺名称获取" v-model="shop_code" disabled style="width: 192px">
+						<el-input placeholder="选择店铺名称获取" v-model="shop_id" disabled style="width: 192px">
 						</el-input>
 					</el-form-item>
 					<el-form-item label="平台：">
@@ -34,92 +34,118 @@
 						</el-input>
 					</el-form-item>
 					<el-form-item label="店长：" required>
-						<el-input placeholder="请选择店长" v-model="manager" style="width: 192px">
-						</el-input>
-					</el-form-item>
-					<el-form-item label="参考店铺：" required>
-						<el-select v-model="reference_store_id" clearable :popper-append-to-body="false" filterable placeholder="请选择参考店铺">
-							<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_code">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item label="年/月：" required>
-						<el-date-picker v-model="active_date" value-format="yyyy-MM" type="month" placeholder="选择年月"style="width: 192px">
-						</el-date-picker>
-					</el-form-item>
-				</el-form>
-				<el-button type="primary" size="small" @click="getLastYearData">查询</el-button>
-			</div>
-			<div class="table_box">
-				<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-					<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
-					<el-table-column width="120" label="去年同期" align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
-						</template>
-					</el-table-column>
-					<el-table-column width="160" label="本月目标参数" align="center">
-						<template slot-scope="scope">
-							<el-input size="small" type="number" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto" @input="inputFun($event,scope.row.key)" @change="changeInput($event,scope.row)" :ref="scope.row.key">
-								<template slot="append">%</template>
-							</el-input>
-							<el-input size="small" type="number" :placeholder="scope.row.name" :disabled="scope.row.isAuto" v-model="scope.row.new_value" @input="inputFun($event,scope.row.key)" @change="changeInput($event,scope.row)" :ref="scope.row.key" v-else>
-							</el-input>
-						</template>
-					</el-table-column>
-					<el-table-column  width="160" show-overflow-tooltip label="填写建议" align="center">
-						<template slot-scope="scope">
-							<el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)">查看建议</el-button>
-							<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button>
-						</template>
-					</el-table-column>
-				</el-table>
-				<el-button type="primary" size="small" class="table_button" @click="getBottomData">查询</el-button>
-			</div>
-		</div>
-		<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column width="60" prop="date" label="日期" align="center"></el-table-column>
-			<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
-			<el-table-column width="60" prop="gmv" label="日GMV" align="center"></el-table-column>
-			<el-table-column width="80" prop="xssr" label="日销量收入" align="center"></el-table-column>
-			<el-table-column width="130" prop="xssrzb" label="销售收入占比" align="center">
+						<el-select
+						v-model="shopowner_id"
+						remote
+						filterable
+						placeholder="请选择店长"
+						 @change="changeUser"
+						:remote-method="getAjaxUser"
+						>
+						<el-option
+						v-for="item in manager_list"
+						:key="item.ding_user_id"
+						:label="item.ding_user_name"
+						:value="item.ding_user_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="参考店铺：" required>
+				<el-select v-model="reference_shop" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop">
+					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="年/月：" required>
+				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月"style="width: 192px" :picker-options="pickerOptionsYearMonth">
+				</el-date-picker>
+			</el-form-item>
+		</el-form>
+		<el-button type="primary" size="small" @click="getLastYearData">查询</el-button>
+	</div>
+	<div class="table_box">
+		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
+			<el-table-column width="120" label="去年同期" align="center">
 				<template slot-scope="scope">
-					<el-input size="mini" placeholder="占比" v-model="scope.row.xssrzb">
+					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="160" label="本月目标参数" align="center">
+				<template slot-scope="scope">
+					<el-input size="small" type="number" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto" @input="inputFun($event,scope.row.key,'1')" @change="changeInput($event,scope.row)" :ref="scope.row.key">
 						<template slot="append">%</template>
+					</el-input>
+					<el-input size="small" type="number" :placeholder="scope.row.name" :disabled="scope.row.isAuto" v-model="scope.row.new_value" @input="inputFun($event,scope.row.key,'1')" @change="changeInput($event,scope.row)" :ref="scope.row.key" v-else>
 					</el-input>
 				</template>
 			</el-table-column>
-			<el-table-column width="60" prop="mll" label="毛利率" align="center"></el-table-column>
-			<el-table-column width="68" prop="cpcb" label="产品成本" align="center"></el-table-column>
-			<el-table-column width="80" prop="yxfyl" label="营销费用率" align="center"></el-table-column>
-			<el-table-column width="68" prop="yxfy" label="营销费用" align="center"></el-table-column>
-			<el-table-column width="90" prop="roi" label="销售ROI目标" align="center"></el-table-column>
-			<el-table-column width="95" prop="dptdfy" label="店铺团队费用" align="center"></el-table-column>
-			<el-table-column width="95" prop="dpqtfy" label="店铺其他费用" align="center"></el-table-column>
-			<el-table-column width="105" prop="xmbftfy" label="项目部分摊费用" align="center"></el-table-column>
-			<el-table-column width="105" prop="sybftfy" label="事业部分摊费用" align="center"></el-table-column>
-			<el-table-column width="68" prop="lbfy" label="领标费用" align="center"></el-table-column>
-			<el-table-column width="68" prop="gxmy" label="贡献毛益" align="center"></el-table-column>
-			<el-table-column width="80" prop="wlfy" label="物流类费用" align="center"></el-table-column>
-			<el-table-column width="80" prop="kffy" label="客服类费用" align="center"></el-table-column>
-			<el-table-column width="60" prop="gtfy" label="公摊费" align="center"></el-table-column>
-			<el-table-column width="68" prop="jlr" label="净利润额" align="center"></el-table-column>
-			<el-table-column width="68" prop="jlrl" label="净利润率" align="center"></el-table-column>
+			<el-table-column  width="160" show-overflow-tooltip label="填写建议" align="center">
+				<template slot-scope="scope">
+					<el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)">查看建议</el-button>
+					<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button>
+				</template>
+			</el-table-column>
 		</el-table>
-		<!-- 填写建议 -->
-		<el-dialog title="建议" width="30%" :visible.sync="adviceModel">
-			<el-input
-			size="small"
-			type="textarea"
-			:rows="3"
-			placeholder="请输入建议"
-			v-model="adviceValue">
-		</el-input>
-		<div slot="footer" class="dialog-footer">
-			<el-button size="small" @click="adviceModel = false">取 消</el-button>
-			<el-button size="small" type="primary" @click="confirmAdvice">确 定</el-button>
-		</div>
-	</el-dialog>
+		<el-button type="primary" size="small" class="table_button" @click="getBottomData">查询</el-button>
+	</div>
+</div>
+<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
+	<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
+	<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
+	<el-table-column width="70" show-overflow-tooltip prop="gmv" label="日GMV" align="center"></el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="xssr" label="日销量收入" align="center"></el-table-column>
+	<el-table-column width="130" prop="xssrzb" label="销售收入占比" align="center">
+		<template slot-scope="scope">
+			<el-input size="mini" placeholder="占比" @input="inputFun($event,'xssrzb','2',scope.$index)" @change="changeZb($event,scope.$index)" v-model="scope.row.xssrzb">
+				<template slot="append">%</template>
+			</el-input>
+		</template>
+	</el-table-column>
+	<el-table-column width="70" show-overflow-tooltip prop="mll" label="毛利率" align="center">
+		<template slot-scope="scope">
+			<div>{{scope.row.mll}}%</div>
+		</template>
+	</el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="cpcb" label="产品成本" align="center"></el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="yxfyl" label="营销费用率" align="center">
+		<template slot-scope="scope">
+			<div>{{scope.row.yxfyl}}%</div>
+		</template>
+	</el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="yxfy" label="营销费用" align="center"></el-table-column>
+	<el-table-column width="90" prop="roi" label="销售ROI目标" align="center"></el-table-column>
+	<el-table-column width="95" show-overflow-tooltip prop="dptdfy" label="店铺团队费用" align="center"></el-table-column>
+	<el-table-column width="95" show-overflow-tooltip prop="dpqtfy" label="店铺其他费用" align="center"></el-table-column>
+	<el-table-column width="105" show-overflow-tooltip prop="xmbftfy" label="项目部分摊费用" align="center"></el-table-column>
+	<el-table-column width="105" show-overflow-tooltip prop="sybftfy" label="事业部分摊费用" align="center"></el-table-column>
+	<el-table-column width="68" show-overflow-tooltip prop="lbfy" label="领标费用" align="center"></el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="gxmy" label="贡献毛益" align="center"></el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="wlfy" label="物流类费用" align="center"></el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="kffy" label="客服类费用" align="center"></el-table-column>
+	<el-table-column width="60" show-overflow-tooltip prop="gtfy" label="公摊费" align="center"></el-table-column>
+	<el-table-column width="80" show-overflow-tooltip prop="jlr" label="净利润额" align="center"></el-table-column>
+	<el-table-column width="68" show-overflow-tooltip prop="jlrl" label="净利润率" align="center">
+		<template slot-scope="scope">
+			<div>{{scope.row.jlrl}}%</div>
+		</template>
+	</el-table-column>
+</el-table>
+<el-button type="primary" size="small" @click="comfirm">提交</el-button>
+<!-- 填写建议 -->
+<el-dialog title="建议" width="30%" :visible.sync="adviceModel">
+	<el-input
+	size="small"
+	type="textarea"
+	:rows="3"
+	placeholder="请输入建议"
+	v-model="adviceValue">
+</el-input>
+<div slot="footer" class="dialog-footer">
+	<el-button size="small" @click="adviceModel = false">取 消</el-button>
+	<el-button size="small" type="primary" @click="confirmAdvice">确 定</el-button>
+</div>
+</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -141,22 +167,30 @@
 </style>
 <script>
 	import resource from '../../../api/targetSales.js'
+	import {getMonthInfo,getWeek} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
-				active_level1:"",		//选中的一级部门
+				dept_1_id:"",			//选中的一级部门id
+				dept_1_name:"",			//选中的一级部门名称
 				level1_dept_list:[],	//一级部门列表
-				active_level2:"",		//选中的二级部门
+				dept_2_id:"",			//选中的二级部门ID
+				dept_2_name:"",			//选中的二级部门名称
 				level2_dept_list:[],	//二级部门列表
-				active_store_id:"",		//选中的普通店铺
-				store_list:[],			//普通店铺列表
-				reference_store_id:"",	//选中的参考店铺
-				reference_store_list:[],//参考店铺列表
-				shop_code:"",			//主账号ID
+				jst_code:"",			//店铺jst_code
+				shop_name:"",			//店铺名称
+				shop_id:"",				//主账号ID
 				platform:"",			//平台名称
 				shop_type:"",			//店铺类别
-				manager:"",				//店长
-				active_date:"",			//选择的年月
+				store_list:[],			//普通店铺列表
+				reference_shop:"",		//选中的参考店铺名称
+				shop_code:"",			//选中的参考店铺shop_code
+				reference_store_list:[],//参考店铺列表
+				shopowner_id:"",		//店长ID
+				shopowner_name:"",		//店长姓名
+				manager_list:[],		//店长列表
+				date:"",				//选择的年月
+				pickerOptionsYearMonth: this.banTime(),
 				lastYearData:{},		//去年同期返回数据
 				table_data:[{
 					name:'预估发货单数',
@@ -169,7 +203,7 @@
 					disabled:false
 				},{
 					name:'GMV',
-					key:'gmw',
+					key:'gmv',
 					value:0,
 					new_value:"",
 					isPer:false,
@@ -223,7 +257,7 @@
 					disabled:false
 				},{
 					name:'项目部分摊费用率',
-					key:'xmbfftfyl',
+					key:'xmbftfyl',
 					value:0,
 					new_value:"",
 					isPer:true,
@@ -328,14 +362,36 @@
 			}
 		},
 		created(){
+			// console.log(getMonthInfo('2021','04'));
 			//获取部门列表
 			this.getDepts();
 			//获取店铺列表
 			this.getShops();
-			//获取去年同期数据
-			this.getLastYearData();
+			//获取店长列表
+			this.getAjaxUser();
 		},
 		methods:{
+			//限制月份选择
+			banTime() {
+				return {
+					disabledDate(time) {
+						const date = new Date()
+						const year = date.getFullYear()
+						let month = date.getMonth() + 1
+						if (month >= 1 && month <= 9) {
+							month = '0' + month
+						}
+						const currentdate = year.toString() + month.toString()
+						const timeyear = time.getFullYear()
+						let timemonth = time.getMonth() + 1
+						if (timemonth >= 1 && timemonth <= 9) {
+							timemonth = '0' + timemonth
+						}
+						const timedate = timeyear.toString() + timemonth.toString()
+						return currentdate >= timedate
+					}
+				}
+			},
 			//获取部门列表
 			getDepts(dept_id){
 				let arg = {};
@@ -356,8 +412,15 @@
 			},
 			//切换一级部门
 			changeDept(v){
+				let item = this.level1_dept_list.filter(item => {return item.dept_id == v});
+				this.dept_1_name = item[0].dept_name;
 				//获取部门列表
 				this.getDepts(v);
+			},
+			//切换二级部门
+			changeDept2(v){
+				let item = this.level2_dept_list.filter(item => {return item.dept_id == v});
+				this.dept_2_name = item[0].dept_name;
 			},
 			//获取店铺列表
 			getShops(){
@@ -380,20 +443,61 @@
 			changeStore(v){
 				resource.getShopInfo({shop_name:v}).then(res => {
 					if(res.data.code == 1){
-						let data = res.data.data[0];
-						this.shop_code = data.shop_code;			
+						let data = res.data.data;
+						this.shop_id = data.shop_code;			
 						this.platform = data.platform;			
-						this.shop_type = data.shop_type;			
+						this.shop_type = data.shop_type?data.shop_type:'';	
+						this.jst_code = data.jst_code;		
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
 			},
+			//切换参考店铺
+			changeShop(v){
+				let item = this.reference_store_list.filter(item => {return item.shop_name == v});
+				this.shop_code = item[0].shop_code;
+			},
+			//获取店长列表
+			getAjaxUser(v){
+				resource.ajaxUser({username:v?v:'',from:17}).then(res => {
+					if(res.data.code == 1){
+						this.manager_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//切换店长
+			changeUser(v){
+				let item = this.manager_list.filter(item => {return item.ding_user_id == v});
+				console.log(item);
+				this.shopowner_name = item[0].ding_user_name;
+			},
 			//获取去年同期数据
 			getLastYearData(){
+				if(this.dept_1_id == ''){
+					this.$message.warning('请选择一级部门');
+					return;
+				}else if(this.dept_2_id == ''){
+					this.$message.warning('请选择二级部门');
+					return;
+				}else if(this.shop_id == ''){
+					this.$message.warning('请选择店铺');
+					return;
+				}else if(this.shopowner_id == ''){
+					this.$message.warning('请选择店长');
+					return;
+				}else if(this.reference_shop == ''){
+					this.$message.warning('请选择参考店铺');
+					return;
+				}else if(this.date == ''){
+					this.$message.warning('请选择年月');
+					return;
+				}
 				let arg = {
-					shop_code:"mystery8090",
-					date:'2021-1'
+					shop_code:this.shop_code,
+					date:this.date
 				}
 				resource.lastYearData(arg).then(res => {
 					if(res.data.code == 1){
@@ -411,21 +515,29 @@
 				})
 			},
 			//监听输入框输入
-			inputFun(e,key){
-				this.table_data.map(item => {
-					if(item.key == key){
-						//最多两位小数
-						item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
-					}
-				})
+			inputFun(e,key,type,index){
+				if(type == '1'){	//上面表格
+					this.table_data.map(item => {
+						if(item.key == key){
+							if(key == 'xssr'){
+								item.new_value = e.replace(/[^0-9]/g, '')
+							}else{
+								//最多两位小数
+								item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
+							}
+						}
+					})
+				}else{	//下面表格
+					this.day_table_data[index].xssrzb = e.replace(/[^0-9]/g, '');
+				}
 			},
 			//输入框回车或失去焦点触发
 			changeInput(v,item){
-				if(item.key == 'xssr'||item.key == 'mll'||item.key == 'yxfyl'||item.key == 'dptdfyl'||item.key == 'xmbfftfyl'||item.key == 'sybftfyl'||item.key == 'lbfyl'||item.key == 'dpqtfyl'||item.key == 'wlfyl'||item.key == 'kffyl'||item.key == 'gtfyl'){	//销售收入变化
+				if(item.key == 'xssr'||item.key == 'mll'||item.key == 'yxfyl'||item.key == 'dptdfyl'||item.key == 'xmbftfyl'||item.key == 'sybftfyl'||item.key == 'lbfyl'||item.key == 'dpqtfyl'||item.key == 'wlfyl'||item.key == 'kffyl'||item.key == 'gtfyl'){	//销售收入变化
 					// 预估发货单数（本月销售收入/（历年同期销售收入/历年同期预估发货单数））
 					this.table_data[0].new_value = !this.table_data[3].new_value?'':Math.round(this.table_data[3].new_value/(this.lastYearData.xssr/this.lastYearData.ygfhds));
 					// GMV（本月销售收入/（1-本月退款率））
-					this.table_data[1].new_value = !this.table_data[3].new_value?'':(this.table_data[3].new_value/(100 - this.lastYearData.tkl)).toFixed(2);
+					this.table_data[1].new_value = !this.table_data[3].new_value?'':(this.table_data[3].new_value/(1 - (this.table_data[2].new_value)/100)).toFixed(2);
 					//贡献毛益率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-事业部分摊费用率-领标费用率-店铺其他费用率)
 					if(this.table_data[4].new_value && this.table_data[5].new_value && this.table_data[6].new_value && this.table_data[7].new_value && this.table_data[8].new_value && this.table_data[9].new_value && this.table_data[10].new_value){
 						
@@ -435,10 +547,10 @@
 					}
 					//贡献毛益（本月销售收入*本月贡献毛益率）
 					if(this.table_data[3].new_value||this.table_data[11].new_value != ""){
-						this.table_data[12].new_value = (this.table_data[3].new_value*this.table_data[11].new_value).toFixed(2);
+						this.table_data[12].new_value = parseInt(this.table_data[3].new_value*(this.table_data[11].new_value)/100);
 					}
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
-					this.table_data[16].new_value = !this.table_data[3].new_value||this.table_data[11].new_value == ''||!this.table_data[13].new_value||!this.table_data[14].new_value||!this.table_data[15].new_value?'':(this.table_data[3].new_value*(this.table_data[11].new_value - this.table_data[13].new_value - this.table_data[14].new_value - this.table_data[15].new_value)).toFixed(2);
+					this.table_data[16].new_value = !this.table_data[3].new_value||this.table_data[11].new_value == ''||!this.table_data[13].new_value||!this.table_data[14].new_value||!this.table_data[15].new_value?'':parseInt(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100));
 					//净利润率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-物流费用率-客服费用率-公摊费用率)
 					this.table_data[17].new_value = !this.table_data[4].new_value || !this.table_data[5].new_value ||!this.table_data[6].new_value ||!this.table_data[7].new_value||!this.table_data[13].new_value||!this.table_data[14].new_value||!this.table_data[15].new_value?'':(this.table_data[4].new_value-this.table_data[5].new_value-this.table_data[6].new_value-this.table_data[7].new_value-this.table_data[13].new_value-this.table_data[14].new_value-this.table_data[15].new_value).toFixed(2);
 				}
@@ -460,86 +572,150 @@
 			},
 			//点击第二个查询
 			getBottomData(){
-				// for(let i = 0;i < this.table_data.length;i++){
-				// 	if(!this.table_data[i].new_value && !this.table_data[i].isAuto){
-				// 		this.$message.warning(`请输入${this.table_data[i].name}`);
-				// 		this.$refs[this.table_data[i].key].focus();
-				// 		return;
-				// 	}
-				// 	if(this.table_data[i].disabled && !this.table_data[i].advice){
-				// 		this.$message.warning(`请填写${this.table_data[i].name}建议`);
-				// 		return;
-				// 	}
-				// }
+				for(let i = 0;i < this.table_data.length;i++){
+					if(!this.table_data[i].new_value && !this.table_data[i].isAuto){
+						this.$message.warning(`请输入${this.table_data[i].name}`);
+						this.$refs[this.table_data[i].key].focus();
+						return;
+					}
+					if(this.table_data[i].disabled && !this.table_data[i].advice){
+						this.$message.warning(`请填写${this.table_data[i].name}建议`);
+						return;
+					}
+				}
 				//获取第三个表格数据
 				this.getMonthList();
-				console.log(this.table_data);
 			},
 			// 获取月份内的数据
-    		getMonthList(time){
-    			let MonthDayNum = 0;
-    			var date = new Date();
-    			let y = date.getFullYear();
-    			let m = date.getMonth();
-      			let m_zf = Number(m+1);
-      			MonthDayNum = this.mGetDate(y,m_zf);
-      			var rxssr = this.table_data[3].new_value/MonthDayNum;
+			getMonthList(){
+    			//当前月信息
+    			let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
       			//销售收入占比平均数
-      			var average = Math.floor((100/MonthDayNum) * 100)/100;
+      			var average = parseInt(100/monthInfo.monthDayNum);
       			//销售收入占比最后一个
-      			let toast_num = 0;
-      			for(let i = 0;i < MonthDayNum - 1;i ++){
-      				toast_num += average;
-      			}
-      			var last_average = Math.floor((100 - toast_num) * 100)/100;
+      			var last_average = 100 - average*(monthInfo.monthDayNum - 1)
+
       			var menu = [];
-      			for(var i=1;i<=MonthDayNum;i++){
-      				let i_zf = i;
+      			for(var i=1;i<=monthInfo.monthDayNum;i++){
       				let info = {
-      					date:m_zf+'月'+i_zf+'日',
-      					week:this.getWeek(date,y+'-'+m_zf+'-'+i_zf),
-      					gmv:(this.table_data[1].new_value/MonthDayNum).toFixed(2),
-      					xssr:rxssr.toFixed(2),
-      					xssrzb:i < MonthDayNum?average:last_average,
+      					day:monthInfo.month+'月'+i+'日',
+      					week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
       					mll:this.table_data[4].new_value,
-      					cpcb:(rxssr*(100-this.table_data[4].new_value)).toFixed(2),
       					yxfyl:this.table_data[5].new_value,
-      					yxfy:(rxssr*this.table_data[5].new_value).toFixed(2),
-      					roi:(rxssr/(rxssr/MonthDayNum*this.table_data[5].new_value)).toFixed(2),
-      					dptdfy:(rxssr*this.table_data[6].new_value).toFixed(2),
-      					dpqtfy:(rxssr*this.table_data[10].new_value).toFixed(2),
-      					xmbftfy:(rxssr*this.table_data[7].new_value).toFixed(2),
-      					sybftfy:(rxssr*this.table_data[8].new_value).toFixed(2),
-      					lbfy:(rxssr*this.table_data[9].new_value).toFixed(2),
-      					gxmy:(rxssr*this.table_data[11].new_value).toFixed(2),
-      					wlfy:(rxssr*this.table_data[13].new_value).toFixed(2),
-      					kffy:(rxssr*this.table_data[14].new_value).toFixed(2),
-      					gtfy:(rxssr*this.table_data[15].new_value).toFixed(2),
-      					jlr:(rxssr-(rxssr*(100-this.table_data[4].new_value))-(rxssr*this.table_data[6].new_value)-(rxssr*this.table_data[7].new_value)-(rxssr*this.table_data[13].new_value)-(rxssr*this.table_data[14].new_value)-(rxssr*this.table_data[15].new_value)).toFixed(2),
-      					jlrl:((rxssr-(rxssr*(100-this.table_data[4].new_value))-(rxssr*this.table_data[6].new_value)-(rxssr*this.table_data[7].new_value)-(rxssr*this.table_data[13].new_value)-(rxssr*this.table_data[14].new_value)-(rxssr*this.table_data[15].new_value))/rxssr).toFixed(2)
+      					xssrzb:i < monthInfo.monthDayNum?average:last_average
       				}
-      				menu.push(info);
+      				menu.push(this.setInfo(info));
       			}
       			this.day_table_data = menu;
-      			console.log(this.day_table_data);
       		},
-      		// 获取月份数据
-			mGetDate(y,m){
-				var date = new Date(y,m);
-				var year = date.getFullYear();
-				var month = date.getMonth();
-				var d = new Date(year, month, 0);
-				return d.getDate();
-			},
-    		// 获取星期
-    		getWeek(date,dateString) {
-    			var dateArray = dateString.split("-");
-    			date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2]);
-        		return "日一二三四五六".charAt(date.getDay());
-        	},
-		}
-	}
-</script>
+      		//改变下面表格某一条的占比
+      		changeZb(v,i){
+      			this.day_table_data[i] = this.setInfo(this.day_table_data[i])
+      		},
+      		//计算每一行
+      		setInfo(info){
+      			// 日销售收入
+      			info.xssr = ((info.xssrzb/100)*this.table_data[3].new_value).toFixed(2);
+      			//日GMV
+      			info.gmv = ((info.xssrzb/100)*this.table_data[1].new_value).toFixed(2);
+      			//产品成本
+      			info.cpcb = (info.xssr*(1-this.table_data[4].new_value/100)).toFixed(2);
+      			//营销费用
+      			info.yxfy = (info.xssr*(this.table_data[5].new_value/100)).toFixed(2);
+      			//销售ROI目标
+      			info.roi = (info.xssr/info.yxfy).toFixed(2);
+      			//店铺团队费用
+      			info.dptdfy = (info.xssr*(this.table_data[6].new_value/100)).toFixed(2);
+      			//项目部分摊费用
+      			info.xmbftfy = (info.xssr*(this.table_data[7].new_value/100)).toFixed(2);
+      			//物流类费用
+      			info.wlfy = (info.xssr*(this.table_data[13].new_value/100)).toFixed(2);
+      			//客服类费用
+      			info.kffy = (info.xssr*(this.table_data[14].new_value/100)).toFixed(2);
+      			//公摊费
+      			info.gtfy = (info.xssr*(this.table_data[15].new_value/100)).toFixed(2);
+      			//事业部分摊费用
+      			info.sybftfy = (info.xssr*(this.table_data[8].new_value/100)).toFixed(2);
+      			//店铺其他费用
+      			info.dpqtfy = (info.xssr*(this.table_data[10].new_value/100)).toFixed(2);
+      			//领标费用
+      			info.lbfy = (info.xssr*(this.table_data[9].new_value/100)).toFixed(2);
+      			//贡献毛益
+      			info.gxmy = (info.xssr*(this.table_data[11].new_value/100)).toFixed(2);
+      			//净利润额
+      			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy).toFixed(2);
+      			//净利润率
+      			info.jlrl = (info.jlr/info.xssr).toFixed(2);
+      			return info;
+      		},
+      		// 表尾合计行处理
+      		getSummaries(param) {
+      			const { columns, data } = param;
+      			const sums = [];
+      			columns.forEach((column, index) => {
+      				if (index === 0) {
+      					sums[index] = '合计';
+      					return;
+      				}
+      				const values = data.map(item => Number(item[column.property]));
+      				sums[index] = values.reduce((prev, curr) => {
+      					return prev + curr;
+      				}, 0);
+      				sums[index] = sums[index].toFixed(2);
+					if (index === 1) {	//星期
+						sums[index] = '';
+					}
+					if (index === 4) {	//销售收入占比
+						sums[index] = parseInt(sums[index]) + '%';
+					}
+					if (index === 5) {	//毛利率=月毛利率
+						let mll = this.table_data[4].new_value;
+						sums[index] = mll + '%';
+					}
+					if (index === 7) {	//营销费用率=月营销费用率
+						let yxfyl = this.table_data[5].new_value;
+						sums[index] = yxfyl + '%';
+					}
+					if (index === 20) {	//净利润率=总日净利润额/总日销售收入
+						let jlrl = (sums[19]/sums[3]).toFixed(2);
+						sums[index] = jlrl + '%';
+					}
+				});
+      			return sums;
+      		},
+      		//总提交
+      		comfirm(){
+      			let month = {
+      				dept_1_id:this.dept_1_id,
+      				dept_1_name:this.dept_1_name,
+      				dept_2_id:this.dept_2_id,
+      				dept_2_name:this.dept_2_name,
+      				jst_code:this.jst_code,
+      				shop_name:this.shop_name,
+      				shop_id:this.shop_id,
+      				platform:this.platform,
+      				shop_type:this.shop_type,
+      				shopowner_id:this.shopowner_id,
+      				shopowner_name:this.shopowner_name,
+      				reference_shop:this.reference_shop,
+      				date:this.date,
+      			};
+      			this.table_data.map(item => {
+      				month[item.key] = item.new_value;
+      				month[item.key + '_remark'] = item.advice;
+      			});
+      			let data = {
+      				month:month,
+      				day:this.day_table_data
+      			}
+      			console.log(JSON.stringify(data))
+      			resource.addShopTarget({data:JSON.stringify(data)}).then(res => {
+
+      			})
+      		}
+      	}
+      }
+  </script>
 
 
 

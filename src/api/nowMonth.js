@@ -55,7 +55,6 @@ export function lastXDate(x){
 	return formatDate(currentDate); 
 }
 
-
 //获得前某月的开始日期 
 export function getLastMonthStartDate(month_num){ 
 	var lastMonthStartDate = new Date(nowYear, nowMonth - month_num, 1); 
@@ -67,7 +66,7 @@ export function getLastMonthEndDate(month_num){
 	return formatDate(lastMonthEndDate); 
 }
 export function thousands(num){
-    return num.toLocaleString();
+	return num.toLocaleString();
 }
 //格式化日期
 function formatDate(date) { 
@@ -81,4 +80,32 @@ function formatDate(date) {
 		myweekday = "0" + myweekday; 
 	}
 	return (myyear+"-"+mymonth + "-" + myweekday);
+}
+//获取月日期信息
+export function getMonthInfo(year,month){
+	// var date = new Date();
+	// let year = date.getFullYear();
+	// let month = date.getMonth() + 1;
+	let callObj = {
+		monthDayNum:mGetDate(year,month),
+		year:year,
+		month:month
+	}
+	return callObj;
+}
+// 获取当月天数
+function mGetDate(y,m){
+	var thisDate = new Date(y,m,0);  
+    return thisDate.getDate();
+	// var date = new Date(y,m);
+	// var year = date.getFullYear();
+	// var month = date.getMonth();
+	// var d = new Date(year, month, 0);
+	// return d.getDate();
+}
+// 获取星期
+export function getWeek(dateString) {
+	var dateArray = dateString.split("-");
+	var date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2]);
+	return "日一二三四五六".charAt(date.getDay());
 }
