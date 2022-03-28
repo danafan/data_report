@@ -6,6 +6,8 @@ let path = {
 	lastYearData:'targesalemanage/last_year_data',					//获取去年同期数据
 	ajaxUser:'common/ajaxUser',										//获取店长列表
 	addShopTarget:'targesalemanage/add_shop_target',				//创建店铺目标
+	shopTargetList:'targesalemanage/shop_target_list',				//店长目标列表
+	editShopTarget:'targesalemanage/edit_shop_target',				//编辑店铺目标
 }						
 export default{
 	//获取部门列表
@@ -31,6 +33,18 @@ export default{
 	//创建店铺目标
 	addShopTarget(params){
 		return http.post(path.addShopTarget, params)
+	},
+	//店长目标列表
+	shopTargetList(params){
+		return http.get(path.shopTargetList, params)
+	},
+	//编辑店铺目标(get)
+	editShopTargetGet(params){
+		return http.get(path.editShopTarget, params)
+	},
+	//编辑店铺目标(post)
+	editShopTargetPost(params){
+		return http.post(path.editShopTarget, params)
 	},
 }
 

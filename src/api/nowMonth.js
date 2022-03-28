@@ -83,9 +83,6 @@ function formatDate(date) {
 }
 //获取月日期信息
 export function getMonthInfo(year,month){
-	// var date = new Date();
-	// let year = date.getFullYear();
-	// let month = date.getMonth() + 1;
 	let callObj = {
 		monthDayNum:mGetDate(year,month),
 		year:year,
@@ -97,11 +94,6 @@ export function getMonthInfo(year,month){
 function mGetDate(y,m){
 	var thisDate = new Date(y,m,0);  
     return thisDate.getDate();
-	// var date = new Date(y,m);
-	// var year = date.getFullYear();
-	// var month = date.getMonth();
-	// var d = new Date(year, month, 0);
-	// return d.getDate();
 }
 // 获取星期
 export function getWeek(dateString) {

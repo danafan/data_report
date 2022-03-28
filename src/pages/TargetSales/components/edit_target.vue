@@ -3,23 +3,17 @@
 		<div class="top_content">
 			<div class="form_widget">
 				<el-form size="small" label-width="95px" label-position="left">
-					<el-form-item label="一级部门：" required>
-						<el-select v-model="dept_1_id" :popper-append-to-body="false" filterable placeholder="请选择一级部门" @change="changeDept" :disabled="closeStep1">
-							<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-							</el-option>
-						</el-select>
+					<el-form-item label="一级部门：">
+						<el-input v-model="dept_1_name" disabled style="width: 192px">
+						</el-input>
 					</el-form-item>
-					<el-form-item label="二级部门：" required>
-						<el-select v-model="dept_2_id" :popper-append-to-body="false" filterable placeholder="请选择二级部门" @change="changeDept2" :disabled="closeStep1">
-							<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-							</el-option>
-						</el-select>
+					<el-form-item label="二级部门：">
+						<el-input v-model="dept_2_name" disabled style="width: 192px">
+						</el-input>
 					</el-form-item>
-					<el-form-item label="店铺名称：" required>
-						<el-select v-model="shop_name" :popper-append-to-body="false" filterable placeholder="请选择店铺" @change="changeStore" :disabled="closeStep1">
-							<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
-							</el-option>
-						</el-select>
+					<el-form-item label="店铺名称：">
+						<el-input v-model="shop_name" disabled style="width: 192px">
+						</el-input>
 					</el-form-item>
 					<el-form-item label="主账号ID：">
 						<el-input placeholder="选择店铺名称获取" v-model="shop_id" disabled style="width: 192px">
@@ -30,10 +24,10 @@
 						</el-input>
 					</el-form-item>
 					<el-form-item label="店铺类别：">
-						<el-input placeholder="选择店铺名称获取" v-model="shop_type" disabled style="width: 192px">
+						<el-input placeholder="店铺类别" v-model="shop_type" disabled style="width: 192px">
 						</el-input>
 					</el-form-item>
-					<el-form-item label="店长：" required>
+					<el-form-item label="店长：">
 						<el-select
 						v-model="shopowner_id"
 						:popper-append-to-body="false"
@@ -52,14 +46,14 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="参考店铺：" required>
+			<el-form-item label="参考店铺：">
 				<el-select v-model="reference_shop" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
 					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="年/月：" required>
-				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月" style="width: 192px" :picker-options="pickerOptionsYearMonth" :disabled="closeStep1">
+			<el-form-item label="年/月：">
+				<el-date-picker v-model="date" value-format="yyyy-MM" type="month" style="width: 192px" disabled>
 				</el-date-picker>
 			</el-form-item>
 		</el-form>
@@ -191,16 +185,13 @@
 			return{
 				dept_1_id:"",			//选中的一级部门id
 				dept_1_name:"",			//选中的一级部门名称
-				level1_dept_list:[],	//一级部门列表
 				dept_2_id:"",			//选中的二级部门ID
 				dept_2_name:"",			//选中的二级部门名称
-				level2_dept_list:[],	//二级部门列表
 				jst_code:"",			//店铺jst_code
 				shop_name:"",			//店铺名称
 				shop_id:"",				//主账号ID
 				platform:"",			//平台名称
 				shop_type:"",			//店铺类别
-				store_list:[],			//普通店铺列表
 				reference_shop:"",		//选中的参考店铺名称
 				shop_code:"",			//选中的参考店铺shop_code
 				reference_store_list:[],//参考店铺列表
@@ -208,8 +199,7 @@
 				shopowner_name:"",		//店长姓名
 				manager_list:[],		//店长列表
 				date:"",				//选择的年月
-				closeStep1:false,		//第一级是否禁用
-				pickerOptionsYearMonth: this.banTime(),
+				closeStep1:true,		//第一级是否禁用
 				lastYearData:{},		//去年同期返回数据
 				table_data:[{
 					name:'预估发货单数',
@@ -377,96 +367,72 @@
 				adviceModel:false,		//是否显示建议弹窗
 				adviceValue:"",			//临时存放的建议
 				currentAdviceIndex:"",	//点击的建议下标
-				closeStep2:false,		//第二级是否禁用
+				closeStep2:true,		//第二级是否禁用
 				day_table_data:[],		//日数据表格
 			}
 		},
 		created(){
-			//获取部门列表
-			this.getDepts();
 			//获取店铺列表
 			this.getShops();
 			//获取店长列表
 			this.getAjaxUser();
+			
+		},
+		mounted(){
+			//引用组件
+			if(this.month != '' && this.day != ''){
+				//左侧筛选条件
+				let month_obj = JSON.parse(this.month);
+				this.dept_1_id = month_obj.dept_1_id;			//选中的一级部门id
+				this.dept_1_name = month_obj.dept_1_name;			//选中的一级部门名称
+				this.dept_2_id = month_obj.dept_2_id;			//选中的二级部门ID
+				this.dept_2_name = month_obj.dept_2_name;			//选中的二级部门名称
+				this.jst_code = month_obj.jst_code;			//店铺jst_code
+				this.shop_name = month_obj.shop_name;			//店铺名称
+				this.shop_id = month_obj.shop_id;				//主账号ID
+				this.platform = month_obj.platform;		//平台名称
+				this.shop_type = month_obj.shop_type;			//店铺类别
+				this.reference_shop = month_obj.reference_shop;	//选中的参考店铺名称
+				this.shop_code = month_obj.reference_shop_id;		//选中的参考店铺shop_code
+				this.shopowner_id = month_obj.shopowner_id;		//店长ID
+				this.shopowner_name = month_obj.shopowner_name;	//店长姓名
+				this.date = month_obj.date;				//选择的年月
+				// 去年同期
+				this.getLastYearData();
+				this.table_data.map(item => {
+					item.new_value = month_obj[item.key];
+					item.advice = month_obj[item.key + '_remark'];
+				});
+				// 获取第三个表格数据
+				let day_arr = JSON.parse(this.day);
+				this.getMonthList(day_arr);
+			}
+		},
+		props:{
+			month:{
+				type:String,
+				default:""
+			},
+			day:{
+				type:String,
+				default:""
+			},
+			shop_target_id:{
+				type:Number,
+				default:0
+			}
 		},
 		methods:{
-			//限制月份选择
-			banTime() {
-				return {
-					disabledDate(time) {
-						const date = new Date()
-						const year = date.getFullYear()
-						let month = date.getMonth() + 1
-						if (month >= 1 && month <= 9) {
-							month = '0' + month
-						}
-						const currentdate = year.toString() + month.toString()
-						const timeyear = time.getFullYear()
-						let timemonth = time.getMonth() + 1
-						if (timemonth >= 1 && timemonth <= 9) {
-							timemonth = '0' + timemonth
-						}
-						const timedate = timeyear.toString() + timemonth.toString()
-						return currentdate >= timedate
-					}
-				}
-			},
-			//获取部门列表
-			getDepts(dept_id){
-				let arg = {};
-				if(dept_id){
-					arg.dept_id = dept_id;
-				}
-				resource.getDepts(arg).then(res => {
-					if(res.data.code == 1){
-						if(dept_id){
-							this.level2_dept_list = res.data.data;
-						}else{
-							this.level1_dept_list = res.data.data;
-						}
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//切换一级部门
-			changeDept(v){
-				let item = this.level1_dept_list.filter(item => {return item.dept_id == v});
-				this.dept_1_name = item[0].dept_name;
-				//获取部门列表
-				this.getDepts(v);
-			},
-			//切换二级部门
-			changeDept2(v){
-				let item = this.level2_dept_list.filter(item => {return item.dept_id == v});
-				this.dept_2_name = item[0].dept_name;
-			},
 			//获取店铺列表
 			getShops(){
 				resource.getShops().then(res => {
 					if(res.data.code == 1){
 						let data_list = res.data.data;
 						data_list.map(item => {
-							if(item.is_reference == 0){
-								this.store_list.push(item);
-							}else{
+							if(item.is_reference == 1){
 								this.reference_store_list.push(item);
 							}
 						})
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//切换店铺获取店铺详情
-			changeStore(v){
-				resource.getShopInfo({shop_name:v}).then(res => {
-					if(res.data.code == 1){
-						let data = res.data.data;
-						this.shop_id = data.shop_code;			
-						this.platform = data.platform;			
-						this.shop_type = data.shop_type?data.shop_type:'';	
-						this.jst_code = data.jst_code;		
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -490,30 +456,10 @@
 			//切换店长
 			changeUser(v){
 				let item = this.manager_list.filter(item => {return item.ding_user_id == v});
-				console.log(item);
 				this.shopowner_name = item[0].ding_user_name;
 			},
 			//获取去年同期数据
 			getLastYearData(){
-				if(this.dept_1_id == ''){
-					this.$message.warning('请选择一级部门');
-					return;
-				}else if(this.dept_2_id == ''){
-					this.$message.warning('请选择二级部门');
-					return;
-				}else if(this.shop_id == ''){
-					this.$message.warning('请选择店铺');
-					return;
-				}else if(this.shopowner_id == ''){
-					this.$message.warning('请选择店长');
-					return;
-				}else if(this.reference_shop == ''){
-					this.$message.warning('请选择参考店铺');
-					return;
-				}else if(this.date == ''){
-					this.$message.warning('请选择年月');
-					return;
-				}
 				let arg = {
 					shop_code:this.shop_code,
 					date:this.date
@@ -565,14 +511,14 @@
 					// GMV（本月销售收入/（1-本月退款率））
 					this.table_data[1].new_value = this.table_data[3].new_value === ''?'':(this.table_data[3].new_value/(1 - (this.table_data[2].new_value)/100)).toFixed(2);
 					//贡献毛益率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-事业部分摊费用率-领标费用率-店铺其他费用率)
-					if(this.table_data[4].new_value !== '' && this.table_data[5].new_value !== '' && this.table_data[6].new_value !== '' && this.table_data[7].new_value !== '' && this.table_data[8].new_value !== '' && this.table_data[9].new_value !== '' && this.table_data[10].new_value !== ''){
+					if(this.table_data[4].new_value !== '' && this.table_data[5].new_value!== '' && this.table_data[6].new_value !== '' && this.table_data[7].new_value !== '' && this.table_data[8].new_value !== '' && this.table_data[9].new_value !== '' && this.table_data[10].new_value !== ''){
 						
 						this.table_data[11].new_value = (this.table_data[4].new_value - this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[10].new_value).toFixed(2);
 					}else{
 						this.table_data[11].new_value = "";
 					}
 					//贡献毛益（本月销售收入*本月贡献毛益率）
-					if(this.table_data[3].new_value !== ''||this.table_data[11].new_value  !== ''){
+					if(this.table_data[3].new_value !== '' && this.table_data[11].new_value  !== ''){
 						this.table_data[12].new_value = parseInt(this.table_data[3].new_value*(this.table_data[11].new_value)/100);
 					}
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
@@ -599,39 +545,55 @@
 			//点击第二个查询
 			getBottomData(){
 				for(let i = 0;i < this.table_data.length;i++){
-					if(this.table_data[i].new_value === '' && !this.table_data[i].isAuto){
+					if(this.table_data[i].new_value === '' && this.table_data[i].new_value != 0 && !this.table_data[i].isAuto){
 						this.$message.warning(`请输入${this.table_data[i].name}`);
 						this.$refs[this.table_data[i].key].focus();
 						return;
 					}
-					if(this.table_data[i].disabled && this.table_data[i].advice === ''){
+					if(this.table_data[i].disabled && !this.table_data[i].advice){
 						this.$message.warning(`请填写${this.table_data[i].name}建议`);
 						return;
 					}
 				}
 				//获取第三个表格数据
-				this.getMonthList();
+				this.getMonthList('1');
 			},
 			// 获取第三个表格数据
-			getMonthList(){
-    			//当前月信息
-    			let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
-      			//销售收入占比平均数
-      			var average = parseInt(100/monthInfo.monthDayNum);
-      			//销售收入占比最后一个
-      			var last_average = 100 - average*(monthInfo.monthDayNum - 1)
-
-      			var menu = [];
-      			for(var i=1;i<=monthInfo.monthDayNum;i++){
-      				let info = {
-      					day:monthInfo.month+'月'+i+'日',
-      					week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-      					mll:this.table_data[4].new_value,
-      					yxfyl:this.table_data[5].new_value,
-      					xssrzb:i < monthInfo.monthDayNum?average:last_average
+			getMonthList(type){
+				var menu = [];
+				//当前月信息
+				var monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
+				if(type == '1'){			//点击第二个查询按钮
+					
+      				//销售收入占比平均数
+      				var average = parseInt(100/monthInfo.monthDayNum);
+      				//销售收入占比最后一个
+      				var last_average = 100 - average*(monthInfo.monthDayNum - 1)
+      				for(var i=1;i<=monthInfo.monthDayNum;i++){
+      					let info = {
+      						day:monthInfo.month+'月'+i+'日',
+      						week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+      						mll:this.table_data[4].new_value,
+      						yxfyl:this.table_data[5].new_value,
+      						xssrzb:i < monthInfo.monthDayNum?average:last_average
+      					}
+      					menu.push(this.setInfo(info));
       				}
-      				menu.push(this.setInfo(info));
+      			}else{	//获取详情
+      				for(var i=0;i<type.length;i++){
+      					let info = {
+      						day:monthInfo.month+'月'+(i+1)+'日',
+      						week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+      						mll:this.table_data[4].new_value,
+      						yxfyl:this.table_data[5].new_value,
+      						xssrzb:type[i].xssrzb
+      					}
+      					menu.push(this.setInfo(info));
+      				}
       			}
+
+
+      			
       			this.day_table_data = menu;
       			// 第二块禁用
       			this.closeStep2 = true;
@@ -716,13 +678,13 @@
       			var zb_num = 0
       			for(let i = 0;i < this.day_table_data.length;i++){
       				zb_num += parseInt(this.day_table_data[i].xssrzb);
-      				if(this.day_table_data[i].xssrzb === ''){
+      				if(!this.day_table_data[i].xssrzb){
       					this.$message.warning("销售收入占比不能为空");
       					this.$refs['zb_' + i].focus();
       					return;
       				}
       			}
-      			if(zb_num !== 100){
+      			if(zb_num != 100){
       				this.$message.warning("销售收入占比总和必须是100");
       				return;
       			}
@@ -754,8 +716,11 @@
       					month:month,
       					day:this.day_table_data
       				}
-      				console.log(JSON.stringify(data))
-      				resource.addShopTarget({data:JSON.stringify(data)}).then(res => {
+      				let arg = {
+      					data:JSON.stringify(data),
+      					shop_target_id:this.shop_target_id
+      				}
+      				resource.editShopTargetPost(arg).then(res => {
       					if (res.data.code == 1) {
       						this.$message.success(res.data.msg);
       						this.reload();

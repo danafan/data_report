@@ -67,7 +67,7 @@ const router = new Router({
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},
     { path: '/operations_data_analysis',name:"运营中心数据分析", component: operations_data_analysis},
-    { path: '/target_sales_management',name:"目标销售额管理", component: target_sales_management},
+    { path: '/target_sales_management',name:"目标销售额管理", component: target_sales_management}
     ]
   }
   ]
