@@ -38,6 +38,7 @@ const operations_data_analysis = resolve=>require(['@/pages/Operations/operation
 const target_sales_management = resolve=>require(['@/pages/TargetSales/target_sales_management'],resolve)
 const audit_dept = resolve=>require(['@/pages/TargetSales/auditDept/audit_dept'],resolve)   //审核表（项目部审核店铺）
 const sales_forecast_dept = resolve=>require(['@/pages/TargetSales/auditDept/sales_forecast_dept'],resolve)   //销售额预估表（项目部）
+const store_target = resolve=>require(['@/pages/TargetSales/auditDept/components/store_target'],resolve)   //拆分店铺（项目部）
 Vue.use(Router)
 
 const router = new Router({
@@ -72,6 +73,7 @@ const router = new Router({
     { path: '/target_sales_management',name:"目标销售额管理", component: target_sales_management},
     { path: '/audit_dept',name:"审核表（项目部审核店铺）", component: audit_dept},
     { path: '/sales_forecast_dept',name:"销售额预估表（项目部）", component: sales_forecast_dept},
+    { path: '/store_target',name:"拆分店铺（项目部）", component: store_target},
     ]
   }
   ]
