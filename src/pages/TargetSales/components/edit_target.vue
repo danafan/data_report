@@ -88,7 +88,7 @@
 		<el-button type="primary" size="small" @click="closeStep2 = false" v-else>重置</el-button>
 	</div>
 </div>
-<div class="table_box" v-if="closeStep2 == true">
+<div class="bottom_table_box" v-if="closeStep2 == true">
 	<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
 		<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
@@ -133,7 +133,7 @@
 	<el-button type="primary" size="small" class="submit" @click="comfirm">提交</el-button>
 </div>
 <!-- 填写建议 -->
-<el-dialog title="建议" width="30%" :visible.sync="adviceModel">
+<el-dialog title="建议" width="30%" :visible.sync="adviceModel" append-to-body>
 	<el-input
 	size="small"
 	type="textarea"
@@ -418,8 +418,8 @@
 				default:""
 			},
 			shop_target_id:{
-				type:Number,
-				default:0
+				type:String,
+				default:""
 			}
 		},
 		methods:{

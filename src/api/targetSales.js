@@ -8,6 +8,13 @@ let path = {
 	addShopTarget:'targesalemanage/add_shop_target',				//创建店铺目标
 	shopTargetList:'targesalemanage/shop_target_list',				//店长目标列表
 	editShopTarget:'targesalemanage/edit_shop_target',				//编辑店铺目标
+	cancelShopLog:'targesalemanage/cancel_shop_log',				//作废
+	shopTargetInfo:'targesalemanage/shop_target_info',				//店长目标详情
+	auditLog:'targesalemanage/audit_log',							//审批流程
+	shopTargetCheck:'targesalemanage/shop_target_check',			//审核店铺
+	mergeTarget:'targesalemanage/merge_target',						//合并提交
+	projectTargetList:'targesalemanage/project_target_list',		//项目部目标
+	projectTargetInfo:'targesalemanage/project_target_info',		//项目部目标详情
 }						
 export default{
 	//获取部门列表
@@ -45,6 +52,34 @@ export default{
 	//编辑店铺目标(post)
 	editShopTargetPost(params){
 		return http.post(path.editShopTarget, params)
+	},
+	//作废
+	cancelShopLog(params){
+		return http.post(path.cancelShopLog, params)
+	},
+	//店长目标详情
+	shopTargetInfo(params){
+		return http.get(path.shopTargetInfo, params)
+	},
+	//审批流程
+	auditLog(params){
+		return http.get(path.auditLog, params)
+	},
+	//审核店铺
+	shopTargetCheck(params){
+		return http.post(path.shopTargetCheck, params)
+	},
+	//合并提交
+	mergeTarget(params){
+		return http.post(path.mergeTarget, params)
+	},
+	//项目部目标
+	projectTargetList(params){
+		return http.get(path.projectTargetList, params)
+	},
+	//项目部目标详情
+	projectTargetInfo(params){
+		return http.get(path.projectTargetInfo, params)
 	},
 }
 

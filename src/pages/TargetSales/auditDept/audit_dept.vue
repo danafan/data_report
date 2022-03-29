@@ -1,9 +1,16 @@
 <template>
+	<!-- 审核表（项目部审核店铺） -->
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="年/月：">
-				<el-date-picker v-model="date" :clearable="false" clearable value-format="yyyy-MM" type="month" placeholder="选择年月">
+				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月">
 				</el-date-picker>
+			</el-form-item>
+			<el-form-item label="二级部门：">
+				<el-select v-model="dept_2_id" :popper-append-to-body="false" filterable placeholder="二级部门">
+					<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="shop_id" :popper-append-to-body="false" clearable filterable placeholder="请选择店铺">
@@ -21,6 +28,10 @@
 				<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="set_button">
+			<el-button size="mini" type="plain" @click="$router.push('/sales_forecast_dept')">销售额预估表</el-button>
+			<el-button size="mini" type="primary" @click="showMerge = true">合并提交</el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
 			<el-table-column prop="dept_2_name" show-overflow-tooltip label="二级部门" align="center"></el-table-column>
@@ -32,18 +43,17 @@
 			<el-table-column prop="reference_shop" show-overflow-tooltip label="参考店铺" align="center"></el-table-column>
 			<el-table-column prop="year" label="年份" align="center"></el-table-column>
 			<el-table-column prop="month" label="月份" align="center"></el-table-column>
+			<el-table-column prop="add_time" label="提交时间" align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="审核状态" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getStep(scope.row.id)" v-if="scope.row.status == '0'">审核中</el-button>
-					<el-button type="text" size="small" @click="getStep(scope.row.id)" v-if="scope.row.status == '1'">审核通过</el-button>
-					<el-button type="text" size="small" @click="getStep(scope.row.id)" v-if="scope.row.status == '2'">审核拒绝</el-button>
+					<div v-if="scope.row.status == '0'">审核中</div>
+					<div v-if="scope.row.status == '1'">审核通过</div>
+					<div v-if="scope.row.status == '2'">审核拒绝</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" width="300">
+			<el-table-column label="操作" align="center" fixed="right" width="120">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id)">查看详情</el-button>
-					<el-button type="text" size="small" @click="cancelItem(scope.row.id)" v-if="scope.row.status == '2'">作废</el-button>
-					<el-button type="text" size="small" @click="editFun(scope.row.id)" v-if="scope.row.status == '2'">修改</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -51,64 +61,47 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
-		<el-dialog title="编辑" :visible.sync="showEdit" width="80%" :close-on-click-modal="false">
-			<div class="editBox">
-				<EditTarget :day="day" :month="month" :shop_target_id="shop_target_id"/>
-			</div>
-		</el-dialog>
+		<!-- 详情 -->
 		<el-dialog title="详情" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
-				<TargetDetail type="1" :id="id" @callback="editFun" v-if="showDetail"/>
+				<TargetDetail type="2" :id="id" @callback="callBack" v-if="showDetail"/>
 			</div>
 			<div slot="footer" class="dialog-footer">
 				<el-button size="small" type="primary" @click="showDetail = false">关闭</el-button>
 			</div>
 		</el-dialog>
-		<el-dialog title="审批流程" :visible.sync="showStep">
-			<el-timeline>
-				<el-timeline-item
-				v-for="(activity, index) in step_list"
-				:key="index"
-				:timestamp="activity.user_name">
-				<div class="step_row">
-					<div class="flex_style">{{activity.title}} </div>
-					<div class="gu">{{activity.status}} </div>
-					<div class="gu">{{activity.time}} </div>
-				</div>
-			</el-timeline-item>
-		</el-timeline>
+		<!-- 合并提交 -->
+		<el-dialog title="合并提交" :visible.sync="showMerge" append-to-body>
+			<el-input
+			type="textarea"
+			:rows="3"
+			placeholder="请输入备注"
+			v-model="remark">
+		</el-input>
 		<div slot="footer" class="dialog-footer">
-			<el-button size="small" type="primary" @click="showStep = false">关闭</el-button>
+			<el-button size="small" @click="showMerge = false">取 消</el-button>
+			<el-button size="small" type="primary" @click="mergeTarget">确 定</el-button>
 		</div>
 	</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
-.editBox{
-	height: 700px;
-	overflow-y: scroll;
-}
-.step_row{
+.set_button{
+	margin-bottom: 15px;
 	display: flex;
-	align-items: center;
 	justify-content: space-between;
-	.flex_style{
-		flex: 1;
-	}
-	.gu{
-		width: 200px;
-		text-align: end;
-	}
 }
 </style>
 <script>
 	import resource from '../../../api/targetSales.js'
-	import EditTarget from './edit_target.vue'
-	import TargetDetail from './target_detail.vue'
+	import TargetDetail from '../components/target_detail.vue'
+	import {getCurrentMonth} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
-				date:"",		//选择的年月
+				date:getCurrentMonth(),		//选择的年月
+				dept_2_id:"",				//二级部门的ID
+				level2_dept_list:[],		//二级部门列表
 				shop_id:"",		//选中的店铺ID
 				store_list:[],	//店铺列表
 				status:-1,		//默认全部
@@ -131,22 +124,32 @@
 				pagesize:10,
 				page:1,
 				dataObj:{},					//返回数据
-				showEdit:false,
-				month:"",
-				day:"",
-				shop_target_id:"",
 				showDetail:false,			//详情弹窗
-				showStep:false,				//审批流程弹窗
-				step_list:[],				//审批流程列表
+				showMerge:false,			//合并提交弹窗
+				id:"",						//查看详情的ID
+				remark:"",					//合并备注
 			}
 		},
 		created(){
+			//获取部门列表
+			this.getDepts();
 			//获取店铺列表
 			this.getShops();
-			//获取列表
-			this.getData();
 		},
 		methods:{
+			//获取部门列表
+			getDepts(){
+				resource.getDepts({type:'2'}).then(res => {
+					if(res.data.code == 1){
+						this.level2_dept_list = res.data.data;
+						this.dept_2_id = this.level2_dept_list[0].dept_id;
+						//获取列表
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取店铺列表
 			getShops(){
 				resource.getShops().then(res => {
@@ -172,8 +175,9 @@
 			getData(type){
 				this.page = type?1:this.page;
 				let arg = {
-					from_type:'shop',
-					date:this.date?this.date:'',
+					from_type:'project',
+					date:this.date,
+					dept_2_id:this.dept_2_id,
 					shop_id:this.shop_id,
 					status:this.status,
 					page:this.page,
@@ -187,66 +191,45 @@
 					}
 				})
 			},
-			//点击状态查看进度
-			getStep(id){
-				resource.auditLog({shop_target_id:id}).then(res => {
-					if(res.data.code == 1){
-						this.step_list = res.data.data;
-						this.showStep = true;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//点击修改
-			editFun(id){
-				this.showDetail = false;
-				resource.editShopTargetGet({shop_target_id:id}).then(res => {
-					if(res.data.code == 1){
-						this.showEdit = true;
-						this.shop_target_id = id;
-						this.month = JSON.stringify(res.data.data.month);
-						this.day = JSON.stringify(res.data.data.day);
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//作废
-			cancelItem(id){
-				this.$confirm('确认提交', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					resource.cancelShopLog({shop_target_id:id}).then(res => {
-						if (res.data.code == 1) {
-							this.$message.success(res.data.msg);
-      						//获取列表
-      						this.getData('1');
-      					}else{
-      						this.$message.warning(res.data.msg)
-      					}
-      				})
-				}).catch(() => {
-					this.$message({
-						type: 'info',
-						message: '已取消删除'
-					});          
-				});
-			},
 			//查看详情
 			getDetail(id){
 				this.id = JSON.stringify(id);
 				this.showDetail = true;
-			}
+			},
+			//审核结束
+			callBack(){
+				this.showDetail = false;
+				//获取列表
+				this.getData();
+			},
+			//合并提交
+			mergeTarget(){
+				let arg = {
+					type:'1',
+					date:this.date,
+					remark:this.remark,
+					dept_2_id:this.dept_2_id
+				}
+				//提交审核
+				resource.mergeTarget(arg).then(res => {
+					if (res.data.code == 1) {
+						this.$message.success(res.data.msg);
+						this.showMerge = false;
+						//获取列表
+						this.getData('1');
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
+			},
 		},
 		components:{
-			EditTarget,
 			TargetDetail
 		}
 	}
 </script>
+
+
 
 
 

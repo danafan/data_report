@@ -58,7 +58,8 @@ export function middleWare(params,type) {
   // var req = {...params,...{sign:sign,token:token}};
   // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}};   //审计
   // var req = {...params,...{sign:sign,admin_id:'16242415743283525',token:token}};   //运营
-  var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};   //普通
+  // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};   //普通
+  var req = {...params,...{sign:sign,admin_id:'15728275951035263',token:token}};   //部门
   
   var get_arr = [];
   //post请求参数

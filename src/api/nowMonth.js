@@ -24,6 +24,16 @@ export function getCurrentMonth(){
 	} 
 	return (myyear+"-"+mymonth);
 }
+//获得下个月
+export function getNextMonth(){ 
+	var currentMonth = new Date(nowYear, nowMonth, 1); 
+	var myyear = currentMonth.getFullYear(); 
+	var mymonth = currentMonth.getMonth()+2; 
+	if(mymonth < 10){ 
+		mymonth = "0" + mymonth; 
+	} 
+	return (myyear+"-"+mymonth);
+}
 //获得昨日日期（包括上月末日期）
 export function getCurrentDate(){
 	var day1 = new Date();
