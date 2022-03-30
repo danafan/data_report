@@ -15,6 +15,10 @@ let path = {
 	mergeTarget:'targesalemanage/merge_target',						//合并提交
 	projectTargetList:'targesalemanage/project_target_list',		//项目部目标
 	projectTargetInfo:'targesalemanage/project_target_info',		//项目部目标详情
+	projectTargetCheck:'targesalemanage/project_target_check',		//项目部目标审核
+	businessTargetList:'targesalemanage/business_target_list',		//事业部目标列表
+	businessTargetInfo:'targesalemanage/business_target_info',		//事业部目标详情
+	businessTargetCheck:'targesalemanage/business_target_check',	//事业部目标审核
 }						
 export default{
 	//获取部门列表
@@ -80,6 +84,22 @@ export default{
 	//项目部目标详情
 	projectTargetInfo(params){
 		return http.get(path.projectTargetInfo, params)
+	},
+	//项目部目标审核
+	projectTargetCheck(params){
+		return http.post(path.projectTargetCheck, params)
+	},
+	//事业部目标列表
+	businessTargetList(params){
+		return http.get(path.businessTargetList, params)
+	},
+	//事业部目标详情
+	businessTargetInfo(params){
+		return http.get(path.businessTargetInfo, params)
+	},
+	//事业部目标审核
+	businessTargetCheck(params){
+		return http.post(path.businessTargetCheck, params)
 	},
 }
 

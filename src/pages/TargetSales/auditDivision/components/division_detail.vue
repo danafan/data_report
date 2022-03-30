@@ -1,0 +1,334 @@
+<template>
+	<div>
+		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
+			<el-table-column width="120" label="去年同期" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="160" label="本月目标参数" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.new_value}}{{scope.row.isPer?'%':''}}</div>
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="bottom_table">
+			<div class="row">
+				<div class="lable">提交时间：</div>
+				<div class="value">{{bottom_info.add_time}}</div>
+			</div>
+			<div class="row">
+				<div class="lable">提交人：</div>
+				<div class="value">{{bottom_info.add_user_name}}</div>
+			</div>
+			<div class="row">
+				<div class="lable">备注：</div>
+				<div class="value">{{bottom_info.remark}}</div>
+			</div>
+			<div class="row" v-if="bottom_info.status != '0'">
+				<div class="lable">审核状态：</div>
+				<div class="value">{{bottom_info.status == '0'?'待审核':bottom_info.status == '1'?'审核通过':'审核拒绝'}}</div>
+			</div>
+			<div class="row" v-if="bottom_info.status != '0'">
+				<div class="lable">审核人：</div>
+				<div class="value">{{bottom_info.audit_user_name}}</div>
+			</div>
+			<div class="row" v-if="bottom_info.status != '0'">
+				<div class="lable">审核时间：</div>
+				<div class="value">{{bottom_info.audit_time}}</div>
+			</div>
+			<div class="row" v-if="bottom_info.status == '0'">
+				<div class="lable">操作：</div>
+				<div class="value">
+					<el-button size="mini" type="danger" @click="showRefuse = true">拒绝</el-button>
+					<el-button size="mini" type="primary" @click="agreeFun">同意</el-button>
+				</div>
+			</div>
+		</div>
+		<!-- 拒绝 -->
+		<el-dialog title="拒绝" :visible.sync="showRefuse" append-to-body>
+			<el-input
+			type="textarea"
+			:rows="3"
+			placeholder="请输入拒绝原因（必填）"
+			v-model="refuse_reason">
+		</el-input>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="showRefuse = false">取 消</el-button>
+			<el-button size="small" type="primary" @click="refuseCheck">确 定</el-button>
+		</div>
+	</el-dialog>
+</div>
+</template>
+<style lang="less" scoped>
+.bottom_table{
+	margin-top: 30px;
+	border-left: 1px solid #333333;
+	border-top: 1px solid #333333;
+	.row{
+		display: flex;
+		.lable{
+			border-right: 1px solid #333333;
+			border-bottom: 1px solid #333333;
+			width: 100px;
+			text-align: center;
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+		.value{
+			border-right: 1px solid #333333;
+			border-bottom: 1px solid #333333;
+			flex:1;
+			padding-left: 30px;
+			padding-top: 10px;
+			padding-bottom: 10px;
+		}
+	}
+}
+</style>
+<script>
+	import resource from '../../../../api/targetSales.js'
+	export default{
+		data(){
+			return{
+				dataObj:{},
+				table_data:[{
+					name:'预估发货单数',
+					key:'ygfhds',
+					value:0,
+					new_value:"",
+					isPer:false,
+					advice:""
+				},{
+					name:'GMV',
+					key:'gmv',
+					value:0,
+					new_value:"",
+					isPer:false,
+					advice:""
+				},{
+					name:'退款率',
+					key:'tkl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'销售收入',
+					key:'xssr',
+					value:0,
+					new_value:"",
+					isPer:false,
+					advice:""
+				},{
+					name:'毛利率',
+					key:'mll',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'营销费用率',
+					key:'yxfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'店铺团队费用率',
+					key:'dptdfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'项目部分摊费用率',
+					key:'xmbftfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'事业部分摊费用率',
+					key:'sybftfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'领标费用率',
+					key:'lbfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'店铺其他费用率',
+					key:'dpqtfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'贡献毛益率',
+					key:'gxmyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'贡献毛益',
+					key:'gxmy',
+					value:0,
+					new_value:"",
+					isPer:false,
+					advice:""
+				},{
+					name:'物流费用率',
+					key:'wlfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'客服费用率',
+					key:'kffyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'公摊费用率',
+					key:'gtfyl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				},{
+					name:'净利润',
+					key:'jlr',
+					value:0,
+					new_value:"",
+					isPer:false,
+					advice:""
+				},{
+					name:'净利润率',
+					key:'jlrl',
+					value:0,
+					new_value:"",
+					isPer:true,
+					advice:""
+				}],							//右侧表格数据
+				bottom_info:{},			//底部信息
+				showRefuse:false,		//拒绝弹窗（项目部）
+				refuse_reason:"",			//拒绝原因
+			}
+		},
+		props:{
+			id:{
+				type:String,
+				default:""
+			}
+		},
+		created(){
+			//查看详情
+			this.getDetail();
+		},
+		methods:{
+			//查看详情
+			getDetail(){
+				resource.businessTargetInfo({id:this.id}).then(res => {
+					if(res.data.code == 1){
+						let data = res.data.data;
+
+						//底部详情
+						this.bottom_info = data.data;		//底部信息
+						//去年同期
+						let before_data = data.before_data;
+						this.table_data.map(item => {
+							for (let info_k in this.bottom_info) {
+								if(item.key == info_k){
+									item.new_value = this.bottom_info[info_k];
+									item.advice = this.bottom_info[info_k+'_remark'];
+								}
+							}
+							if(before_data.length == 0){
+								item.value = 0;
+							}else{
+								for (let be_k in before_data) {
+									if(item.key == be_k){
+										item.value = before_data[be_k];
+									}
+								}
+							}
+						});
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//审核拒绝（部门）
+			refuseCheck(){
+				if(this.refuse_reason == ''){
+					this.$message.warning('请输入拒绝原因');
+				}else{
+					//提交审核
+					this.targetCheck('refuse');
+				}
+			},
+			//审核同意
+			agreeFun(){
+				this.$confirm('确认同意？', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					//提交审核
+					this.targetCheck('agree');
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消'
+					});          
+				});
+			},
+			//提交审核
+			targetCheck(type){
+				let arg = {
+					id:this.id,
+					from_type:'business',
+					type:type
+				}
+				if(type == 'refuse'){
+					arg.refuse_reason = this.refuse_reason;
+				}
+				resource.businessTargetCheck(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.$emit('callback');
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

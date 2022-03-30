@@ -102,6 +102,10 @@
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">审核表（项目部审核店铺）</span>
 				</el-menu-item>
+				<el-menu-item index="/audit_division">
+					<i class="el-icon-s-finance"></i>
+					<span slot="title">审核表（事业部审核项目部）</span>
+				</el-menu-item>
 			</el-menu>
 		</div>
 		<el-main class="main">

@@ -2,12 +2,22 @@
 	<div>
 		<div style="display:flex;align-items: center;margin-bottom: 20px">
 			<el-button size='small' icon="el-icon-back" circle @click="$router.go(-1)"></el-button>
-			<div style="margin-left: 15px">拆分店目标</div>
+			<div style="margin-left: 15px">销售额预估表(事业部)</div>
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="店铺名称：">
-				<el-select v-model="shop_id" :popper-append-to-body="false" clearable filterable placeholder="请选择店铺">
-					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_code">
+			<el-form-item label="年/月：">
+				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月">
+				</el-date-picker>
+			</el-form-item>
+			<el-form-item label="一级部门：">
+				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable placeholder="请选择一级部门">
+					<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="审核状态：">
+				<el-select v-model="status" :popper-append-to-body="false" filterable placeholder="请选择审核状态">
+					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -17,18 +27,20 @@
 		</el-form>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
-			<el-table-column prop="dept_2_name" show-overflow-tooltip label="二级部门" align="center"></el-table-column>
-			<el-table-column prop="shop_name" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="shop_id" label="主账号ID" align="center"></el-table-column>
-			<el-table-column prop="platform" label="平台" align="center"></el-table-column>
-			<el-table-column prop="shop_type" label="店铺类别" align="center"></el-table-column>
-			<el-table-column prop="shopowner_name" label="店长" align="center"></el-table-column>
-			<el-table-column prop="reference_shop" show-overflow-tooltip label="参考店铺" align="center"></el-table-column>
 			<el-table-column prop="year" label="年份" align="center"></el-table-column>
 			<el-table-column prop="month" label="月份" align="center"></el-table-column>
+			<el-table-column prop="add_time" label="提交时间" align="center"></el-table-column>
+			<el-table-column prop="cb_price" label="审核状态" align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.status == '0'">审核中</div>
+					<div v-if="scope.row.status == '1'">审核通过</div>
+					<div v-if="scope.row.status == '2'">审核拒绝</div>
+				</template>
+			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="300">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id)">查看详情</el-button>
+					<el-button type="text" size="small" @click="$router.push('/store_target?id=' + scope.row.id)">拆分部目标</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -38,7 +50,7 @@
 		</div>
 		<el-dialog title="详情" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
-				<TargetDetail type="1" :id="id" @callback="showDetail = false" v-if="showDetail"/>
+				<DivisionDetail :id="id" @callback="showDetail = false" v-if="showDetail"/>
 			</div>
 			<div slot="footer" class="dialog-footer">
 				<el-button size="small" type="primary" @click="showDetail = false">关闭</el-button>
@@ -47,37 +59,55 @@
 </div>
 </template>
 <style lang="less" scoped>
-
+.editBox{
+	height: 700px;
+	overflow-y: scroll;
+}
 </style>
 <script>
-	import resource from '../../../../api/targetSales.js'
-	import TargetDetail from '../../components/target_detail.vue'
+	import resource from '../../../api/targetSales.js'
+	import DivisionDetail from './components/division_detail.vue'
+	import {getCurrentMonth} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
-				shop_id:"",		//选中的店铺ID
-				log_id:"",
-				store_list:[],	//店铺列表
+				date:getCurrentMonth(),		//选择的年月
+				dept_1_id:"",			//选中的一级部门id
+				level1_dept_list:[],	//一级部门列表
+				status:-1,		//默认全部
+				status_list:[{
+					name:'全部',
+					id:-1
+				},{
+					name:'审核中',
+					id:0
+				},{
+					name:'审核通过',
+					id:1
+				},
+				{
+					name:'审核拒绝',
+					id:2
+				}],							//状态列表
 				pagesize:10,
 				page:1,
 				dataObj:{},					//返回数据
-				shop_target_id:"",
 				showDetail:false,			//详情弹窗
+				id:"",						//详情ID
 			}
 		},
 		created(){
-			this.log_id = this.$route.query.id;
-			//获取店铺列表
-			this.getShops();
+			//获取部门列表
+			this.getDepts();
 			//获取列表
 			this.getData();
 		},
 		methods:{
-			//获取店铺列表
-			getShops(){
-				resource.getShops().then(res => {
+			//获取部门列表
+			getDepts(dept_id){
+				resource.getDepts().then(res => {
 					if(res.data.code == 1){
-						this.store_list = res.data.data;
+						this.level1_dept_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -98,13 +128,14 @@
 			getData(type){
 				this.page = type?1:this.page;
 				let arg = {
-					from_type:'project',
-					log_id:this.log_id,
-					shop_id:this.shop_id,
+					from_type:'business',
+					date:this.date?this.date:'',
+					dept_1_id:this.dept_1_id,
+					status:this.status,
 					page:this.page,
 					limit:this.pagesize
 				}
-				resource.shopTargetList(arg).then(res => {
+				resource.businessTargetList(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
 					}else{
@@ -119,7 +150,7 @@
 			}
 		},
 		components:{
-			TargetDetail
+			DivisionDetail
 		}
 	}
 </script>
