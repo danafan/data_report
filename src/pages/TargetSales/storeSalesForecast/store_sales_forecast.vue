@@ -21,6 +21,9 @@
 				<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div style="display:flex;justify-content: end;margin-bottom: 15px">
+			<el-button type="primary" size="small" @click="$router.push('/create_target')">店铺填报</el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
 			<el-table-column prop="dept_2_name" show-overflow-tooltip label="二级部门" align="center"></el-table-column>
@@ -41,7 +44,7 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="300">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)">查看详情</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id,scope.row.shop_name)">查看详情</el-button>
 					<el-button type="text" size="small" @click="cancelItem(scope.row.id)" v-if="scope.row.status == '2'">作废</el-button>
 					<el-button type="text" size="small" @click="editFun(scope.row.id)" v-if="scope.row.status == '2'">修改</el-button>
 				</template>
@@ -56,7 +59,7 @@
 				<EditTarget :day="day" :month="month" :shop_target_id="shop_target_id"/>
 			</div>
 		</el-dialog>
-		<el-dialog title="详情" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
+		<el-dialog center :title="dialog_title + ' 销售额预估'" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
 				<TargetDetail type="1" :id="id" @callback="editFun" v-if="showDetail"/>
 			</div>
@@ -103,8 +106,8 @@
 </style>
 <script>
 	import resource from '../../../api/targetSales.js'
-	import EditTarget from './edit_target.vue'
-	import TargetDetail from './target_detail.vue'
+	import EditTarget from './components/edit_target.vue'
+	import TargetDetail from './components/target_detail.vue'
 	export default{
 		data(){
 			return{
@@ -136,6 +139,7 @@
 				day:"",
 				shop_target_id:"",
 				showDetail:false,			//详情弹窗
+				dialog_title:"",			//详情标题
 				showStep:false,				//审批流程弹窗
 				step_list:[],				//审批流程列表
 			}
@@ -214,7 +218,7 @@
 			},
 			//作废
 			cancelItem(id){
-				this.$confirm('确认提交', '提示', {
+				this.$confirm('确认作废', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
 					type: 'warning'
@@ -231,12 +235,13 @@
 				}).catch(() => {
 					this.$message({
 						type: 'info',
-						message: '已取消删除'
+						message: '已取消'
 					});          
 				});
 			},
 			//查看详情
-			getDetail(id){
+			getDetail(id,store_name){
+				this.dialog_title = store_name;
 				this.id = JSON.stringify(id);
 				this.showDetail = true;
 			}

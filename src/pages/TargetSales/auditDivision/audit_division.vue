@@ -47,7 +47,7 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="300">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)">查看详情</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id,scope.row.dept_2_name)">查看详情</el-button>
 					<el-button type="text" size="small" @click="$router.push('/store_target?id=' + scope.row.id)">拆分店目标</el-button>
 				</template>
 			</el-table-column>
@@ -57,7 +57,7 @@
 			</el-pagination>
 		</div>
 		<!-- 详情 -->
-		<el-dialog title="详情" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
+		<el-dialog center :title="dialog_title + ' 销售额预估'" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
 				<DeptDetail :id="id" @callback="callBack" v-if="showDetail"/>
 			</div>
@@ -182,7 +182,8 @@
 				})
 			},
 			//查看详情
-			getDetail(id){
+			getDetail(id,name){
+				this.dialog_title = name;
 				this.id = JSON.stringify(id);
 				this.showDetail = true;
 			},

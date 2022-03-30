@@ -1,15 +1,15 @@
 <template>
 	<div>
-		<el-table size="small" :data="info_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="info_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column width="150" show-overflow-tooltip prop="dept_1_name" label="一级部门" align="center"></el-table-column>
 			<el-table-column width="150" show-overflow-tooltip prop="dept_2_name" label="二级部门" align="center"></el-table-column>
-			<el-table-column width="150" show-overflow-tooltip prop="shop_id" label="主账号ID" align="center"></el-table-column>
+			<el-table-column width="100" show-overflow-tooltip prop="shop_id" label="主账号ID" align="center"></el-table-column>
 			<el-table-column width="150" show-overflow-tooltip prop="platform" label="平台" align="center"></el-table-column>
-			<el-table-column width="150" show-overflow-tooltip prop="shop_type" label="店铺类别" align="center"></el-table-column>
+			<el-table-column width="100" show-overflow-tooltip prop="shop_type" label="店铺类别" align="center"></el-table-column>
 			<el-table-column width="150" show-overflow-tooltip prop="shopowner_name" label="店长" align="center"></el-table-column>
 			<el-table-column width="150" show-overflow-tooltip prop="reference_shop" label="参考店铺" align="center"></el-table-column>
 		</el-table>
-		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
 			<el-table-column width="120" label="去年同期" align="center">
 				<template slot-scope="scope">
@@ -174,7 +174,7 @@
 }
 </style>
 <script>
-	import resource from '../../../api/targetSales.js'
+	import resource from '../../../../api/targetSales.js'
 	export default{
 		data(){
 			return{

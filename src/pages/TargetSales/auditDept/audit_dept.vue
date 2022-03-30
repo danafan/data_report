@@ -53,7 +53,7 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" width="120">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)">查看详情</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id,scope.row.shop_name)">查看详情</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -62,7 +62,7 @@
 			</el-pagination>
 		</div>
 		<!-- 详情 -->
-		<el-dialog title="详情" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
+		<el-dialog center  :title="dialog_title + ' 销售额预估'" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
 				<TargetDetail type="2" :id="id" @callback="callBack" v-if="showDetail"/>
 			</div>
@@ -71,7 +71,7 @@
 			</div>
 		</el-dialog>
 		<!-- 合并提交 -->
-		<el-dialog title="合并提交" :visible.sync="showMerge" append-to-body>
+		<el-dialog title="合并提交" :visible.sync="showMerge" width="30%" append-to-body>
 			<el-input
 			type="textarea"
 			:rows="3"
@@ -94,7 +94,7 @@
 </style>
 <script>
 	import resource from '../../../api/targetSales.js'
-	import TargetDetail from '../components/target_detail.vue'
+	import TargetDetail from '../storeSalesForecast/components/target_detail.vue'
 	import {getCurrentMonth} from '../../../api/nowMonth.js'
 	export default{
 		data(){
@@ -125,6 +125,7 @@
 				page:1,
 				dataObj:{},					//返回数据
 				showDetail:false,			//详情弹窗
+				dialog_title:"",
 				showMerge:false,			//合并提交弹窗
 				id:"",						//查看详情的ID
 				remark:"",					//合并备注
@@ -192,7 +193,8 @@
 				})
 			},
 			//查看详情
-			getDetail(id){
+			getDetail(id,store_name){
+				this.dialog_title = store_name;
 				this.id = JSON.stringify(id);
 				this.showDetail = true;
 			},

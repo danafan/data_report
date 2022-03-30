@@ -1,16 +1,13 @@
 <template>
+	<!-- 审核表（项目部审核店铺） -->
 	<div>
-		<div style="display:flex;align-items: center;margin-bottom: 20px">
-			<el-button type="primary" plain size='mini' icon="el-icon-arrow-left" @click="$router.go(-1)">返回</el-button>
-			<div style="margin-left: 15px">销售额预估表(事业部)</div>
-		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="年/月：">
 				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="一级部门：">
-				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable placeholder="请选择一级部门">
+				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable placeholder="请选择一级部门" @change="getDepts">
 					<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
@@ -40,7 +37,7 @@
 			<el-table-column label="操作" align="center" fixed="right" width="300">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id,scope.row.dept_1_name)">查看详情</el-button>
-					<el-button type="text" size="small" @click="$router.push('/dept_target?id=' + scope.row.id)">拆分部目标</el-button>
+					<el-button type="text" size="small" @click="$router.push('/dept_target_manager?id=' + scope.row.id)">拆分项目部</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -48,20 +45,23 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
+		<!-- 详情 -->
 		<el-dialog center :title="dialog_title + ' 销售额预估'" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
-				<DivisionDetail :id="id" @callback="showDetail = false" v-if="showDetail"/>
+				<DivisionDetail :id="id" @callback="callBack" v-if="showDetail"/>
 			</div>
 			<div slot="footer" class="dialog-footer">
 				<el-button size="small" type="primary" @click="showDetail = false">关闭</el-button>
 			</div>
 		</el-dialog>
+		
 </div>
 </template>
 <style lang="less" scoped>
-.editBox{
-	height: 700px;
-	overflow-y: scroll;
+.set_button{
+	margin-bottom: 15px;
+	display: flex;
+	justify-content: space-between;
 }
 </style>
 <script>
@@ -94,7 +94,7 @@
 				dataObj:{},					//返回数据
 				showDetail:false,			//详情弹窗
 				dialog_title:"",
-				id:"",						//详情ID
+				id:"",						//查看详情的ID
 			}
 		},
 		created(){
@@ -105,10 +105,11 @@
 		},
 		methods:{
 			//获取部门列表
-			getDepts(dept_id){
-				resource.getDepts().then(res => {
+			getDepts(){
+				resource.getDepts({type:'1'}).then(res => {
 					if(res.data.code == 1){
 						this.level1_dept_list = res.data.data;
+						this.dept_1_id = this.level1_dept_list[0].dept_id;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -129,8 +130,8 @@
 			getData(type){
 				this.page = type?1:this.page;
 				let arg = {
-					from_type:'business',
-					date:this.date?this.date:'',
+					from_type:'admin',
+					date:this.date,
 					dept_1_id:this.dept_1_id,
 					status:this.status,
 					page:this.page,
@@ -149,6 +150,12 @@
 				this.dialog_title = name;
 				this.id = JSON.stringify(id);
 				this.showDetail = true;
+			},
+			//审核结束
+			callBack(){
+				this.showDetail = false;
+				//获取列表
+				this.getData();
 			}
 		},
 		components:{
@@ -156,6 +163,8 @@
 		}
 	}
 </script>
+
+
 
 
 

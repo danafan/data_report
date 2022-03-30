@@ -94,18 +94,22 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<el-menu-item index="/target_sales_management">
+				<!-- <el-menu-item index="/store_sales_forecast">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">目标销售额管理</span>
+					<span slot="title">店铺填报</span>
 				</el-menu-item>
 				<el-menu-item index="/audit_dept">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">审核表（项目部审核店铺）</span>
+					<span slot="title">项目部审核</span>
 				</el-menu-item>
 				<el-menu-item index="/audit_division">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">审核表（事业部审核项目部）</span>
+					<span slot="title">事业部审核</span>
 				</el-menu-item>
+				<el-menu-item index="/audit_manager">
+					<i class="el-icon-s-finance"></i>
+					<span slot="title">总经办审核</span>
+				</el-menu-item> -->
 			</el-menu>
 		</div>
 		<el-main class="main">

@@ -177,8 +177,8 @@
 }
 </style>
 <script>
-	import resource from '../../../api/targetSales.js'
-	import {getMonthInfo,getWeek} from '../../../api/nowMonth.js'
+	import resource from '../../../../api/targetSales.js'
+	import {getMonthInfo,getWeek} from '../../../../api/nowMonth.js'
 	export default{
 		inject:['reload'],
 		data(){

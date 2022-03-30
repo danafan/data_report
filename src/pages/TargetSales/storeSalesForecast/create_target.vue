@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<div style="display:flex;align-items: center;margin-bottom: 20px">
+			<el-button type="primary" plain size='mini' icon="el-icon-arrow-left" @click="$router.push('/store_sales_forecast')">返回</el-button>
+		</div>
 		<div class="top_content">
 			<div class="form_widget">
 				<el-form size="small" label-width="95px" label-position="left">

@@ -216,7 +216,7 @@
 		methods:{
 			//查看详情
 			getDetail(){
-				resource.businessTargetInfo({id:this.id}).then(res => {
+				resource.projectTargetInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
 						let data = res.data.data;
 

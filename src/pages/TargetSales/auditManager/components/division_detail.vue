@@ -26,19 +26,39 @@
 				<div class="lable">备注：</div>
 				<div class="value">{{bottom_info.remark}}</div>
 			</div>
-			<div class="row">
+			<div class="row" v-if="bottom_info.status != '0'">
 				<div class="lable">审核状态：</div>
 				<div class="value">{{bottom_info.status == '0'?'待审核':bottom_info.status == '1'?'审核通过':'审核拒绝'}}</div>
 			</div>
-			<div class="row">
+			<div class="row" v-if="bottom_info.status != '0'">
 				<div class="lable">审核人：</div>
 				<div class="value">{{bottom_info.audit_user_name}}</div>
 			</div>
-			<div class="row">
+			<div class="row" v-if="bottom_info.status != '0'">
 				<div class="lable">审核时间：</div>
 				<div class="value">{{bottom_info.audit_time}}</div>
 			</div>
+			<div class="row" v-if="bottom_info.status == '0'">
+				<div class="lable">操作：</div>
+				<div class="value">
+					<el-button size="mini" type="danger" @click="showRefuse = true">拒绝</el-button>
+					<el-button size="mini" type="primary" @click="agreeFun">同意</el-button>
+				</div>
+			</div>
 		</div>
+		<!-- 拒绝 -->
+		<el-dialog title="拒绝" :visible.sync="showRefuse" append-to-body>
+			<el-input
+			type="textarea"
+			:rows="3"
+			placeholder="请输入拒绝原因（必填）"
+			v-model="refuse_reason">
+		</el-input>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="showRefuse = false">取 消</el-button>
+			<el-button size="small" type="primary" @click="refuseCheck">确 定</el-button>
+		</div>
+	</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -201,6 +221,8 @@
 					advice:""
 				}],							//右侧表格数据
 				bottom_info:{},			//底部信息
+				showRefuse:false,		//拒绝弹窗（项目部）
+				refuse_reason:"",			//拒绝原因
 			}
 		},
 		props:{
@@ -241,6 +263,50 @@
 								}
 							}
 						});
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//审核拒绝（部门）
+			refuseCheck(){
+				if(this.refuse_reason == ''){
+					this.$message.warning('请输入拒绝原因');
+				}else{
+					//提交审核
+					this.targetCheck('refuse');
+				}
+			},
+			//审核同意
+			agreeFun(){
+				this.$confirm('确认同意？', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					//提交审核
+					this.targetCheck('agree');
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消'
+					});          
+				});
+			},
+			//提交审核
+			targetCheck(type){
+				let arg = {
+					id:this.id,
+					from_type:'business',
+					type:type
+				}
+				if(type == 'refuse'){
+					arg.refuse_reason = this.refuse_reason;
+				}
+				resource.businessTargetCheck(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.$emit('callback');
 					}else{
 						this.$message.warning(res.data.msg);
 					}

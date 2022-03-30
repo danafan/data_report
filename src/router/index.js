@@ -35,12 +35,16 @@ const new_data = resolve=>require(['@/pages/Operations/GoodsInfo/new_data'],reso
 const delivery_data = resolve=>require(['@/pages/Operations/GoodsInfo/delivery_data'],resolve)    //发货数据
 const operations_data_analysis = resolve=>require(['@/pages/Operations/operations_data_analysis'],resolve)    //发货数据
 //目标销售额管理
-const target_sales_management = resolve=>require(['@/pages/TargetSales/target_sales_management'],resolve)
+const store_sales_forecast = resolve=>require(['@/pages/TargetSales/storeSalesForecast/store_sales_forecast'],resolve)   //店长销售收入预估表
+const create_target = resolve=>require(['@/pages/TargetSales/storeSalesForecast/create_target'],resolve)   //店铺填报
 const audit_dept = resolve=>require(['@/pages/TargetSales/auditDept/audit_dept'],resolve)   //审核表（项目部审核店铺）
 const sales_forecast_dept = resolve=>require(['@/pages/TargetSales/auditDept/sales_forecast_dept'],resolve)   //销售额预估表（项目部）
 const store_target = resolve=>require(['@/pages/TargetSales/auditDept/components/store_target'],resolve)   //拆分店铺（项目部）
 const audit_division = resolve=>require(['@/pages/TargetSales/auditDivision/audit_division'],resolve)   //审核表（事业部审核项目部）
 const sales_forecast_division = resolve=>require(['@/pages/TargetSales/auditDivision/sales_forecast_division'],resolve)   //销售额预估表（事业部
+const dept_target = resolve=>require(['@/pages/TargetSales/auditDivision/dept_target'],resolve)   //拆分项目部（事业部）
+const audit_manager = resolve=>require(['@/pages/TargetSales/auditManager/audit_manager'],resolve)   //审核表（总经理）
+const dept_target_manager = resolve=>require(['@/pages/TargetSales/auditManager/dept_target'],resolve)   //拆分项目部（总经理）
 Vue.use(Router)
 
 const router = new Router({
@@ -72,12 +76,16 @@ const router = new Router({
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},
     { path: '/operations_data_analysis',name:"运营中心数据分析", component: operations_data_analysis},
-    { path: '/target_sales_management',name:"目标销售额管理", component: target_sales_management},
-    { path: '/audit_dept',name:"审核表（项目部审核店铺）", component: audit_dept},
-    { path: '/sales_forecast_dept',name:"销售额预估表（项目部）", component: sales_forecast_dept},
-    { path: '/store_target',name:"拆分店铺（项目部）", component: store_target},
-    { path: '/audit_division',name:"审核表（事业部审核项目部）", component: audit_division},
-    { path: '/sales_forecast_division',name:"销售额预估表（事业部）", component: sales_forecast_division},
+    { path: '/store_sales_forecast',name:"店长销售收入预估", component: store_sales_forecast}, // 店长销售收入预估
+    { path: '/create_target',name:"店铺填报", component: create_target}, // 店长填报
+    { path: '/audit_dept',name:"审核表（项目部审核店铺）", component: audit_dept,meta:{keepAlive:true}},
+    { path: '/sales_forecast_dept',name:"销售额预估表（项目部）", component: sales_forecast_dept,meta:{keepAlive:true}},
+    { path: '/store_target',name:"拆分店铺", component: store_target},
+    { path: '/audit_division',name:"审核表（事业部审核项目部）", component: audit_division,meta:{keepAlive:true}},
+    { path: '/sales_forecast_division',name:"销售额预估表（事业部）", component: sales_forecast_division,meta:{keepAlive:true}},
+    { path: '/dept_target',name:"拆分项目部（事业部）", component: dept_target,meta:{keepAlive:true}},
+    { path: '/audit_manager',name:"审核表（总经理）", component: audit_manager,meta:{keepAlive:true}},
+    { path: '/dept_target_manager',name:"审核表（总经理）", component: dept_target_manager,meta:{keepAlive:true}}
     ]
   }
   ]
