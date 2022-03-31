@@ -528,6 +528,7 @@
 							for(let i = 0;i < this.table_data.length;i ++){
 								if(this.table_data[i].key == k){
 									this.table_data[i].value = this.lastYearData[k];
+									this.table_data[i].new_value = "";
 								}
 							}
 						}
@@ -602,12 +603,12 @@
 			//点击第二个查询
 			getBottomData(){
 				for(let i = 0;i < this.table_data.length;i++){
-					if(this.table_data[i].new_value === '' && !this.table_data[i].isAuto){
+					if((this.table_data[i].new_value === '' || !this.table_data[i].new_value) && !this.table_data[i].isAuto){
 						this.$message.warning(`请输入${this.table_data[i].name}`);
 						this.$refs[this.table_data[i].key].focus();
 						return;
 					}
-					if(this.table_data[i].disabled && this.table_data[i].advice === ''){
+					if(this.table_data[i].disabled && (this.table_data[i].advice === '' || !this.table_data[i].new_value)){
 						this.$message.warning(`请填写${this.table_data[i].name}建议`);
 						return;
 					}
@@ -642,6 +643,7 @@
       		//改变下面表格某一条的占比
       		changeZb(v,i){
       			this.day_table_data[i] = this.setInfo(this.day_table_data[i])
+      			console.log(this.day_table_data[i])
       		},
       		//计算每一行
       		setInfo(info){
@@ -654,7 +656,11 @@
       			//营销费用
       			info.yxfy = (info.xssr*(this.table_data[5].new_value/100)).toFixed(2);
       			//销售ROI目标
-      			info.roi = (info.xssr/info.yxfy).toFixed(2);
+      			if(info.yxfy == 0){
+      				info.roi = 0;
+      			}else{
+      				info.roi = (info.xssr/info.yxfy).toFixed(2);
+      			}
       			//店铺团队费用
       			info.dptdfy = (info.xssr*(this.table_data[6].new_value/100)).toFixed(2);
       			//项目部分摊费用
@@ -676,7 +682,11 @@
       			//净利润额
       			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy).toFixed(2);
       			//净利润率
-      			info.jlrl = (info.jlr/info.xssr).toFixed(2);
+      			if(info.xssr == 0){
+      				info.jlrl = 0;
+      			}else{
+      				info.jlrl = (info.jlr/info.xssr).toFixed(2);
+      			}
       			return info;
       		},
       		// 表尾合计行处理
@@ -757,7 +767,6 @@
       					month:month,
       					day:this.day_table_data
       				}
-      				console.log(JSON.stringify(data))
       				resource.addShopTarget({data:JSON.stringify(data)}).then(res => {
       					if (res.data.code == 1) {
       						this.$message.success(res.data.msg);

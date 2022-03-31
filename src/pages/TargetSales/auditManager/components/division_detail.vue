@@ -297,7 +297,7 @@
 			targetCheck(type){
 				let arg = {
 					id:this.id,
-					from_type:'business',
+					from_type:'admin',
 					type:type
 				}
 				if(type == 'refuse'){

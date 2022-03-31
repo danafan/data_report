@@ -119,6 +119,7 @@
 				dataObj:{},					//返回数据
 				showDetail:false,			//详情弹窗
 				showMerge:false,			//合并提交弹窗
+				dialog_title:"",
 				id:"",						//查看详情的ID
 				remark:"",					//合并备注
 			}
