@@ -7,7 +7,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="一级部门：">
-				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable placeholder="请选择一级部门" @change="getDepts">
+				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable placeholder="请选择一级部门">
 					<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
@@ -106,7 +106,7 @@
 		methods:{
 			//获取部门列表
 			getDepts(){
-				resource.getDepts({type:'1'}).then(res => {
+				resource.getDepts().then(res => {
 					if(res.data.code == 1){
 						this.level1_dept_list = res.data.data;
 						this.dept_1_id = this.level1_dept_list[0].dept_id;

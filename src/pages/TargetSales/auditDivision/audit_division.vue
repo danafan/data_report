@@ -133,7 +133,7 @@
 		methods:{
 			//获取部门列表
 			getDepts(dept_id){
-				let arg = {};
+				let arg = {type:"1"};
 				if(dept_id){
 					arg.dept_id = dept_id;
 					this.dept_2_id = '';
@@ -144,7 +144,6 @@
 							this.level2_dept_list = res.data.data;
 						}else{
 							this.level1_dept_list = res.data.data;
-							this.dept_1_id = this.level1_dept_list[0].dept_id;
 						}
 					}else{
 						this.$message.warning(res.data.msg);

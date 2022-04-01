@@ -55,13 +55,14 @@ export function middleWare(params,type) {
   var token = Base64.encode(JSON.stringify(token_obj));
   
   //组织参数
-  var req = {...params,...{sign:sign,token:token}};
+  // var req = {...params,...{sign:sign,token:token}};
   // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}};   //审计
   // var req = {...params,...{sign:sign,admin_id:'16242415743283525',token:token}};   //运营
   // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};   //普通
-  // var req = {...params,...{sign:sign,admin_id:'15728275951035263',token:token}};   //杨世顺
+  var req = {...params,...{sign:sign,admin_id:'15728275951035263',token:token}};   //店长
   // var req = {...params,...{sign:sign,admin_id:'16145614211961146',token:token}};   //总经理
   // var req = {...params,...{sign:sign,admin_id:'16325571732699386',token:token}};   //事业部
+  // var req = {...params,...{sign:sign,admin_id:'176125356430221523',token:token}};     //项目部
 
   
   var get_arr = [];

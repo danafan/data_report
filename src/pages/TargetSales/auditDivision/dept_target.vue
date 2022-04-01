@@ -5,7 +5,7 @@
 			<div style="margin-left: 15px">拆分项目部(事业部)</div>
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="年/月：">
+			<!-- <el-form-item label="年/月：">
 				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月">
 				</el-date-picker>
 			</el-form-item>
@@ -14,7 +14,7 @@
 					<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="二级部门：">
 				<el-select v-model="dept_2_id" :popper-append-to-body="false" clearable filterable placeholder="请选择二级部门">
 					<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
@@ -77,9 +77,9 @@
 	export default{
 		data(){
 			return{
-				date:getCurrentMonth(),		//选择的年月
-				dept_1_id:"",			//选中的一级部门id
-				level1_dept_list:[],	//一级部门列表
+				// date:getCurrentMonth(),		//选择的年月
+				// dept_1_id:"",			//选中的一级部门id
+				// level1_dept_list:[],	//一级部门列表
 				dept_2_id:"",			//选中的二级部门ID
 				level2_dept_list:[],	//二级部门列表
 				pagesize:10,
@@ -131,10 +131,10 @@
 			getData(type){
 				this.page = type?1:this.page;
 				let arg = {
-					from_type:'project',
-					date:this.date?this.date:'',
+					from_type:'business',
+					// date:this.date?this.date:'',
 					log_id:this.$route.query.id,
-					dept_1_id:this.dept_1_id,
+					// dept_1_id:this.dept_1_id,
 					dept_2_id:this.dept_2_id,
 					page:this.page,
 					limit:this.pagesize

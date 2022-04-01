@@ -71,13 +71,13 @@
 	</div>
 	<div class="table_box" v-if="closeStep1 == true">
 		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
-			<el-table-column width="120" label="去年同期" align="center">
+			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
+			<el-table-column width="180" label="去年同期" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="160" label="本月目标参数" align="center">
+			<el-table-column width="200" label="本月目标参数" align="center">
 				<template slot-scope="scope">
 					<el-input size="small" type="number" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto || closeStep2" @input="inputFun($event,scope.row.key,'1')" @change="changeInput($event,scope.row)" :ref="scope.row.key">
 						<template slot="append">%</template>
@@ -86,10 +86,25 @@
 					</el-input>
 				</template>
 			</el-table-column>
-			<el-table-column  width="160" show-overflow-tooltip label="填写建议" align="center">
+			<el-table-column width="200px" label="填写建议" align="center">
 				<template slot-scope="scope">
-					<el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)" :disabled="closeStep2">查看建议</el-button>
-					<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"  :disabled="closeStep2"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button>
+					<el-input
+					type="textarea"
+					placeholder="请输入内容"
+					v-model="scope.row.advice"
+					maxlength="30"
+					show-word-limit
+					>
+				</el-input>
+					<!-- <el-input
+					placeholder="请输入建议"
+					v-model="scope.row.advice"
+					maxlength="30"
+					show-word-limit
+					>
+				</el-input> -->
+				<!-- <el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)" style="color: red" :disabled="closeStep2">查看建议</el-button>
+					<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"  :disabled="closeStep2"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -141,20 +156,6 @@
 	</el-table>
 	<el-button type="primary" size="small" class="submit" @click="comfirm">提交</el-button>
 </div>
-<!-- 填写建议 -->
-<el-dialog title="建议" width="30%" :visible.sync="adviceModel">
-	<el-input
-	size="small"
-	type="textarea"
-	:rows="3"
-	placeholder="请输入建议"
-	v-model="adviceValue">
-</el-input>
-<div slot="footer" class="dialog-footer">
-	<el-button size="small" @click="adviceModel = false">取 消</el-button>
-	<el-button size="small" type="primary" @click="confirmAdvice">确 定</el-button>
-</div>
-</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -377,9 +378,6 @@
 					advice:"",
 					disabled:false
 				}],						//右侧表格数据
-				adviceModel:false,		//是否显示建议弹窗
-				adviceValue:"",			//临时存放的建议
-				currentAdviceIndex:"",	//点击的建议下标
 				closeStep2:false,		//第二级是否禁用
 				day_table_data:[],		//日数据表格
 			}
@@ -493,7 +491,6 @@
 			//切换店长
 			changeUser(v){
 				let item = this.manager_list.filter(item => {return item.ding_user_id == v});
-				console.log(item);
 				this.shopowner_name = item[0].ding_user_name;
 			},
 			//获取去年同期数据
@@ -583,21 +580,6 @@
 					this.table_data[16].new_value = this.table_data[3].new_value === ''||this.table_data[11].new_value  === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':parseInt(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100));
 					//净利润率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-物流费用率-客服费用率-公摊费用率)
 					this.table_data[17].new_value = this.table_data[4].new_value === '' || this.table_data[5].new_value === '' ||this.table_data[6].new_value === '' ||this.table_data[7].new_value === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[4].new_value-this.table_data[5].new_value-this.table_data[6].new_value-this.table_data[7].new_value-this.table_data[13].new_value-this.table_data[14].new_value-this.table_data[15].new_value).toFixed(2);
-				}
-			},
-			//点击建议（编辑或填写）
-			clickAdvice(i){
-				this.currentAdviceIndex = i;
-				this.adviceValue = this.table_data[i].advice;
-				this.adviceModel = true;
-			},
-			//提交建议
-			confirmAdvice(){
-				if(this.adviceValue == ""){
-					this.$message.warning('请输入建议');
-				}else{
-					this.table_data[this.currentAdviceIndex].advice = this.adviceValue;
-					this.adviceModel = false;
 				}
 			},
 			//点击第二个查询

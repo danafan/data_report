@@ -5,7 +5,7 @@
 			<div style="margin-left: 15px">拆分项目部(总经理)</div>
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="年/月：">
+			<!-- <el-form-item label="年/月：">
 				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月">
 				</el-date-picker>
 			</el-form-item>
@@ -14,19 +14,19 @@
 					<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="二级部门：">
 				<el-select v-model="dept_2_id" :popper-append-to-body="false" clearable filterable placeholder="请选择二级部门">
 					<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="审核状态：">
+			<!-- <el-form-item label="审核状态：">
 				<el-select v-model="status" :popper-append-to-body="false" filterable placeholder="请选择店铺">
 					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item>
 				<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
 			</el-form-item>
@@ -95,21 +95,21 @@
 				level1_dept_list:[],	//一级部门列表
 				dept_2_id:"",			//选中的二级部门ID
 				level2_dept_list:[],	//二级部门列表
-				status:-1,		//默认全部
-				status_list:[{
-					name:'全部',
-					id:-1
-				},{
-					name:'审核中',
-					id:0
-				},{
-					name:'审核通过',
-					id:1
-				},
-				{
-					name:'审核拒绝',
-					id:2
-				}],							//状态列表
+				// status:-1,		//默认全部
+				// status_list:[{
+				// 	name:'全部',
+				// 	id:-1
+				// },{
+				// 	name:'审核中',
+				// 	id:0
+				// },{
+				// 	name:'审核通过',
+				// 	id:1
+				// },
+				// {
+				// 	name:'审核拒绝',
+				// 	id:2
+				// }],							//状态列表
 				pagesize:10,
 				page:1,
 				dataObj:{},					//返回数据
@@ -160,9 +160,9 @@
 				this.page = type?1:this.page;
 				let arg = {
 					from_type:'admin',
-					date:this.date?this.date:'',
+					// date:this.date?this.date:'',
 					log_id:this.$route.query.id,
-					dept_1_id:this.dept_1_id,
+					// dept_1_id:this.dept_1_id,
 					dept_2_id:this.dept_2_id,
 					page:this.page,
 					limit:this.pagesize

@@ -38,7 +38,7 @@
 				<div class="lable">审核时间：</div>
 				<div class="value">{{bottom_info.audit_time}}</div>
 			</div>
-			<div class="row" v-if="bottom_info.status == '0'">
+			<div class="row" v-if="bottom_info.status == '0' && user_type == 1">
 				<div class="lable">操作：</div>
 				<div class="value">
 					<el-button size="mini" type="danger" @click="showRefuse = true">拒绝</el-button>
@@ -92,6 +92,7 @@
 	export default{
 		data(){
 			return{
+				user_type:2,		//1:全部权限；2:查看权限
 				dataObj:{},
 				table_data:[{
 					name:'预估发货单数',
@@ -241,7 +242,7 @@
 				resource.businessTargetInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
 						let data = res.data.data;
-
+						this.user_type = data.user_type;//1:全部权限；2:查看权限
 						//底部详情
 						this.bottom_info = data.data;		//底部信息
 						//去年同期
