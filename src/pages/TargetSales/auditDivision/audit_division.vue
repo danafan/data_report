@@ -30,7 +30,7 @@
 		</el-form>
 		<div class="set_button">
 			<el-button size="mini" type="plain" @click="$router.push('/sales_forecast_division')">销售额预估表</el-button>
-			<el-button size="mini" type="primary" @click="showMerge = true">合并提交</el-button>
+			<el-button size="mini" type="primary" @click="mergeSubmit">合并提交</el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
@@ -133,10 +133,12 @@
 		methods:{
 			//获取部门列表
 			getDepts(dept_id){
-				let arg = {type:"1"};
+				let arg = {};
 				if(dept_id){
 					arg.dept_id = dept_id;
 					this.dept_2_id = '';
+				}else{
+					arg.type = '1';
 				}
 				resource.getDepts(arg).then(res => {
 					if(res.data.code == 1){
@@ -180,6 +182,14 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//合并提交
+			mergeSubmit(){
+				if(this.dept_1_id == ''){
+					this.$message.warning('请选择一级部门');
+					return;
+				}
+				this.showMerge = true;
 			},
 			//查看详情
 			getDetail(id,name){

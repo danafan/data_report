@@ -96,23 +96,14 @@
 					show-word-limit
 					>
 				</el-input>
-					<!-- <el-input
-					placeholder="请输入建议"
-					v-model="scope.row.advice"
-					maxlength="30"
-					show-word-limit
-					>
-				</el-input> -->
-				<!-- <el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)" style="color: red" :disabled="closeStep2">查看建议</el-button>
-					<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"  :disabled="closeStep2"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
 		<el-button type="primary" size="small" class="table_button" @click="getBottomData" v-if="closeStep2 == false">查询</el-button>
-		<el-button type="primary" size="small" @click="closeStep2 = false" v-else>重置</el-button>
+		<el-button type="primary" size="small" class="table_button" @click="closeStep2 = false" v-else>重置</el-button>
 	</div>
 </div>
-<div class="table_box" v-if="closeStep2 == true">
+<div class="bottom_table_box" v-if="closeStep2 == true">
 	<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
 		<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
@@ -525,7 +516,12 @@
 							for(let i = 0;i < this.table_data.length;i ++){
 								if(this.table_data[i].key == k){
 									this.table_data[i].value = this.lastYearData[k];
-									this.table_data[i].new_value = "";
+									if(this.table_data[i].key == 'tkl' || this.table_data[i].key == 'xssr' || this.table_data[i].key == 'mll' || this.table_data[i].key == 'yxfyl'){
+										this.table_data[i].new_value = "";
+									}else{
+										this.table_data[i].new_value = 0;
+									}
+									
 								}
 							}
 						}
@@ -585,13 +581,9 @@
 			//点击第二个查询
 			getBottomData(){
 				for(let i = 0;i < this.table_data.length;i++){
-					if((this.table_data[i].new_value === '' || !this.table_data[i].new_value) && !this.table_data[i].isAuto){
+					if(this.table_data[i].new_value === '' && !this.table_data[i].isAuto){
 						this.$message.warning(`请输入${this.table_data[i].name}`);
 						this.$refs[this.table_data[i].key].focus();
-						return;
-					}
-					if(this.table_data[i].disabled && (this.table_data[i].advice === '' || !this.table_data[i].new_value)){
-						this.$message.warning(`请填写${this.table_data[i].name}建议`);
 						return;
 					}
 				}
@@ -732,6 +724,7 @@
       					dept_2_id:this.dept_2_id,
       					dept_2_name:this.dept_2_name,
       					jst_code:this.jst_code,
+      					reference_shop_id:this.shop_code,
       					shop_name:this.shop_name,
       					shop_id:this.shop_id,
       					platform:this.platform,

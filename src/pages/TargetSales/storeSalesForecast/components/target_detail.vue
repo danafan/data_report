@@ -10,22 +10,18 @@
 			<el-table-column width="150" show-overflow-tooltip prop="reference_shop" label="参考店铺" align="center"></el-table-column>
 		</el-table>
 		<el-table size="small" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
-			<el-table-column width="120" label="去年同期" align="center">
+			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
+			<el-table-column width="180" label="去年同期" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="160" label="本月目标参数" align="center">
+			<el-table-column width="200" label="本月目标参数" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.new_value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="160" show-overflow-tooltip label="建议" align="center">
-				<template slot-scope="scope">
-					<el-button size="small" type="text" disabled v-if="scope.row.advice === ''">未填写</el-button>
-					<el-button size="small" type="text" @click="clickAdvice(scope.row.advice)" v-else>查看建议</el-button>
-				</template>
+			<el-table-column width="200" show-overflow-tooltip prop="advice" label="建议" align="center">
 			</el-table-column>
 		</el-table>
 		
@@ -119,19 +115,6 @@
 				</div>
 			</div>
 		</div>
-		<!-- 查看建议 -->
-		<el-dialog title="建议" width="30%" :visible.sync="adviceModel" append-to-body>
-			<el-input
-			disabled
-			size="small"
-			type="textarea"
-			:rows="3"
-			v-model="adviceValue">
-		</el-input>
-		<div slot="footer" class="dialog-footer">
-			<el-button size="small" type="primary" @click="adviceModel = false">关闭</el-button>
-		</div>
-	</el-dialog>
 	<!-- 拒绝 -->
 	<el-dialog title="拒绝" :visible.sync="showRefuse" append-to-body>
 		<el-input
@@ -307,8 +290,6 @@
 					isPer:true,
 					advice:""
 				}],							//右侧表格数据
-				adviceModel:false,		//是否显示建议弹窗
-				adviceValue:"",
 				day_table_data:[],		//日数据表格
 				bottom_info:{},			//底部信息
 				showRefuse:false,		//拒绝弹窗（项目部）
@@ -326,7 +307,6 @@
 			},
 		},
 		created(){
-			console.log(this.type);
 			//查看详情
 			this.getDetail();
 		},
@@ -383,11 +363,6 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			//查看建议
-			clickAdvice(text){
-				this.adviceValue = text;
-				this.adviceModel = true;
 			},
 			// 表尾合计行处理
 			getSummaries(param) {

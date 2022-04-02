@@ -79,8 +79,16 @@
 			</el-table-column>
 			<el-table-column  width="160" show-overflow-tooltip label="填写建议" align="center">
 				<template slot-scope="scope">
-					<el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)" :disabled="closeStep2">查看建议</el-button>
-					<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"  :disabled="closeStep2"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button>
+					<el-input
+					type="textarea"
+					placeholder="请输入内容"
+					v-model="scope.row.advice"
+					maxlength="30"
+					show-word-limit
+					>
+				</el-input>
+					<!-- <el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)" :disabled="closeStep2">查看建议</el-button>
+					<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"  :disabled="closeStep2"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -364,9 +372,6 @@
 					advice:"",
 					disabled:false
 				}],						//右侧表格数据
-				adviceModel:false,		//是否显示建议弹窗
-				adviceValue:"",			//临时存放的建议
-				currentAdviceIndex:"",	//点击的建议下标
 				closeStep2:true,		//第二级是否禁用
 				day_table_data:[],		//日数据表格
 			}
@@ -525,21 +530,6 @@
 					this.table_data[16].new_value = this.table_data[3].new_value === ''||this.table_data[11].new_value  === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':parseInt(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100));
 					//净利润率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-物流费用率-客服费用率-公摊费用率)
 					this.table_data[17].new_value = this.table_data[4].new_value === '' || this.table_data[5].new_value === '' ||this.table_data[6].new_value === '' ||this.table_data[7].new_value === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[4].new_value-this.table_data[5].new_value-this.table_data[6].new_value-this.table_data[7].new_value-this.table_data[13].new_value-this.table_data[14].new_value-this.table_data[15].new_value).toFixed(2);
-				}
-			},
-			//点击建议（编辑或填写）
-			clickAdvice(i){
-				this.currentAdviceIndex = i;
-				this.adviceValue = this.table_data[i].advice;
-				this.adviceModel = true;
-			},
-			//提交建议
-			confirmAdvice(){
-				if(this.adviceValue == ""){
-					this.$message.warning('请输入建议');
-				}else{
-					this.table_data[this.currentAdviceIndex].advice = this.adviceValue;
-					this.adviceModel = false;
 				}
 			},
 			//点击第二个查询
