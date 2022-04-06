@@ -56,7 +56,7 @@
 		</div>
 		<el-dialog title="编辑" :visible.sync="showEdit" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
-				<EditTarget :day="day" :month="month" :shop_target_id="shop_target_id"/>
+				<EditTarget :day="day" :month="month" @callback="getData" :shop_target_id="shop_target_id"/>
 			</div>
 		</el-dialog>
 		<el-dialog center :title="dialog_title + ' 销售额预估'" :visible.sync="showDetail" width="80%" :close-on-click-modal="false">
@@ -174,6 +174,7 @@
 			},
 			//获取列表
 			getData(type){
+				this.showEdit = false;
 				this.page = type?1:this.page;
 				let arg = {
 					from_type:'shop',
@@ -208,7 +209,7 @@
 				resource.editShopTargetGet({shop_target_id:id}).then(res => {
 					if(res.data.code == 1){
 						this.showEdit = true;
-						this.shop_target_id = id;
+						this.shop_target_id = JSON.stringify(id);
 						this.month = JSON.stringify(res.data.data.month);
 						this.day = JSON.stringify(res.data.data.day);
 					}else{

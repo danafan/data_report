@@ -141,7 +141,7 @@
 	<el-button type="primary" size="small" class="submit" @click="comfirm">提交</el-button>
 </div>
 <!-- 填写建议 -->
-<el-dialog title="建议" width="30%" :visible.sync="adviceModel" append-to-body>
+<!-- <el-dialog title="建议" width="30%" :visible.sync="adviceModel" append-to-body>
 	<el-input
 	size="small"
 	type="textarea"
@@ -153,7 +153,7 @@
 	<el-button size="small" @click="adviceModel = false">取 消</el-button>
 	<el-button size="small" type="primary" @click="confirmAdvice">确 定</el-button>
 </div>
-</el-dialog>
+</el-dialog> -->
 </div>
 </template>
 <style lang="less" scoped>
@@ -570,16 +570,17 @@
       					menu.push(this.setInfo(info));
       				}
       			}else{	//获取详情
-      				for(var i=0;i<type.length;i++){
-      					let info = {
-      						day:monthInfo.month+'月'+(i+1)+'日',
-      						week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-      						mll:this.table_data[4].new_value,
-      						yxfyl:this.table_data[5].new_value,
-      						xssrzb:type[i].xssrzb
-      					}
-      					menu.push(this.setInfo(info));
-      				}
+      				menu = type;
+      				// for(var i=0;i<type.length;i++){
+      				// 	let info = {
+      				// 		day:monthInfo.month+'月'+(i+1)+'日',
+      				// 		week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+      				// 		mll:this.table_data[4].new_value,
+      				// 		yxfyl:this.table_data[5].new_value,
+      				// 		xssrzb:type[i].xssrzb
+      				// 	}
+      				// 	menu.push(this.setInfo(info));
+      				// }
       			}
 
 
@@ -603,7 +604,11 @@
       			//营销费用
       			info.yxfy = (info.xssr*(this.table_data[5].new_value/100)).toFixed(2);
       			//销售ROI目标
-      			info.roi = (info.xssr/info.yxfy).toFixed(2);
+      			if(info.yxfy == 0){
+      				info.roi = 0;
+      			}else{
+      				info.roi = (info.xssr/info.yxfy).toFixed(2);
+      			}
       			//店铺团队费用
       			info.dptdfy = (info.xssr*(this.table_data[6].new_value/100)).toFixed(2);
       			//项目部分摊费用
@@ -625,7 +630,11 @@
       			//净利润额
       			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy).toFixed(2);
       			//净利润率
-      			info.jlrl = (info.jlr/info.xssr).toFixed(2);
+      			if(info.xssr == 0){
+      				info.jlrl = 0;
+      			}else{
+      				info.jlrl = (info.jlr/info.xssr).toFixed(2);
+      			}
       			return info;
       		},
       		// 表尾合计行处理
@@ -668,7 +677,7 @@
       			var zb_num = 0
       			for(let i = 0;i < this.day_table_data.length;i++){
       				zb_num += parseInt(this.day_table_data[i].xssrzb);
-      				if(!this.day_table_data[i].xssrzb){
+      				if(this.day_table_data[i].xssrzb === ''){
       					this.$message.warning("销售收入占比不能为空");
       					this.$refs['zb_' + i].focus();
       					return;
@@ -713,7 +722,8 @@
       				resource.editShopTargetPost(arg).then(res => {
       					if (res.data.code == 1) {
       						this.$message.success(res.data.msg);
-      						this.reload();
+      						this.$emit('callback')
+      						// this.reload();
       					}else{
       						this.$message.warning(res.data.msg)
       					}

@@ -125,20 +125,11 @@
 			this.getData();
 		},
 		methods:{
-			//获取部门列表
-			getDepts(dept_id){
-				let arg = {};
-				if(dept_id){
-					arg.dept_id = dept_id;
-					this.dept_2_id = '';
-				}
-				resource.getDepts(arg).then(res => {
+			//获取二级部门列表
+			getDepts(){
+				resource.getDepts({dept_id:this.$route.query.dept_1_id}).then(res => {
 					if(res.data.code == 1){
-						if(dept_id){
-							this.level2_dept_list = res.data.data;
-						}else{
-							this.level1_dept_list = res.data.data;
-						}
+						this.level2_dept_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

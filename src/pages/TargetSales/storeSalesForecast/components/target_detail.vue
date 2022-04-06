@@ -107,11 +107,11 @@
 				<div class="lable">提交人：</div>
 				<div class="value">{{bottom_info.add_user_name}}</div>
 			</div>
-			<div class="row" v-if="bottom_info.status == '0' || bottom_info.parent_refund_status == 1">
+			<div class="row" v-if="bottom_info.status == '0' || (bottom_info.status != '2' && bottom_info.parent_refund_status == 1)">
 				<div class="lable">操作：</div>
 				<div class="value">
 					<el-button size="mini" type="danger" @click="showRefuse = true">拒绝</el-button>
-					<el-button size="mini" type="primary" @click="agreeFun" v-if="bottom_info.parent_refund_status != 1">同意</el-button>
+					<el-button size="mini" type="primary" @click="agreeFun" v-if="bottom_info.parent_refund_status != 1 || bottom_info.status == '0'">同意</el-button>
 				</div>
 			</div>
 		</div>

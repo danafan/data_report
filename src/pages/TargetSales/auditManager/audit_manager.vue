@@ -37,7 +37,7 @@
 			<el-table-column label="操作" align="center" fixed="right" width="300">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id,scope.row.dept_1_name)">查看详情</el-button>
-					<el-button type="text" size="small" @click="$router.push('/dept_target_manager?id=' + scope.row.id)">拆分项目部</el-button>
+					<el-button type="text" size="small" @click="$router.push('/dept_target_manager?id=' + scope.row.id + '&dept_1_id=' + scope.row.dept_1_id)">拆分项目部</el-button>
 				</template>
 			</el-table-column>
 		</el-table>

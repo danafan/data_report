@@ -37,7 +37,7 @@ export function middleWare(params,type) {
   })
   var sign_arr = [];
   for(let key in sort_obj){
-    if(key != 'image' && key != 'file'){
+    if(key != 'image' && key != 'file' && key.indexOf('remark') == -1 && key != "refuse_reason"){
       sign_arr.push(`${key}=${sort_obj[key]}`);
     }
   }
@@ -63,7 +63,7 @@ export function middleWare(params,type) {
   // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}};   //店长
   // var req = {...params,...{sign:sign,admin_id:'16145614211961146',token:token}};   //总经理
   // var req = {...params,...{sign:sign,admin_id:'16325571732699386',token:token}};   //事业部
-  // var req = {...params,...{sign:sign,admin_id:'176125356430221523',token:token}};  //项目部
+  // var req = {...params,...{sign:sign,admin_id:'16242415743283525',token:token}};  //项目部
 
   
   var get_arr = [];
