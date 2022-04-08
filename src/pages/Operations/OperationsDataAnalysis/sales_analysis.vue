@@ -29,6 +29,11 @@
 			</el-table-column>
 			<el-table-column prop="sfsl" label="实发数量" width="120" align="center" sortable>
 			</el-table-column>
+			<el-table-column prop="fhl" label="发货率" width="120" align="center" sortable>
+				<template slot-scope="scope">
+					<div>{{scope.row.fhl}}%</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="wfhsl" label="未发货数量" align="center" sortable></el-table-column>
 			<el-table-column prop="kdj" label="客单价" align="center" sortable>
 				<template slot-scope="scope">
@@ -187,6 +192,10 @@
 					}
 					if(index == 2){
 						sums[index] = sums[index] += '万';
+					}
+					if(index == 5){
+						let gg = ((sums[4]/sums[3])*100).toFixed(2);
+						sums[index] = gg += '%';
 					}
 					if(index == 6){
 						let cc =  (parseFloat(sums[2].split('万')[0]*10000)/sums[1]).toFixed(2);

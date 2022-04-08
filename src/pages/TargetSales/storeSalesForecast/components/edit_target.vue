@@ -77,7 +77,7 @@
 					</el-input>
 				</template>
 			</el-table-column>
-			<el-table-column  width="160" show-overflow-tooltip label="填写建议" align="center">
+			<el-table-column  width="160" show-overflow-tooltip label="备注" align="center">
 				<template slot-scope="scope">
 					<el-input
 					type="textarea"
@@ -87,8 +87,6 @@
 					show-word-limit
 					>
 				</el-input>
-					<!-- <el-button size="small" type="text" v-if="scope.row.advice != ''" @click="clickAdvice(scope.$index)" :disabled="closeStep2">查看建议</el-button>
-					<el-button size="small" type="text" v-else @click="clickAdvice(scope.$index)"  :disabled="closeStep2"><span style="color: red">{{scope.row.disabled?'*':''}}</span>填写建议</el-button> -->
 				</template>
 			</el-table-column>
 		</el-table>
@@ -140,20 +138,6 @@
 	</el-table>
 	<el-button type="primary" size="small" class="submit" @click="comfirm">提交</el-button>
 </div>
-<!-- 填写建议 -->
-<!-- <el-dialog title="建议" width="30%" :visible.sync="adviceModel" append-to-body>
-	<el-input
-	size="small"
-	type="textarea"
-	:rows="3"
-	placeholder="请输入建议"
-	v-model="adviceValue">
-</el-input>
-<div slot="footer" class="dialog-footer">
-	<el-button size="small" @click="adviceModel = false">取 消</el-button>
-	<el-button size="small" type="primary" @click="confirmAdvice">确 定</el-button>
-</div>
-</el-dialog> -->
 </div>
 </template>
 <style lang="less" scoped>
@@ -538,10 +522,6 @@
 					if(this.table_data[i].new_value === '' && this.table_data[i].new_value != 0 && !this.table_data[i].isAuto){
 						this.$message.warning(`请输入${this.table_data[i].name}`);
 						this.$refs[this.table_data[i].key].focus();
-						return;
-					}
-					if(this.table_data[i].disabled && !this.table_data[i].advice){
-						this.$message.warning(`请填写${this.table_data[i].name}建议`);
 						return;
 					}
 				}

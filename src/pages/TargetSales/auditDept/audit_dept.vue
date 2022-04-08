@@ -46,7 +46,7 @@
 			<el-table-column prop="add_time" label="提交时间" align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="审核状态" align="center">
 				<template slot-scope="scope">
-					<div v-if="scope.row.status == '0'">审核中</div>
+					<div v-if="scope.row.status == '0'">待审核</div>
 					<div v-if="scope.row.status == '1'">审核通过</div>
 					<div v-if="scope.row.status == '2'">审核拒绝</div>
 				</template>
@@ -110,7 +110,7 @@
 					id:-1
 				},
 				{
-					name:'审核中',
+					name:'待审核',
 					id:0
 				},
 				{

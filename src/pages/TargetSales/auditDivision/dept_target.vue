@@ -5,16 +5,6 @@
 			<div style="margin-left: 15px">拆分项目部(事业部)</div>
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<!-- <el-form-item label="年/月：">
-				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月">
-				</el-date-picker>
-			</el-form-item>
-			<el-form-item label="一级部门：">
-				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable placeholder="请选择一级部门" @change="getDepts">
-					<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item> -->
 			<el-form-item label="二级部门：">
 				<el-select v-model="dept_2_id" :popper-append-to-body="false" clearable filterable placeholder="请选择二级部门">
 					<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">

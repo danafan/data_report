@@ -86,7 +86,7 @@
 					</el-input>
 				</template>
 			</el-table-column>
-			<el-table-column width="200px" label="填写建议" align="center">
+			<el-table-column width="200px" label="备注" align="center">
 				<template slot-scope="scope">
 					<el-input
 					type="textarea"

@@ -38,6 +38,10 @@
 				<div class="lable">审核时间：</div>
 				<div class="value">{{bottom_info.audit_time}}</div>
 			</div>
+			<div class="row" v-if="bottom_info.status == '2'">
+				<div class="lable">拒绝原因：</div>
+				<div class="value">{{bottom_info.refuse_reason}}</div>
+			</div>
 		</div>
 </div>
 </template>

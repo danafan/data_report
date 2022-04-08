@@ -37,7 +37,7 @@
 			<el-table-column prop="month" label="月份" align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="审核状态" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getStep(scope.row.id)" v-if="scope.row.status == '0'">审核中</el-button>
+					<el-button type="text" size="small" @click="getStep(scope.row.id)" v-if="scope.row.status == '0'">待审核</el-button>
 					<el-button type="text" size="small" @click="getStep(scope.row.id)" v-if="scope.row.status == '1'">审核通过</el-button>
 					<el-button type="text" size="small" @click="getStep(scope.row.id)" v-if="scope.row.status == '2'">审核拒绝</el-button>
 				</template>
@@ -120,7 +120,7 @@
 					id:-1
 				},
 				{
-					name:'审核中',
+					name:'待审核',
 					id:0
 				},
 				{

@@ -31,12 +31,16 @@
 				<div class="value">{{bottom_info.status == '0'?'待审核':bottom_info.status == '1'?'审核通过':'审核拒绝'}}</div>
 			</div>
 			<div class="row" v-if="bottom_info.status != '0'">
+				<div class="lable">审核时间：</div>
+				<div class="value">{{bottom_info.audit_time}}</div>
+			</div>
+			<div class="row" v-if="bottom_info.status != '0'">
 				<div class="lable">审核人：</div>
 				<div class="value">{{bottom_info.audit_user_name}}</div>
 			</div>
-			<div class="row" v-if="bottom_info.status != '0'">
-				<div class="lable">审核时间：</div>
-				<div class="value">{{bottom_info.audit_time}}</div>
+			<div class="row" v-if="bottom_info.status == '2'">
+				<div class="lable">拒绝原因：</div>
+				<div class="value">{{bottom_info.refuse_reason}}</div>
 			</div>
 			<div class="row" v-if="bottom_info.status == '0' || (bottom_info.status != '2' && bottom_info.parent_refund_status == 1)">
 				<div class="lable">操作：</div>

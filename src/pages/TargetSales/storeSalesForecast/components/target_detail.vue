@@ -1,3 +1,4 @@
+
 <template>
 	<div>
 		<el-table size="small" :data="info_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
@@ -21,7 +22,7 @@
 					<div>{{scope.row.new_value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="200" show-overflow-tooltip prop="advice" label="建议" align="center">
+			<el-table-column width="200" show-overflow-tooltip prop="advice" label="备注" align="center">
 			</el-table-column>
 		</el-table>
 		
@@ -64,8 +65,8 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		<!-- 店长 -->
-		<div class="bottom_table" v-if="type == '1'">
+		<!-- 底部信息 -->
+		<div class="bottom_table">
 			<div class="row">
 				<div class="lable">提交时间：</div>
 				<div class="value">{{bottom_info.add_time}}</div>
@@ -90,24 +91,15 @@
 				<div class="lable">拒绝原因：</div>
 				<div class="value">{{bottom_info.refuse_reason}}</div>
 			</div>
-			<div class="row" v-if="bottom_info.status == '0' || bottom_info.status == '2'">
+			<!-- 店长 -->
+			<div class="row" v-if="type == '1' && (bottom_info.status == '0' || bottom_info.status == '2')">
 				<div class="lable">操作：</div>
 				<div class="value">
 					<el-button size="small" type="text" @click="$emit('callback',id)">请重新建表</el-button>
 				</div>
 			</div>
-		</div>
-		<!-- 项目部 -->
-		<div class="bottom_table" v-if="type == '2'">
-			<div class="row">
-				<div class="lable">提交时间：</div>
-				<div class="value">{{bottom_info.add_time}}</div>
-			</div>
-			<div class="row">
-				<div class="lable">提交人：</div>
-				<div class="value">{{bottom_info.add_user_name}}</div>
-			</div>
-			<div class="row" v-if="bottom_info.status == '0' || (bottom_info.status != '2' && bottom_info.parent_refund_status == 1)">
+			<!-- 项目部 -->
+			<div class="row" v-if="type == '2' && (bottom_info.status == '0' || (bottom_info.status != '2' && bottom_info.parent_refund_status == 1))">
 				<div class="lable">操作：</div>
 				<div class="value">
 					<el-button size="mini" type="danger" @click="showRefuse = true">拒绝</el-button>
