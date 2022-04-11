@@ -54,7 +54,7 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
-		<el-dialog title="编辑" :visible.sync="showEdit" width="80%" :close-on-click-modal="false">
+		<el-dialog title="编辑" :visible.sync="showEdit" v-if="showEdit" width="80%" :close-on-click-modal="false">
 			<div class="editBox">
 				<EditTarget :day="day" :month="month" @callback="getData" :shop_target_id="shop_target_id"/>
 			</div>
@@ -209,7 +209,7 @@
 				resource.editShopTargetGet({shop_target_id:id}).then(res => {
 					if(res.data.code == 1){
 						this.showEdit = true;
-						this.shop_target_id = JSON.stringify(id);
+						this.shop_target_id = id.toString();
 						this.month = JSON.stringify(res.data.data.month);
 						this.day = JSON.stringify(res.data.data.day);
 					}else{

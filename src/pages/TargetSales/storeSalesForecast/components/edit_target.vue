@@ -87,12 +87,12 @@
 					show-word-limit
 					>
 				</el-input>
-				</template>
-			</el-table-column>
-		</el-table>
-		<el-button type="primary" size="small" class="table_button" @click="getBottomData" v-if="closeStep2 == false">查询</el-button>
-		<el-button type="primary" size="small" @click="closeStep2 = false" v-else>重置</el-button>
-	</div>
+			</template>
+		</el-table-column>
+	</el-table>
+	<el-button type="primary" size="small" class="table_button" @click="getBottomData" v-if="closeStep2 == false">查询</el-button>
+	<el-button type="primary" size="small" @click="closeStep2 = false" v-else>重置</el-button>
+</div>
 </div>
 <div class="bottom_table_box" v-if="closeStep2 == true">
 	<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
@@ -387,11 +387,11 @@
 				this.shopowner_name = month_obj.shopowner_name;	//店长姓名
 				this.date = month_obj.date;				//选择的年月
 				// 去年同期
-				this.getLastYearData();
-				this.table_data.map(item => {
-					item.new_value = month_obj[item.key];
-					item.advice = month_obj[item.key + '_remark'];
-				});
+				this.getLastYearData(month_obj);
+				// this.table_data.map(item => {
+				// 	item.new_value = month_obj[item.key];
+				// 	item.advice = month_obj[item.key + '_remark'];
+				// });
 				// 获取第三个表格数据
 				let day_arr = JSON.parse(this.day);
 				this.getMonthList(day_arr);
@@ -448,7 +448,7 @@
 				this.shopowner_name = item[0].ding_user_name;
 			},
 			//获取去年同期数据
-			getLastYearData(){
+			getLastYearData(month_obj){
 				let arg = {
 					shop_code:this.shop_code,
 					date:this.date
@@ -460,6 +460,10 @@
 							for(let i = 0;i < this.table_data.length;i ++){
 								if(this.table_data[i].key == k){
 									this.table_data[i].value = this.lastYearData[k];
+									if(month_obj){
+										this.table_data[i].new_value = month_obj[k];
+										this.table_data[i].advice = month_obj[k + '_remark'];
+									}
 								}
 							}
 						}

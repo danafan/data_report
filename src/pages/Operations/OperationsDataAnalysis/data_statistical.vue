@@ -13,28 +13,59 @@
 				<div class="sss">
 					<div class="axis_item" id="today"></div>
 					<div class="axis_item" id="yesterday"></div>
-					<div class="axis_item" id="rlj"></div>
 					<div class="axis_item" id="month"></div>
+					<div class="axis_item" id="rlj"></div>
 				</div>
 			</el-card>
 			<el-card class="margin_bottom">
 				<div class="table_title">店铺销售汇总</div>
 				<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500">
-					<el-table-column prop="shop_name" label="店铺名" width="80" align="center"></el-table-column>
-					<el-table-column prop="today_xsje" label="今日销售额" width="120" align="center" sortable ></el-table-column>
+					<el-table-column prop="shop_name" show-overflow-tooltip label="店铺名" width="160"></el-table-column>
 					<el-table-column prop="today_income" label="今日收入" width="100" align="center" sortable>
-					</el-table-column>
-					<el-table-column prop="month_xsje" label="当月销售额" width="120" align="center" sortable>
-					</el-table-column>
-					<el-table-column prop="month_income" label="当月收入" width="100" align="center" sortable>
-					</el-table-column>
-					<el-table-column prop="month_wcl" label="当月完成率" width="120" show-overflow-tooltip align="center" sortable></el-table-column>
-					<el-table-column prop="rljmb" label="日累计目标" width="120" align="center" sortable>
 						<template slot-scope="scope">
-							<div>{{scope.row.rljwcl}}万</div>
+							<div>{{scope.row.today_income}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="rljwcl" label="日累计完成率" show-overflow-tooltip width="120" align="center" sortable></el-table-column>
+					<el-table-column prop="today_target" label="今日目标" width="120" align="center" sortable >
+						<template slot-scope="scope">
+							<div>{{scope.row.today_target}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="today_wcl" label="今日目标完成率" width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.today_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_income" label="当月收入" width="100" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_income}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target" label="当月目标" width="120" show-overflow-tooltip align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="rljmb" label="当月目标完成率" width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="year_income" label="年收入" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.year_income}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="year_target" label="年目标" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.year_target}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="year_wcl" label="年目标完成率" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.year_wcl}}%</div>
+						</template>
+					</el-table-column>
 				</el-table>
 			</el-card>
 			<el-card>
@@ -145,13 +176,6 @@
 							yesterdayChart = echarts.init(yesterday);
 						}
 						yesterdayChart.setOption(this.setOptions('昨日收入',income_chart.yesterday));
-						//日累计收入
-						var rlj = document.getElementById('rlj');
-						let rljChart = echarts.getInstanceByDom(rlj)
-						if (rljChart == null) { 
-							rljChart = echarts.init(rlj);
-						}
-						rljChart.setOption(this.setOptions('日累计收入',income_chart.rlj));
 						//月收入
 						var month = document.getElementById('month');
 						let monthChart = echarts.getInstanceByDom(month)
@@ -159,21 +183,29 @@
 							monthChart = echarts.init(month);
 						}
 						monthChart.setOption(this.setOptions('月收入',income_chart.month));
+						//年累计收入
+						var rlj = document.getElementById('rlj');
+						let rljChart = echarts.getInstanceByDom(rlj)
+						if (rljChart == null) { 
+							rljChart = echarts.init(rlj);
+						}
+						rljChart.setOption(this.setOptions('年累计收入',income_chart.year));
+						
 						//近30天销售汇总
 						let sale_title = "店铺近30天销售汇总"
 						let sale_color = ['#89D2D0','#ED985C','#5E5C9D'];	//颜色
-						let sale_legend = ['销售收入','支付金额','支付人数'];	//文字
+						let sale_legend = ['销售收入','发货金额','毛利率'];	//文字
 						let sale_days = res.data.data.sale_chart.day;		//x轴
 						var series_data = [];								//y轴
 						res.data.data.sale_chart.chart_list.map(item => {
 							let obj = {
 								name: item.name,
-								type: item.name == '销售收入' || item.name == '支付金额'?'bar':'line',
+								type: item.name == '销售收入' || item.name == '发货金额'?'bar':'line',
 								label:{
-									show:item.name == '支付人数'?true:false,
+									show:item.name == '毛利率'?true:false,
 									position: 'top',
 								},
-								yAxisIndex:item.name == '支付人数'?1:0,
+								yAxisIndex:item.name == '毛利率'?1:0,
 								emphasis: {
 									focus: 'series'
 								},
@@ -251,7 +283,7 @@
 					grid:{
 						y2:20,
 						top:'25%',
-						left: '50',
+						left: '80',
 						right: '50',
 					},
 					xAxis: [{

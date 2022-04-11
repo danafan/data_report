@@ -10,6 +10,7 @@ let path = {
 	saleAnalysisTable:'operate/sale_analysis_table',//数据分析/销售分析表格
 	saleAnalysisChart:'operate/sale_analysis_chart',//数据分析/销售分析图表
 	dataStatistics:'operate/data_statistics',		//数据分析/数据统计
+	incomeAnalysisDelivery:'operate/income_analysis_delivery',	//收入分析
 }						
 export default{
 	//获取款式编码
@@ -51,6 +52,10 @@ export default{
 	//数据分析/数据统计
 	dataStatistics(params){
 		return http.get(path.dataStatistics, params)
+	},
+	//收入分析
+	incomeAnalysisDelivery(params){
+		return http.get(path.incomeAnalysisDelivery, params)
 	},
 }
 

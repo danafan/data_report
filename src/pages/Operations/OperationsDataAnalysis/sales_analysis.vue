@@ -18,9 +18,9 @@
 		</el-form>
 		<!-- 表格数据 -->
 		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries">
-			<el-table-column prop="shop_name" label="店铺" align="center"></el-table-column>
-			<el-table-column prop="xsds" label="销售单数" align="center" sortable></el-table-column>
-			<el-table-column prop="xsje" label="销售金额" width="120" align="center" sortable>
+			<el-table-column prop="shop_name" width="160" label="店铺" show-overflow-tooltip></el-table-column>
+			<el-table-column prop="xsds" label="支付单数" align="center" sortable></el-table-column>
+			<el-table-column prop="xsje" label="支付金额" width="120" align="center" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.xsje}}万</div>
 				</template>
@@ -48,7 +48,7 @@
 			</el-table-column>
 		</el-table>
 		<el-tabs v-model="tab_index" type="card">
-			<el-tab-pane label="销售数据" name="1">
+			<el-tab-pane label="支付数据" name="1">
 				<div id="saleToastContainer" class="toastContainer"></div>
 				<div id="saleContainer"></div>
 			</el-tab-pane>
@@ -145,6 +145,7 @@
 			},
 			//子组件传递过来的参数
 			checkReq(reqObj){
+				console.log(reqObj);
 				this.select_department_ids = reqObj.select_department_ids;
 				this.select_plat_ids = reqObj.select_plat_ids;
 				this.select_store_ids = reqObj.select_store_ids;
@@ -187,22 +188,20 @@
 					sums[index] = values.reduce((prev, curr) => {
 						return prev + curr;
 					}, 0);
-					if(index == 2 || index == 6){
-						sums[index] = sums[index].toFixed(2);
-					}
 					if(index == 2){
-						sums[index] = sums[index] += '万';
+						let rr = sums[index].toFixed(2);
+						sums[index] = rr += '万';
 					}
 					if(index == 5){
 						let gg = ((sums[4]/sums[3])*100).toFixed(2);
 						sums[index] = gg += '%';
 					}
-					if(index == 6){
+					if(index == 7){
 						let cc =  (parseFloat(sums[2].split('万')[0]*10000)/sums[1]).toFixed(2);
 						sums[index] = cc + '元';
 					}
-					if(index == 8){
-						let dd =  (sums[7]/(sums[7] + sums[1])).toFixed(2);
+					if(index == 9){
+						let dd =  (sums[8]/(sums[8] + sums[1])).toFixed(2);
 						sums[index] = dd += '%';
 					}
 				});
@@ -283,8 +282,8 @@
 						legend_data.push(item.name);
 						let obj = {
 							name: item.name,
-							type: item.name == '销售额环比' || item.name == '销售单数环比'?'line':'bar',
-							yAxisIndex:item.name == '销售额环比' || item.name == '销售单数环比'?1:0,
+							type: item.name == '支付额环比' || item.name == '支付单数环比'?'line':'bar',
+							yAxisIndex:item.name == '支付额环比' || item.name == '支付单数环比'?1:0,
 							emphasis: {
 								focus: 'series'
 							},
@@ -324,8 +323,8 @@
 						legend_data.push(item.name);
 						let obj = {
 							name: item.name,
-							type: item.name == '鱼塘占比' || item.name == '销售单数环比'?'line':'bar',
-							yAxisIndex:item.name == '鱼塘占比' || item.name == '销售单数环比'?1:0,
+							type: item.name == '鱼塘占比' || item.name == '支付单数环比'?'line':'bar',
+							yAxisIndex:item.name == '鱼塘占比' || item.name == '支付单数环比'?1:0,
 							emphasis: {
 								focus: 'series'
 							},
@@ -423,7 +422,6 @@
 			},
 			//回到顶部
 			scrollTop(){
-				console.log("asd")
 				document.getElementById('scroll_content').scrollTop = 0;
 			}
 		},

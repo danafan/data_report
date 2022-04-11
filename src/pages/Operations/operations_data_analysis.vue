@@ -4,6 +4,7 @@
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" v-for="item in menu_list">
 				<SalesAnalysis v-if="item.web_url == 'sales_analysis'"/>
 				<DataStatistical v-if="item.web_url == 'data_statistical'"/>
+				<IncomeAnalysis v-if="item.web_url == 'income_analysis'"/>
 			</el-tab-pane>
 
 		</el-tabs>
@@ -17,6 +18,7 @@
 <script>
 	import SalesAnalysis from './OperationsDataAnalysis/sales_analysis.vue'
 	import DataStatistical from './OperationsDataAnalysis/data_statistical.vue'
+	import IncomeAnalysis from './OperationsDataAnalysis/income_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -56,7 +58,8 @@
 		},
 		components:{
 			SalesAnalysis,
-			DataStatistical
+			DataStatistical,
+			IncomeAnalysis
 		}
 	}
 </script>
