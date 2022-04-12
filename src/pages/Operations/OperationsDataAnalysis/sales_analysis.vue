@@ -201,7 +201,7 @@
 						sums[index] = cc + '元';
 					}
 					if(index == 9){
-						let dd =  (sums[8]/(sums[8] + sums[1])).toFixed(2);
+						let dd =  ((sums[8]/(sums[8] + sums[1]))*100).toFixed(2);
 						sums[index] = dd += '%';
 					}
 				});

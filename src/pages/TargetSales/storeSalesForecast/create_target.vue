@@ -425,6 +425,9 @@
 			changeDept(v){
 				let item = this.level1_dept_list.filter(item => {return item.dept_id == v});
 				this.dept_1_name = item[0].dept_name;
+				this.level2_dept_list = [];
+				this.dept_2_id = "";
+				this.dept_2_name = "";
 				//获取部门列表
 				this.getDepts(v);
 			},
