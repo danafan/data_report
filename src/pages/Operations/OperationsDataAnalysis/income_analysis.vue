@@ -17,7 +17,7 @@
 			</el-form-item>
 		</el-form>
 		<!-- 表格数据 -->
-		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500">
+		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries">
 			<el-table-column prop="shop_name" width="160" label="店铺" show-overflow-tooltip></el-table-column>
 			<el-table-column prop="fhdl" width="100" label="发货单数" align="center" sortable></el-table-column>
 			<el-table-column prop="fhje" label="发货金额" width="100" align="center" sortable>
@@ -30,11 +30,6 @@
 					<div>{{scope.row.fhcb}}万</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="mll" label="毛利率" width="100" align="center" sortable>
-				<template slot-scope="scope">
-					<div>{{scope.row.mll}}%</div>
-				</template>
-			</el-table-column>
 			<el-table-column prop="xssr" label="销售收入" width="100" align="center" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.xssr}}万</div>
@@ -43,6 +38,11 @@
 			<el-table-column prop="xscb" label="销售成本" width="100" align="center" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.xscb}}万</div>
+				</template>
+			</el-table-column>
+			<el-table-column prop="mll" label="毛利率" width="100" align="center" sortable>
+				<template slot-scope="scope">
+					<div>{{scope.row.mll}}%</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="thdl" label="退货单数" width="100" align="center" sortable></el-table-column>
@@ -142,6 +142,34 @@
 			this.getTableData();
 		},
 		methods:{
+			// 表尾合计行加单位
+			getSummaries(param) {
+				const { columns, data } = param;
+				const sums = [];
+				columns.forEach((column, index) => {
+					if (index === 0) {
+						sums[index] = '合计';
+						return;
+					}
+					const values = data.map(item => Number(item[column.property]));
+					sums[index] = values.reduce((prev, curr) => {
+						return prev + curr;
+					}, 0);
+					
+					if(index == 2 || index == 3 || index == 4 || index == 5 || index == 8 || index == 9 || index == 10){
+						let rr = sums[index].toFixed(2);
+						sums[index] = rr += '万';
+					}
+					if(index == 6){
+						let ss = parseFloat(sums[4].split('万')[0]*10000);
+						let cc = parseFloat(sums[5].split('万')[0]*10000);
+
+						let gg = (((ss - cc)/ss)*100).toFixed(2);
+						sums[index] = gg + '%';
+					}
+				});
+				return sums;
+			},
 			//公司列表
 			ajaxCompany(){
 				resource.ajaxCompany().then(res => {

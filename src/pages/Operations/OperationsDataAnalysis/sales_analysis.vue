@@ -25,16 +25,16 @@
 					<div>{{scope.row.xsje}}万</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="yfsl" label="应发数量" width="120" align="center" sortable>
+			<el-table-column prop="yfsl" label="应发单量" width="120" align="center" sortable>
 			</el-table-column>
-			<el-table-column prop="sfsl" label="实发数量" width="120" align="center" sortable>
+			<el-table-column prop="sfsl" label="实发单量" width="120" align="center" sortable>
 			</el-table-column>
 			<el-table-column prop="fhl" label="发货率" width="120" align="center" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.fhl}}%</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="wfhsl" label="未发货数量" align="center" sortable></el-table-column>
+			<el-table-column prop="wfhsl" label="未发货单量" align="center" sortable></el-table-column>
 			<el-table-column prop="kdj" label="客单价" align="center" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.kdj}}元</div>
@@ -188,6 +188,7 @@
 					sums[index] = values.reduce((prev, curr) => {
 						return prev + curr;
 					}, 0);
+					console.log(sums)
 					if(index == 2){
 						let rr = sums[index].toFixed(2);
 						sums[index] = rr += '万';
