@@ -106,6 +106,68 @@ export function exportUp(url){
     });
 }
 
+//统一导出
+// export function exportTable(url,arg,name){
+// 	MessageBox.confirm('确认导出?', '提示', {
+// 		confirmButtonText: '确定',
+// 		cancelButtonText: '取消',
+// 		type: 'warning'
+// 	}).then(() => {
+// 		//验证参数加密
+// 		var sign_get_str = middleWare({...arg,...{export_flag:1}},'get');
+// 		//导出参数加密
+// 		var export_get_str = middleWare({...arg,...{export_flag:2}},'get');
+		
+// 		var sign_url = `${location.origin}/api/${url}?${sign_get_str}`;//验证
+// 		var open_url = `${location.origin}/api/${url}?${export_get_str}`;//导出
+// 		//导出前验证
+// 		axios.get(sign_url).then(res => {
+// 			if(res.data.code == 1){
+// 				window.open(open_url);
+// 			}else{
+// 				Message({
+// 					type: 'warning',
+// 					message: res.data.msg
+// 				});
+// 			}
+// 		})
+// 		// var new_url = url;
+// 		// var arg = {};
+// 		// if(url.indexOf('?') > -1){
+// 		// 	//处理url
+// 		// 	new_url = url.split('?')[0];
+// 		// 	//处理参数
+// 		// 	let req_arr = url.split('?')[1].split('&');
+// 		// 	req_arr.map(item => {
+// 		// 		arg[item.split('=')[0]] = item.split('=')[1];
+// 		// 	});
+// 		// }
+// 		// if(!!store.state.is_ding_talk){  //钉钉
+// 	 //    	//获取code
+// 	 //    	dd.ready(() => {
+// 	 //    		dd.runtime.permission.requestAuthCode({
+// 	 //    			corpId: "ding7828fff434921f5b",
+// 	 //    			onSuccess: res =>{
+// 	 //            		//获取钉钉用户信息
+// 	 //            		let code = res.code;
+// 	 //            		exportSet(new_url,arg,code);
+// 	 //            	},
+// 	 //            	onFail : err => {
+// 	 //            		alert('dd error: ' + JSON.stringify(err));
+// 	 //            	}
+// 	 //            });
+// 	 //    	});
+// 	 //    }else{
+// 	 //    	exportSet(new_url,arg);
+// 	 //    }
+// 	}).catch(() => {
+// 		Message({
+// 			type: 'info',
+// 			message: '取消导出'
+// 		});          
+// 	});
+// }
+
 export function exportPost(data,name){
 	const blob = new Blob([data], {type: 'text/csv,charset=UTF-8'})
 	let today = new Date();

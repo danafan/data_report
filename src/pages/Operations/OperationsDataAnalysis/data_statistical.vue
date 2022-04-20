@@ -2,11 +2,35 @@
 	<div class="container">
 		<i class="el-icon-refresh-left reload" @click="getDataStatistics"></i>
 		<div class="content">
+			<el-card class="card_item today">
+				<div class="card_top">
+					<div class="top_left">
+						<div class="card_label">今日收入</div>
+						<div class="card_value">{{top_square.today_value}}</div>
+					</div>
+					<div class="top_right">
+						<div class="right_row">环比昨日：<span class="green_color" :class="{'red_color':top_square.hb > 0}">{{top_square.hb}}%</span></div>
+						<div class="right_row">同比上周：<span class="green_color" :class="{'red_color':top_square.hb > 0}">{{top_square.tb}}%</span></div>
+						<div class="right_row">今日完成率：{{top_square.wcl}}%</div>
+					</div>
+				</div>
+			</el-card>
 			<!-- 顶部数据 -->
 			<div class="top_cards">
 				<el-card class="card_item" v-for="item in square">
-					<div class="card_value">{{item.value}}</div>
-					<div class="card_label">{{item.title}}</div>
+					<div class="card_top">
+						<div class="top_left">
+							<div class="card_label">{{item.name}}</div>
+							<div class="card_value">{{item.today_value}}</div>
+						</div>
+						<div class="top_right">
+							<div class="right_row">环比昨日：<span class="green_color" :class="{'red_color':item.hb > 0}">{{item.hb}}%</span></div>
+							<div class="right_row">同比上周：<span class="green_color" :class="{'red_color':item.hb > 0}">{{item.tb}}%</span></div>
+						</div>
+					</div>
+					<el-divider></el-divider>
+					<div class="right_row margin-bottom">昨日{{item.name}}：<span class="vvv">{{item.yesterday_value}}</span></div>
+					<div class="right_row">当月{{item.name}}：<span class="vvv">{{item.month_value}}</span></div>
 				</el-card>
 			</div>
 			<el-card class="axis_list margin_bottom">
@@ -78,8 +102,8 @@
 .container{
 	padding: 20px;
 	background: #ECEFF8;
-	display:flex;
-	justify-content: center;
+	// display:flex;
+	// justify-content: center;
 	position: relative;
 	.reload{
 		position: absolute;
@@ -87,31 +111,67 @@
 		right: 15px;
 	}
 	.content{
-		width: 920px;
+		// width: 920px;
 		.top_cards{
 			width: 100%;
 			display: flex;
 			flex-wrap: wrap;
 			justify-content: space-between;
-			.card_item{
-				margin-bottom: 6px;
-				width: 180px;
-				height: 80px;
+		}
+
+		.card_item{
+			margin-bottom: 10px;
+			width: 280px;
+			height: 150px;
+			.card_top{
 				display:flex;
-				flex-direction: column;
 				align-items: center;
-				justify-content: center;
-				.card_value{
-					text-align: center;
-					font-size: 22px;
-					font-weight: bold;
+				.top_left{
+					width: 50%;
+					.card_label{
+						text-align: center;
+						font-size: 12px;
+						font-weight: bold;
+					}
+					.card_value{
+						text-align: center;
+						font-size: 22px;
+						font-weight: bold;
+					}
 				}
-				.card_label{
-					text-align: center;
-					font-size: 12px;
-					font-weight: bold;
+				.top_right{
+					height: 50px;
+					width: 50%;
+					display:flex;
+					flex-direction: column;
+					justify-content: space-around;
 				}
 			}
+			.el-divider{
+				margin: 10px 0!important;
+			}
+			.right_row{
+				font-size: 12px;
+			}
+			.red_color{
+				color:red;
+				font-weight: bold;
+			}
+			.green_color{
+				color:green;
+				font-weight: bold;
+			}
+			.vvv{
+				font-size: 14px;
+				font-weight: bold;
+			}
+			.margin-bottom{
+				margin-bottom: 10px;
+			}
+		}
+		.today{
+			margin: 0 auto 20px;
+			height: 90px;
 		}
 		.axis_list{
 			width: 100%;
@@ -144,6 +204,7 @@
 	export default{
 		data(){
 			return{
+				top_square:{},
 				square:[],		//顶部数据
 				tableData:[],	//店铺销售汇总
 			}
@@ -158,7 +219,8 @@
 				operationResource.dataStatistics().then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
-						this.square = res.data.data.square;	//顶部数据
+						this.top_square = res.data.data.square.top;
+						this.square = res.data.data.square.list;	//顶部数据
 						this.tableData = res.data.data.table;	//店铺销售汇总
 						// 四个柱状图
 						let income_chart = res.data.data.income_chart;
