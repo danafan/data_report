@@ -149,10 +149,19 @@
 					<el-option label="否" value="0"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="是否自主款：" v-if="isShow('sfzzk')">
+			<!-- <el-form-item label="是否自主款：" v-if="isShow('sfzzk')">
 				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" placeholder="全部">
 					<el-option label="是" value="1"></el-option>
 					<el-option label="否" value="0"></el-option>
+				</el-select>
+			</el-form-item> -->
+			<el-form-item label="自有货品：" v-if="isShow('sfzzk')">
+				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option label="CHRISUNO" value="CHRISUNO"></el-option>
+					<el-option label="白坯" value="白坯"></el-option>
+					<el-option label="自主款" value="自主款"></el-option>
+					<el-option label="海外" value="海外"></el-option>
+					<el-option label="其他" value="其他"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="性别：" v-if="isShow('xb')">
@@ -254,7 +263,16 @@
 				select_ks_ids:[],							//选中的款式编码列表
 				select_jyhpxz_id:"",						//选中的建议货品性质
 				select_sjhpxz_id:"",						//选中的实际货品性质
-				bd_list:[],									//波段列表
+				bd_list:["四季（0101-1231）",
+				"初春（1225-0207）",
+				"立春（0208-0331）",
+				"初夏（0222-0331）",
+				"仲夏（0401-0528）",
+				"夏末（0529-0721）",
+				"初秋（0715-0812）",
+				"深秋（0822-1031）",
+				"初冬（0922-1107）",
+				"深冬（1108-1231）"],									//波段列表
 				select_bd_ids:[],							//选中的波段列表
 				select_jy_id:"",							//建议
 				select_sfkt_id:"",							//是否可退
@@ -294,7 +312,7 @@
 				select_status_id:"",						//确认状态
 				operator1:"",								//负数库存1
 				operator2:"",								//负数库存2
-				yyjc_list:[],								//运营决策列表
+				yyjc_list:['转正','运营调整策略','下架'],								//运营决策列表
 				select_yyjc_id:"",							//选中的运营决策
 				cgjc_list:[],								//采购决策列表
 				select_cgjc_id:"",							//选中的采购决策
@@ -498,11 +516,11 @@
 			//品类列表
 			this.getPl();
 			//波段列表
-			this.getBd();
-			if(this.page_type == '1' || this.page_type == '4'){
-				//运营决策列表
-				this.getYyjc();
-			}
+			// this.getBd();
+			// if(this.page_type == '1' || this.page_type == '4'){
+			// 	//运营决策列表
+			// 	this.getYyjc();
+			// }
 			if(this.page_type == '4'){
 				//采购决策列表
 				this.getCgjc();
@@ -590,11 +608,11 @@
 						arr.push(s.value);
 					}
 				})
-				this.select_dept_ids = arr;
-				console.log(this.select_dept_ids)
+					this.select_dept_ids = arr;
+					console.log(this.select_dept_ids)
 				//店铺列表
 				this.getStore();
-				});
+			});
 				
 			},
 			//部门列表
@@ -678,29 +696,29 @@
 				}
 			},
 			//波段列表
-			getBd(){
-				resource.ajaxBd({from:this.page_type}).then(res => {
-					if(res.data.code == 1){
-						this.bd_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
+			// getBd(){
+			// 	resource.ajaxBd({from:this.page_type}).then(res => {
+			// 		if(res.data.code == 1){
+			// 			this.bd_list = res.data.data;
+			// 		}else{
+			// 			this.$message.warning(res.data.msg);
+			// 		}
+			// 	})
+			// },
 			//运营决策列表
-			getYyjc(){
-				if(this.page_type == '1'){	//试销
-					this.yyjc_list = ['转正','下架'];
-				}else if(this.page_type == '4'){
-					resource.ajaxYyjc({from:this.page_type}).then(res => {
-						if(res.data.code == 1){
-							this.yyjc_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
+			// getYyjc(){
+			// 	if(this.page_type == '1'){	//试销
+			// 		this.yyjc_list = ['转正','下架'];
+			// 	}else if(this.page_type == '4'){
+			// 		resource.ajaxYyjc({from:this.page_type}).then(res => {
+			// 			if(res.data.code == 1){
+			// 				this.yyjc_list = res.data.data;
+			// 			}else{
+			// 				this.$message.warning(res.data.msg);
+			// 			}
+			// 		})
+			// 	}
+			// },
 			//采购决策列表
 			getCgjc(){
 				resource.ajaxCgjc({from:this.page_type}).then(res => {

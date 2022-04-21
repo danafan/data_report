@@ -9,8 +9,8 @@
 						<div class="card_value">{{top_square.today_value}}</div>
 					</div>
 					<div class="top_right">
-						<div class="right_row">环比昨日：<span class="green_color" :class="{'red_color':top_square.hb > 0}">{{top_square.hb}}%</span></div>
-						<div class="right_row">同比上周：<span class="green_color" :class="{'red_color':top_square.hb > 0}">{{top_square.tb}}%</span></div>
+						<div class="right_row">环比昨日：<span class="green_color" :class="{'red_color':top_square.hb > 0}">{{top_square.hb > 0?'+':''}}{{top_square.hb}}%</span></div>
+						<div class="right_row">同比上周：<span class="green_color" :class="{'red_color':top_square.tb > 0}">{{top_square.tb > 0?'+':''}}{{top_square.tb}}%</span></div>
 						<div class="right_row">今日完成率：{{top_square.wcl}}%</div>
 					</div>
 				</div>
@@ -24,8 +24,8 @@
 							<div class="card_value">{{item.today_value}}</div>
 						</div>
 						<div class="top_right">
-							<div class="right_row">环比昨日：<span class="green_color" :class="{'red_color':item.hb > 0}">{{item.hb}}%</span></div>
-							<div class="right_row">同比上周：<span class="green_color" :class="{'red_color':item.hb > 0}">{{item.tb}}%</span></div>
+							<div class="right_row">环比昨日：<span class="green_color" :class="{'red_color':item.hb > 0}">{{item.hb > 0?'+':''}}{{item.hb}}%</span></div>
+							<div class="right_row">同比上周：<span class="green_color" :class="{'red_color':item.tb > 0}">{{item.tb > 0?'+':''}}{{item.tb}}%</span></div>
 						</div>
 					</div>
 					<el-divider></el-divider>
@@ -153,12 +153,12 @@
 			.right_row{
 				font-size: 12px;
 			}
-			.red_color{
-				color:red;
-				font-weight: bold;
-			}
 			.green_color{
 				color:green;
+				font-weight: bold;
+			}
+			.red_color{
+				color:red;
 				font-weight: bold;
 			}
 			.vvv{
