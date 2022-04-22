@@ -127,7 +127,7 @@
 				display:flex;
 				align-items: center;
 				.top_left{
-					width: 50%;
+					width: 48%;
 					.card_label{
 						text-align: center;
 						font-size: 12px;
@@ -141,7 +141,7 @@
 				}
 				.top_right{
 					height: 50px;
-					width: 50%;
+					width: 52%;
 					display:flex;
 					flex-direction: column;
 					justify-content: space-around;
