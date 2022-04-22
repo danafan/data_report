@@ -161,8 +161,8 @@
 				let arg = {
 					from_type:'project',
 					date:this.date?this.date:'',
-					dept_1_name:this.dept_1_id,
-					dept_2_name:this.dept_2_id,
+					dept_1_id:this.dept_1_id,
+					dept_2_id:this.dept_2_id,
 					status:this.status,
 					page:this.page,
 					limit:this.pagesize
