@@ -28,7 +28,7 @@
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
 			<el-table-column prop="dept_2_name" show-overflow-tooltip label="二级部门" align="center"></el-table-column>
 			<el-table-column prop="shop_name" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="shop_id" label="主账号ID" align="center"></el-table-column>
+			<el-table-column prop="shop_id" show-overflow-tooltip label="主账号ID" align="center"></el-table-column>
 			<el-table-column prop="platform" label="平台" align="center"></el-table-column>
 			<el-table-column prop="shop_type" label="店铺类别" align="center"></el-table-column>
 			<el-table-column prop="shopowner_name" label="店长" align="center"></el-table-column>

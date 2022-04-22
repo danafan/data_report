@@ -25,12 +25,30 @@
 			<el-table-column width="200" show-overflow-tooltip prop="advice" label="备注" align="center">
 			</el-table-column>
 		</el-table>
-		
+
 		<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 			<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
 			<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
-			<el-table-column width="70" show-overflow-tooltip prop="gmv" label="日GMV" align="center"></el-table-column>
-			<el-table-column width="80" show-overflow-tooltip prop="xssr" label="日销量收入" align="center"></el-table-column>
+			<el-table-column width="70" prop="gmv" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="日GMV(百)" placement="top-start">
+						<div class="text_content">日GMV(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.gmv}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="80" prop="xssr" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="日销量收入(百)" placement="top-start">
+						<div class="text_content">日销量收入(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.xssr}}</div>
+				</template>
+			</el-table-column>
 			<el-table-column width="130" prop="xssrzb" label="销售收入占比" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.xssrzb}}%</div>
@@ -41,24 +59,136 @@
 					<div>{{scope.row.mll}}%</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="80" show-overflow-tooltip prop="cpcb" label="产品成本" align="center"></el-table-column>
+			<el-table-column width="80" prop="cpcb" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="产品成本(百)" placement="top-start">
+						<div class="text_content">产品成本(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.cpcb}}</div>
+				</template>
+			</el-table-column>
 			<el-table-column width="80" show-overflow-tooltip prop="yxfyl" label="营销费用率" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.yxfyl}}%</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="80" show-overflow-tooltip prop="yxfy" label="营销费用" align="center"></el-table-column>
-			<el-table-column width="90" prop="roi" label="销售ROI目标" align="center"></el-table-column>
-			<el-table-column width="95" show-overflow-tooltip prop="dptdfy" label="店铺团队费用" align="center"></el-table-column>
-			<el-table-column width="95" show-overflow-tooltip prop="dpqtfy" label="店铺其他费用" align="center"></el-table-column>
-			<el-table-column width="105" show-overflow-tooltip prop="xmbftfy" label="项目部分摊费用" align="center"></el-table-column>
-			<el-table-column width="105" show-overflow-tooltip prop="sybftfy" label="事业部分摊费用" align="center"></el-table-column>
-			<el-table-column width="68" show-overflow-tooltip prop="lbfy" label="领标费用" align="center"></el-table-column>
-			<el-table-column width="80" show-overflow-tooltip prop="gxmy" label="贡献毛益" align="center"></el-table-column>
-			<el-table-column width="80" show-overflow-tooltip prop="wlfy" label="物流类费用" align="center"></el-table-column>
-			<el-table-column width="80" show-overflow-tooltip prop="kffy" label="客服类费用" align="center"></el-table-column>
-			<el-table-column width="60" show-overflow-tooltip prop="gtfy" label="公摊费" align="center"></el-table-column>
-			<el-table-column width="80" show-overflow-tooltip prop="jlr" label="净利润额" align="center"></el-table-column>
+			<el-table-column width="80" prop="yxfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="营销费用(百)" placement="top-start">
+						<div class="text_content">营销费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.yxfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="90" prop="roi" label="销售ROI目标" show-overflow-tooltip align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.roi}}%</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="95" prop="dptdfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="店铺团队费用(百)" placement="top-start">
+						<div class="text_content">店铺团队费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.dptdfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="95" prop="dpqtfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="店铺其他费用(百)" placement="top-start">
+						<div class="text_content">店铺其他费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.dpqtfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="105" prop="xmbftfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="项目部分摊费用(百)" placement="top-start">
+						<div class="text_content">项目部分摊费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.xmbftfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="105" prop="sybftfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="事业部分摊费用(百)" placement="top-start">
+						<div class="text_content">事业部分摊费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.sybftfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="68" prop="lbfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="领标费用(百)" placement="top-start">
+						<div class="text_content">领标费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.lbfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="80" prop="gxmy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="贡献毛益(百)" placement="top-start">
+						<div class="text_content">贡献毛益(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.gxmy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="80" prop="wlfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="物流类费用(百)" placement="top-start">
+						<div class="text_content">物流类费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.wlfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="80" prop="kffy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="客服类费用(百)" placement="top-start">
+						<div class="text_content">客服类费用(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.kffy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="60"prop="gtfy" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="公摊费(百)" placement="top-start">
+						<div class="text_content">公摊费(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.gtfy}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="80" prop="jlr" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="净利润额(百)" placement="top-start">
+						<div class="text_content">净利润额(百)</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>{{scope.row.jlr}}</div>
+				</template>
+			</el-table-column>
 			<el-table-column width="68" show-overflow-tooltip prop="jlrl" label="净利润率" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.jlrl}}%</div>
@@ -107,19 +237,19 @@
 				</div>
 			</div>
 		</div>
-	<!-- 拒绝 -->
-	<el-dialog title="拒绝" :visible.sync="showRefuse" append-to-body>
-		<el-input
-				type="textarea"
-				:rows="3"
-				placeholder="请输入拒绝原因（必填）"
-				v-model="refuse_reason">
-			</el-input>
-	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="showRefuse = false">取 消</el-button>
-		<el-button size="small" type="primary" @click="refuseCheck">确 定</el-button>
-	</div>
-</el-dialog>
+		<!-- 拒绝 -->
+		<el-dialog title="拒绝" :visible.sync="showRefuse" append-to-body>
+			<el-input
+			type="textarea"
+			:rows="3"
+			placeholder="请输入拒绝原因（必填）"
+			v-model="refuse_reason">
+		</el-input>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="showRefuse = false">取 消</el-button>
+			<el-button size="small" type="primary" @click="refuseCheck">确 定</el-button>
+		</div>
+	</el-dialog>
 </div>
 </template>
 <style lang="less" scoped>
@@ -147,6 +277,11 @@
 		}
 	}
 }
+.text_content{
+	overflow: hidden;/*超出部分隐藏*/
+	white-space: nowrap;/*不换行*/
+	text-overflow:ellipsis;/*超出部分文字以...显示*/
+}
 </style>
 <script>
 	import resource from '../../../../api/targetSales.js'
@@ -156,14 +291,14 @@
 				dataObj:{},
 				info_data:[],			//顶部详情信息
 				table_data:[{
-					name:'预估发货单数',
+					name:'预估发货单数（万）',
 					key:'ygfhds',
 					value:0,
 					new_value:"",
 					isPer:false,
 					advice:""
 				},{
-					name:'GMV',
+					name:'GMV（万）',
 					key:'gmv',
 					value:0,
 					new_value:"",
@@ -177,7 +312,7 @@
 					isPer:true,
 					advice:""
 				},{
-					name:'销售收入',
+					name:'销售收入（万）',
 					key:'xssr',
 					value:0,
 					new_value:"",
@@ -240,7 +375,7 @@
 					isPer:true,
 					advice:""
 				},{
-					name:'贡献毛益',
+					name:'贡献毛益（万）',
 					key:'gxmy',
 					value:0,
 					new_value:"",
@@ -268,7 +403,7 @@
 					isPer:true,
 					advice:""
 				},{
-					name:'净利润',
+					name:'净利润（万）',
 					key:'jlr',
 					value:0,
 					new_value:"",
@@ -383,6 +518,10 @@
 					if (index === 7) {	//营销费用率=月营销费用率
 						let yxfyl = this.table_data[5].new_value;
 						sums[index] = yxfyl + '%';
+					}
+					if (index === 9) {	//销售ROI目标=日销售收入/日营销费用
+						let roi = (sums[3]/sums[8]).toFixed(2);
+						sums[index] = roi + '%';
 					}
 					if (index === 20) {	//净利润率=总日净利润额/总日销售收入
 						let jlrl = (sums[19]/sums[3]).toFixed(2);

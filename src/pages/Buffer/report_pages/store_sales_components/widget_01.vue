@@ -37,7 +37,7 @@
 				<el-button type="primary" size="small" @click="getList()">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" max-height="800" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="ksbm" label="款式" align="center"></el-table-column>
 			<el-table-column label="图片" align="center">
 				<template slot-scope="scope">

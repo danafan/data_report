@@ -11,7 +11,7 @@
 				<el-button type="primary" plain size="small" @click="decisionAdd" v-if="button_list.add_decision == 1">导入决策管理<i class="el-icon-download"></i></el-button>
 			</div>
 		</div>
-		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
 					<!-- 编辑框 -->

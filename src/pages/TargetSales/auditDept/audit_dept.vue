@@ -143,7 +143,7 @@
 				resource.getDepts({type:'2'}).then(res => {
 					if(res.data.code == 1){
 						this.level2_dept_list = res.data.data;
-						this.dept_2_id = this.level2_dept_list[0].dept_id;
+						this.dept_2_id = this.level2_dept_list[0].dept_name;
 						//获取列表
 						this.getData();
 					}else{
@@ -178,7 +178,7 @@
 				let arg = {
 					from_type:'project',
 					date:this.date,
-					dept_2_id:this.dept_2_id,
+					dept_2_name:this.dept_2_id,
 					shop_id:this.shop_id,
 					status:this.status,
 					page:this.page,
@@ -210,7 +210,7 @@
 					type:'1',
 					date:this.date,
 					remark:this.remark,
-					dept_2_id:this.dept_2_id
+					dept_2_name:this.dept_2_id
 				}
 				//提交审核
 				resource.mergeTarget(arg).then(res => {

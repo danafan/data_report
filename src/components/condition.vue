@@ -149,12 +149,6 @@
 					<el-option label="否" value="0"></el-option>
 				</el-select>
 			</el-form-item>
-			<!-- <el-form-item label="是否自主款：" v-if="isShow('sfzzk')">
-				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" placeholder="全部">
-					<el-option label="是" value="1"></el-option>
-					<el-option label="否" value="0"></el-option>
-				</el-select>
-			</el-form-item> -->
 			<el-form-item label="自有货品：" v-if="isShow('sfzzk')">
 				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" placeholder="全部">
 					<el-option label="CHRISUNO" value="CHRISUNO"></el-option>
@@ -314,7 +308,7 @@
 				operator2:"",								//负数库存2
 				yyjc_list:['转正','运营调整策略','下架'],								//运营决策列表
 				select_yyjc_id:"",							//选中的运营决策
-				cgjc_list:[],								//采购决策列表
+				cgjc_list:['退供应商'],								//采购决策列表
 				select_cgjc_id:"",							//选中的采购决策
 				select_jj_ids:[],							//选中的季节
 				ms_list:[],									//买手列表
@@ -336,7 +330,39 @@
 				select_sjs_ids:[],							//选中的设计师列表		
 				gdy_list:[],								//跟单员列表
 				select_gdy_ids:[],							//选中的跟单员列表	
-				jgd_list:[],								//价格带列表
+				jgd_list:[
+				"0-10",
+				"10-20",
+				"20-30",
+				"30-40",
+				"40-50",
+				"50-60",
+				"60-70",
+				"70-80",
+				"80-90",
+				"90-100",
+				"100-110",
+				"110-120",
+				"120-130",
+				"130-140",
+				"140-150",
+				"150-160",
+				"160-170",
+				"170-180",
+				"180-190",
+				"190-200",
+				"200-210",
+				"210-220",
+				"220-230",
+				"230-240",
+				"240-250",
+				"250-260",
+				"260-270",
+				"270-280",
+				"280-290",
+				"290-300",
+				"300-"
+				],								//价格带列表
 				select_jgd_ids:[],							//选中的价格带列表
 				hchyjc_date:[],								//缓冲会议决策日期
 				start_decision_rq:"",						//缓冲会议决策日期（开始时间）
@@ -515,20 +541,6 @@
 			this.getStore();
 			//品类列表
 			this.getPl();
-			//波段列表
-			// this.getBd();
-			// if(this.page_type == '1' || this.page_type == '4'){
-			// 	//运营决策列表
-			// 	this.getYyjc();
-			// }
-			if(this.page_type == '4'){
-				//采购决策列表
-				this.getCgjc();
-			}
-			if(this.page_type == '5' || this.page_type == '6'){
-				//获取品牌列表
-				this.ajaxPp();
-			}
 			if(this.page_type == '6' || this.page_type == '7'){
 				//买手列表
 				this.getMs();
@@ -542,8 +554,6 @@
 				this.getSjs();
 				//跟单员列表
 				this.getGdy();
-				//价格带列表
-				this.getJgd();
 			}
 			if(this.page_type == '7'){
 				//操作人列表
@@ -577,19 +587,40 @@
 			}
 		},
 		methods:{
+			//部门列表
+			getDept(){
+				if(this.$store.state.dept_list.length == 0){  
+					resource.ajaxViewDept({from:1}).then(res => {
+						if(res.data.code == 1){
+							this.dept_list = res.data.data;
+							this.$store.commit('setDeptList',this.dept_list);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.dept_list = this.$store.state.dept_list;
+				}
+			},
+			//切换部门
 			getIds(){
 				this.$nextTick(()=>{
 					var arr = [];
 					var select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
 					select_department.map(s => {
-					if(!!s.parent){	//最后一层有父级
-						var m = s.parent;
-						if(!!m.checked){ //倒数第二层被全选了
-							if(!!m.parent){ //倒数第二层有父级
-								var d = m.parent;
-								if(!!d.checked){ //倒数第三层被全选了
-									if(arr.indexOf(d.value) == -1){
-										arr.push(d.value);
+						if(!!s.parent){	//最后一层有父级
+							var m = s.parent;
+							if(!!m.checked){ //倒数第二层被全选了
+								if(!!m.parent){ //倒数第二层有父级
+									var d = m.parent;
+									if(!!d.checked){ //倒数第三层被全选了
+										if(arr.indexOf(d.value) == -1){
+											arr.push(d.value);
+										}
+									}else{
+										if(arr.indexOf(m.value) == -1){
+											arr.push(m.value);
+										}
 									}
 								}else{
 									if(arr.indexOf(m.value) == -1){
@@ -597,33 +628,16 @@
 									}
 								}
 							}else{
-								if(arr.indexOf(m.value) == -1){
-									arr.push(m.value);
-								}
+								arr.push(s.value);
 							}
-						}else{
+						}else{	//只有一层
 							arr.push(s.value);
 						}
-					}else{	//只有一层
-						arr.push(s.value);
-					}
-				})
+					})
 					this.select_dept_ids = arr;
-					console.log(this.select_dept_ids)
-				//店铺列表
-				this.getStore();
-			});
-				
-			},
-			//部门列表
-			getDept(){
-				resource.ajaxViewDept({from:1}).then(res => {
-					if(res.data.code == 1){
-						this.dept_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+					//店铺列表
+					this.getStore();
+				});
 			},
 			//店铺列表
 			getStore(){
@@ -637,6 +651,7 @@
 					}
 				})
 			},
+			
 			//供应商列表
 			getGys(e){
 				if(e != ''){
@@ -663,13 +678,18 @@
 			},
 			//品类列表
 			getPl(){
-				resource.ajaxPl({from:this.page_type}).then(res => {
-					if(res.data.code == 1){
-						this.pl_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				if(this.$store.state.pl_list.length == 0){  //品类列表是空的
+					resource.ajaxPl({from:this.page_type}).then(res => {
+						if(res.data.code == 1){
+							this.pl_list = res.data.data;
+							this.$store.commit('setPlList',this.pl_list);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.pl_list = this.$store.state.pl_list;
+				}
 			},
 			//品牌列表
 			ajaxPp(e){
@@ -694,40 +714,6 @@
 						}
 					})
 				}
-			},
-			//波段列表
-			// getBd(){
-			// 	resource.ajaxBd({from:this.page_type}).then(res => {
-			// 		if(res.data.code == 1){
-			// 			this.bd_list = res.data.data;
-			// 		}else{
-			// 			this.$message.warning(res.data.msg);
-			// 		}
-			// 	})
-			// },
-			//运营决策列表
-			// getYyjc(){
-			// 	if(this.page_type == '1'){	//试销
-			// 		this.yyjc_list = ['转正','下架'];
-			// 	}else if(this.page_type == '4'){
-			// 		resource.ajaxYyjc({from:this.page_type}).then(res => {
-			// 			if(res.data.code == 1){
-			// 				this.yyjc_list = res.data.data;
-			// 			}else{
-			// 				this.$message.warning(res.data.msg);
-			// 			}
-			// 		})
-			// 	}
-			// },
-			//采购决策列表
-			getCgjc(){
-				resource.ajaxCgjc({from:this.page_type}).then(res => {
-					if(res.data.code == 1){
-						this.cgjc_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
 			},
 			//买手列表
 			getMs(){
@@ -784,16 +770,6 @@
 				resource.ajaxGdy({from:this.page_type}).then(res => {
 					if(res.data.code == 1){
 						this.gdy_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//价格带列表
-			getJgd(){
-				resource.ajaxJgd({from:this.page_type}).then(res => {
-					if(res.data.code == 1){
-						this.jgd_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
