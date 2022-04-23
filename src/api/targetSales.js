@@ -2,6 +2,7 @@ import http from './request.js'
 let path = {	
 	getDepts:'targesalemanage/get_depts',							//获取部门列表
 	getShops:'targesalemanage/get_shops',							//获取店铺列表
+	getReferenceShops:'targesalemanage/get_reference_shops',		//获取参考店铺列表
 	getShopInfo:'targesalemanage/get_shop_info',					//获取店铺详情
 	lastYearData:'targesalemanage/last_year_data',					//获取去年同期数据
 	ajaxUser:'common/ajaxUser',										//获取店长列表
@@ -28,6 +29,10 @@ export default{
 	//获取店铺列表
 	getShops(params){
 		return http.get(path.getShops, params)
+	},
+	//获取参考店铺列表
+	getReferenceShops(params){
+		return http.get(path.getReferenceShops, params)
 	},
 	//获取店铺详情
 	getShopInfo(params){
