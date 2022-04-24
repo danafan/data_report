@@ -110,7 +110,7 @@
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
 	<el-table :data="detailData.data" size="small" @sort-change="sortDetail">
-		<el-table-column width="160" align="center" property="spbm" label="商品编码"></el-table-column>
+		<el-table-column width="160" show-overflow-tooltip align="center" property="spbm" label="商品编码"></el-table-column>
 		<el-table-column width="120" align="center" property="ys" label="颜色"></el-table-column>
 		<el-table-column width="120" align="center" property="cm" label="尺码"></el-table-column>
 		<el-table-column width="120" align="center" property="stxl" label="三天销量"></el-table-column>
@@ -425,6 +425,7 @@
 							this.filename = '';
 							this.file = null;
 							this.showSearch = false;
+							this.getList();
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -812,7 +813,7 @@
 			},
 			//宽度
 			maxWidth(row_field_name){
-				if(row_field_name == 'bd' || row_field_name == 'sjxjrq' || row_field_name == 'nbhj' || row_field_name == 'jsgsqtxl'){
+				if(row_field_name == 'bd' || row_field_name == 'sjxjrq' || row_field_name == 'nbhj' || row_field_name == 'jsgsqtxl' || row_field_name == 'xds'){
 					return 260;
 				}else{
 					return 120;

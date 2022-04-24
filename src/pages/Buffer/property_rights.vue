@@ -136,12 +136,13 @@
 			},
 			//获取列表
 			getList(type){		//type:1(搜索);2:设置
+				this.page = type == '1'?1:this.page;
 				let req = {
 					ks:this.ks.join(','),
 					jyhpxz:this.jyhpxz,
 					sjhpxz:this.sjhpxz,
 					pagesize:this.pagesize,
-					page:type == '1'?1:this.page
+					page:this.page
 				}
 				resource.hpxzList(req).then(res => {
 					if(res.data.code == 1){

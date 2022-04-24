@@ -109,12 +109,12 @@
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
 	<el-table :data="detailData.data" @sort-change="sortDetail" size="small">
-		<el-table-column width="160" align="center" property="spbm" label="商品编码"></el-table-column>
+		<el-table-column show-overflow-tooltip width="160" align="center" property="spbm" label="商品编码"></el-table-column>
 		<el-table-column width="120" align="center" property="ys" label="颜色"></el-table-column>
 		<el-table-column width="120" align="center" property="cm" label="尺码"></el-table-column>
 		<el-table-column width="120" align="center" property="stxl" label="三天销量"></el-table-column>
 		<el-table-column width="120" align="center" property="sgstxl" label="上个三天销量"></el-table-column>
-		<el-table-column width="120" align="center" property="strjhb" label="三天日均环比"></el-table-column>
+		<el-table-column width="120" align="center" property="strjhb" label="七天日均环比"></el-table-column>
 		<el-table-column width="120" align="center" property="xjqxbh" label="下架前需补货"></el-table-column>
 		<el-table-column width="120" align="center" property="jsfhdqtxl" label="七天销量" sortable="custom"></el-table-column>
 		<el-table-column width="120" align="center" property="kys" label="可用库存" sortable="custom"></el-table-column>

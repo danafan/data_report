@@ -255,7 +255,7 @@
 			},
 			//宽度
 			maxWidth(row_field_name,is_edit){
-				if(row_field_name == 'spbmgh' || row_field_name == 'cpjglx' || row_field_name == 'tlrjxl' || row_field_name == 'sjxjrq'){
+				if(row_field_name == 'spbmgh' || row_field_name == 'cpjglx' || row_field_name == 'tlrjxl' || row_field_name == 'sjxjrq'||row_field_name == 'txbtdltjwxl' || row_field_name == 'txbtdlxl'){
 					return 260;
 				}else if(is_edit == 1){
 					return 160;

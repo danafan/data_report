@@ -87,7 +87,7 @@
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
 	<el-table :data="detailData.data" size="small">
-		<el-table-column width="120" align="center" property="spbm" label="商品编码"></el-table-column>
+		<el-table-column show-overflow-tooltip width="120" align="center" property="spbm" label="商品编码"></el-table-column>
 		<el-table-column align="center" property="jsfhdqtxl" label="七天销量"></el-table-column>
 		<el-table-column align="center" property="kys" label="可用库存"></el-table-column>
 		<el-table-column align="center" property="zts" label="在途数"></el-table-column>

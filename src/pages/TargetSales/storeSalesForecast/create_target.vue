@@ -104,7 +104,7 @@
 </div>
 </div>
 <div class="bottom_table_box" v-if="closeStep2 == true">
-	<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
+	<el-table size="small" :data="day_table_data" max-height="800" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
 		<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
 		<el-table-column width="70" prop="gmv" show-overflow-tooltip align="center">
@@ -713,16 +713,18 @@
 				if(type == '1'){	//上面表格
 					this.table_data.map(item => {
 						if(item.key == key){
-							if(key == 'xssr'){
-								item.new_value = e.replace(/[^0-9]/g, '')
-							}else{
-								//最多两位小数
+							//最多两位小数
 								item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
-							}
+							// if(key == 'xssr'){
+							// 	item.new_value = e.replace(/[^0-9]/g, '')
+							// }else{
+								
+							// }
 						}
 					})
 				}else{	//下面表格
-					this.day_table_data[index].xssrzb = e.replace(/[^0-9]/g, '');
+					// this.day_table_data[index].xssrzb = e.replace(/[^0-9]/g, '');
+					this.day_table_data[index].xssrzb = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 				}
 			},
 			//输入框回车或失去焦点触发
@@ -734,7 +736,6 @@
 					this.table_data[1].new_value = this.table_data[3].new_value === ''?'':(this.table_data[3].new_value/(1 - (this.table_data[2].new_value)/100)).toFixed(2);
 					//贡献毛益率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-事业部分摊费用率-领标费用率-店铺其他费用率)
 					if(this.table_data[4].new_value !== '' && this.table_data[5].new_value !== '' && this.table_data[6].new_value !== '' && this.table_data[7].new_value !== '' && this.table_data[8].new_value !== '' && this.table_data[9].new_value !== '' && this.table_data[10].new_value !== ''){
-						
 						this.table_data[11].new_value = (this.table_data[4].new_value - this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[10].new_value).toFixed(2);
 					}else{
 						this.table_data[11].new_value = "";
@@ -853,10 +854,10 @@
 						sums[index] = '';
 					}
 					if (index === 4) {	//去年同期销售收入占比
-						sums[index] = parseInt(sums[index]) + '%';
+						sums[index] = parseFloat(sums[index]) + '%';
 					}
 					if (index === 5) {	//销售收入占比
-						sums[index] = parseInt(sums[index]) + '%';
+						sums[index] = parseFloat(sums[index]) + '%';
 					}
 					if (index === 6) {	//毛利率=月毛利率
 						let mll = this.table_data[4].new_value;

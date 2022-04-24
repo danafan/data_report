@@ -93,7 +93,7 @@
 				</el-tooltip>
 			</template>
 		</el-table-column>
-		<el-table-column width="120" align="center" property="dpid" label="店铺ID"></el-table-column>
+		<el-table-column width="160" show-overflow-tooltip align="center" property="dpid" label="店铺ID"></el-table-column>
 		<el-table-column width="120" align="center" property="xsxz" label="销售性质"></el-table-column>
 		<el-table-column width="120" align="center" property="spid_qtxl" label="商品ID7天销量"></el-table-column>
 	</el-table>
@@ -470,7 +470,7 @@ center>
 			},
 			//宽度
 			maxWidth(row_field_name,is_edit){
-				if(row_field_name == 'spbmgh' || row_field_name == 'cpjglx' || row_field_name == 'tlrjxl' || row_field_name == 'sjxjrq'){
+				if(row_field_name == 'spbmgh' || row_field_name == 'cpjglx' || row_field_name == 'tlrjxl' || row_field_name == 'sjxjrq'||row_field_name == 'txbtdltjwxl' || row_field_name == 'txbtdlxl'){
 					return 260;
 				}else if(is_edit == 1){
 					return 160;

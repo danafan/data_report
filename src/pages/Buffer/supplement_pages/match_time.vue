@@ -43,7 +43,6 @@
 						type="date"
 						value-format="yyyy-MM-dd"
 						placeholder="选择日期"
-						:append-to-body="false"
 						>
 					</el-date-picker>
 				</template>
