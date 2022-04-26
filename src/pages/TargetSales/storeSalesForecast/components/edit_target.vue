@@ -47,8 +47,8 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="参考店铺：">
-				<el-select v-model="reference_shop" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
-					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
+				<el-select v-model="shop_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
+					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.shop_code">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -57,7 +57,7 @@
 				</el-date-picker>
 			</el-form-item>
 		</el-form>
-		<el-button type="primary" size="small" @click="getLastYearData" v-if="closeStep1==false">查询</el-button>
+		<el-button type="primary" size="small" @click="getLastYearData('2',shop_code)" v-if="closeStep1==false">查询</el-button>
 		<el-button type="primary" size="small" @click="resetFun" v-else>重置</el-button>
 	</div>
 	<div class="table_box" v-if="closeStep1 == true">
@@ -83,7 +83,7 @@
 					type="textarea"
 					placeholder="请输入内容"
 					v-model="scope.row.advice"
-					maxlength="30"
+					maxlength="50"
 					show-word-limit
 					>
 				</el-input>
@@ -95,10 +95,11 @@
 </div>
 </div>
 <div class="bottom_table_box" v-if="closeStep2 == true">
-	<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
+	<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+	<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
 		<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
-		<el-table-column width="70" prop="gmv" show-overflow-tooltip align="center">
+		<el-table-column width="80" prop="gmv" show-overflow-tooltip align="center">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip effect="dark" content="日GMV(百)" placement="top-start">
 					<div class="text_content">日GMV(百)</div>
@@ -116,6 +117,16 @@
 			</template>
 			<template slot-scope="scope">
 				<div>{{scope.row.xssr}}</div>
+			</template>
+		</el-table-column>
+		<el-table-column width="70" show-overflow-tooltip prop="qntqsrzb" align="center">
+			<template slot="header" slot-scope="scope">
+				<el-tooltip effect="dark" content="去年同期收入占比" placement="top-start">
+					<div class="text_content">去年同期收入占比</div>
+				</el-tooltip>
+			</template>
+			<template slot-scope="scope">
+				<div>{{scope.row.qntqsrzb}}%</div>
 			</template>
 		</el-table-column>
 		<el-table-column width="130" prop="xssrzb" label="销售收入占比" show-overflow-tooltip align="center">
@@ -155,7 +166,12 @@
 				<div>{{scope.row.yxfy}}</div>
 			</template>
 		</el-table-column>
-		<el-table-column width="90" prop="roi" label="销售ROI目标" align="center">
+		<el-table-column width="90" prop="roi" show-overflow-tooltip align="center">
+			<template slot="header" slot-scope="scope">
+				<el-tooltip effect="dark" content="销售ROI目标" placement="top-start">
+					<div class="text_content">销售ROI目标</div>
+				</el-tooltip>
+			</template>
 			<template slot-scope="scope">
 				<div>{{scope.row.roi}}%</div>
 			</template>
@@ -297,6 +313,11 @@
 		margin-top: 20px;
 	}
 }
+.red_toast{
+	margin-top: 15px;
+	color: red;
+	font-size: 12px;
+}
 .text_content{
 	overflow: hidden;/*超出部分隐藏*/
 	white-space: nowrap;/*不换行*/
@@ -328,6 +349,7 @@
 				date:"",				//选择的年月
 				closeStep1:true,		//第一级是否禁用
 				lastYearData:{},		//去年同期返回数据
+				day_percent:[],			//去年同期收入占比
 				table_data:[{
 					name:'预估发货单数（万）',
 					key:'ygfhds',
@@ -508,28 +530,24 @@
 				//左侧筛选条件
 				let month_obj = JSON.parse(this.month);
 				this.dept_1_id = month_obj.dept_1_id;			//选中的一级部门id
-				this.dept_1_name = month_obj.dept_1_name;			//选中的一级部门名称
+				this.dept_1_name = month_obj.dept_1_name;		//选中的一级部门名称
 				this.dept_2_id = month_obj.dept_2_id;			//选中的二级部门ID
-				this.dept_2_name = month_obj.dept_2_name;			//选中的二级部门名称
-				this.jst_code = month_obj.jst_code;			//店铺jst_code
+				this.dept_2_name = month_obj.dept_2_name;		//选中的二级部门名称
+				this.jst_code = month_obj.jst_code;				//店铺jst_code
 				this.shop_name = month_obj.shop_name;			//店铺名称
 				this.shop_id = month_obj.shop_id;				//主账号ID
-				this.platform = month_obj.platform;		//平台名称
+				this.platform = month_obj.platform;				//平台名称
 				this.shop_type = month_obj.shop_type;			//店铺类别
 				this.reference_shop = month_obj.reference_shop;	//选中的参考店铺名称
-				this.shop_code = month_obj.reference_shop_id;		//选中的参考店铺shop_code
 				this.shopowner_id = month_obj.shopowner_id;		//店长ID
 				this.shopowner_name = month_obj.shopowner_name;	//店长姓名
-				this.date = month_obj.date;				//选择的年月
+				this.date = month_obj.date;						//选择的年月
+				//获取参考店铺列表（处理参考店铺）
+				this.getReferenceShops(month_obj.reference_shop_id);
 				// 去年同期
-				this.getLastYearData(month_obj);
-				// this.table_data.map(item => {
-				// 	item.new_value = month_obj[item.key];
-				// 	item.advice = month_obj[item.key + '_remark'];
-				// });
-				// 获取第三个表格数据
-				let day_arr = JSON.parse(this.day);
-				this.getMonthList(day_arr);
+				this.getLastYearData('1',month_obj.reference_shop_id);
+				//第一次进来获取本月目标参数和备注
+				this.setMbRemark(month_obj);
 			}
 		},
 		props:{
@@ -562,10 +580,28 @@
 					}
 				})
 			},
+			//获取参考店铺列表
+			getReferenceShops(reference_shop_id){
+				if(this.date == '' || this.shop_id ==""){
+					return;
+				}	
+				let arg = {
+					shop_code:this.shop_id,
+					date:this.date
+				}
+				resource.getReferenceShops(arg).then(res => {
+					if(res.data.code == 1){
+						this.reference_store_list = res.data.data;
+						this.shop_code = reference_shop_id;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//切换参考店铺
 			changeShop(v){
-				let item = this.reference_store_list.filter(item => {return item.shop_name == v});
-				this.shop_code = item[0].shop_code;
+				let item = this.reference_store_list.filter(item => {return item.shop_code == v});
+				this.reference_shop = item[0].shop_name;
 			},
 			//获取店长列表
 			getAjaxUser(v){
@@ -583,21 +619,49 @@
 				this.shopowner_name = item[0].ding_user_name;
 			},
 			//获取去年同期数据
-			getLastYearData(month_obj){
+			getLastYearData(type,reference_shop_id){
 				let arg = {
-					shop_code:this.shop_code,
+					shop_code:reference_shop_id,
 					date:this.date
 				}
 				resource.lastYearData(arg).then(res => {
+					//去年同期收入占比
+					this.day_percent = res.data.data.day_percent;	
 					if(res.data.code == 1){
-						this.lastYearData = res.data.data;
-						for(var k in this.lastYearData){
-							for(let i = 0;i < this.table_data.length;i ++){
-								if(this.table_data[i].key == k){
-									this.table_data[i].value = this.lastYearData[k];
-									if(month_obj){
-										this.table_data[i].new_value = month_obj[k];
-										this.table_data[i].advice = month_obj[k + '_remark'];
+						if(type == '1'){		//刚进入获取详情
+							this.lastYearData = res.data.data.last_year_info;
+							for(var k in this.lastYearData){
+								for(let i = 0;i < this.table_data.length;i ++){
+									if(this.table_data[i].key == k){
+										this.table_data[i].value = this.lastYearData[k];
+									}
+								}
+							}
+							// 获取第三个表格数据
+							let day_arr = JSON.parse(this.day);
+							this.getMonthList(day_arr);
+						}else{	//点击第一个查询获取默认
+							// 去年同期返回数据
+							this.lastYearData = res.data.data.last_year_info;
+							for(var k in this.lastYearData){
+								for(let i = 0;i < this.table_data.length;i ++){
+									if(this.table_data[i].key == k){
+										this.table_data[i].value = this.lastYearData[k];
+										if(this.table_data[i].key == 'tkl' || this.table_data[i].key == 'xssr' || this.table_data[i].key == 'mll' || this.table_data[i].key == 'yxfyl'){
+											this.table_data[i].new_value = "";
+										}else{
+											this.table_data[i].new_value = 0;
+										}
+
+									}
+								}
+							}
+							//备注列表
+							let remark_lists = res.data.data.remark_lists;
+							for(var j in remark_lists){
+								for(let i = 0;i < this.table_data.length;i ++){
+									if(j.split('_')[0] == this.table_data[i].key){
+										this.table_data[i].advice = remark_lists[j];
 									}
 								}
 							}
@@ -607,7 +671,21 @@
 					}else{
 						this.$message.warning(res.data.msg);
 					}
+					
 				})
+			},
+			//第一次进来获取本月目标参数和备注
+			setMbRemark(month_obj){
+				for(let i = 0;i < this.table_data.length;i ++){
+					for(var k in month_obj){
+						if(this.table_data[i].key == k){
+							this.table_data[i].new_value = month_obj[k];
+							if(k.split('_')[0] == this.table_data[i].key){
+								this.table_data[i].advice = month_obj[k.split('_')[0] + '_remark'];
+							}
+						}
+					}
+				}
 			},
 			//第一块的重置
 			resetFun(){
@@ -619,16 +697,12 @@
 				if(type == '1'){	//上面表格
 					this.table_data.map(item => {
 						if(item.key == key){
-							if(key == 'xssr'){
-								item.new_value = e.replace(/[^0-9]/g, '')
-							}else{
-								//最多两位小数
-								item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
-							}
+							//最多两位小数
+							item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 						}
 					})
 				}else{	//下面表格
-					this.day_table_data[index].xssrzb = e.replace(/[^0-9]/g, '');
+					this.day_table_data[index].xssrzb = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 				}
 			},
 			//输入框回车或失去焦点触发
@@ -647,10 +721,10 @@
 					}
 					//贡献毛益（本月销售收入*本月贡献毛益率）
 					if(this.table_data[3].new_value !== '' && this.table_data[11].new_value  !== ''){
-						this.table_data[12].new_value = parseInt(this.table_data[3].new_value*(this.table_data[11].new_value)/100);
+						this.table_data[12].new_value = (this.table_data[3].new_value*(this.table_data[11].new_value)/100).toFixed(2);
 					}
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
-					this.table_data[16].new_value = this.table_data[3].new_value === ''||this.table_data[11].new_value  === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':parseInt(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100));
+					this.table_data[16].new_value = this.table_data[3].new_value === ''||this.table_data[11].new_value  === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100)).toFixed(2);
 					//净利润率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-物流费用率-客服费用率-公摊费用率)
 					this.table_data[17].new_value = this.table_data[4].new_value === '' || this.table_data[5].new_value === '' ||this.table_data[6].new_value === '' ||this.table_data[7].new_value === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[4].new_value-this.table_data[5].new_value-this.table_data[6].new_value-this.table_data[7].new_value-this.table_data[13].new_value-this.table_data[14].new_value-this.table_data[15].new_value).toFixed(2);
 				}
@@ -658,7 +732,7 @@
 			//点击第二个查询
 			getBottomData(){
 				for(let i = 0;i < this.table_data.length;i++){
-					if(this.table_data[i].new_value === '' && this.table_data[i].new_value != 0 && !this.table_data[i].isAuto){
+					if((this.table_data[i].new_value === '' || this.table_data[i].new_value === null) && !this.table_data[i].isAuto){
 						this.$message.warning(`请输入${this.table_data[i].name}`);
 						this.$refs[this.table_data[i].key].focus();
 						return;
@@ -673,37 +747,25 @@
 				//当前月信息
 				var monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
 				if(type == '1'){			//点击第二个查询按钮
-					
-      				//销售收入占比平均数
-      				var average = parseInt(100/monthInfo.monthDayNum);
-      				//销售收入占比最后一个
-      				var last_average = 100 - average*(monthInfo.monthDayNum - 1)
-      				for(var i=1;i<=monthInfo.monthDayNum;i++){
-      					let info = {
-      						day:monthInfo.month+'月'+i+'日',
-      						week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-      						mll:this.table_data[4].new_value,
-      						yxfyl:this.table_data[5].new_value,
-      						xssrzb:i < monthInfo.monthDayNum?average:last_average
-      					}
-      					menu.push(this.setInfo(info));
-      				}
+					//当前月信息
+					let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
+					for(var i=1;i<=monthInfo.monthDayNum;i++){
+						let info = {
+							day:monthInfo.month+'月'+i+'日',
+							week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+							mll:this.table_data[4].new_value,
+							yxfyl:this.table_data[5].new_value,
+							qntqsrzb:this.day_percent[i-1],
+							xssrzb:this.day_percent[i-1]
+						}
+						menu.push(this.setInfo(info));
+					}
       			}else{	//获取详情
+      				type.map((item,index) => {
+      					item.qntqsrzb = this.day_percent[index];
+      				});
       				menu = type;
-      				// for(var i=0;i<type.length;i++){
-      				// 	let info = {
-      				// 		day:monthInfo.month+'月'+(i+1)+'日',
-      				// 		week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-      				// 		mll:this.table_data[4].new_value,
-      				// 		yxfyl:this.table_data[5].new_value,
-      				// 		xssrzb:type[i].xssrzb
-      				// 	}
-      				// 	menu.push(this.setInfo(info));
-      				// }
       			}
-
-
-      			
       			this.day_table_data = menu;
       			// 第二块禁用
       			this.closeStep2 = true;
@@ -714,29 +776,29 @@
       		},
       		//计算每一行
       		setInfo(info){
-      			// 日销售收入
-      			info.xssr = ((info.xssrzb/100)*this.table_data[3].new_value).toFixed(2);
-      			//日GMV
-      			info.gmv = ((info.xssrzb/100)*this.table_data[1].new_value).toFixed(2);
-      			//产品成本
+      			// 日销售收入（日销售收入占比*本月销售收入）
+      			info.xssr = ((info.xssrzb/100)*(this.table_data[3].new_value*100)).toFixed(2);
+      			//日GMV（日销售收入占比*本月gmv）
+      			info.gmv = ((info.xssrzb/100)*(this.table_data[1].new_value*100)).toFixed(2);
+      			//产品成本（日销售收入*（1-月毛利率））
       			info.cpcb = (info.xssr*(1-this.table_data[4].new_value/100)).toFixed(2);
-      			//营销费用
+      			//营销费用（日销售收入*月营销费用率）
       			info.yxfy = (info.xssr*(this.table_data[5].new_value/100)).toFixed(2);
-      			//销售ROI目标
+      			//销售ROI目标（日销售收入/日营销费用）
       			if(info.yxfy == 0){
       				info.roi = 0;
       			}else{
       				info.roi = (info.xssr/info.yxfy).toFixed(2);
       			}
-      			//店铺团队费用
+      			//店铺团队费用（日销售收入*月店铺团队费用率）
       			info.dptdfy = (info.xssr*(this.table_data[6].new_value/100)).toFixed(2);
-      			//项目部分摊费用
+      			//项目部分摊费用（日销售收入*月项目部分摊费用率）
       			info.xmbftfy = (info.xssr*(this.table_data[7].new_value/100)).toFixed(2);
-      			//物流类费用
+      			//物流类费用（日销售收入*当月物流费用率）
       			info.wlfy = (info.xssr*(this.table_data[13].new_value/100)).toFixed(2);
-      			//客服类费用
+      			//客服类费用（日销售收入*客服费用率）
       			info.kffy = (info.xssr*(this.table_data[14].new_value/100)).toFixed(2);
-      			//公摊费
+      			//公摊费（日销售收入*公摊费用率）
       			info.gtfy = (info.xssr*(this.table_data[15].new_value/100)).toFixed(2);
       			//事业部分摊费用
       			info.sybftfy = (info.xssr*(this.table_data[8].new_value/100)).toFixed(2);
@@ -747,12 +809,12 @@
       			//贡献毛益
       			info.gxmy = (info.xssr*(this.table_data[11].new_value/100)).toFixed(2);
       			//净利润额
-      			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy).toFixed(2);
+      			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy-info.sybftfy).toFixed(2);
       			//净利润率
       			if(info.xssr == 0){
       				info.jlrl = 0;
       			}else{
-      				info.jlrl = (info.jlr/info.xssr).toFixed(2);
+      				info.jlrl = ((info.jlr/info.xssr)*100).toFixed(2);
       			}
       			return info;
       		},
@@ -773,23 +835,23 @@
 					if (index === 1) {	//星期
 						sums[index] = '';
 					}
-					if (index === 4) {	//销售收入占比
-						sums[index] = parseInt(sums[index]) + '%';
+					if (index === 4 || index === 5) {	//去年同期销售收入占比
+						sums[index] = sums[index] + '%';
 					}
-					if (index === 5) {	//毛利率=月毛利率
+					if (index === 6) {	//毛利率=月毛利率
 						let mll = this.table_data[4].new_value;
 						sums[index] = mll + '%';
 					}
-					if (index === 7) {	//营销费用率=月营销费用率
+					if (index === 8) {	//营销费用率=月营销费用率
 						let yxfyl = this.table_data[5].new_value;
 						sums[index] = yxfyl + '%';
 					}
-					if (index === 9) {	//销售ROI目标=日销售收入/日营销费用
-						let roi = (sums[3]/sums[8]).toFixed(2);
+					if (index === 10) {	//销售ROI目标=日销售收入/日营销费用
+						let roi = sums[3] == 0 || sums[9] == 0?0:(sums[3]/sums[9]).toFixed(2);
 						sums[index] = roi + '%';
 					}
-					if (index === 20) {	//净利润率=总日净利润额/总日销售收入
-						let jlrl = (sums[19]/sums[3]).toFixed(2);
+					if (index === 21) {	//净利润率=总日净利润额/总日销售收入
+						let jlrl = sums[20] == 0 || sums[3] == 0?0:((sums[20]/sums[3])*100).toFixed(2);
 						sums[index] = jlrl + '%';
 					}
 				});
@@ -799,15 +861,15 @@
       		comfirm(){
       			var zb_num = 0
       			for(let i = 0;i < this.day_table_data.length;i++){
-      				zb_num += parseInt(this.day_table_data[i].xssrzb);
+      				zb_num += parseFloat(this.day_table_data[i].xssrzb);
       				if(this.day_table_data[i].xssrzb === ''){
       					this.$message.warning("销售收入占比不能为空");
       					this.$refs['zb_' + i].focus();
       					return;
       				}
       			}
-      			if(zb_num != 100){
-      				this.$message.warning("销售收入占比总和必须是100");
+      			if(zb_num.toFixed(2) != '100.00'){
+      				this.$message.warning("销售收入占比总和必须是100%");
       				return;
       			}
       			this.$confirm('确认提交', '提示', {
@@ -834,10 +896,16 @@
       					month[item.key] = item.new_value;
       					month[item.key + '_remark'] = item.advice;
       				});
+      				//处理去年同期销售收入占比
+      				let new_day_table_data = JSON.parse(JSON.stringify(this.day_table_data));
+      				new_day_table_data.map(item => {
+      					delete item.qntqsrzb
+      				});
       				let data = {
       					month:month,
-      					day:this.day_table_data
+      					day:new_day_table_data
       				}
+
       				let arg = {
       					data:JSON.stringify(data),
       					shop_target_id:this.shop_target_id
@@ -846,7 +914,6 @@
       					if (res.data.code == 1) {
       						this.$message.success(res.data.msg);
       						this.$emit('callback')
-      						// this.reload();
       					}else{
       						this.$message.warning(res.data.msg)
       					}
@@ -854,7 +921,7 @@
       			}).catch(() => {
       				this.$message({
       					type: 'info',
-      					message: '已取消删除'
+      					message: '已取消'
       				});          
       			});
       			

@@ -155,6 +155,7 @@
 					<el-option label="白坯" value="白坯"></el-option>
 					<el-option label="自主款" value="自主款"></el-option>
 					<el-option label="海外" value="海外"></el-option>
+					<el-option label="VASCO" value="VASCO"></el-option>
 					<el-option label="其他" value="其他"></el-option>
 				</el-select>
 			</el-form-item>

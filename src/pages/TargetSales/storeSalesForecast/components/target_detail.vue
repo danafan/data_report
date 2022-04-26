@@ -25,11 +25,11 @@
 			<el-table-column width="200" show-overflow-tooltip prop="advice" label="备注" align="center">
 			</el-table-column>
 		</el-table>
-
-		<el-table size="small" :data="day_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
+		<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+		<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 			<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
 			<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
-			<el-table-column width="70" prop="gmv" show-overflow-tooltip align="center">
+			<el-table-column width="80" prop="gmv" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip effect="dark" content="日GMV(百)" placement="top-start">
 						<div class="text_content">日GMV(百)</div>
@@ -85,6 +85,11 @@
 				</template>
 			</el-table-column>
 			<el-table-column width="90" prop="roi" label="销售ROI目标" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip effect="dark" content="销售ROI目标" placement="top-start">
+						<div class="text_content">销售ROI目标</div>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<div>{{scope.row.roi}}%</div>
 				</template>
@@ -276,6 +281,11 @@
 			padding-bottom: 10px;
 		}
 	}
+}
+.red_toast{
+	margin-top: 15px;
+	color: red;
+	font-size: 12px;
 }
 .text_content{
 	overflow: hidden;/*超出部分隐藏*/
@@ -508,8 +518,8 @@
 					if (index === 1) {	//星期
 						sums[index] = '';
 					}
-					if (index === 4) {	//销售收入占比
-						sums[index] = parseInt(sums[index]) + '%';
+					if (index === 4) {	//去年同期销售收入占比
+						sums[index] = sums[index] + '%';
 					}
 					if (index === 5) {	//毛利率=月毛利率
 						let mll = this.table_data[4].new_value;
@@ -520,11 +530,11 @@
 						sums[index] = yxfyl + '%';
 					}
 					if (index === 9) {	//销售ROI目标=日销售收入/日营销费用
-						let roi = (sums[3]/sums[8]).toFixed(2);
+						let roi = sums[3] == 0 || sums[8] == 0?0:(sums[3]/sums[8]).toFixed(2);
 						sums[index] = roi + '%';
 					}
 					if (index === 20) {	//净利润率=总日净利润额/总日销售收入
-						let jlrl = (sums[19]/sums[3]).toFixed(2);
+						let jlrl = sums[19] == 0 || sums[3] == 0?0:(sums[19]/sums[3]).toFixed(2);
 						sums[index] = jlrl + '%';
 					}
 				});

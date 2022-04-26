@@ -104,10 +104,20 @@
 </div>
 </div>
 <div class="bottom_table_box" v-if="closeStep2 == true">
+	<div class="set_row">
+		<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+		<!-- <div class="upload_box">
+			<el-button type="primary" size="small">
+				一键上传销售收入占比
+				<i class="el-icon-upload2 el-icon--right"></i>
+			</el-button>
+			<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv($event)">
+		</div> -->
+	</div>
 	<el-table size="small" :data="day_table_data" max-height="800" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
 		<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
-		<el-table-column width="70" prop="gmv" show-overflow-tooltip align="center">
+		<el-table-column width="80" prop="gmv" show-overflow-tooltip align="center">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip effect="dark" content="日GMV(百)" placement="top-start">
 					<div class="text_content">日GMV(百)</div>
@@ -175,6 +185,11 @@
 			</template>
 		</el-table-column>
 		<el-table-column width="90" prop="roi" label="销售ROI目标" align="center">
+			<template slot="header" slot-scope="scope">
+				<el-tooltip effect="dark" content="销售ROI目标" placement="top-start">
+					<div class="text_content">销售ROI目标</div>
+				</el-tooltip>
+			</template>
 			<template slot-scope="scope">
 				<div>{{scope.row.roi}}%</div>
 			</template>
@@ -290,6 +305,32 @@
 </div>
 </template>
 <style lang="less" scoped>
+.set_row{
+	width: 100%;
+	display:flex;
+	align-items: center;
+	justify-content: space-between;
+	.red_toast{
+		margin-top: 15px;
+		color: red;
+		font-size: 12px;
+	}
+	.upload_box{
+		margin-right: 10px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+	}
+}
+
 .top_content{
 	display: flex;
 	.form_widget{
@@ -316,6 +357,7 @@
 		margin-top: 20px;
 	}
 }
+
 .text_content{
 	overflow: hidden;/*超出部分隐藏*/
 	white-space: nowrap;/*不换行*/
@@ -325,6 +367,7 @@
 <script>
 	import resource from '../../../api/targetSales.js'
 	import {getMonthInfo,getWeek} from '../../../api/nowMonth.js'
+	import excel from "../../../api/excel.js";
 	export default{
 		inject:['reload'],
 		data(){
@@ -621,6 +664,7 @@
 					if(res.data.code == 1){
 						this.reference_store_list = res.data.data;
 						this.shop_code = this.reference_store_list[0].shop_code;
+						this.reference_shop = this.reference_store_list[0].shop_name;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -714,16 +758,10 @@
 					this.table_data.map(item => {
 						if(item.key == key){
 							//最多两位小数
-								item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
-							// if(key == 'xssr'){
-							// 	item.new_value = e.replace(/[^0-9]/g, '')
-							// }else{
-								
-							// }
+							item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 						}
 					})
 				}else{	//下面表格
-					// this.day_table_data[index].xssrzb = e.replace(/[^0-9]/g, '');
 					this.day_table_data[index].xssrzb = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 				}
 			},
@@ -742,10 +780,10 @@
 					}
 					//贡献毛益（本月销售收入*本月贡献毛益率）
 					if(this.table_data[3].new_value !== ''||this.table_data[11].new_value  !== ''){
-						this.table_data[12].new_value = parseInt(this.table_data[3].new_value*(this.table_data[11].new_value)/100);
+						this.table_data[12].new_value = (this.table_data[3].new_value*(this.table_data[11].new_value)/100).toFixed(2);
 					}
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
-					this.table_data[16].new_value = this.table_data[3].new_value === ''||this.table_data[11].new_value  === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':parseInt(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100));
+					this.table_data[16].new_value = this.table_data[3].new_value === ''||this.table_data[11].new_value  === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100)).toFixed(2);
 					//净利润率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-物流费用率-客服费用率-公摊费用率)
 					this.table_data[17].new_value = this.table_data[4].new_value === '' || this.table_data[5].new_value === '' ||this.table_data[6].new_value === '' ||this.table_data[7].new_value === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[4].new_value-this.table_data[5].new_value-this.table_data[6].new_value-this.table_data[7].new_value-this.table_data[13].new_value-this.table_data[14].new_value-this.table_data[15].new_value).toFixed(2);
 				}
@@ -753,7 +791,7 @@
 			//点击第二个查询
 			getBottomData(){
 				for(let i = 0;i < this.table_data.length;i++){
-					if(this.table_data[i].new_value === '' && !this.table_data[i].isAuto){
+					if((this.table_data[i].new_value === '' || this.table_data[i].new_value === null) && !this.table_data[i].isAuto){
 						this.$message.warning(`请输入${this.table_data[i].name}`);
 						this.$refs[this.table_data[i].key].focus();
 						return;
@@ -762,29 +800,51 @@
 				//获取第三个表格数据
 				this.getMonthList();
 			},
+			// 粘贴日销售收入占比
+			uploadCsv(e){
+				const files = e.target.files;
+				let file=files[0];
+				const fileExt = file.name.split('.').pop().toLocaleLowerCase()
+				if (fileExt === 'xlsx' || fileExt === 'xls') {
+					const reader = new FileReader();
+					reader.readAsArrayBuffer(file);
+					reader.onerror = (e) => {
+						this.$message.warning("文件读取出错");
+					};
+					reader.onload = (e) => {
+						const data = e.target.result;
+						const { header, results } = excel.read(data, "array");
+						var xssrzb_list = [];
+						results.map((item,index) => {
+							for(var k in item){
+								if(k == '内部核价'){
+									this.day_table_data[index].xssrzb = item[k];
+									break;
+								}
+							}
+						});
+					};
+				} else {
+					this.$message.warning("文件类型错误,请选择后缀为.xlsx或者.xls的EXCEL文件");
+				}
+			},
 			// 获取第三个表格数据
 			getMonthList(){
     			//当前月信息
     			let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
-      			//销售收入占比平均数
-      			// var average = parseInt(100/monthInfo.monthDayNum);
-      			//销售收入占比最后一个
-      			// var last_average = 100 - average*(monthInfo.monthDayNum - 1)
-
-      			var menu = [];
-      			for(var i=1;i<=monthInfo.monthDayNum;i++){
-      				let info = {
-      					day:monthInfo.month+'月'+i+'日',
-      					week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-      					mll:this.table_data[4].new_value,
-      					yxfyl:this.table_data[5].new_value,
-      					qntqsrzb:this.day_percent[i-1],
-      					// xssrzb:i < monthInfo.monthDayNum?average:last_average
-      					xssrzb:this.day_percent[i-1]
-      				}
-      				menu.push(this.setInfo(info));
-      			}
-      			this.day_table_data = menu;
+    			var menu = [];
+    			for(var i=1;i<=monthInfo.monthDayNum;i++){
+    				let info = {
+    					day:monthInfo.month+'月'+i+'日',
+    					week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+    					mll:this.table_data[4].new_value,
+    					yxfyl:this.table_data[5].new_value,
+    					qntqsrzb:this.day_percent[i-1],
+    					xssrzb:this.day_percent[i-1]
+    				}
+    				menu.push(this.setInfo(info));
+    			}
+    			this.day_table_data = menu;
       			// 第二块禁用
       			this.closeStep2 = true;
       		},
@@ -794,29 +854,29 @@
       		},
       		//计算每一行
       		setInfo(info){
-      			// 日销售收入
-      			info.xssr = ((info.xssrzb/100)*this.table_data[3].new_value).toFixed(2);
-      			//日GMV
-      			info.gmv = ((info.xssrzb/100)*this.table_data[1].new_value).toFixed(2);
-      			//产品成本
+      			// 日销售收入（日销售收入占比*本月销售收入）
+      			info.xssr = ((info.xssrzb/100)*(this.table_data[3].new_value*100)).toFixed(2);
+      			//日GMV（日销售收入占比*本月gmv）
+      			info.gmv = ((info.xssrzb/100)*(this.table_data[1].new_value*100)).toFixed(2);
+      			//产品成本（日销售收入*（1-月毛利率））
       			info.cpcb = (info.xssr*(1-this.table_data[4].new_value/100)).toFixed(2);
-      			//营销费用
+      			//营销费用（日销售收入*月营销费用率）
       			info.yxfy = (info.xssr*(this.table_data[5].new_value/100)).toFixed(2);
-      			//销售ROI目标
+      			//销售ROI目标（日销售收入/日营销费用）
       			if(info.yxfy == 0){
       				info.roi = 0;
       			}else{
       				info.roi = (info.xssr/info.yxfy).toFixed(2);
       			}
-      			//店铺团队费用
+      			//店铺团队费用（日销售收入*月店铺团队费用率）
       			info.dptdfy = (info.xssr*(this.table_data[6].new_value/100)).toFixed(2);
-      			//项目部分摊费用
+      			//项目部分摊费用（日销售收入*月项目部分摊费用率）
       			info.xmbftfy = (info.xssr*(this.table_data[7].new_value/100)).toFixed(2);
-      			//物流类费用
+      			//物流类费用（日销售收入*当月物流费用率）
       			info.wlfy = (info.xssr*(this.table_data[13].new_value/100)).toFixed(2);
-      			//客服类费用
+      			//客服类费用（日销售收入*客服费用率）
       			info.kffy = (info.xssr*(this.table_data[14].new_value/100)).toFixed(2);
-      			//公摊费
+      			//公摊费（日销售收入*公摊费用率）
       			info.gtfy = (info.xssr*(this.table_data[15].new_value/100)).toFixed(2);
       			//事业部分摊费用
       			info.sybftfy = (info.xssr*(this.table_data[8].new_value/100)).toFixed(2);
@@ -827,12 +887,12 @@
       			//贡献毛益
       			info.gxmy = (info.xssr*(this.table_data[11].new_value/100)).toFixed(2);
       			//净利润额
-      			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy).toFixed(2);
-      			//净利润率
+      			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy-info.sybftfy).toFixed(2);
+      			//净利润率（日净利润额/日销售收入）
       			if(info.xssr == 0){
       				info.jlrl = 0;
       			}else{
-      				info.jlrl = (info.jlr/info.xssr).toFixed(2);
+      				info.jlrl = ((info.jlr/info.xssr)*100).toFixed(2);
       			}
       			return info;
       		},
@@ -853,11 +913,8 @@
 					if (index === 1) {	//星期
 						sums[index] = '';
 					}
-					if (index === 4) {	//去年同期销售收入占比
-						sums[index] = parseFloat(sums[index]) + '%';
-					}
-					if (index === 5) {	//销售收入占比
-						sums[index] = parseFloat(sums[index]) + '%';
+					if (index === 4 || index === 5) {	//去年同期销售收入占比
+						sums[index] = sums[index] + '%';
 					}
 					if (index === 6) {	//毛利率=月毛利率
 						let mll = this.table_data[4].new_value;
@@ -872,7 +929,7 @@
 						sums[index] = roi + '%';
 					}
 					if (index === 21) {	//净利润率=总日净利润额/总日销售收入
-						let jlrl = sums[20] == 0 || sums[3] == 0?0:(sums[20]/sums[3]).toFixed(2);
+						let jlrl = sums[20] == 0 || sums[3] == 0?0:((sums[20]/sums[3])*100).toFixed(2);
 						sums[index] = jlrl + '%';
 					}
 				});
@@ -882,15 +939,15 @@
       		comfirm(){
       			var zb_num = 0
       			for(let i = 0;i < this.day_table_data.length;i++){
-      				zb_num += parseInt(this.day_table_data[i].xssrzb);
+      				zb_num += parseFloat(this.day_table_data[i].xssrzb);
       				if(this.day_table_data[i].xssrzb === ''){
       					this.$message.warning("销售收入占比不能为空");
       					this.$refs['zb_' + i].focus();
       					return;
       				}
       			}
-      			if(zb_num !== 100){
-      				this.$message.warning("销售收入占比总和必须是100");
+      			if(zb_num.toFixed(2) != '100.00'){
+      				this.$message.warning("销售收入占比总和必须是100%");
       				return;
       			}
       			this.$confirm('确认提交', '提示', {

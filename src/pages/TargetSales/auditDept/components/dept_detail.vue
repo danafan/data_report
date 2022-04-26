@@ -79,14 +79,14 @@
 			return{
 				bottom_info:[],			//详情信息
 				table_data:[{
-					name:'预估发货单数',
+					name:'预估发货单数（万）',
 					key:'ygfhds',
 					value:0,
 					new_value:"",
 					isPer:false,
 					advice:""
 				},{
-					name:'GMV',
+					name:'GMV（万）',
 					key:'gmv',
 					value:0,
 					new_value:"",
@@ -100,7 +100,7 @@
 					isPer:true,
 					advice:""
 				},{
-					name:'销售收入',
+					name:'销售收入（万）',
 					key:'xssr',
 					value:0,
 					new_value:"",
@@ -163,7 +163,7 @@
 					isPer:true,
 					advice:""
 				},{
-					name:'贡献毛益',
+					name:'贡献毛益（万）',
 					key:'gxmy',
 					value:0,
 					new_value:"",
@@ -191,7 +191,7 @@
 					isPer:true,
 					advice:""
 				},{
-					name:'净利润',
+					name:'净利润（万）',
 					key:'jlr',
 					value:0,
 					new_value:"",
