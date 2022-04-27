@@ -70,10 +70,10 @@
 			</el-table-column>
 			<el-table-column width="160" label="本月目标参数" align="center">
 				<template slot-scope="scope">
-					<el-input size="small" type="number" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto || closeStep2" @input="inputFun($event,scope.row.key,'1')" @change="changeInput($event,scope.row)" :ref="scope.row.key">
+					<el-input size="small" type="number" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto || closeStep2" @input="inputFun($event,'1',scope.$index)" @change="changeInput($event,scope.row)" :ref="scope.row.key">
 						<template slot="append">%</template>
 					</el-input>
-					<el-input size="small" type="number" :placeholder="scope.row.name" :disabled="scope.row.isAuto || closeStep2" v-model="scope.row.new_value" @input="inputFun($event,scope.row.key,'1')" @change="changeInput($event,scope.row)" :ref="scope.row.key" v-else>
+					<el-input size="small" type="number" :placeholder="scope.row.name" :disabled="scope.row.isAuto || closeStep2" v-model="scope.row.new_value" @input="inputFun($event,'1',scope.$index)" @change="changeInput($event,scope.row)" :ref="scope.row.key" v-else>
 					</el-input>
 				</template>
 			</el-table-column>
@@ -693,14 +693,9 @@
 				this.closeStep2 = false;
 			},
 			//监听输入框输入
-			inputFun(e,key,type,index){
+			inputFun(e,type,index){
 				if(type == '1'){	//上面表格
-					this.table_data.map(item => {
-						if(item.key == key){
-							//最多两位小数
-							item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
-						}
-					})
+					this.table_data[index].new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 				}else{	//下面表格
 					this.day_table_data[index].xssrzb = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 				}

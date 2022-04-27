@@ -79,10 +79,10 @@
 			</el-table-column>
 			<el-table-column width="200" label="本月目标参数" align="center">
 				<template slot-scope="scope">
-					<el-input size="small" type="number" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto || closeStep2" @input="inputFun($event,scope.row.key,'1')" @change="changeInput($event,scope.row)" :ref="scope.row.key">
+					<el-input size="small" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto || closeStep2" @input="inputFun($event,'1',scope.$index)" @change="changeInput($event,scope.row)" :ref="scope.row.key">
 						<template slot="append">%</template>
 					</el-input>
-					<el-input size="small" type="number" :placeholder="scope.row.name" :disabled="scope.row.isAuto || closeStep2" v-model="scope.row.new_value" @input="inputFun($event,scope.row.key,'1')" @change="changeInput($event,scope.row)" :ref="scope.row.key" v-else>
+					<el-input size="small" :placeholder="scope.row.name" :disabled="scope.row.isAuto || closeStep2" v-model="scope.row.new_value" @input="inputFun($event,'1',scope.$index)" @change="changeInput($event,scope.row)" :ref="scope.row.key" v-else>
 					</el-input>
 				</template>
 			</el-table-column>
@@ -106,13 +106,13 @@
 <div class="bottom_table_box" v-if="closeStep2 == true">
 	<div class="set_row">
 		<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
-		<!-- <div class="upload_box">
+		<div class="upload_box">
 			<el-button type="primary" size="small">
 				一键上传销售收入占比
 				<i class="el-icon-upload2 el-icon--right"></i>
 			</el-button>
-			<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv($event)">
-		</div> -->
+			<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+		</div>
 	</div>
 	<el-table size="small" :data="day_table_data" max-height="800" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
@@ -149,7 +149,7 @@
 		</el-table-column>
 		<el-table-column width="130" prop="xssrzb" label="销售收入占比" show-overflow-tooltip align="center">
 			<template slot-scope="scope">
-				<el-input size="mini" placeholder="占比" @input="inputFun($event,'xssrzb','2',scope.$index)" @change="changeZb($event,scope.$index)" v-model="scope.row.xssrzb" :ref="'zb_' + scope.$index">
+				<el-input size="mini" placeholder="占比" @input="inputFun($event,'2',scope.$index)" @change="changeZb($event,scope.$index)" v-model="scope.row.xssrzb" :ref="'zb_' + scope.$index">
 					<template slot="append">%</template>
 				</el-input>
 			</template>
@@ -753,14 +753,9 @@
 				this.closeStep2 = false;
 			},
 			//监听输入框输入
-			inputFun(e,key,type,index){
+			inputFun(e,type,index){
 				if(type == '1'){	//上面表格
-					this.table_data.map(item => {
-						if(item.key == key){
-							//最多两位小数
-							item.new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
-						}
-					})
+					this.table_data[index].new_value = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 				}else{	//下面表格
 					this.day_table_data[index].xssrzb = (e.match(/^\d*(\.?\d{0,2})/g)[0]) || null;
 				}
@@ -810,21 +805,45 @@
 					reader.readAsArrayBuffer(file);
 					reader.onerror = (e) => {
 						this.$message.warning("文件读取出错");
+						this.$refs.csvUpload.value = ''
 					};
 					reader.onload = (e) => {
 						const data = e.target.result;
 						const { header, results } = excel.read(data, "array");
-						var xssrzb_list = [];
+						var new_xssrzb = [];
+						var isx = true;
 						results.map((item,index) => {
+							if(!isx){
+								return;
+							}
 							for(var k in item){
 								if(k == '内部核价'){
-									this.day_table_data[index].xssrzb = item[k];
-									break;
+									if(!this.judgmentMoney.test(item[k]) || item[k] < 0){
+										this.$message.warning("销售收入占比不能小于0且最多2位小数!");
+										isx = false;
+										return;
+									}else{
+										new_xssrzb.push(item[k]);
+										break;
+									}
 								}
 							}
 						});
+						this.$refs.csvUpload.value = ''
+						if(!isx){
+							return;
+						}
+						if(new_xssrzb.length != this.day_table_data.length){
+							this.$message.warning("表格数据行数不等于日目标行数!");
+							return;
+						}
+						new_xssrzb.map((item,index) => {
+							this.day_table_data[index].xssrzb = item;
+						})
+						this.$message.success("上传成功!");
 					};
 				} else {
+					this.$refs.csvUpload.value = ''
 					this.$message.warning("文件类型错误,请选择后缀为.xlsx或者.xls的EXCEL文件");
 				}
 			},
