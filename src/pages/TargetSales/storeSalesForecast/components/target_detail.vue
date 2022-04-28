@@ -27,9 +27,9 @@
 		</el-table>
 		<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
 		<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
-			<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
+			<el-table-column width="75" prop="day" label="日期" align="center"></el-table-column>
 			<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
-			<el-table-column width="80" prop="gmv" show-overflow-tooltip align="center">
+			<el-table-column width="100" prop="gmv" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip effect="dark" content="日GMV(百)" placement="top-start">
 						<div class="text_content">日GMV(百)</div>
@@ -315,6 +315,13 @@
 					isPer:false,
 					advice:""
 				},{
+					name:'客单价（元）',
+					key:'kdj',
+					value:0,
+					new_value:"",
+					isPer:false,
+					advice:""
+				},{
 					name:'退款率',
 					key:'tkl',
 					value:0,
@@ -530,7 +537,7 @@
 						sums[index] = yxfyl + '%';
 					}
 					if (index === 9) {	//销售ROI目标=日销售收入/日营销费用
-						let roi = sums[3] == 0 || sums[8] == 0?0:(sums[3]/sums[8]).toFixed(2);
+						let roi = sums[3] == 0 || sums[8] == 0?0:((sums[3]/sums[8])*100).toFixed(2);
 						sums[index] = roi + '%';
 					}
 					if (index === 20) {	//净利润率=总日净利润额/总日销售收入

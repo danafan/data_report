@@ -32,6 +32,9 @@
 			<el-button size="mini" type="plain" @click="$router.push('/sales_forecast_dept')">销售额预估表</el-button>
 			<el-button size="mini" type="primary" @click="showMerge = true">合并提交</el-button>
 		</div>
+		<div class="total_data">
+			销售收入：{{total.xssr}}万，毛利率：{{total.mll}}%，营销费用率：{{total.yxfy}}%，净利润：{{total.jlr}}万，利润率：{{total.jlrl}}%
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
 			<el-table-column prop="dept_2_name" show-overflow-tooltip label="二级部门" align="center"></el-table-column>
@@ -91,6 +94,10 @@
 	display: flex;
 	justify-content: space-between;
 }
+.total_data{
+	font-size: 12px;
+	color: red;
+}
 </style>
 <script>
 	import resource from '../../../api/targetSales.js'
@@ -124,6 +131,7 @@
 				pagesize:10,
 				page:1,
 				dataObj:{},					//返回数据
+				total:{},
 				showDetail:false,			//详情弹窗
 				dialog_title:"",
 				showMerge:false,			//合并提交弹窗
@@ -186,7 +194,8 @@
 				}
 				resource.shopTargetList(arg).then(res => {
 					if(res.data.code == 1){
-						this.dataObj = res.data.data;
+						this.dataObj = res.data.data.list;
+						this.total = res.data.data.total;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

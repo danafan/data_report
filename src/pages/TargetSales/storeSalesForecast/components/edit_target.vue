@@ -97,9 +97,9 @@
 <div class="bottom_table_box" v-if="closeStep2 == true">
 	<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
 	<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
-		<el-table-column width="70" prop="day" label="日期" align="center"></el-table-column>
+		<el-table-column width="75" prop="day" label="日期" align="center"></el-table-column>
 		<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
-		<el-table-column width="80" prop="gmv" show-overflow-tooltip align="center">
+		<el-table-column width="100" prop="gmv" show-overflow-tooltip align="center">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip effect="dark" content="日GMV(百)" placement="top-start">
 					<div class="text_content">日GMV(百)</div>
@@ -368,6 +368,15 @@
 					isAuto:true,
 					advice:"",
 					disabled:false
+				},{
+					name:'客单价（元）',
+					key:'kdj',
+					value:0,
+					new_value:"",
+					isPer:false,
+					isAuto:false,
+					advice:"",
+					disabled:true
 				},{
 					name:'退款率',
 					key:'tkl',
@@ -702,26 +711,28 @@
 			},
 			//输入框回车或失去焦点触发
 			changeInput(v,item){
-				if(item.key == 'xssr'||item.key == 'mll'||item.key == 'yxfyl'||item.key == 'dptdfyl'||item.key == 'xmbftfyl'||item.key == 'sybftfyl'||item.key == 'lbfyl'||item.key == 'dpqtfyl'||item.key == 'wlfyl'||item.key == 'kffyl'||item.key == 'gtfyl'){	//销售收入变化
-					// 预估发货单数（本月销售收入/（历年同期销售收入/历年同期预估发货单数））
-					this.table_data[0].new_value = this.table_data[3].new_value === ''?'':Math.round(this.table_data[3].new_value/(this.lastYearData.xssr/this.lastYearData.ygfhds));
+				if(item.key == 'kdj'){
+					// 预估发货单数（本月销售收入/客单价）
+					this.table_data[0].new_value = this.table_data[2].new_value === '' || this.table_data[4].new_value === ''?'':(this.table_data[4].new_value/this.table_data[2].new_value).toFixed(2);
+				}else if(item.key == 'xssr'||item.key == 'mll'||item.key == 'yxfyl'||item.key == 'dptdfyl'||item.key == 'xmbftfyl'||item.key == 'sybftfyl'||item.key == 'lbfyl'||item.key == 'dpqtfyl'||item.key == 'wlfyl'||item.key == 'kffyl'||item.key == 'gtfyl'){	//销售收入变化
+					// 预估发货单数（本月销售收入/客单价）
+					this.table_data[0].new_value = this.table_data[2].new_value === '' || this.table_data[4].new_value === ''?'':(this.table_data[4].new_value/this.table_data[2].new_value).toFixed(2);
 					// GMV（本月销售收入/（1-本月退款率））
-					this.table_data[1].new_value = this.table_data[3].new_value === ''?'':(this.table_data[3].new_value/(1 - (this.table_data[2].new_value)/100)).toFixed(2);
+					this.table_data[1].new_value = this.table_data[4].new_value === ''?'':(this.table_data[4].new_value/(1 - (this.table_data[3].new_value)/100)).toFixed(2);
 					//贡献毛益率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-事业部分摊费用率-领标费用率-店铺其他费用率)
-					if(this.table_data[4].new_value !== '' && this.table_data[5].new_value!== '' && this.table_data[6].new_value !== '' && this.table_data[7].new_value !== '' && this.table_data[8].new_value !== '' && this.table_data[9].new_value !== '' && this.table_data[10].new_value !== ''){
-						
-						this.table_data[11].new_value = (this.table_data[4].new_value - this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[10].new_value).toFixed(2);
+					if(this.table_data[5].new_value !== '' && this.table_data[6].new_value !== '' && this.table_data[7].new_value !== '' && this.table_data[8].new_value !== '' && this.table_data[9].new_value !== '' && this.table_data[10].new_value !== '' && this.table_data[11].new_value !== ''){
+						this.table_data[12].new_value = (this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[10].new_value - this.table_data[11].new_value).toFixed(2);
 					}else{
-						this.table_data[11].new_value = "";
+						this.table_data[12].new_value = "";
 					}
 					//贡献毛益（本月销售收入*本月贡献毛益率）
-					if(this.table_data[3].new_value !== '' && this.table_data[11].new_value  !== ''){
-						this.table_data[12].new_value = (this.table_data[3].new_value*(this.table_data[11].new_value)/100).toFixed(2);
+					if(this.table_data[4].new_value !== ''||this.table_data[12].new_value  !== ''){
+						this.table_data[13].new_value = (this.table_data[4].new_value*(this.table_data[12].new_value)/100).toFixed(2);
 					}
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
-					this.table_data[16].new_value = this.table_data[3].new_value === ''||this.table_data[11].new_value  === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[3].new_value*((this.table_data[11].new_value)/100 - (this.table_data[13].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100)).toFixed(2);
-					//净利润率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-物流费用率-客服费用率-公摊费用率)
-					this.table_data[17].new_value = this.table_data[4].new_value === '' || this.table_data[5].new_value === '' ||this.table_data[6].new_value === '' ||this.table_data[7].new_value === ''||this.table_data[13].new_value === ''||this.table_data[14].new_value === ''||this.table_data[15].new_value === ''?'':(this.table_data[4].new_value-this.table_data[5].new_value-this.table_data[6].new_value-this.table_data[7].new_value-this.table_data[13].new_value-this.table_data[14].new_value-this.table_data[15].new_value).toFixed(2);
+					this.table_data[17].new_value = this.table_data[4].new_value === ''||this.table_data[12].new_value  === ''||this.table_data[14].new_value === ''||this.table_data[14].new_value === ''||this.table_data[16].new_value === ''?'':(this.table_data[4].new_value*((this.table_data[12].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100 - (this.table_data[16].new_value)/100)).toFixed(2);
+					//净利润率（日净利润额/日销售收入）
+					this.table_data[18].new_value = ((this.table_data[17].new_value/this.table_data[4].new_value)*100).toFixed(2);
 				}
 			},
 			//点击第二个查询
@@ -748,8 +759,8 @@
 						let info = {
 							day:monthInfo.month+'月'+i+'日',
 							week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-							mll:this.table_data[4].new_value,
-							yxfyl:this.table_data[5].new_value,
+							mll:this.table_data[5].new_value,
+							yxfyl:this.table_data[6].new_value,
 							qntqsrzb:this.day_percent[i-1],
 							xssrzb:this.day_percent[i-1]
 						}
@@ -772,37 +783,37 @@
       		//计算每一行
       		setInfo(info){
       			// 日销售收入（日销售收入占比*本月销售收入）
-      			info.xssr = ((info.xssrzb/100)*(this.table_data[3].new_value*100)).toFixed(2);
+      			info.xssr = ((info.xssrzb/100)*(this.table_data[4].new_value*100)).toFixed(2);
       			//日GMV（日销售收入占比*本月gmv）
       			info.gmv = ((info.xssrzb/100)*(this.table_data[1].new_value*100)).toFixed(2);
       			//产品成本（日销售收入*（1-月毛利率））
-      			info.cpcb = (info.xssr*(1-this.table_data[4].new_value/100)).toFixed(2);
+      			info.cpcb = (info.xssr*(1-this.table_data[5].new_value/100)).toFixed(2);
       			//营销费用（日销售收入*月营销费用率）
-      			info.yxfy = (info.xssr*(this.table_data[5].new_value/100)).toFixed(2);
+      			info.yxfy = (info.xssr*(this.table_data[6].new_value/100)).toFixed(2);
       			//销售ROI目标（日销售收入/日营销费用）
       			if(info.yxfy == 0){
       				info.roi = 0;
       			}else{
-      				info.roi = (info.xssr/info.yxfy).toFixed(2);
+      				info.roi = ((info.xssr/info.yxfy)*100).toFixed(2);
       			}
       			//店铺团队费用（日销售收入*月店铺团队费用率）
-      			info.dptdfy = (info.xssr*(this.table_data[6].new_value/100)).toFixed(2);
+      			info.dptdfy = (info.xssr*(this.table_data[7].new_value/100)).toFixed(2);
       			//项目部分摊费用（日销售收入*月项目部分摊费用率）
-      			info.xmbftfy = (info.xssr*(this.table_data[7].new_value/100)).toFixed(2);
+      			info.xmbftfy = (info.xssr*(this.table_data[8].new_value/100)).toFixed(2);
       			//物流类费用（日销售收入*当月物流费用率）
-      			info.wlfy = (info.xssr*(this.table_data[13].new_value/100)).toFixed(2);
+      			info.wlfy = (info.xssr*(this.table_data[14].new_value/100)).toFixed(2);
       			//客服类费用（日销售收入*客服费用率）
-      			info.kffy = (info.xssr*(this.table_data[14].new_value/100)).toFixed(2);
+      			info.kffy = (info.xssr*(this.table_data[15].new_value/100)).toFixed(2);
       			//公摊费（日销售收入*公摊费用率）
-      			info.gtfy = (info.xssr*(this.table_data[15].new_value/100)).toFixed(2);
+      			info.gtfy = (info.xssr*(this.table_data[16].new_value/100)).toFixed(2);
       			//事业部分摊费用
-      			info.sybftfy = (info.xssr*(this.table_data[8].new_value/100)).toFixed(2);
+      			info.sybftfy = (info.xssr*(this.table_data[9].new_value/100)).toFixed(2);
       			//店铺其他费用
-      			info.dpqtfy = (info.xssr*(this.table_data[10].new_value/100)).toFixed(2);
+      			info.dpqtfy = (info.xssr*(this.table_data[11].new_value/100)).toFixed(2);
       			//领标费用
-      			info.lbfy = (info.xssr*(this.table_data[9].new_value/100)).toFixed(2);
+      			info.lbfy = (info.xssr*(this.table_data[10].new_value/100)).toFixed(2);
       			//贡献毛益
-      			info.gxmy = (info.xssr*(this.table_data[11].new_value/100)).toFixed(2);
+      			info.gxmy = (info.xssr*(this.table_data[12].new_value/100)).toFixed(2);
       			//净利润额
       			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy-info.sybftfy).toFixed(2);
       			//净利润率
@@ -834,15 +845,15 @@
 						sums[index] = sums[index] + '%';
 					}
 					if (index === 6) {	//毛利率=月毛利率
-						let mll = this.table_data[4].new_value;
+						let mll = this.table_data[5].new_value;
 						sums[index] = mll + '%';
 					}
 					if (index === 8) {	//营销费用率=月营销费用率
-						let yxfyl = this.table_data[5].new_value;
+						let yxfyl = this.table_data[6].new_value;
 						sums[index] = yxfyl + '%';
 					}
 					if (index === 10) {	//销售ROI目标=日销售收入/日营销费用
-						let roi = sums[3] == 0 || sums[9] == 0?0:(sums[3]/sums[9]).toFixed(2);
+						let roi = sums[3] == 0 || sums[9] == 0?0:((sums[3]/sums[9])*100).toFixed(2);
 						sums[index] = roi + '%';
 					}
 					if (index === 21) {	//净利润率=总日净利润额/总日销售收入
