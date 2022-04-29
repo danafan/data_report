@@ -379,6 +379,7 @@
 				dept_2_name:"",			//选中的二级部门名称
 				level2_dept_list:[],	//二级部门列表
 				jst_code:"",			//店铺jst_code
+				reference_jst_code:"",	//参考店铺jst_code
 				shop_name:"",			//店铺名称
 				shop_id:"",				//主账号ID
 				platform:"",			//平台名称
@@ -666,13 +667,14 @@
 					return;
 				}	
 				let arg = {
-					shop_code:this.shop_id,
+					shop_code:this.jst_code,
 					date:this.date
 				}
 				resource.getReferenceShops(arg).then(res => {
 					if(res.data.code == 1){
 						this.reference_store_list = res.data.data;
 						this.shop_code = this.reference_store_list[0].shop_code;
+						this.reference_jst_code = this.reference_store_list[0].jst_code;
 						this.reference_shop = this.reference_store_list[0].shop_name;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -683,6 +685,7 @@
 			changeShop(v){
 				let item = this.reference_store_list.filter(item => {return item.shop_code == v});
 				this.reference_shop = item[0].shop_name;
+				this.reference_jst_code = item[0].jst_code;
 			},
 			//获取店长列表
 			getAjaxUser(v){
@@ -721,7 +724,7 @@
 					return;
 				}
 				let arg = {
-					shop_code:this.shop_code,
+					shop_code:this.reference_jst_code,
 					date:this.date
 				}
 				resource.lastYearData(arg).then(res => {
@@ -829,13 +832,13 @@
 								return;
 							}
 							for(var k in item){
-								if(k == '内部核价'){
-									if(!this.judgmentMoney.test(item[k]) || item[k] < 0){
-										this.$message.warning("销售收入占比不能小于0且最多2位小数!");
+								if(k == '销售收入占比'){
+									if(!this.isNumber.test(item[k])){
+										this.$message.warning("销售收入占比必须是数字类型并且大于0！");
 										isx = false;
 										return;
 									}else{
-										new_xssrzb.push(item[k]);
+										new_xssrzb.push(item[k].toFixed(2));
 										break;
 									}
 								}
@@ -992,7 +995,6 @@
       					dept_2_name:this.dept_2_name,
       					dept_2_id:this.dept_2_id,
       					jst_code:this.jst_code,
-      					reference_shop_id:this.shop_code,
       					shop_name:this.shop_name,
       					shop_id:this.shop_id,
       					platform:this.platform,
@@ -1000,6 +1002,7 @@
       					shopowner_id:this.shopowner_id,
       					shopowner_name:this.shopowner_name,
       					reference_shop:this.reference_shop,
+      					reference_shop_id:this.shop_code,
       					date:this.date,
       				};
       				this.table_data.map(item => {

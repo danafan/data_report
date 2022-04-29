@@ -47,8 +47,8 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="参考店铺：">
-				<el-select v-model="shop_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
-					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.shop_code">
+				<el-select v-model="reference_jst_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
+					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.jst_code">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -57,7 +57,7 @@
 				</el-date-picker>
 			</el-form-item>
 		</el-form>
-		<el-button type="primary" size="small" @click="getLastYearData('2',shop_code)" v-if="closeStep1==false">查询</el-button>
+		<el-button type="primary" size="small" @click="getLastYearData('2')" v-if="closeStep1==false">查询</el-button>
 		<el-button type="primary" size="small" @click="resetFun" v-else>重置</el-button>
 	</div>
 	<div class="table_box" v-if="closeStep1 == true">
@@ -336,6 +336,7 @@
 				dept_2_id:"",			//选中的二级部门ID
 				dept_2_name:"",			//选中的二级部门名称
 				jst_code:"",			//店铺jst_code
+				reference_jst_code:"",	//参考店铺jst_code
 				shop_name:"",			//店铺名称
 				shop_id:"",				//主账号ID
 				platform:"",			//平台名称
@@ -553,8 +554,6 @@
 				this.date = month_obj.date;						//选择的年月
 				//获取参考店铺列表（处理参考店铺）
 				this.getReferenceShops(month_obj.reference_shop_id);
-				// 去年同期
-				this.getLastYearData('1',month_obj.reference_shop_id);
 				//第一次进来获取本月目标参数和备注
 				this.setMbRemark(month_obj);
 			}
@@ -591,17 +590,25 @@
 			},
 			//获取参考店铺列表
 			getReferenceShops(reference_shop_id){
-				if(this.date == '' || this.shop_id ==""){
+				if(this.date == '' || this.jst_code ==""){
 					return;
 				}	
 				let arg = {
-					shop_code:this.shop_id,
+					shop_code:this.jst_code,
 					date:this.date
 				}
 				resource.getReferenceShops(arg).then(res => {
 					if(res.data.code == 1){
 						this.reference_store_list = res.data.data;
 						this.shop_code = reference_shop_id;
+						this.reference_store_list.map(item => {
+							if(item.shop_code == reference_shop_id){
+								this.reference_jst_code = item.jst_code;
+								return;
+							}
+						});
+						// 去年同期
+						this.getLastYearData('1');
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -609,8 +616,9 @@
 			},
 			//切换参考店铺
 			changeShop(v){
-				let item = this.reference_store_list.filter(item => {return item.shop_code == v});
+				let item = this.reference_store_list.filter(item => {return item.jst_code == v});
 				this.reference_shop = item[0].shop_name;
+				// this.reference_jst_code = item[0].jst_code;
 			},
 			//获取店长列表
 			getAjaxUser(v){
@@ -628,9 +636,9 @@
 				this.shopowner_name = item[0].ding_user_name;
 			},
 			//获取去年同期数据
-			getLastYearData(type,reference_shop_id){
+			getLastYearData(type){
 				let arg = {
-					shop_code:reference_shop_id,
+					shop_code:this.reference_jst_code,
 					date:this.date
 				}
 				resource.lastYearData(arg).then(res => {
@@ -896,6 +904,7 @@
       					shopowner_id:this.shopowner_id,
       					shopowner_name:this.shopowner_name,
       					reference_shop:this.reference_shop,
+      					reference_shop_id:this.shop_code,
       					date:this.date,
       				};
       				this.table_data.map(item => {

@@ -107,7 +107,7 @@
 				}
 				resource.shopTargetList(arg).then(res => {
 					if(res.data.code == 1){
-						this.dataObj = res.data.data;
+						this.dataObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

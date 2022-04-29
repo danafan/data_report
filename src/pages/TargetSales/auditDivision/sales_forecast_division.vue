@@ -2,7 +2,7 @@
 	<div>
 		<div style="display:flex;align-items: center;margin-bottom: 20px">
 			<el-button type="primary" plain size='mini' icon="el-icon-arrow-left" @click="$router.go(-1)">返回</el-button>
-			<div style="margin-left: 15px">销售额预估表(事业部)</div>
+			<div style="margin-left: 15px">月目标预估表(事业部)</div>
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="年/月：">
@@ -138,7 +138,7 @@
 				}
 				resource.businessTargetList(arg).then(res => {
 					if(res.data.code == 1){
-						this.dataObj = res.data.data;
+						this.dataObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

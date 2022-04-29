@@ -8,7 +8,7 @@
 			<el-table-column width="150" show-overflow-tooltip prop="platform" label="平台" align="center"></el-table-column>
 			<el-table-column width="100" show-overflow-tooltip prop="shop_type" label="店铺类别" align="center"></el-table-column>
 			<el-table-column width="150" show-overflow-tooltip prop="shopowner_name" label="店长" align="center"></el-table-column>
-			<el-table-column width="150" show-overflow-tooltip prop="reference_shop" label="参考店铺" align="center"></el-table-column>
+			<el-table-column width="150" show-overflow-tooltip prop="reference_shop_id" label="参考店铺" align="center"></el-table-column>
 		</el-table>
 		<el-table size="small" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
@@ -460,7 +460,6 @@
 				resource.shopTargetInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
 						let data = res.data.data;
-
 						//顶部店铺详情
 						let infoData = data.data;
 						this.bottom_info = infoData;		//底部信息
@@ -471,7 +470,7 @@
 							platform:"",			//平台名称
 							shop_type:"",			//店铺类别
 							shopowner_name:"",		//店长姓名
-							reference_shop:"",		//参考店铺名称
+							reference_shop_id:"",		//参考店铺名称
 							date:"",				//选择的年月
 						}
 						for (let k in info_item) {
