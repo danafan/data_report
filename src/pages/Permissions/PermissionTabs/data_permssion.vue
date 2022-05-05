@@ -5,7 +5,7 @@
 				<el-input v-model="req.role_name" clearable placeholder="输入数据权限名称"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="getData">搜索</el-button>
+				<el-button type="primary" size="small" @click="search">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
@@ -151,6 +151,12 @@
 			this.getData();
 		},
 		methods:{
+			//搜索
+			search(){
+				this.req.page = 1;
+				//获取列表
+				this.getData();
+			},
 			//获取列表
 			getData(){
 				resource.dataRoleList(this.req).then(res => {

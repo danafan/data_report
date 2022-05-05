@@ -95,7 +95,16 @@
 </div>
 </div>
 <div class="bottom_table_box" v-if="closeStep2 == true">
-	<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+	<div class="set_row">
+		<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+		<div class="upload_box">
+			<el-button type="primary" size="small">
+				一键上传销售收入占比
+				<i class="el-icon-upload2 el-icon--right"></i>
+			</el-button>
+			<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+		</div>
+	</div>
 	<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="75" prop="day" label="日期" align="center"></el-table-column>
 		<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
@@ -287,6 +296,31 @@
 </div>
 </template>
 <style lang="less" scoped>
+.set_row{
+	width: 100%;
+	display:flex;
+	align-items: center;
+	justify-content: space-between;
+	.red_toast{
+		margin-top: 15px;
+		color: red;
+		font-size: 12px;
+	}
+	.upload_box{
+		margin-right: 10px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+	}
+}
 .top_content{
 	display: flex;
 	.form_widget{
@@ -313,11 +347,7 @@
 		margin-top: 20px;
 	}
 }
-.red_toast{
-	margin-top: 15px;
-	color: red;
-	font-size: 12px;
-}
+
 .text_content{
 	overflow: hidden;/*超出部分隐藏*/
 	white-space: nowrap;/*不换行*/
@@ -327,6 +357,7 @@
 <script>
 	import resource from '../../../../api/targetSales.js'
 	import {getMonthInfo,getWeek} from '../../../../api/nowMonth.js'
+	import excel from "../../../../api/excel.js";
 	export default{
 		inject:['reload'],
 		data(){
@@ -528,8 +559,6 @@
 			}
 		},
 		created(){
-			//获取店铺列表
-			this.getShops();
 			//获取店长列表
 			this.getAjaxUser();
 			
@@ -573,21 +602,6 @@
 			}
 		},
 		methods:{
-			//获取店铺列表
-			getShops(){
-				resource.getShops().then(res => {
-					if(res.data.code == 1){
-						let data_list = res.data.data;
-						data_list.map(item => {
-							if(item.is_reference == 1){
-								this.reference_store_list.push(item);
-							}
-						})
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
 			//获取参考店铺列表
 			getReferenceShops(reference_shop_id){
 				if(this.date == '' || this.jst_code ==""){
@@ -618,7 +632,7 @@
 			changeShop(v){
 				let item = this.reference_store_list.filter(item => {return item.jst_code == v});
 				this.reference_shop = item[0].shop_name;
-				// this.reference_jst_code = item[0].jst_code;
+				this.shop_code = item[0].shop_code;
 			},
 			//获取店长列表
 			getAjaxUser(v){
@@ -788,6 +802,62 @@
       		changeZb(v,i){
       			this.day_table_data[i] = this.setInfo(this.day_table_data[i])
       		},
+      		// 粘贴日销售收入占比
+			uploadCsv(e){
+				const files = e.target.files;
+				let file=files[0];
+				const fileExt = file.name.split('.').pop().toLocaleLowerCase()
+				if (fileExt === 'xlsx' || fileExt === 'xls') {
+					const reader = new FileReader();
+					reader.readAsArrayBuffer(file);
+					reader.onerror = (e) => {
+						this.$message.warning("文件读取出错");
+						this.$refs.csvUpload.value = ''
+					};
+					reader.onload = (e) => {
+						const data = e.target.result;
+						const { header, results } = excel.read(data, "array");
+						var new_xssrzb = [];
+						var isx = true;
+						results.map((item,index) => {
+							if(!isx){
+								return;
+							}
+							for(var k in item){
+								if(k == '销售收入占比'){
+									if(!this.isNumber.test(item[k])){
+										this.$message.warning("销售收入占比必须是数字类型并且大于等于0！");
+										isx = false;
+										return;
+									}else{
+										new_xssrzb.push((item[k]*100).toFixed(2));
+										break;
+									}
+								}
+							}
+						});
+						this.$refs.csvUpload.value = ''
+						if(!isx){
+							return;
+						}
+						if(new_xssrzb.length == 0){
+							this.$message.warning("表格内没有“销售收入占比”的列名!");
+							return;
+						}else if(new_xssrzb.length != this.day_table_data.length){
+							this.$message.warning("表格数据行数不等于日目标行数!");
+							return;
+						}
+						new_xssrzb.map((item,index) => {
+							this.day_table_data[index].xssrzb = item;
+							this.day_table_data[index] = this.setInfo(this.day_table_data[index])
+						})
+						this.$message.success("上传成功!");
+					};
+				} else {
+					this.$refs.csvUpload.value = ''
+					this.$message.warning("文件类型错误,请选择后缀为.xlsx或者.xls的EXCEL文件");
+				}
+			},
       		//计算每一行
       		setInfo(info){
       			// 日销售收入（日销售收入占比*本月销售收入）

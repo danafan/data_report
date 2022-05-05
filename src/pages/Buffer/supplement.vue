@@ -28,7 +28,7 @@
 		</div>
 	</div>
 	<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="(item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq' || item.row_field_name == 'nbhj' || item.row_field_name == 'xds')?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="(item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq' || item.row_field_name == 'nbhj' || item.row_field_name == 'xds')?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'zts' || item.row_field_name == 'yjs' || item.row_field_name == 'zskykc' || item.row_field_name == 'fskykc' || item.row_field_name == 'mbkc' || item.row_field_name == 'swtxl'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 			<template slot-scope="scope">
 				<!-- 内部核价 -->
 				<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)" :disabled="button_list.setprice != 1"></el-input>

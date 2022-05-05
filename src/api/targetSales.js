@@ -20,6 +20,8 @@ let path = {
 	businessTargetList:'targesalemanage/business_target_list',		//事业部目标列表
 	businessTargetInfo:'targesalemanage/business_target_info',		//事业部目标详情
 	businessTargetCheck:'targesalemanage/business_target_check',	//事业部目标审核
+	targesalemanageShopExport:'targesalemanage/shop_export',		//店铺月目标导出
+	targesalemanageDayExport:'targesalemanage/day_export',			//店铺日目标导出
 }						
 export default{
 	//获取部门列表
@@ -105,6 +107,14 @@ export default{
 	//事业部目标审核
 	businessTargetCheck(params){
 		return http.post(path.businessTargetCheck, params)
+	},
+	//店铺月目标导出
+	targesalemanageShopExport(params){
+		return http.post(path.targesalemanageShopExport, params)
+	},
+	//店铺日目标导出
+	targesalemanageDayExport(params){
+		return http.post(path.targesalemanageDayExport, params)
 	},
 }
 

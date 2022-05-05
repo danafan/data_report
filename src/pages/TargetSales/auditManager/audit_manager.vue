@@ -22,8 +22,11 @@
 				<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="total_data">
-			销售收入：{{total.xssr}}万，毛利率：{{total.mll}}%，营销费用率：{{total.yxfy}}%，净利润：{{total.jlr}}万，净利润率：{{total.jlrl}}%
+		<div class="set_button">
+			<div class="total_data">
+				销售收入：{{total.xssr}}万，毛利率：{{total.mll}}%，营销费用率：{{total.yxfy}}%，净利润：{{total.jlr}}万，净利润率：{{total.jlrl}}%
+			</div>
+			<el-button type="primary" size="small" @click="showExport = true">导出</el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
@@ -57,13 +60,24 @@
 				<el-button size="small" type="primary" @click="showDetail = false">关闭</el-button>
 			</div>
 		</el-dialog>
-		
-</div>
+		<!-- 导出弹窗 -->
+		<el-dialog title="导出" :visible.sync="showExport" width="30%">
+			<el-radio-group v-model="export_type">
+				<el-radio :label="1">店铺月目标</el-radio>
+				<el-radio :label="2">店铺日目标</el-radio>
+			</el-radio-group>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="showExport = false">取消</el-button>
+				<el-button size="small" type="primary" @click="exportFn">确定</el-button>
+			</div>
+		</el-dialog>
+	</div>
 </template>
 <style lang="less" scoped>
 .set_button{
 	margin-bottom: 15px;
 	display: flex;
+	align-items: center;
 	justify-content: space-between;
 }
 .total_data{
@@ -75,13 +89,15 @@
 	import resource from '../../../api/targetSales.js'
 	import DivisionDetail from './components/division_detail.vue'
 	import {getCurrentMonth} from '../../../api/nowMonth.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
 				date:getCurrentMonth(),		//选择的年月
-				dept_1_id:"",			//选中的一级部门id
-				level1_dept_list:[],	//一级部门列表
-				status:-1,		//默认全部
+				dept_1_id:"",				//选中的一级部门id
+				level1_dept_list:[],		//一级部门列表
+				status:-1,					//默认全部
 				status_list:[{
 					name:'全部',
 					id:-1
@@ -91,8 +107,7 @@
 				},{
 					name:'审核通过',
 					id:1
-				},
-				{
+				},{
 					name:'审核拒绝',
 					id:2
 				}],							//状态列表
@@ -103,6 +118,8 @@
 				showDetail:false,			//详情弹窗
 				dialog_title:"",
 				id:"",						//查看详情的ID
+				showExport:false,			//导出弹窗
+				export_type:1,				//导出类型
 			}
 		},
 		created(){
@@ -165,6 +182,32 @@
 				this.showDetail = false;
 				//获取列表
 				this.getData();
+			},
+			//导出
+			exportFn(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					if(this.export_type == '1'){	//店铺月目标导出
+						resource.targesalemanageShopExport({date:this.date}).then(res => {
+							exportPost("\ufeff" + res.data,'店铺月目标('+ this.date +')');
+							this.showExport = false;
+						})
+					}else{	//店铺日目标导出
+						resource.targesalemanageDayExport({date:this.date}).then(res => {
+							exportPost("\ufeff" + res.data,'店铺日目标('+ this.date +')');
+							this.showExport = false;
+						})
+					}
+					
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			}
 		},
 		components:{

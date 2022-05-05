@@ -106,13 +106,13 @@
 <div class="bottom_table_box" v-if="closeStep2 == true">
 	<div class="set_row">
 		<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
-		<!-- <div class="upload_box">
+		<div class="upload_box">
 			<el-button type="primary" size="small">
 				一键上传销售收入占比
 				<i class="el-icon-upload2 el-icon--right"></i>
 			</el-button>
 			<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
-		</div> -->
+		</div>
 	</div>
 	<el-table size="small" :data="day_table_data" max-height="800" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 		<el-table-column width="75" prop="day" label="日期" align="center"></el-table-column>
@@ -593,7 +593,7 @@
 						}
 						const currentdate = year.toString() + month.toString()
 						const timeyear = time.getFullYear()
-						let timemonth = time.getMonth() + 1
+						let timemonth = time.getMonth() + 2
 						if (timemonth >= 1 && timemonth <= 9) {
 							timemonth = '0' + timemonth
 						}
@@ -834,11 +834,11 @@
 							for(var k in item){
 								if(k == '销售收入占比'){
 									if(!this.isNumber.test(item[k])){
-										this.$message.warning("销售收入占比必须是数字类型并且大于0！");
+										this.$message.warning("销售收入占比必须是数字类型并且大于等于0！");
 										isx = false;
 										return;
 									}else{
-										new_xssrzb.push(item[k].toFixed(2));
+										new_xssrzb.push((item[k]*100).toFixed(2));
 										break;
 									}
 								}
@@ -848,12 +848,16 @@
 						if(!isx){
 							return;
 						}
-						if(new_xssrzb.length != this.day_table_data.length){
+						if(new_xssrzb.length == 0){
+							this.$message.warning("表格内没有“销售收入占比”的列名!");
+							return;
+						}else if(new_xssrzb.length != this.day_table_data.length){
 							this.$message.warning("表格数据行数不等于日目标行数!");
 							return;
 						}
 						new_xssrzb.map((item,index) => {
 							this.day_table_data[index].xssrzb = item;
+							this.day_table_data[index] = this.setInfo(this.day_table_data[index])
 						})
 						this.$message.success("上传成功!");
 					};
