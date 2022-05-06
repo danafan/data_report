@@ -134,7 +134,6 @@
 				resource.getDepts().then(res => {
 					if(res.data.code == 1){
 						this.level1_dept_list = res.data.data;
-						this.dept_1_id = this.level1_dept_list[0].dept_id;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

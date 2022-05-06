@@ -23,7 +23,7 @@
 				<div class="value">{{bottom_info.add_user_name}}</div>
 			</div>
 			<div class="row">
-				<div class="lable">备注：</div>
+				<div class="lable">提交人备注：</div>
 				<div class="value">{{bottom_info.remark}}</div>
 			</div>
 			<div class="row" v-if="bottom_info.status != '0'">
@@ -42,21 +42,25 @@
 				<div class="lable">拒绝原因：</div>
 				<div class="value">{{bottom_info.refuse_reason}}</div>
 			</div>
+			<div class="row" v-if="bottom_info.status == '1'">
+				<div class="lable">审核人备注：</div>
+				<div class="value">{{bottom_info.agree_reason}}</div>
+			</div>
 			<div class="row" v-if="bottom_info.status == '0' && user_type == 1">
 				<div class="lable">操作：</div>
 				<div class="value">
-					<el-button size="mini" type="danger" @click="showRefuse = true">拒绝</el-button>
-					<el-button size="mini" type="primary" @click="agreeFun">同意</el-button>
+					<el-button size="mini" type="danger" @click="auditFn('1')">拒绝</el-button>
+					<el-button size="mini" type="primary" @click="auditFn('2')">同意</el-button>
 				</div>
 			</div>
 		</div>
 		<!-- 拒绝 -->
-		<el-dialog title="拒绝" :visible.sync="showRefuse" append-to-body>
+		<el-dialog :title="refuse_type == '1'?'拒绝':'通过'" :visible.sync="showRefuse" append-to-body>
 			<el-input
 			type="textarea"
 			:rows="3"
-			placeholder="请输入拒绝原因（必填）"
-			v-model="refuse_reason">
+			:placeholder="refuse_type == '1'?'请输入拒绝原因（必填）':'请输入备注原因（选填）'"
+			v-model="reason">
 		</el-input>
 		<div slot="footer" class="dialog-footer">
 			<el-button size="small" @click="showRefuse = false">取 消</el-button>
@@ -224,10 +228,11 @@
 					new_value:"",
 					isPer:true,
 					advice:""
-				}],							//右侧表格数据
+				}],						//右侧表格数据
 				bottom_info:{},			//底部信息
-				showRefuse:false,		//拒绝弹窗（项目部）
-				refuse_reason:"",			//拒绝原因
+				showRefuse:false,		//审核弹窗（项目部）
+				refuse_type:'1',		//弹窗类型（1:拒绝；2:同意）
+				reason:"",				//原因(1:拒绝；2:同意)
 			}
 		},
 		props:{
@@ -273,40 +278,33 @@
 					}
 				})
 			},
-			//审核拒绝（部门）
-			refuseCheck(){
-				if(this.refuse_reason == ''){
-					this.$message.warning('请输入拒绝原因');
-				}else{
-					//提交审核
-					this.targetCheck('refuse');
-				}
+			//点击审核
+			auditFn(type){
+				this.refuse_type = type;
+				this.showRefuse = true;
 			},
-			//审核同意
-			agreeFun(){
-				this.$confirm('确认同意？', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
+			//审核弹窗确认
+			refuseCheck(){
+				if(this.refuse_type == '1'){	//拒绝
+					if(this.reason == ''){
+						this.$message.warning('请输入拒绝原因');
+					}else{
+						//提交审核
+						this.targetCheck('refuse');
+					}
+				}else{	//同意
 					//提交审核
 					this.targetCheck('agree');
-				}).catch(() => {
-					this.$message({
-						type: 'info',
-						message: '已取消'
-					});          
-				});
+				}
 			},
 			//提交审核
 			targetCheck(type){
 				let arg = {
 					id:this.id,
 					from_type:'admin',
-					type:type
-				}
-				if(type == 'refuse'){
-					arg.refuse_reason = this.refuse_reason;
+					type:type,
+					refuse_reason:this.reason,
+					agree_reason:this.reason
 				}
 				resource.businessTargetCheck(arg).then(res => {
 					if(res.data.code == 1){
