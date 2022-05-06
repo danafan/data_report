@@ -28,7 +28,13 @@
 		</div>
 	</div>
 	<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="maxWidth(item.row_field_name)" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'zts' || item.row_field_name == 'zskykc' || item.row_field_name == 'jsgsqtxl' || item.row_field_name == 'xds' || item.row_field_name == 'mbkc' || item.row_field_name == 'yjs'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
+		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="maxWidth(item.row_field_name)" :sortable="isSort(item.row_field_name)?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="item.is_fixed == 1">
+			<template slot="header" slot-scope="scope">
+				<span>{{item.row_name}}</span>
+				<el-tooltip effect="dark" :content="tooltipContent(item.row_field_name)" placement="top-start" v-if="item.row_field_name == 'mbkc' || item.row_field_name == 'yjs' ||item.row_field_name == 'zskykc' ||item.row_field_name == 'fskykc' ||item.row_field_name == 'xjrq'">
+					<i class="el-icon-warning" style="color: #FFE58F"></i>
+				</el-tooltip>
+			</template>
 			<template slot-scope="scope">
 				<!-- 内部核价 -->
 				<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)" :disabled="button_list.setprice != 1"></el-input>
@@ -53,6 +59,7 @@
 				></el-date-picker>
 				<!-- 图片 -->
 				<img style="width: 80px;height: 80px" :src="scope.row.tp" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
+				<div v-else-if="item.row_field_name == 'qtqst'" class="chart_box" :id="`${scope.row.ksbm}`"></div>
 				<div v-else>{{scope.row[item.row_field_name]}}</div>
 			</template>
 		</el-table-column>
@@ -311,6 +318,10 @@
 		overflow: hidden;
 	}
 }
+.chart_box{
+	width: 120px;
+	height: 80px;
+}
 </style>
 <script>
 	import resource from '../../../api/resource.js'
@@ -318,6 +329,7 @@
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	import condition from '../../../components/condition.vue'
+	var echarts = require("echarts");
 	export default{
 		data(){
 			return{
@@ -374,6 +386,31 @@
 			this.getList();
 		},
 		methods:{
+			//悬浮备注方法
+			tooltipContent(row_field_name){
+				switch(row_field_name){
+					case 'mbkc':
+					return '目标库存=X*日均销量*采购周期 (X为权重)';
+					case 'yjs':
+					return '预警数=订单+目标库存-库存-在途';
+					case 'zskykc':
+					return '聚水潭-商品库存-可用数为正，否则为0';
+					case 'fskykc':
+					return '聚水潭-商品库存-可用数为负，否则为0';
+					case 'xjrq':
+					return '判断波段这个字段，是否含有时间区间，是取最后的日期加上年份，否为空';
+					default:
+					return ''
+				}
+			},
+			//排序字段
+			isSort(row_field_name){
+				if(row_field_name == 'zts' || row_field_name == 'zskykc' || row_field_name == 'fskykc' || row_field_name == 'cb' || row_field_name == 'ngcb' || row_field_name == '1tqxl' || row_field_name == '2tqxl' || row_field_name == '3tqxl' || row_field_name == 'jsgsqtxl' || row_field_name == 'swtxl' || row_field_name == 'mbkc' || row_field_name == 'yjs' || row_field_name == 'xds' || row_field_name == 'xjqxbh'){
+					return true;
+				}else{
+					return false;
+				}
+			},
 			//图片放大
 			bigImg(big_img_url){
 				this.imageDialog = true;
@@ -432,7 +469,6 @@
 					})
 				}
 			},
-
 			//上传店铺数据
 			uploadStoreData(){
 				if(this.filename_upload == '' || !this.file_upload){
@@ -523,6 +559,16 @@
 				resource.ksInfoList(this.req).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
+						this.dataObj.data.map(item => {
+							this.$nextTick(() => {
+								var ele = document.getElementById(item.ksbm);
+								let myChart = echarts.getInstanceByDom(ele)
+								if (myChart == null) { 
+									myChart = echarts.init(ele);
+								}
+								myChart.setOption(this.chartsOptions(item.qtqst))
+							})
+						})
 						this.row_ids = this.dataObj.selected_ids;
 						this.button_list = this.dataObj.button_list;
 						this.showSearch = false;
@@ -532,6 +578,45 @@
 						this.$message.warning(res.data.msg);
 					}
 				});
+			},
+			//图标绘制
+			chartsOptions(series_data){
+				return {
+					xAxis: {
+						type: 'category',
+						data: ['', '', '', '', '', '', ''],
+						axisLine: {
+							show: false, 
+						},
+						axisTick: {
+							show: false,  
+						}
+					},
+					yAxis: {
+						type: 'value',
+						axisTick: {
+							show: false,  
+						},
+						axisLine: {
+							show: false, 
+						},
+						axisLabel: {
+							show: false, 
+						},
+						splitLine: {
+							show: true,
+							lineStyle: {
+								type: 'dashed',
+							},
+						}
+					},
+					series: [
+					{
+						data: series_data,
+						type: 'line',
+					}
+					]
+				}
 			},
 			//设置自定义列
 			setColumns(){
@@ -815,13 +900,10 @@
 			maxWidth(row_field_name){
 				if(row_field_name == 'bd' || row_field_name == 'sjxjrq' || row_field_name == 'nbhj' || row_field_name == 'jsgsqtxl' || row_field_name == 'xds'){
 					return 260;
+				}else if(row_field_name == 'qtqst' || row_field_name == '1tqxl' || row_field_name == '2tqxl' || row_field_name == '3tqxl'){
+					return 160;
 				}else{
-					return 120;
-				}
-			},
-			isFixed(row_field_name){
-				if(row_field_name == 'ksbm' || row_field_name == 'gyshh' || row_field_name == 'xb'){
-					return true;
+					return 130;
 				}
 			}
 		},

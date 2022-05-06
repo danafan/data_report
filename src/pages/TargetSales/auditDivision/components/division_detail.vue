@@ -23,7 +23,7 @@
 				<div class="value">{{bottom_info.add_user_name}}</div>
 			</div>
 			<div class="row">
-				<div class="lable">备注：</div>
+				<div class="lable">提交人备注：</div>
 				<div class="value">{{bottom_info.remark}}</div>
 			</div>
 			<div class="row">
@@ -41,6 +41,10 @@
 			<div class="row" v-if="bottom_info.status == '2'">
 				<div class="lable">拒绝原因：</div>
 				<div class="value">{{bottom_info.refuse_reason}}</div>
+			</div>
+			<div class="row" v-if="bottom_info.status == '1'">
+				<div class="lable">审核人备注：</div>
+				<div class="value">{{bottom_info.agree_reason}}</div>
 			</div>
 		</div>
 </div>

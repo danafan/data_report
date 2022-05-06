@@ -150,7 +150,8 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="自有货品：" v-if="isShow('sfzzk')">
-				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" placeholder="全部">
+				<!-- <el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" placeholder="全部"> -->
+					<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option label="CHRISUNO" value="CHRISUNO"></el-option>
 					<el-option label="白坯" value="白坯"></el-option>
 					<el-option label="自主款" value="自主款"></el-option>
@@ -272,7 +273,7 @@
 				select_jy_id:"",							//建议
 				select_sfkt_id:"",							//是否可退
 				select_sfng_id:"",							//是否内供
-				select_sfzzk_id:"",							//是否自主款
+				select_sfzzk_id:[],							//是否自主款
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -438,7 +439,7 @@
 				},{
 					name:'sfzzk',
 					data_name:'select_sfzzk_id',
-					is_arr:false,
+					is_arr:true,
 					tags:['1','2','3','4','5','6']
 				},{
 					name:'xb',
