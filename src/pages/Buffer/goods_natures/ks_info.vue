@@ -213,7 +213,8 @@
 <el-dialog title="在售款式" :visible.sync="showAllUpload">
 	<div>
 		<div>导入编辑好的Excel表格</div>
-		<div class="toast_text">请以"店铺ID、商品ID、款式编码"为第一行，每天上传时间为14:00截止</div>
+		<!-- <div class="toast_text">请以"店铺ID、商品ID、款式编码"为第一行，每天上传时间为14:00截止</div> -->
+		<div class="toast_text">请以"店铺ID、商品ID、款式编码"为第一行</div>
 		<img class="model_img" src="../../../static/model_img_03.png">
 		<div>
 			<div class="imgBox" v-if="filename_upload == ''">

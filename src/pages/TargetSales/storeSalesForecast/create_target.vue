@@ -872,8 +872,9 @@
     			let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
     			var menu = [];
     			for(var i=1;i<=monthInfo.monthDayNum;i++){
+    				var d = i < 10?'0'+i:i;
     				let info = {
-    					day:monthInfo.month+'月'+i+'日',
+    					day:monthInfo.month+'月'+d+'日',
     					week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
     					mll:this.table_data[5].new_value,
     					yxfyl:this.table_data[6].new_value,
