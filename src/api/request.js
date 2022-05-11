@@ -66,7 +66,6 @@ export function middleWare(params,type) {
   // var req = {...params,...{sign:sign,admin_id:'16206259129094905',token:token}};   //事业部
   // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}};  //项目部
 
-  
   var get_arr = [];
   //post请求参数
   var form = new FormData();

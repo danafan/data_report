@@ -93,6 +93,7 @@
 		</div>
 		<!-- 导入 -->
 		<el-dialog title="导入" :visible.sync="show_dialog" width="30%">
+			<div class="import_toast" v-if="dialog_type == '1'">批量导入只会处理之前未处理的款式链接</div>
 			<div class="down_box">
 				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
 				<div class="upload_box">
@@ -135,6 +136,11 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+.import_toast{
+	margin-bottom: 15px;
+	color: red;
+	font-size: 12px;
 }
 .down_box{
 	display:flex;
@@ -201,7 +207,7 @@
 				show_dialog:false,		//导入弹窗
 				show_row_dialog:false,	//标记弹窗
 				ks_id:"",				//点击标记的款式id
-				tag_zxjg:"",				//标记弹窗执行结果
+				tag_zxjg:"",			//标记弹窗执行结果
 				tag_qksm:"",			//标记弹窗情况说明
 			}
 		},
