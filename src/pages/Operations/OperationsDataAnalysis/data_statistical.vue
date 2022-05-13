@@ -50,44 +50,159 @@
 							<div>{{scope.row.today_income}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="today_target" label="今日目标" width="120" align="center" sortable >
+					<el-table-column prop="today_target" label="今日目标" width="100" align="center" sortable >
 						<template slot-scope="scope">
 							<div>{{scope.row.today_target}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="today_wcl" label="今日目标完成率" width="120" align="center" sortable>
+					<el-table-column prop="today_deviation" label="今日偏差" width="100" align="center" sortable >
+						<template slot-scope="scope">
+							<div>{{scope.row.today_deviation}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="today_wcl" label="今日目标完成率" width="130" align="center" sortable>
 						<template slot-scope="scope">
 							<div>{{scope.row.today_wcl}}%</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="month_income" label="当月收入" width="100" align="center" sortable>
+					<el-table-column prop="month_income" label="当月收入累计" width="120" align="center" sortable>
 						<template slot-scope="scope">
 							<div>{{scope.row.month_income}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="month_target" label="当月目标" width="120" show-overflow-tooltip align="center" sortable>
+					<el-table-column prop="month_lj_target" label="当月目标累计" width="120" show-overflow-tooltip align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_lj_target}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_deviation" label="当月偏差" width="100" show-overflow-tooltip align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_deviation}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_lj_wcl" label="当月累计完成率" width="130" show-overflow-tooltip align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_lj_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target" label="当月目标" width="100" show-overflow-tooltip align="center" sortable>
 						<template slot-scope="scope">
 							<div>{{scope.row.month_target}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="rljmb" label="当月目标完成率" width="120" align="center" sortable>
+					<el-table-column prop="month_target_wcl" label="当月目标完成率" width="130" align="center" sortable>
 						<template slot-scope="scope">
-							<div>{{scope.row.month_wcl}}%</div>
+							<div>{{scope.row.month_target_wcl}}%</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="year_income" label="年收入" show-overflow-tooltip width="120" align="center" sortable>
+					<el-table-column prop="year_income" label="年收入累计" show-overflow-tooltip width="110" align="center" sortable>
 						<template slot-scope="scope">
 							<div>{{scope.row.year_income}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="year_target" label="年目标" show-overflow-tooltip width="120" align="center" sortable>
+					<el-table-column prop="year_target" label="年目标" show-overflow-tooltip width="80" align="center" sortable>
 						<template slot-scope="scope">
 							<div>{{scope.row.year_target}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column prop="year_wcl" label="年目标完成率" show-overflow-tooltip width="120" align="center" sortable>
+					<el-table-column prop="year_deviation" label="年偏差" show-overflow-tooltip width="80" align="center" sortable>
 						<template slot-scope="scope">
-							<div>{{scope.row.year_wcl}}%</div>
+							<div>{{scope.row.year_deviation}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="year_target_wcl" label="年目标完成率" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.year_target_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_wlfy" label="当月物流累计(预估)" show-overflow-tooltip width="150" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_wlfy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_lj_wlfy" label="当月物流目标累计" show-overflow-tooltip width="140" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_lj_wlfy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_wlfy_deviation" label="当月物流偏差" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_wlfy_deviation}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_lj_wlfy_wcl" label="当月物流累计完成率" show-overflow-tooltip width="160" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_lj_wlfy_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_wlfy" label="当月物流目标" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_wlfy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_wlfy_wcl" label="当月物流完成率" show-overflow-tooltip width="130" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_wlfy_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_yxfy" label="当月营销费用累计" show-overflow-tooltip width="140" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_yxfy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_lj_yxfy" label="当月营销目标累计" show-overflow-tooltip width="140" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_lj_yxfy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_yxfy_deviation" label="当月营销偏差" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_yxfy_deviation}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_lj_yxfy_wcl" label="当月营销累计完成率" show-overflow-tooltip width="160" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_lj_yxfy_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_yxfy" label="当月营销目标" show-overflow-tooltip width="120" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_yxfy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_yxfy_wcl" label="当月营销完成率" show-overflow-tooltip width="130" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_yxfy_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_kffy" label="当月客服费用累计" show-overflow-tooltip width="140" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_kffy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_lj_kffy" label="当月客服费用目标累计" show-overflow-tooltip width="170" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_lj_kffy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_kffy_deviation" label="当月客服费用偏差" show-overflow-tooltip width="140" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_kffy_deviation}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_lj_kffy_wcl" label="当月客服费用累计完成率" show-overflow-tooltip width="180" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_lj_kffy_wcl}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_kffy" label="当月客服费用目标" show-overflow-tooltip width="140" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_kffy}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column prop="month_target_kffy_wcl" label="当月客服费用完成率" show-overflow-tooltip width="160" align="center" sortable>
+						<template slot-scope="scope">
+							<div>{{scope.row.month_target_kffy_wcl}}%</div>
 						</template>
 					</el-table-column>
 				</el-table>

@@ -37,7 +37,7 @@
 			<el-table-column show-overflow-tooltip prop="xjfzr" label="下架负责人" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-size="pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-size="pagesize" :page-sizes="[5, 10, 15, 20,40]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
 	</div>
@@ -59,7 +59,7 @@
 		data(){
 			return{
 				page:1,
-				pagesize:15,
+				pagesize:40,
 				store_list:[],	//所有店铺列表
 				dpmc:[],		//选中的店铺列表
 				dept_name:"",	//事业部名称

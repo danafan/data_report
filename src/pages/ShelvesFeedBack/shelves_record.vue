@@ -4,8 +4,14 @@
 			<el-form-item label="款式编码：">
 				<el-input clearable v-model="ksbm" placeholder="款式编码"></el-input>
 			</el-form-item>
-			<el-form-item label="店铺名称：">
+			<!-- <el-form-item label="店铺名称：">
 				<el-select v-model="dpmc" clearable filterable placeholder="全部">
+					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
+					</el-option>
+				</el-select>
+			</el-form-item> -->
+			<el-form-item label="店铺名称：">
+				<el-select v-model="dpmc" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 					</el-option>
 				</el-select>
@@ -83,7 +89,7 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center" width="120" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="setTag(scope.row.id)">标记</el-button>
+					<el-button type="text" size="small" @click="setTag(scope.row.id)" v-if="dataObj.button_list.import_result == 1">标记</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -172,7 +178,7 @@
 				pagesize:15,
 				ksbm:"",		//款式编码
 				store_list:[],	//所有店铺列表
-				dpmc:"",		//选中的店铺列表
+				dpmc:[],		//选中的店铺列表
 				zxjg:"",		//执行结果
 				is_check:"",	//验证状态
 				date:[getCurrentDate(),getNowDate()],		//查询日期
@@ -312,7 +318,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						dpmc:this.dpmc,
+						dpmc:this.dpmc.join(','),
 						ksbm:this.ksbm,
 						zxjg:this.zxjg,
 						is_check:this.is_check,
@@ -331,7 +337,7 @@
 			},
 			//获取店铺列表
 			getStoreList(){
-				resource.ajaxShops({type:'1'}).then(res => {
+				resource.ajaxShops({type:'0'}).then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
 					}else{
@@ -342,7 +348,7 @@
 			//获取列表
 			getList(){
 				let arg = {
-					dpmc:this.dpmc,
+					dpmc:this.dpmc.join(','),
 					ksbm:this.ksbm,
 					zxjg:this.zxjg,
 					is_check:this.is_check,
