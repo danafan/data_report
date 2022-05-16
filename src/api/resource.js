@@ -192,6 +192,8 @@ let path = {
 	specialSetting:'buffer/specialSetting',							//特殊权限设置
 	targetCompleteChart:'PerformanceReport/targetChart',			//目标完成报告报（仪表盘折线图）
 	targetTable:'PerformanceReport/target',							//目标完成报告报（表格）
+	pcChartData:'fish/chart',										//鱼塘近一年图表数据
+	fishStatistics:'fish/statistics',								//鱼塘频次统计下面三个表格
 
 }					
 export default{
@@ -994,6 +996,14 @@ export default{
 	//目标完成报告报表（表格）
 	targetTable(params){
 		return http.get(path.targetTable, params)
+	},
+	//鱼塘近一年图表数据
+	pcChartData(params){
+		return http.get(path.pcChartData, params)
+	},
+	//鱼塘频次统计下面表格
+	fishStatistics(params){
+		return http.get(path.fishStatistics, params)
 	},
 }
 

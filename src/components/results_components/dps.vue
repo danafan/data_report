@@ -24,9 +24,7 @@
 					<el-option label="店铺ID" :value="2">
 					</el-option>
 				</el-select>：
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false"  multiple
-				filterable
-				collapse-tags placeholder="全部">
+				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 				<el-option v-for="item in store_list" :key="item.dept_id" :label="select_store_key == 1?item.shop_name:item.dept_name" :value="item.dept_id">
 				</el-option>
 			</el-select>
