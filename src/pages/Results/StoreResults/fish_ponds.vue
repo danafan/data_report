@@ -209,7 +209,7 @@
 				accountedChart:null,						//各店铺鱼塘单量占比
 				amountChart:null,							//各店铺鱼塘金额占比
 				over_stateChart:null,						//鱼塘目标完成情况
-				searchDate:[],								//查询日期
+				searchDate:[getLastMonthStartDate(1).split('-')[0] + '-' + getLastMonthStartDate(1).split('-')[1],getLastMonthStartDate(1).split('-')[0] + '-' + getLastMonthStartDate(1).split('-')[1]],								//查询日期
 				pin_ci:[],									//鱼塘频次分析
 				fiv_up:[],									//五单以上的鱼塘账号
 				dp_yt:[],									//店铺鱼塘统计
@@ -240,6 +240,8 @@
 						this.getFrequency();
 						//频次图表
 						this.pcChartData();
+						const start = getLastMonthStartDate(1);
+						const end = getLastMonthEndDate(0);
 					}
 				})
 			}
@@ -272,6 +274,9 @@
         				var persion_up = data.persion_up;
         				var persion_down = data.persion_down;
         				var gross = data.gross;
+        				gross.map(item => {
+        					item = parseInt(item);
+        				})
         				var echarts = require("echarts");
         				var pc_chart = document.getElementById('pc_chart');
         				let pcChart = echarts.getInstanceByDom(pc_chart)
@@ -328,7 +333,7 @@
         						type: 'value',
         						min: 0,
         						axisLabel: {
-        							formatter: '{value} %'
+        							formatter: '{value} 单'
         						}
         					},{
         						type: 'value',
@@ -376,7 +381,9 @@
         	//频次
         	getFrequency(){
         		let arg = {
-        			shop_id:this.select_store_ids.join(','),
+        			dept_id:this.select_department_ids.join(','),
+					platform:this.select_plat_ids.join(','),
+					shop_id:this.select_store_ids.join(','),
         			start_date:this.searchDate && this.searchDate.length> 0?this.searchDate[0]:"",
         			end_date:this.searchDate && this.searchDate.length> 0?this.searchDate[1]:""
         		}
