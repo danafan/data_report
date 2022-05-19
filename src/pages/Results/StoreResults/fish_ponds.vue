@@ -56,35 +56,38 @@
 <div v-show="tab_index == '3'">
 	<!-- 近一年鱼塘频次分析 -->
 	<div class="pc_chart" id="pc_chart"></div>
-	<div class="table_title">
-		<div>鱼塘频次分析</div>
-	</div>
-	<el-table size="small" :data="pin_ci" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
-		<el-table-column prop="pc" width="120" label="做单频次" show-overflow-tooltip align="center">
-		</el-table-column>
-		<el-table-column prop="account_num" width="120" label="买家账号统计" show-overflow-tooltip align="center">
-		</el-table-column>
-		<el-table-column prop="account_per" width="120" label="买家账号占比" show-overflow-tooltip align="center">
-		</el-table-column>
-		<el-table-column prop="sd_num" width="120" label="SD量" show-overflow-tooltip align="center">
-		</el-table-column>
-		<el-table-column prop="sd_per" width="120" label="SD占比" show-overflow-tooltip align="center">
-		</el-table-column>
-	</el-table>
+	
 	<div style="display:flex">
-		<div style="margin-right: 80px">
+		<div style="margin-right: 100px">
+			<div class="table_title">
+				<div>鱼塘频次分析</div>
+			</div>
+			<el-table size="small" :data="pin_ci" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+				<el-table-column prop="pc" width="80" label="做单频次" show-overflow-tooltip align="center">
+				</el-table-column>
+				<el-table-column prop="account_num" width="100" label="买家账号统计" show-overflow-tooltip align="center">
+				</el-table-column>
+				<el-table-column prop="account_per" width="100" label="买家账号占比" show-overflow-tooltip align="center">
+				</el-table-column>
+				<el-table-column prop="sd_num" width="80" label="SD量" show-overflow-tooltip align="center">
+				</el-table-column>
+				<el-table-column prop="sd_per" width="80" label="SD占比" show-overflow-tooltip align="center">
+				</el-table-column>
+			</el-table>
+		</div>
+		<div style="margin-right: 100px">
 			<div class="table_title">
 				<div>五单以上的鱼塘账号</div>
 				<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
-			<el-table size="small" :data="fiv_up" max-height="400" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table size="small" :data="fiv_up" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
 				<el-table-column prop="buyer_account" width="120" label="买家账号" show-overflow-tooltip align="center">
 				</el-table-column>
 				<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
 				</el-table-column>
-				<el-table-column prop="ytdl" width="120" label="SD量" show-overflow-tooltip align="center">
+				<el-table-column prop="ytdl" width="80" label="SD量" show-overflow-tooltip align="center">
 				</el-table-column>
-				<el-table-column prop="ytdl_count" width="120" label="公司SD" show-overflow-tooltip align="center">
+				<el-table-column prop="ytdl_count" width="80" label="公司SD" show-overflow-tooltip align="center">
 				</el-table-column>
 			</el-table>
 		</div>
@@ -92,7 +95,7 @@
 			<div class="table_title">
 				<div>店铺鱼塘统计</div>
 			</div>
-			<el-table size="small" :data="dp_yt" max-height="400" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table size="small" :data="dp_yt" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
 				<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
 				</el-table-column>
 				<el-table-column prop="buyer_num" width="120" label="买家SD账号" show-overflow-tooltip align="center">
@@ -283,107 +286,112 @@
         				if (pcChart == null) { 
         					pcChart = echarts.init(pc_chart);
         				}
-        				pcChart.setOption({
-        					title: {
-        						text: '近一年鱼塘频次分析'
-        					},
-        					tooltip: {
-        						trigger: 'axis',
-        						formatter: function (params) {
-        							let dataIndex = params[params.length - 1].dataIndex;
-        							let month_txt = month[dataIndex];
-        							let gross_txt = gross[dataIndex];
-        							let persion_up_txt = persion_up[dataIndex];
-        							let persion_down_txt = persion_down[dataIndex];
-        							let tip = "";
-        							if(params != null && params.length > 0) {
-        								tip = month_txt + "</br>"
-        								+"鱼塘总量：" + gross_txt + "单</br>"
-        								+ "鱼塘五次以上人数百分比：" + persion_up_txt + "%</br>"
-        								+ "鱼塘五次以内人数百分比：" + persion_down_txt + "%";
-        							}
-        							return tip;
-        						},
-        						backgroundColor:"rgba(0,0,0,.8)",
-        						textStyle:{
-        							color:"#ffffff"
-        						},
-        						borderColor:"rgba(0,0,0,0.7)",
-        						axisPointer: {            
-        							type: 'shadow'        
-        						}
-        					},
-        					color:['#5AD8A6','#F6BD16', '#5B8FF9'],
-        					legend: {
-        						data: ['鱼塘总量', '鱼塘五次以上人数百分比', '鱼塘五次以内人数百分比']
-        					},
-        					grid:{
-        						y2:100
-        					},
-        					xAxis: [{
-        						type: 'category',
-        						data: month,
-        						axisLabel: {
-        							color: '#333',
-        							interval: 2,
-        							rotate:70
-        						}
-        					}],
-        					yAxis:[{
-        						type: 'value',
-        						min: 0,
-        						axisLabel: {
-        							formatter: '{value} 单'
-        						}
-        					},{
-        						type: 'value',
-        						min: 0,
-        						axisLabel: {
-        							formatter: '{value} %'
-        						}
-        					}],
-        					series: [{
-        						name: '鱼塘总量',
-        						type: 'bar',
-        						emphasis: {
-        							focus: 'series'
-        						},
-        						data: gross
-        					},{
-        						name: '鱼塘五次以上人数百分比',
-        						type: 'line',
-        						yAxisIndex:0,
-        						lineStyle: { 
-        							 width:3.6
-        						},
-        						emphasis: {
-        							focus: 'series'
-        						},
-        						data: persion_up
-        					},{
-        						name: '鱼塘五次以内人数百分比',
-        						type: 'line',
-        						yAxisIndex:1,
-        						lineStyle: { 
-        							 width:3.6
-        						},
-        						emphasis: {
-        							focus: 'series'
-        						},
-        						data: persion_down
-        					}]
-        				});
+        				var legend_list = ['鱼塘总量', '鱼塘五次以上人数百分比', '鱼塘五次以内人数百分比'];
+        				pcChart.setOption(this.setOptions('近一年鱼塘频次分析',legend_list,month,gross,persion_up,persion_down,'单'));
         			}else{
         				this.$message.warning(res.data.msg);
         			}
         		})
         	},
+        	//设置图表
+        	setOptions(title,legend,month,gross,persion_up,persion_down,unit){
+        		return {
+        			title: {
+        				text: title
+        			},
+        			tooltip: {
+        				trigger: 'axis',
+        				formatter: function (params) {
+        					let dataIndex = params[params.length - 1].dataIndex;
+        					let month_txt = month[dataIndex];
+        					let gross_txt = gross[dataIndex];
+        					let persion_up_txt = persion_up[dataIndex];
+        					let persion_down_txt = persion_down[dataIndex];
+        					let tip = "";
+        					if(params != null && params.length > 0) {
+        						tip = month_txt + "</br>"
+        						+legend[0] + "：" + gross_txt + unit + "</br>"
+        						+ legend[1] + "：" + persion_up_txt + "%</br>"
+        						+ legend[2] + "：" + persion_down_txt + "%";
+        					}
+        					return tip;
+        				},
+        				backgroundColor:"rgba(0,0,0,.8)",
+        				textStyle:{
+        					color:"#ffffff"
+        				},
+        				borderColor:"rgba(0,0,0,0.7)",
+        				axisPointer: {            
+        					type: 'shadow'        
+        				}
+        			},
+        			color:['#5AD8A6','#F6BD16', '#5B8FF9'],
+        			legend: {
+        				data: legend
+        			},
+        			grid:{
+        				y2:100
+        			},
+        			xAxis: [{
+        				type: 'category',
+        				data: month,
+        				axisLabel: {
+        					color: '#333',
+        					interval: 2,
+        					rotate:70
+        				}
+        			}],
+        			yAxis:[{
+        				type: 'value',
+        				min: 0,
+        				axisLabel: {
+        					formatter: '{value} ' + unit
+        				}
+        			},{
+        				type: 'value',
+        				min: 0,
+        				axisLabel: {
+        					formatter: '{value} %'
+        				}
+        			}],
+        			series: [{
+        				name: legend[0],
+        				type: 'bar',
+        				emphasis: {
+        					focus: 'series'
+        				},
+        				data: gross
+        			},{
+        				name: legend[1],
+        				type: 'line',
+        				yAxisIndex:0,
+        				lineStyle: { 
+        					 width:3.6
+        				},
+        				emphasis: {
+        					focus: 'series'
+        				},
+        				data: persion_up
+        			},{
+        				name: legend[2],
+        				type: 'line',
+        				yAxisIndex:1,
+        				lineStyle: { 
+        					 width:3.6
+        				},
+        				emphasis: {
+        					focus: 'series'
+        				},
+        				data: persion_down
+        			}]
+        		}
+        	},
         	//频次
         	getFrequency(){
         		let arg = {
         			dept_id:this.select_department_ids.join(','),
-					platform:this.select_plat_ids.join(','),
-					shop_id:this.select_store_ids.join(','),
+        			platform:this.select_plat_ids.join(','),
+        			shop_id:this.select_store_ids.join(','),
         			start_date:this.searchDate && this.searchDate.length> 0?this.searchDate[0]:"",
         			end_date:this.searchDate && this.searchDate.length> 0?this.searchDate[1]:""
         		}
@@ -407,14 +415,14 @@
         	//导出
         	exportFile(){
         		let fiv_up = JSON.parse(JSON.stringify(this.fiv_up));
-				var data_obj = {
-					table_title:"五单以上的鱼塘账号",
-					table_title_list:['买家账号','店铺名称','SD量','公司SD'],
-					field_name_list:['buyer_account','shop_code','ytdl','ytdl_count'],
-					data_list:fiv_up
-				};
-				exportExcel(data_obj);
-			},
+        		var data_obj = {
+        			table_title:"五单以上的鱼塘账号",
+        			table_title_list:['买家账号','店铺名称','SD量','公司SD'],
+        			field_name_list:['buyer_account','shop_code','ytdl','ytdl_count'],
+        			data_list:fiv_up
+        		};
+        		exportExcel(data_obj);
+        	},
 			//获取列表
 			fishList(){
 				let req = {

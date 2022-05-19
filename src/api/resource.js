@@ -194,6 +194,7 @@ let path = {
 	targetTable:'PerformanceReport/target',							//目标完成报告报（表格）
 	pcChartData:'fish/chart',										//鱼塘近一年图表数据
 	fishStatistics:'fish/statistics',								//鱼塘频次统计下面三个表格
+	bufferDlearDept:'buffer/clear_dept',							//清理款部门导入接口
 
 }					
 export default{
@@ -1004,6 +1005,10 @@ export default{
 	//鱼塘频次统计下面表格
 	fishStatistics(params){
 		return http.get(path.fishStatistics, params)
+	},
+	//清理款部门导入接口
+	bufferDlearDept(params){
+		return http.post(path.bufferDlearDept, params)
 	},
 }
 

@@ -16,6 +16,7 @@ const report_page = resolve=>require(['@/pages/Buffer/report_page'],resolve)
 const goods_nature = resolve=>require(['@/pages/Buffer/goods_nature'],resolve)
 //审计管理
 const audit_index = resolve=>require(['@/pages/Audit/audit_index'],resolve)
+const report_management = resolve=>require(['@/pages/Audit/report_management'],resolve)
 //库存情况汇总
 const inventory_summary = resolve=>require(['@/pages/Inventory/inventory_summary'],resolve)
 //权限
@@ -63,7 +64,8 @@ const router = new Router({
     { path: '/property_rights',name:"货品性质权限", component: property_rights},
     { path: '/report_page',name:"分析报告", component: report_page},
     { path: '/goods_nature',name:"货品性质管理", component: goods_nature},
-    { path: '/audit_index',name:"审计管理", component: audit_index},
+    { path: '/audit_index',name:"成本管理", component: audit_index},
+    { path: '/report_management',name:"报表管理", component: report_management},
     { path: '/inventory_summary',name:"库存情况汇总", component: inventory_summary},
     { path: '/permssions_index',name:"权限管理", component: permssions_index},
     { path: '/role_user',name:"角色人员", component: role_user},

@@ -21,6 +21,7 @@
 			<el-button style="margin-left: 10px" type="primary" plain size="small" @click="showSearch = true" v-if="button_list.setprice == 1">批量填写内部核价<i class="el-icon-edit el-icon--right"></i></el-button>
 			<el-button type="primary" plain size="small" @click="showSearchAll = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
 			<el-button type="primary" plain size="small" @click="showAllUpload = true" v-if="button_list.day_upload == 1">批量上传店铺在售款式<i class="el-icon-search el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="showQcbm = true" v-if="button_list.clear_dept_upload == 1">清仓款部门导入<i class="el-icon-upload2 el-icon--right"></i></el-button>
 		</div>
 		<div class="buts">
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
@@ -213,7 +214,6 @@
 <el-dialog title="在售款式" :visible.sync="showAllUpload">
 	<div>
 		<div>导入编辑好的Excel表格</div>
-		<!-- <div class="toast_text">请以"店铺ID、商品ID、款式编码"为第一行，每天上传时间为14:00截止</div> -->
 		<div class="toast_text">请以"店铺ID、商品ID、款式编码"为第一行</div>
 		<img class="model_img" src="../../../static/model_img_03.png">
 		<div>
@@ -230,6 +230,28 @@
 	<div slot="footer" class="dialog-footer">
 		<el-button size="small" @click="showAllUpload = false">取消</el-button>
 		<el-button size="small" type="primary" @click="uploadStoreData">上传</el-button>
+	</div>
+</el-dialog>
+<!-- 清仓款部门导入 -->
+<el-dialog title="清仓款部门导入" :visible.sync="showQcbm">
+	<div>
+		<div>导入编辑好的Excel表格</div>
+		<!-- <div class="toast_text">请以"店铺ID、商品ID、款式编码"为第一行</div> -->
+		<img class="model_img" src="../../../static/model_img_04.png">
+		<div>
+			<div class="imgBox" v-if="filename_qcbm == ''">
+				<div class="text">请选择上传文件</div>
+				<input type="file" ref="fileUploadsss" class="upload_file" accept=".csv,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn('4')">
+			</div>
+			<div class="file_name_box" v-else>
+				<div class="file_name">{{filename_qcbm}}</div>
+				<i class="el-icon-circle-close" @click="deleteFile('4')"></i>
+			</div>
+		</div>
+	</div>
+	<div slot="footer" class="dialog-footer">
+		<el-button size="small" @click="showQcbm = false">取消</el-button>
+		<el-button size="small" type="primary" @click="uploadQcbm">上传</el-button>
 	</div>
 </el-dialog>
 <!-- 图片放大 -->
@@ -378,6 +400,8 @@
 				big_img_url:"",								//放大的图片地址
 				showAllUpload:false,						//批量上传店铺款式
 				filename_upload:"",
+				showQcbm:false,
+				filename_qcbm:"",
 				file_upload:null,
 				button_list:{}
 			}
@@ -418,7 +442,7 @@
 				this.big_img_url = big_img_url;
 			},
 			// 上传文件
-			uploadFn(type){	//1:内部核价；2:款式编码;3:店铺数据
+			uploadFn(type){	//1:内部核价；2:款式编码;3:店铺数据;4:清仓款部门导入
 				if(type == '1'){
 					if (this.$refs.fileUpload.files.length > 0) {
 						let file = this.$refs.fileUpload.files[0];
@@ -437,10 +461,16 @@
 						this.filename_upload = file_upload.name;
 						this.file_upload = file_upload;
 					}
+				}else if(type == '4'){
+					if (this.$refs.fileUploadsss.files.length > 0) {
+						let file_upload = this.$refs.fileUploadsss.files[0];
+						this.filename_qcbm = file_upload.name;
+						this.file_upload = file_upload;
+					}
 				}
 			},
 			//删除文件
-			deleteFile(type){//1:内部核价；2:款式编码；3:店铺数据
+			deleteFile(type){//1:内部核价；2:款式编码；3:店铺数据;4:清仓款部门导入
 				if(type == '1'){
 					this.filename = '';
 					this.file = null;
@@ -449,6 +479,9 @@
 					this.file_all = null;
 				}else if(type == '3'){
 					this.filename_upload = '';
+					this.file_upload = null;
+				}else if(type == '4'){
+					this.filename_qcbm = '';
 					this.file_upload = null;
 				}			
 			},
@@ -481,6 +514,23 @@
 							this.filename_upload = '';
 							this.file_upload = null;
 							this.showAllUpload = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//清仓款部门导入
+			uploadQcbm(){
+				if(this.filename_qcbm == '' || !this.file_upload){
+					this.$message.warning('请先上传文件');
+				}else{
+					resource.bufferDlearDept({file:this.file_upload}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.filename_qcbm = '';
+							this.file_upload = null;
+							this.showQcbm = false;
 						}else{
 							this.$message.warning(res.data.msg);
 						}

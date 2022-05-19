@@ -25,7 +25,10 @@ let path = {
 	offShelf:'audit/off_shelf',										//下架
 	onShelf:'audit/on_shelf',										//上架
 	editOneSupplier:'audit/edit_one_supplier',						//修改单个款式的供应商接口
-	auditChart:'audit/chart'										//数据分析
+	auditChart:'audit/chart',										//数据分析
+	ytReportTotal:'audit/yt_report_total',							//审计SD分析-头部汇总数据接口
+	ytReport:'audit/yt_report',										//审计SD分析-表格数据接口
+	ytReportExport:'audit/yt_report_export',						//审计SD分析-表格导出接口
 }						
 export default{
 	//款式编码列表
@@ -135,6 +138,18 @@ export default{
 	//数据分析
 	auditChart(params){
 		return http.get(path.auditChart, params)
+	},
+	//审计SD分析-头部汇总数据接口
+	ytReportTotal(params){
+		return http.get(path.ytReportTotal, params)
+	},
+	//审计SD分析-表格数据接口
+	ytReport(params){
+		return http.get(path.ytReport, params)
+	},
+	//审计SD分析-表格导出接口
+	ytReportExport(params){
+		return http.post(path.ytReportExport, params)
 	},
 }
 
