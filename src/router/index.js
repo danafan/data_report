@@ -14,6 +14,7 @@ const clear_goods = resolve=>require(['@/pages/Buffer/clear_goods'],resolve)
 const property_rights = resolve=>require(['@/pages/Buffer/property_rights'],resolve)
 const report_page = resolve=>require(['@/pages/Buffer/report_page'],resolve)
 const goods_nature = resolve=>require(['@/pages/Buffer/goods_nature'],resolve)
+const inventory_info = resolve=>require(['@/pages/Buffer/inventory_info'],resolve)
 //审计管理
 const audit_index = resolve=>require(['@/pages/Audit/audit_index'],resolve)
 const report_management = resolve=>require(['@/pages/Audit/report_management'],resolve)
