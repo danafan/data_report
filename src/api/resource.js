@@ -195,6 +195,10 @@ let path = {
 	pcChartData:'fish/chart',										//鱼塘近一年图表数据
 	fishStatistics:'fish/statistics',								//鱼塘频次统计下面三个表格
 	bufferDlearDept:'buffer/clear_dept',							//清理款部门导入接口
+	getCkwz:'stock_analysis/get_ckwz',								//仓库位置列表
+	stockAnalysis:'stock_analysis/index',							//库存分析（页面左侧部分）
+	stockAnalysisKs:'stock_analysis/ks',							//款式分析（页面右上部分）
+	stockAnalysisKsList:'stock_analysis/ks_list',					//款式列表
 
 }					
 export default{
@@ -1009,6 +1013,22 @@ export default{
 	//清理款部门导入接口
 	bufferDlearDept(params){
 		return http.post(path.bufferDlearDept, params)
+	},
+	//仓库位置列表
+	getCkwz(params){
+		return http.get(path.getCkwz, params)
+	},
+	//库存分析（页面左侧部分）
+	stockAnalysis(params){
+		return http.get(path.stockAnalysis, params)
+	},
+	//款式分析（页面右上部分）
+	stockAnalysisKs(params){
+		return http.get(path.stockAnalysisKs, params)
+	},
+	//款式列表
+	stockAnalysisKsList(params){
+		return http.get(path.stockAnalysisKsList, params)
 	},
 }
 

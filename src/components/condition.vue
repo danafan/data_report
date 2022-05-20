@@ -150,7 +150,6 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="自有货品：" v-if="isShow('sfzzk')">
-				<!-- <el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" placeholder="全部"> -->
 					<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option label="CHRISUNO" value="CHRISUNO"></el-option>
 					<el-option label="白坯" value="白坯"></el-option>

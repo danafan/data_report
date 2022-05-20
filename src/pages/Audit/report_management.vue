@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<dps @callBack="checkReq"></dps>
+			<dps @callBack="checkReq" from="1"></dps>
 			<el-form-item label="是否称重：">
 				<el-select v-model="sfcz" clearable :popper-append-to-body="false" placeholder="是否称重">
 					<el-option label="是" value="1"></el-option>
@@ -37,7 +37,7 @@
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item>
-			<el-button type="primary" size="small" @click="getList">搜索</el-button>
+			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 		</el-form-item>
 	</el-form>
 	<div class="toast">审计SD数据统计为实时数据～</div>
@@ -139,7 +139,7 @@
 </template>
 <script>
 	import dps from '../../components/results_components/dps.vue'
-	import {getCurrentDate,getMonthStartDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+	import {getCurrentDate,getNowDate,getMonthStartDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	import resource from '../../api/auditResource.js'
@@ -176,7 +176,7 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[getCurrentDate(),getCurrentDate()],	//发货日期
+				date:[getNowDate(),getNowDate()],	//发货日期
 				top_info:{},								//头部汇总数据
 				page:1,
 				pagesize:10,
@@ -190,6 +190,13 @@
 			this.getList();
 		},
 		methods:{
+			//搜索
+			searchFn(){
+				//获取顶部分块数据
+				this.getYtReportTotal();
+				//获取列表
+				this.getList();
+			},
 			//子组件传递过来的参数
 			checkReq(reqObj){
 				this.select_department_ids = reqObj.select_department_ids;

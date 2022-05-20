@@ -56,7 +56,8 @@
 <div v-show="tab_index == '3'">
 	<!-- 近一年鱼塘频次分析 -->
 	<div class="pc_chart" id="pc_chart"></div>
-	
+	<!-- 拉新分析 -->
+	<div class="pc_chart" id="lx_chart"></div>
 	<div style="display:flex">
 		<div style="margin-right: 100px">
 			<div class="table_title">
@@ -272,15 +273,16 @@
         	pcChartData(){
         		resource.pcChartData().then(res => {
         			if(res.data.code == 1){
+        				var echarts = require("echarts");
         				let data = res.data.data.tu_biao;
         				var month = data.month;
+        				// 近一年鱼塘频次分析
         				var persion_up = data.persion_up;
         				var persion_down = data.persion_down;
         				var gross = data.gross;
         				gross.map(item => {
         					item = parseInt(item);
         				})
-        				var echarts = require("echarts");
         				var pc_chart = document.getElementById('pc_chart');
         				let pcChart = echarts.getInstanceByDom(pc_chart)
         				if (pcChart == null) { 
@@ -288,6 +290,17 @@
         				}
         				var legend_list = ['鱼塘总量', '鱼塘五次以上人数百分比', '鱼塘五次以内人数百分比'];
         				pcChart.setOption(this.setOptions('近一年鱼塘频次分析',legend_list,month,gross,persion_up,persion_down,'单'));
+        				// 拉新分析
+        				var new_user = data.new_user;
+        				var tong_num = data.tong_num;
+        				var huan_num = data.huan_num;
+        				var lx_chart = document.getElementById('lx_chart');
+        				let lxChart = echarts.getInstanceByDom(lx_chart)
+        				if (lxChart == null) { 
+        					lxChart = echarts.init(lx_chart);
+        				}
+        				var new_legend_list = ['新用户数量', '同比', '环比'];
+        				lxChart.setOption(this.setOptions('拉新分析',new_legend_list,month,new_user,tong_num,huan_num,'人'));
         			}else{
         				this.$message.warning(res.data.msg);
         			}
@@ -343,13 +356,11 @@
         			}],
         			yAxis:[{
         				type: 'value',
-        				min: 0,
         				axisLabel: {
         					formatter: '{value} ' + unit
         				}
         			},{
         				type: 'value',
-        				min: 0,
         				axisLabel: {
         					formatter: '{value} %'
         				}
@@ -357,6 +368,7 @@
         			series: [{
         				name: legend[0],
         				type: 'bar',
+        				yAxisIndex:0,
         				emphasis: {
         					focus: 'series'
         				},
@@ -364,9 +376,13 @@
         			},{
         				name: legend[1],
         				type: 'line',
-        				yAxisIndex:0,
+        				yAxisIndex:1,
         				lineStyle: { 
         					 width:3.6
+        				},
+        				label:{
+        					show:true,
+        					formatter: '{c}%'
         				},
         				emphasis: {
         					focus: 'series'
@@ -378,6 +394,10 @@
         				yAxisIndex:1,
         				lineStyle: { 
         					 width:3.6
+        				},
+        				label:{
+        					show:true,
+        					formatter: '{c}%'
         				},
         				emphasis: {
         					focus: 'series'

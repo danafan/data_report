@@ -64,6 +64,10 @@
 			show_dept:{
 				type:Boolean,
 				default:true
+			},
+			from:{
+				type:String,
+				default:''
 			}
 		},
 		created(){
@@ -141,7 +145,7 @@
 			},
 			//部门列表
 			AjaxViewDept(){
-				resource.ajaxViewDept().then(res => {
+				resource.ajaxViewDept({from:this.from}).then(res => {
 					if(res.data.code == 1){
 						this.dept_list = res.data.data;
 					}else{
@@ -163,7 +167,7 @@
 			getStoreList(){
 				this.select_store_ids = [];
 				let dept_id = this.select_department_ids.join(',');
-				resource.ajaxViewStore({dept_id:dept_id,platform:this.select_plat_ids.join(',')}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id,from:this.from,platform:this.select_plat_ids.join(',')}).then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
 					}else{
