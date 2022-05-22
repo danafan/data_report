@@ -40,7 +40,6 @@
 			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 		</el-form-item>
 	</el-form>
-	<div class="toast">审计SD数据统计为实时数据～</div>
 	<div class="card_row">
 		<el-card class="el_card">
 			<div class="card_content">
@@ -113,6 +112,7 @@
 	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 		<el-table-column prop="fhrq" label="日期" width="100" align="center"></el-table-column>
 		<el-table-column prop="xsddh" label="线上订单号" show-overflow-tooltip align="center"></el-table-column>
+		<el-table-column prop="ysxsddh" label="原始线上订单号" show-overflow-tooltip align="center"></el-table-column>
 		<el-table-column prop="nbddh" label="内部订单号" width="100" show-overflow-tooltip align="center"></el-table-column>
 		<el-table-column prop="shop_name" label="店铺名称" show-overflow-tooltip align="center">
 		</el-table-column>
@@ -125,6 +125,8 @@
 		<el-table-column prop="note" label="便笺" width="80" show-overflow-tooltip align="center">
 		</el-table-column>
 		<el-table-column prop="is_after_sale" label="是否售后" width="80" show-overflow-tooltip align="center">
+		</el-table-column>
+		<el-table-column prop="weight" label="重量" width="80" show-overflow-tooltip align="center">
 		</el-table-column>
 		<el-table-column prop="is_weight" label="是否称重" width="80" show-overflow-tooltip align="center">
 		</el-table-column>
@@ -139,7 +141,7 @@
 </template>
 <script>
 	import dps from '../../components/results_components/dps.vue'
-	import {getCurrentDate,getNowDate,getMonthStartDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+	import {getCurrentDate,getMonthStartDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	import resource from '../../api/auditResource.js'
@@ -176,7 +178,7 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[getNowDate(),getNowDate()],	//发货日期
+				date:[getCurrentDate(),getCurrentDate()],	//发货日期
 				top_info:{},								//头部汇总数据
 				page:1,
 				pagesize:10,
@@ -192,6 +194,7 @@
 		methods:{
 			//搜索
 			searchFn(){
+				this.page = 1;
 				//获取顶部分块数据
 				this.getYtReportTotal();
 				//获取列表
@@ -291,11 +294,6 @@
 	}
 </script>
 <style lang="less" scoped>
-.toast{
-	margin-bottom: 10px;
-	font-size: 14px;
-	color: red;
-}
 .card_row{
 	display: flex;
 	align-items: center;

@@ -37,7 +37,20 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="写入日期：">
+			<el-form-item label="品类：">
+				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="性别：">
+				<el-select v-model="select_xb_id" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option label="男" value="男"></el-option>
+					<el-option label="女" value="女"></el-option>
+					<el-option label="通用" value="通用"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="库存日期：">
 				<el-date-picker v-model="date" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
 				</el-date-picker>
 			</el-form-item>
@@ -99,6 +112,7 @@
 		</div>
 		<!-- 表格 -->
 		<div class="title">款式库存数量</div>
+		<div class="toast">总成本：{{cbj_total}}万</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" @sort-change="sortChange">
 			<el-table-column prop="sjxrrq" label="日期" sortable width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="图片" width="120" align="center">
@@ -153,8 +167,10 @@
 				select_pp_list:[],		//选中的品牌列表
 				ks_list:[],				//款式编码列表
 				select_ks_ids:[],		//选中的款式编码列表
-				// date:getNowDate(),		//库存日期
-				date:"2022-05-17",		//库存日期
+				pl_list:[],									//品类列表
+				select_pl_ids:[],							//选中的品类列表
+				select_xb_id:"",							//选中的性别	
+				date:getNowDate(),		//库存日期
 				date_list:['2020','2021','2022'],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
 				kcCbChart:null,			//近一年库存/成本趋势图表
@@ -165,6 +181,8 @@
 				pagesize:10,			
 				imageDialog:false,		//图片放大弹窗
 				big_img_url:"",			//图片地址
+				dpChart:null,
+				cbj_total:0,			//总成本
 			}
 		},
 		created(){
@@ -174,6 +192,8 @@
 			this.stockAnalysis();
 			//款式分析（页面右上部分）
 			this.stockAnalysisKs();
+			//品类列表
+			this.getPl();
 			//款式列表
 			this.stockAnalysisKsList();
 		},
@@ -203,13 +223,28 @@
 			//款式编码
 			getKsbm(e){
 				if(e != ''){
-					resource.ajaxKsbm({name:e,from:this.page_type}).then(res => {
+					resource.ajaxKsbm({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.ks_list = res.data.data;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
 					})
+				}
+			},
+			//品类列表
+			getPl(){
+				if(this.$store.state.pl_list.length == 0){  //品类列表是空的
+					resource.ajaxPl().then(res => {
+						if(res.data.code == 1){
+							this.pl_list = res.data.data;
+							this.$store.commit('setPlList',this.pl_list);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.pl_list = this.$store.state.pl_list;
 				}
 			},
 			//搜索
@@ -227,7 +262,9 @@
 					jj:this.select_jj_ids.join(','),
 					ckwz:this.selected_ckwz_list.join(','),
 					pl:this.select_pp_list.join(','),
-					ksbm:this.select_ks_ids.join(',')
+					ksbm:this.select_ks_ids.join(','),
+					xb:this.select_xb_id,
+					cpfl:this.select_pl_ids.join(','),
 				}
 				resource.stockAnalysis(arg).then(res => {
 					if(res.data.code == 1){
@@ -240,7 +277,7 @@
 								var obj = {};
 								if(index > 0){
 									for(var k in list_item){
-										if(k.indexOf(this.date.split('-')[0]) > 0){
+										if(k.indexOf(this.date.split('-')[0]) > -1){
 											obj[k] = list_item[k];
 										}
 										obj.name = list_item.name;
@@ -258,6 +295,13 @@
 								if (dpChart == null) { 
 									dpChart = echarts.init(dp);
 								}
+								item.map(iii => {
+									for(var k in iii){
+										if(k.indexOf('cb_rate') > -1){
+											iii['value'] = iii[k];
+										}
+									}
+								})
 								dpChart.setOption(this.pieOptions(item));
 							})
 						})
@@ -273,9 +317,9 @@
 						trigger: 'item',
 						formatter: (params) => {
 							return params.data.name + '</br>' 
-							+ "总成本：" + params.data.cbj_total_`${this.date.split('-')[0]}` + '万</br>'
-							+ "数量：" + params.data.sl_total_`${this.date.split('-')[0]}` + '</br>'
-							+ "[总成本]的总额百分比：" + params.data.cb_rate_`${this.date.split('-')[0]}` + '%';
+							+ "总成本：" + params.data[`cbj_total_${this.date.split('-')[0]}`] + '万</br>'
+							+ "数量：" + params.data[`sl_total_${this.date.split('-')[0]}`] + '</br>'
+							+ "[总成本]的总额百分比：" + params.data[`cb_rate_${this.date.split('-')[0]}`] + '%';
 						},
 						backgroundColor:"rgba(0,0,0,.8)",
 						textStyle:{
@@ -368,42 +412,42 @@
 					legend: {
 						data: ['库存','总成本额']
 					},
-        			xAxis: [{
-        				type: 'category',
-        				data: x_data,
-        			}],
-        			yAxis:[{
-        				type: 'value',
-        				name:'库存',
-        				axisLabel: {
-        					formatter: '{value}万'
-        				}
-        			},{
-        				type: 'value',
-        				name:'总成本额',
-        				axisLabel: {
-        					formatter: '{value}万'
-        				}
-        			}],
-        			series: [{
-        				name: "库存",
-        				type: 'line',
-        				emphasis: {
-        					focus: 'series'
-        				},
-        				yAxisIndex:0,
-        				data: number_data
-        			},{
-        				name: "总成本额",
-        				type: 'line',
-        				emphasis: {
-        					focus: 'series'
-        				},
-        				yAxisIndex:1,
-        				data: total_data
-        			}]
-        		}
-        	},
+					xAxis: [{
+						type: 'category',
+						data: x_data,
+					}],
+					yAxis:[{
+						type: 'value',
+						name:'库存',
+						axisLabel: {
+							formatter: '{value}万'
+						}
+					},{
+						type: 'value',
+						name:'总成本额',
+						axisLabel: {
+							formatter: '{value}万'
+						}
+					}],
+					series: [{
+						name: "库存",
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						yAxisIndex:0,
+						data: number_data
+					},{
+						name: "总成本额",
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						yAxisIndex:1,
+						data: total_data
+					}]
+				}
+			},
         	//款式列表
         	stockAnalysisKsList(){
         		let arg = {
@@ -413,6 +457,8 @@
         			ckwz:this.selected_ckwz_list.join(','),
         			pl:this.select_pp_list.join(','),
         			ksbm:this.select_ks_ids.join(','),
+        			xb:this.select_xb_id,
+        			cpfl:this.select_pl_ids.join(','),
         			page:this.page,
         			pagesize:this.pagesize
         		}
@@ -421,7 +467,8 @@
         		}
         		resource.stockAnalysisKsList(arg).then(res => {
         			if(res.data.code == 1){
-        				this.dataObj = res.data.data;
+        				this.dataObj = res.data.data.list;
+        				this.cbj_total = res.data.data.cbj_total;
         			}else{
         				this.$message.warning(res.data.msg);
         			}
@@ -482,14 +529,12 @@
 .analysis_row{
 	width: 100%;
 	display: flex;
-	align-items: flex-end;
 	.analysis_left{
 		flex:1;
 	}
 	.analysis_right{
-		border:1px solid red;
-		width: 320px;
-		height: 320px;
+		width: 360px;
+		height: 360px;
 	}
 }
 .kc_cb{
@@ -546,6 +591,11 @@
 	margin-bottom: 15px;
 	font-size: 16px;
 	font-weight: bold;
+}
+.toast{
+	margin-bottom: 15px;
+	font-size: 14px;
+	color:red;
 }
 </style>
 

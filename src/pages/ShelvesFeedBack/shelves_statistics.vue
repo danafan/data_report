@@ -22,18 +22,23 @@
 				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="buts">
-			<el-table size="small" :data="dept_list" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+		<div class="top_table">
+			<el-table size="small" :data="dept_list" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" style="flex:1">
 				<el-table-column width="100" prop="dept_name" label="事业部" align="center"></el-table-column>
-				<el-table-column width="120" prop="num" label="未下架款式数量" align="center"></el-table-column>
+				<el-table-column width="120" prop="ksbm_num" label="未执行款式数量" align="center"></el-table-column>
+				<el-table-column width="120" prop="spbm_num" label="未执行链接数量" align="center"></el-table-column>
 			</el-table>
+			<div class="chart_box" id="chart_box"></div>
+		</div>
+		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column show-overflow-tooltip prop="dept_name" label="事业部" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip prop="dpmc" label="店铺名称" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip prop="shopowner_name" label="店长" align="center"></el-table-column>
-			<el-table-column show-overflow-tooltip prop="num" label="未下架款式数量" align="center"></el-table-column>
+			<el-table-column show-overflow-tooltip prop="ksbm_num" label="执行款式数量" align="center"></el-table-column>
+			<el-table-column show-overflow-tooltip width="120" prop="spbm_num" label="未执行链接数量" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip prop="xjfzr" label="下架负责人" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
@@ -43,11 +48,18 @@
 	</div>
 </template>
 <style lang="less" scoped>
+.top_table{
+	margin-bottom: 15px;
+	display: flex;
+	.chart_box{
+		width: 800px;
+		height: 300px;
+	}
+}
 .buts{
 	margin-bottom: 15px;
 	display: flex;
-	align-items: flex-end;
-	justify-content: space-between;
+	justify-content: flex-end;
 }
 </style>
 <script>
@@ -89,7 +101,8 @@
 					}]
 				},	 										//时间区间
 				dataObj:{},				//返回数据
-				dept_list:[]
+				dept_list:[],
+				chartBoxChart:null
 			}
 		},
 		created(){
@@ -152,6 +165,22 @@
 					if(res.data.code == 1){
 						this.dataObj = res.data.data.shop_list;
 						this.dept_list = res.data.data.dept_list;
+						var echarts = require("echarts");
+						let day_list = res.data.data.day_list;	//图表
+						let x_data = day_list.days;
+						let legend = [];
+						day_list.list.map(item => {
+							legend.push(item.name);
+						});
+						var chart_box = document.getElementById('chart_box');
+						this.chartBoxChart = echarts.getInstanceByDom(chart_box)
+						if (this.chartBoxChart == null) { 
+							this.chartBoxChart = echarts.init(chart_box);
+						}
+						this.chartBoxChart.setOption(this.setOptions(x_data,legend,day_list.list));
+						window.addEventListener('resize',() => {
+							this.chartBoxChart.resize();
+						});
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -167,6 +196,60 @@
 				this.page = val;
 				//获取列表
 				this.getList();
+			},
+			//设置图表
+			setOptions(x_data,legend,list){
+				return {
+					title: {
+						text: '未执行链接数量图表'
+					},
+					tooltip: {
+						trigger: 'axis',
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+						axisPointer: {            
+							type: 'shadow'        
+						}
+					},
+					legend: {
+						data: legend
+					},
+					xAxis: [{
+						type: 'category',
+						data: x_data,
+					}],
+					yAxis:[{
+						type: 'value',
+						axisLabel: {
+							formatter: '{value}'
+						}
+					}],
+					series: [{
+						name: list[0].name,
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						data: list[0].list
+					},{
+						name:list[1].name,
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						data: list[1].list
+					},{
+						name: list[2].name,
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						data: list[2].list
+					}]
+				}
 			},
 		}
 	}
