@@ -199,6 +199,8 @@ let path = {
 	stockAnalysis:'stock_analysis/index',							//库存分析（页面左侧部分）
 	stockAnalysisKs:'stock_analysis/ks',							//款式分析（页面右上部分）
 	stockAnalysisKsList:'stock_analysis/ks_list',					//款式列表
+	dynamicAnalysisIndex:'dynamic_analysis/index',					//库存动态分析顶部表格列表
+	dynamicAnalysisList:'dynamic_analysis/list',					//库存动态分析底部表格列表
 
 }					
 export default{
@@ -1029,6 +1031,14 @@ export default{
 	//款式列表
 	stockAnalysisKsList(params){
 		return http.get(path.stockAnalysisKsList, params)
+	},
+	//库存动态分析顶部表格列表
+	dynamicAnalysisIndex(params){
+		return http.get(path.dynamicAnalysisIndex, params)
+	},
+	//库存动态分析底部表格列表
+	dynamicAnalysisList(params){
+		return http.get(path.dynamicAnalysisList, params)
 	},
 }
 

@@ -3,6 +3,10 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<StaticAnalysis v-if="item.web_url == 'static_analysis'"/>
+				<!-- <DynamicAnalysis v-if="item.web_url == 'dynamic_analysis'"/> -->
+			</el-tab-pane>
+			<el-tab-pane label="库存静态分析" lazy name="dynamic_analysis" class="tab_pane_box">
+				<DynamicAnalysis/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -14,6 +18,7 @@
 </style>
 <script>
 	import StaticAnalysis from './inventory_info/static_analysis.vue'
+	import DynamicAnalysis from './inventory_info/dynamic_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -52,7 +57,8 @@
 			}
 		},
 		components:{
-			StaticAnalysis
+			StaticAnalysis,
+			DynamicAnalysis
 		}
 	}
 </script>

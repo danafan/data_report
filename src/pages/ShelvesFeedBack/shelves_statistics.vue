@@ -201,7 +201,7 @@
 			setOptions(x_data,legend,list){
 				return {
 					title: {
-						text: '未执行链接数量图表'
+						text: '未执行款式数量图表'
 					},
 					tooltip: {
 						trigger: 'axis',

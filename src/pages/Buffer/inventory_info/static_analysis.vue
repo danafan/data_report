@@ -22,7 +22,7 @@
 			</el-form-item>
 			<el-form-item label="所在仓库：">
 				<el-select v-model="selected_ckwz_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option :label="item.ckwz" :value="item.id" v-for="item in ckwz_list" :key="item.id"></el-option>
+					<el-option :label="item.ckwz" :value="item.ckwz" v-for="item in ckwz_list" :key="item.id"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品牌：">
@@ -63,12 +63,31 @@
 			<div class="analysis_left">
 				<div class="title">{{item.name}}库存分析</div>
 				<el-table :data="item.list" size="small" max-height="300">
-					<el-table-column prop="name" :label="item.name" fixed show-overflow-tooltip align="center"></el-table-column>
+					<el-table-column prop="name" :label="item.name" fixed show-overflow-tooltip align="center">
+						<template slot-scope="scope">
+								<div>{{scope.row.name == null?'-':scope.row.name}}</div>
+							</template>
+					</el-table-column>
 					<el-table-column :label="i" v-for="i in date_list" align="center">
-						<el-table-column :prop="`sl_total_${i}`" label="数量" align="center"> </el-table-column>
-						<el-table-column :prop="`cbj_total_${i}`" label="总成本额" align="center"> </el-table-column>
-						<el-table-column :prop="`cb_rate_${i}`" label="成本占比" align="center"> </el-table-column>
-						<el-table-column :prop="`year_rate_${i}`" label="年同比(成本)" align="center"> </el-table-column>
+						<el-table-column :prop="`sl_total_${i}`" label="数量" align="center">
+						</el-table-column>
+						<el-table-column :prop="`cbj_total_${i}`" label="总成本额" align="center">
+							<template slot-scope="scope">
+								<div>{{scope.row[`cbj_total_${i}`]}}万</div>
+							</template>
+						</el-table-column>
+						<el-table-column :prop="`cb_rate_${i}`" label="成本占比" align="center">
+							<template slot-scope="scope">
+								<div>{{scope.row[`cb_rate_${i}`]}}%</div>
+							</template>
+						</el-table-column>
+						<el-table-column :prop="`year_rate_${i}`" label="年同比(成本)" align="center">
+							<template slot-scope="scope">
+								<div v-if="scope.row[`year_rate_${i}`] == '-'">{{scope.row[`year_rate_${i}`]}}</div>
+								<div style="color:red" v-if="scope.row[`year_rate_${i}`] >= 0">{{scope.row[`year_rate_${i}`]}}%</div>
+								<div style="color:green" v-if="scope.row[`year_rate_${i}`] < 0">{{scope.row[`year_rate_${i}`]}}%</div>
+							</template>
+						</el-table-column>
 					</el-table-column>
 				</el-table>
 			</div>
@@ -101,7 +120,7 @@
 				<div class="number_row">
 					<div class="label">成本</div>
 					<div class="right">
-						<div class="val">{{mom.cbj_total}}</div>
+						<div class="val">{{mom.cbj_total}}万</div>
 						<div class="hb">环比</div>
 						<i class="el-icon-caret-top" style="color: red" v-if="mom.cbj_rate >= 0"></i>
 						<i class="el-icon-caret-bottom" style="color: green" v-else></i>
@@ -129,7 +148,7 @@
 			<el-table-column prop="jj" label="季节" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="sjcb" label="审计成本" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
-					<div>{{scope.row.cbj_total}}元</div>
+					<div v-if="scope.row.sjcb !== null">{{scope.row.sjcb}}元</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="sl" label="数量" sortable show-overflow-tooltip align="center"></el-table-column>
@@ -167,9 +186,9 @@
 				select_pp_list:[],		//选中的品牌列表
 				ks_list:[],				//款式编码列表
 				select_ks_ids:[],		//选中的款式编码列表
-				pl_list:[],									//品类列表
-				select_pl_ids:[],							//选中的品类列表
-				select_xb_id:"",							//选中的性别	
+				pl_list:[],				//品类列表
+				select_pl_ids:[],		//选中的品类列表
+				select_xb_id:"",		//选中的性别	
 				date:getNowDate(),		//库存日期
 				date_list:['2020','2021','2022'],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
@@ -249,6 +268,7 @@
 			},
 			//搜索
 			searchFn(){
+				this.page = 1;
 				//库存分析（页面左侧部分）
 				this.stockAnalysis();
 				//款式列表
@@ -371,7 +391,7 @@
 						//百分比
 						this.mom = res.data.data.mom;
 						this.mom.ksbm_count = chart_data[chart_data.length - 1].ksbm_count;
-						this.mom.sl_total = chart_data[chart_data.length - 1].sl_total;
+						this.mom.sl_total = chart_data[chart_data.length - 1].sl_total_origin;
 						this.mom.cbj_total = chart_data[chart_data.length - 1].cbj_total;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -510,12 +530,12 @@
         	handleSizeChange(val) {
         		this.pagesize = val;
 				//获取列表
-				this.getList();
+				this.stockAnalysisKsList();
 			},
 			handleCurrentChange(val) {
 				this.page = val;
 				//获取列表
-				this.getList();
+				this.stockAnalysisKsList();
 			},
         	//图片放大
         	bigImg(big_img_url){
