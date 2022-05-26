@@ -5,9 +5,9 @@
 				<StaticAnalysis v-if="item.web_url == 'static_analysis'"/>
 				<!-- <DynamicAnalysis v-if="item.web_url == 'dynamic_analysis'"/> -->
 			</el-tab-pane>
-			<el-tab-pane label="库存静态分析" lazy name="dynamic_analysis" class="tab_pane_box">
+			<!-- <el-tab-pane label="库存动态分析" lazy name="dynamic_analysis" class="tab_pane_box">
 				<DynamicAnalysis/>
-			</el-tab-pane>
+			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>
