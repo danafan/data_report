@@ -1,29 +1,15 @@
 <template>
 	<div>
+		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="店铺名称：">
-				<el-input clearable v-model="shop_name" placeholder="店铺名称"></el-input>
-			</el-form-item>
-			<el-form-item label="店铺ID：">
-				<el-input clearable v-model="shop_code" placeholder="店铺ID"></el-input>
-			</el-form-item>
 			<el-form-item label="聚水潭编号：">
 				<el-input clearable v-model="jst_code" placeholder="聚水潭编号"></el-input>
-			</el-form-item>
-			<el-form-item label="项目部：">
-				<el-input clearable v-model="dept_name" placeholder="项目部"></el-input>
-			</el-form-item>
-			<el-form-item label="二级部门：">
-				<el-input clearable v-model="dept_2" placeholder="二级部门"></el-input>
 			</el-form-item>
 			<el-form-item label="T8编码：">
 				<el-input clearable v-model="yy_t8_code" placeholder="T8编码"></el-input>
 			</el-form-item>
 			<el-form-item label="核算主体：">
 				<el-input clearable v-model="company" placeholder="核算主体"></el-input>
-			</el-form-item>
-			<el-form-item label="平台：">
-				<el-input clearable v-model="platform" placeholder="平台"></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
@@ -62,19 +48,18 @@
 	import resource from '../../api/storeResource.js'
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+	import dps from '../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
+				select_department_ids:[],	//选中的项目部列表
+				select_plat_ids:[],			//选中的平台列表
+				select_store_ids:[],		//选中的店铺列表
 				page:1,
 				pagesize:15,
-				shop_name:"",		//店铺名称
-				shop_code:"",		//店铺ID
 				jst_code:"",		//聚水潭编号
-				dept_name:"",
-				dept_2:"",
 				yy_t8_code:"",
 				company:"",
-				platform:"",
 				dept_name:"",
 				dataObj:{},			//返回数据
 			}
@@ -84,6 +69,12 @@
 			this.getList();
 		},
 		methods:{
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_department_ids = reqObj.select_department_ids;
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
+			},
 			//搜索
 			searchFun(){
 				this.page = 1;
@@ -93,14 +84,12 @@
 			//获取列表
 			getList(){
 				let arg = {
-					shop_name:this.shop_name,
-					shop_code:this.shop_code,
 					jst_code:this.jst_code,		//聚水潭编号
-					dept_name:this.dept_name,
-					dept_2:this.dept_2,
 					yy_t8_code:this.yy_t8_code,
+					dept_id:this.select_department_ids.join(','),
+					platform:this.select_plat_ids.join(','),
+					shop_id:this.select_store_ids.join(','),
 					company:this.company,
-					platform:this.platform,
 					page:this.page,
 					pagesize:this.pagesize,
 				}
@@ -120,14 +109,12 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						shop_name:this.shop_name,
-						shop_code:this.shop_code,
 						jst_code:this.jst_code,		
-						dept_name:this.dept_name,
-						dept_2:this.dept_2,
 						yy_t8_code:this.yy_t8_code,
 						company:this.company,
-						platform:this.platform,
+						dept_id:this.select_department_ids.join(','),
+						platform:this.select_plat_ids.join(','),
+						shop_id:this.select_store_ids.join(','),
 					}
 					resource.shopExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'店铺列表');
@@ -150,6 +137,9 @@
 				//获取列表
 				this.getList();
 			},
+		},
+		components:{
+			dps
 		}
 	}
 </script>
