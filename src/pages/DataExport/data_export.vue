@@ -2,11 +2,7 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<StaticAnalysis v-if="item.web_url == 'static_analysis'"/>
-				<DynamicAnalysis v-if="item.web_url == 'dynamic_analysis'"/>
-			</el-tab-pane>
-			<el-tab-pane label="商品资料卡片" lazy name="goods_info_card" class="tab_pane_box">
-				<GoodsInfoCard/>
+				<Procurement v-if="item.web_url == 'procurement'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -17,9 +13,7 @@
 }
 </style>
 <script>
-	import StaticAnalysis from './inventory_info/static_analysis.vue'
-	import DynamicAnalysis from './inventory_info/dynamic_analysis.vue'
-	import GoodsInfoCard from './inventory_info/goods_info_card.vue'
+	import Procurement from './procurement/procurement.vue'
 	export default{
 		data(){
 			return{
@@ -44,7 +38,7 @@
 			},
 			getIndex(){
 				this.ss.map(item => {
-					if (item.web_url == 'inventory_info') {
+					if (item.web_url == 'data_export') {
 						this.menu_list = item.list;
 						let current_tab = this.$store.state.current_tab;
 						this.activeTab = current_tab == ''?this.menu_list[0].web_url:current_tab;
@@ -58,9 +52,7 @@
 			}
 		},
 		components:{
-			StaticAnalysis,
-			DynamicAnalysis,
-			GoodsInfoCard
+			Procurement,
 		}
 	}
 </script>

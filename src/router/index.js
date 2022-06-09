@@ -47,6 +47,8 @@ const sales_forecast_division = resolve=>require(['@/pages/TargetSales/auditDivi
 const dept_target = resolve=>require(['@/pages/TargetSales/auditDivision/dept_target'],resolve)   //拆分项目部（事业部）
 const audit_manager = resolve=>require(['@/pages/TargetSales/auditManager/audit_manager'],resolve)   //审核表（总经理）
 const dept_target_manager = resolve=>require(['@/pages/TargetSales/auditManager/dept_target'],resolve)   //拆分项目部（总经理）
+//数据导出
+const data_export = resolve=>require(['@/pages/DataExport/data_export'],resolve)   //采购入库
 Vue.use(Router)
 
 const router = new Router({
@@ -89,7 +91,8 @@ const router = new Router({
     { path: '/sales_forecast_division',name:"销售额预估表（事业部）", component: sales_forecast_division},
     { path: '/dept_target',name:"拆分项目部（事业部）", component: dept_target},
     { path: '/audit_manager',name:"审核表（总经理）", component: audit_manager},
-    { path: '/dept_target_manager',name:"审核表（总经理）", component: dept_target_manager}
+    { path: '/dept_target_manager',name:"审核表（总经理）", component: dept_target_manager},
+    { path: '/data_export',name:"数据导出", component: data_export},
     ]
   }
   ]

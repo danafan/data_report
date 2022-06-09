@@ -39,11 +39,21 @@ instance.interceptors.request.use(
 instance.interceptors.response.use(response => {
   endLoading()
   switch (response.data.code) {
+    case 1:
+    return response;
     case 10000:
     localStorage.clear();
     router.replace("/login");
+    return;
+    case 0:
+    Message({
+      type: 'warning',
+      message: response.data.msg
+    });
+    return;
+    default:
+       return response;
   }
-  return response;
 },function (error) {
   endLoading()
   if (error.response) {
