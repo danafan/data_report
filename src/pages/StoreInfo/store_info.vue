@@ -29,6 +29,9 @@
 				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_name" label="项目部" align="center"></el-table-column>
 			<el-table-column prop="dept_2" label="二级部门" align="center"></el-table-column>
@@ -48,10 +51,17 @@
 	</div>
 </template>
 <style lang="less" scoped>
-
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 </style>
 <script>
 	import resource from '../../api/storeResource.js'
+	import {exportPost} from '../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -101,6 +111,33 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						shop_name:this.shop_name,
+						shop_code:this.shop_code,
+						jst_code:this.jst_code,		
+						dept_name:this.dept_name,
+						dept_2:this.dept_2,
+						yy_t8_code:this.yy_t8_code,
+						company:this.company,
+						platform:this.platform,
+					}
+					resource.shopExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'店铺列表');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//分页
 			handleSizeChange(val) {

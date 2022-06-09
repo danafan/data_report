@@ -8,6 +8,9 @@
 			<el-tab-pane label="商品资料卡片" lazy name="goods_info_card" class="tab_pane_box">
 				<GoodsInfoCard/>
 			</el-tab-pane>
+			<el-tab-pane label="商品库存信息" lazy name="goods_inventory" class="tab_pane_box">
+				<GoodsInventory/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -20,6 +23,7 @@
 	import StaticAnalysis from './inventory_info/static_analysis.vue'
 	import DynamicAnalysis from './inventory_info/dynamic_analysis.vue'
 	import GoodsInfoCard from './inventory_info/goods_info_card.vue'
+	import GoodsInventory from './inventory_info/goods_inventory.vue'
 	export default{
 		data(){
 			return{
@@ -60,7 +64,8 @@
 		components:{
 			StaticAnalysis,
 			DynamicAnalysis,
-			GoodsInfoCard
+			GoodsInfoCard,
+			GoodsInventory
 		}
 	}
 </script>

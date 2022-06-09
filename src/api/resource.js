@@ -204,6 +204,9 @@ let path = {
 	getShopCard:'shop_info/shop_card',								//获取资料卡片信息
 	getShopTrend:'shop_info/shop_trend',							//获取资料图表
 	shopDetailCard:'shop_info/shop_detail_card',					//商品资料列表
+	clearBatch:'dynamic_analysis/clear_batch',						//清仓汇总（批次列表）
+	dynamicAnalysisClear:'dynamic_analysis/clear',					//清仓汇总展示	
+	clearChart:'dynamic_analysis/clear_chart',						//清仓汇总-清仓，折价趋势图
 
 }					
 export default{
@@ -1054,6 +1057,18 @@ export default{
 	//商品资料列表
 	shopDetailCard(params){
 		return http.get(path.shopDetailCard, params)
+	},
+	//清仓汇总（批次列表）
+	clearBatch(params){
+		return http.get(path.clearBatch, params)
+	},
+	//清仓汇总展示
+	dynamicAnalysisClear(params){
+		return http.get(path.dynamicAnalysisClear, params)
+	},
+	//清仓汇总-清仓，折价趋势图
+	clearChart(params){
+		return http.get(path.clearChart, params)
 	},
 }
 
