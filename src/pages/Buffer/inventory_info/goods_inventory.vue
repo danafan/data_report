@@ -72,6 +72,82 @@
 				<div class="qcjdzhb" id="qcjdzhb"></div>
 			</el-card>
 		</div>
+		<div class="table_charts_row" v-for="item in clear_list">
+			<div class="analysis_left">
+				<div class="title">{{item.name}}</div>
+				<el-table :data="item.list" size="small" max-height="300" :cell-style="itemStyle">
+					<el-table-column prop="name" :label="item.name.split('清仓进度')[0]" fixed show-overflow-tooltip align="center">
+					</el-table-column>
+					<el-table-column label="起始库存" align="center">
+						<el-table-column prop="start_count" label="款数" align="center">
+						</el-table-column>
+						<el-table-column prop="start_kc" label="库存" align="center">
+						</el-table-column>
+						<el-table-column prop="start_progress" label="进度" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.start_progress}}%</div>
+						</template>
+						</el-table-column>
+					</el-table-column>
+					<el-table-column label="第一周" align="center">
+						<el-table-column prop="one_count" label="款数" align="center">
+						</el-table-column>
+						<el-table-column prop="one_week" label="库存" align="center">
+						</el-table-column>
+						<el-table-column prop="one_progress" label="进度" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.one_progress}}%</div>
+						</template>
+						</el-table-column>
+					</el-table-column>
+					<el-table-column label="第二周" align="center">
+						<el-table-column prop="two_count" label="款数" align="center">
+						</el-table-column>
+						<el-table-column prop="two_week" label="库存" align="center">
+						</el-table-column>
+						<el-table-column prop="two_progress" label="进度" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.two_progress}}%</div>
+						</template>
+						</el-table-column>
+					</el-table-column>
+					<el-table-column label="第三周" align="center">
+						<el-table-column prop="three_count" label="款数" align="center">
+						</el-table-column>
+						<el-table-column prop="three_week" label="库存" align="center">
+						</el-table-column>
+						<el-table-column prop="three_progress" label="进度" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.three_progress}}%</div>
+						</template>
+						</el-table-column>
+					</el-table-column>
+					<el-table-column label="第四周" align="center">
+						<el-table-column prop="four_count" label="款数" align="center">
+						</el-table-column>
+						<el-table-column prop="four_week" label="库存" align="center">
+						</el-table-column>
+						<el-table-column prop="four_progress" label="进度" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.four_progress}}%</div>
+						</template>
+						</el-table-column>
+					</el-table-column>
+					<el-table-column label="当前库存" align="center">
+						<el-table-column prop="now_count" label="款数" align="center">
+						</el-table-column>
+						<el-table-column prop="now_kc" label="库存" align="center">
+						</el-table-column>
+						<el-table-column prop="now_progress" label="进度" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.now_progress}}%</div>
+						</template>
+						</el-table-column>
+					</el-table-column>
+				</el-table>
+			</div>
+			<!-- <div :id="`analysis_${index}`" class="analysis_right"></div> -->
+		</div>
 	</div>
 </template>
 <script>
@@ -93,6 +169,7 @@
 				qcjdzhbChart:null,		//清仓进度环比
 				series_data_funnel:[],	//清仓进度环比数据
 				qczjChart:null,			//清仓，折价趋势图
+				clear_list:[],			//清仓汇总-列表
 			}
 		},
 		created(){
@@ -106,6 +183,8 @@
 			this.dynamicAnalysisClear();
 			//清仓汇总-清仓，折价趋势图
 			this.clearChart();
+			//清仓汇总-列表
+			this.dynamicAnalysisclearList();
 		},
 		methods:{
 			//批次列表
@@ -407,6 +486,55 @@
 					}
 					]
 				}
+			},
+			//清仓汇总-列表
+			dynamicAnalysisclearList(){
+				resource.dynamicAnalysisclearList().then(res => {
+					if(res.data.code == 1){
+						let clear_list = res.data.data;
+						clear_list.map(item => {
+							item.list.map(i => {
+								i['start_progress'] = i.progress.start;
+								i['one_progress'] = i.progress.one;
+								i['two_progress'] = i.progress.two;
+								i['three_progress'] = i.progress.three;
+								i['four_progress'] = i.progress.four;
+								i['now_progress'] = i.progress.now;
+							})
+						});
+						this.clear_list = clear_list;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//进度单元格背景色
+			itemStyle(item){
+				if(item.column.property.indexOf('progress') > -1){
+					var progress = 0;
+					switch(item.columnIndex){
+						case 3:
+						progress = item.row.start_progress < 20?20:item.row.start_progress > 100?100:item.row.start_progress;
+						break;
+						case 6:
+						progress = item.row.one_progress < 20?20:item.row.one_progress > 100?100:item.row.one_progress;
+						break;
+						case 9:
+						progress = item.row.two_progress < 20?20:item.row.two_progress > 100?100:item.row.two_progress;
+						break;
+						case 12:
+						progress = item.row.three_progress < 20?20:item.row.three_progress > 100?100:item.row.three_progress;
+						break;
+						case 15:
+						progress = item.row.four_progress < 20?20:item.row.four_progress > 100?100:item.row.four_progress;
+						break;
+						case 18:
+						progress = item.row.now_progress < 20?20:item.row.now_progress > 100?100:item.row.now_progress;
+						break;
+					}
+					let opacity = progress/100;
+					return 'background: rgba(255,140,0,' + opacity + ');font-weight:bold'; 
+				}
 			}
 		}
 	}
@@ -473,5 +601,21 @@
 		}
 	}
 }
-
+.table_charts_row{
+	margin-top: 15px;
+	width: 100%;
+	display: flex;
+	.analysis_left{
+		flex:1;
+		.title{
+			margin-bottom: 15px;
+			font-size: 16px;
+			font-weight: bold;
+		}
+	}
+	.analysis_right{
+		width: 360px;
+		height: 360px;
+	}
+}
 </style>

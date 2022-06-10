@@ -207,6 +207,8 @@ let path = {
 	clearBatch:'dynamic_analysis/clear_batch',						//清仓汇总（批次列表）
 	dynamicAnalysisClear:'dynamic_analysis/clear',					//清仓汇总展示	
 	clearChart:'dynamic_analysis/clear_chart',						//清仓汇总-清仓，折价趋势图
+	shopDetailCustomList:'shop_info/shop_detail_custom_list',		//商品资料明细自定义列
+	dynamicAnalysisclearList:'dynamic_analysis/clear_list',			//清仓汇总-列表
 
 }					
 export default{
@@ -1069,6 +1071,14 @@ export default{
 	//清仓汇总-清仓，折价趋势图
 	clearChart(params){
 		return http.get(path.clearChart, params)
+	},
+	//商品资料明细自定义列
+	shopDetailCustomList(params){
+		return http.post(path.shopDetailCustomList, params)
+	},
+	//清仓汇总-列表
+	dynamicAnalysisclearList(params){
+		return http.get(path.dynamicAnalysisclearList, params)
 	},
 }
 

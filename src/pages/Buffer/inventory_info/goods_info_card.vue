@@ -174,96 +174,44 @@
 				<div class="trend" id="zzts"></div>
 			</div>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" @sort-change="sortChange">
-			<el-table-column label="月份" prop="fkrq" width="100" sortable align="center">
-			</el-table-column>
-			<el-table-column label="公司" prop="company" width="160" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="部门" prop="dept_name" width="160" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="平台" prop="platform" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="店铺ID" prop="shop_code" width="120" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="供应商款号" prop="gyskh" width="120" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column prop="supplier_ksbm" label="图片" width="120" align="center">
+		<div class="buts">
+			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
+		</div>
+		<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
+			<el-table-column :label="item.row_name" :prop="item.row_field_name" sortable :width="maxWidth(item.row_field_name)" align="center" v-for="item in title_list" show-overflow-tooltip>
 				<template slot-scope="scope">
-					<img style="width: 80px;height: 80px" :src="scope.row.tp" @click="bigImg(scope.row.tp)">
+					<!-- 总坑产 -->
+					<div class="background_box" :style="{width:`${max == 0?0:(160/max)*Math.abs(scope.row.xsje)}px`,background:'#FEDB6F'}" v-if="item.row_field_name == 'xsje' && scope.$index > 0">{{scope.row.xsje}}</div>
+					<!-- 图片 -->
+					<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
+					<div v-else>{{scope.row[item.row_field_name]}}</div>
 				</template>
-			</el-table-column>
-			<el-table-column label="入库成本" prop="xscb" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="最新调价成本" prop="tjcb" width="120" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="总坑产" prop="xsje" width="160" sortable>
-				<template slot-scope="scope">
-					<div class="background_box" :style="{width:`${max == 0?0:(160/max)*Math.abs(scope.row.xsje)}px`,background:'#FEDB6F'}">{{scope.row.xsje}}</div>
-				</template>
-			</el-table-column>
-			<el-table-column label="总坑产销售数量" prop="xssl" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="补单金额" prop="sd_xsje" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="补单数量" prop="sd_xssl" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="补单比例" prop="bdbl" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="真实坑产(-刷单)" prop="zskc" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="真实坑产数量(-刷单)" prop="zskc_num" width="160" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="空包金额" prop="kb_xsje" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="空包数量" prop="kb_xssl" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="发货前退货金额" prop="pre_thje" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="发货前退货数量" prop="pre_thsl" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="发货前退货率" prop="fhqthl" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="取消订单金额" prop="qx_xsje" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="取消订单数量" prop="qx_xssl" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="待发货销售金额" prop="dfhje" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="待发货销售数量" prop="dfh_num" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="发货后退货销售金额" prop="fut_thje" width="160" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="发货后退货销售数量" prop="fut_thsl" width="160" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="发货后退货率" prop="fhhthl" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="真实销售金额" prop="zs_xsje" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="真实销售数量" prop="zs_xssl" width="130" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="补发数量" prop="bh_xssl" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="换货数量" prop="hh_xssl" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="实际发货销售金额" prop="sjfhje" width="140" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="实际发货销售数量" prop="sjfh_num" width="140" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="实际发货销售成本" prop="hh_xssl" width="140" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="真实退货金额" prop="zs_thje" width="120" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="真实退货数量" prop="zs_thsl" width="120" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="毛利额" prop="mle" width="100" show-overflow-tooltip sortable align="center">
-			</el-table-column>
-			<el-table-column label="毛利率" prop="mlv" width="100" show-overflow-tooltip sortable align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
+		<!-- 自定义列表 -->
+		<el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
+			<div class="select_box">
+				<el-checkbox-group v-model="row_ids">
+					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+				</el-checkbox-group>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="Restore">恢复默认</el-button>
+				<el-button size="small" @click="show_custom = false">取消</el-button>
+				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+			</div>
+		</el-dialog>
+		<!-- 图片放大 -->
+		<el-dialog title="图片" :visible.sync="imageDialog" width="30%" center>
+			<img class="big_img" :src="big_img_url">
+			<span slot="footer" class="dialog-footer">
+				<el-button type="primary" @click="imageDialog = false">关闭</el-button>
+			</span>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -307,7 +255,14 @@
 				page:1,
 				sort:"",
 				dataObj:{},
-				max:0
+				title_list:[],
+				max:0,
+				imageDialog:false,		//图片放大弹窗
+				big_img_url:"",
+				show_custom:false,		//自定义列表
+				row_ids:[],	
+				selected_ids:[],
+				view_row:[],			//
 			}
 		},
 		created(){
@@ -475,11 +430,33 @@
 				resource.shopDetailCard(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data.detail;
+						this.title_list = res.data.data.title_list;
+						this.view_row = res.data.data.view_row;
+						this.selected_ids = res.data.data.selected_ids;
 						this.max = res.data.data.max;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//某一行添加颜色
+			tableRowClassName({row, rowIndex}) {
+				if (rowIndex == 0) {
+					return 'total_style';
+				}
+				return '';
+			},
+			//宽度
+			maxWidth(row_field_name){
+				if(row_field_name == 'company' || row_field_name == 'dept_name' || row_field_name == 'xsje' || row_field_name == 'zskc_num'||row_field_name == 'fut_thje' || row_field_name == 'fut_thsl'){
+					return 160;
+				}else if(row_field_name == 'sjfhje' || row_field_name == 'sjfh_num' || row_field_name == 'sjfh_cb'){
+					return 140;
+				}else if(row_field_name == 'shop_code' || row_field_name == 'tp' || row_field_name == 'tjcb' || row_field_name == 'zs_thje'||row_field_name == 'zs_thsl' || row_field_name == 'zs_xssl' || row_field_name == 'zs_xsje' || row_field_name == 'fhhthl' || row_field_name == 'dfh_num' || row_field_name == 'dfhje' || row_field_name == 'qx_xssl' || row_field_name == 'qx_xsje' || row_field_name == 'fhqthl' || row_field_name == 'pre_thsl' || row_field_name == 'pre_thje' || row_field_name == 'zskc' || row_field_name == 'xssl'){
+					return 130;
+				}else{
+					return 100;
+				}
 			},
 			//分页
 			handleSizeChange(val) {
@@ -492,6 +469,11 @@
 				//获取列表
 				this.shopDetailCard();
 			},
+			//放大图片
+			bigImg(big_img_url){
+				this.imageDialog = true;
+				this.big_img_url = big_img_url;
+			},
 			//排序
 			sortChange(column){
 				if(column.order){
@@ -502,32 +484,46 @@
 				}
 				this.shopDetailCard();
 			},
-			// 表尾合计行处理
-			getSummaries(param) {
-				const { columns, data } = param;
-				const sums = [];
-				columns.forEach((column, index) => {
-					if (index === 0) {
-						sums[index] = '总计';
-						return;
-					}
-					const values = data.map(item => Number(item[column.property]));
-					sums[index] = values.reduce((prev, curr) => {
-						return prev + curr;
-					}, 0);
-					sums[index] = sums[index].toFixed(2);
-					if (index === 10) {	//总成本
-						sums[index] = sums[index] + '万';
+			//自定义列表
+			customFun(){
+				this.show_custom = true;
+				this.row_ids = this.selected_ids;
+			},
+			//恢复默认
+			Restore(){
+				this.row_ids = [];
+				this.view_row.map(item => {
+					this.row_ids.push(item.row_id)
+				})
+			},
+			//设置自定义列
+			setColumns(){
+				resource.shopDetailCustomList({column:this.row_ids.join(',')}).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.show_custom = false;
+						this.shopDetailCard();
 					}else{
-						sums[index] = '';
+						this.$message.warning(res.data.msg);
 					}
 				});
-				return sums;
 			},
 		}
 	}
 </script>
+<style>
+.el-table .total_style {
+	font-weight: bold;
+	font-size: 14px;
+}
+</style>
 <style lang="less" scoped>
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 .top_content{
 	display: flex;
 	.content_item{

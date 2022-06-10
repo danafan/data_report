@@ -5,13 +5,13 @@
 				<el-date-picker v-model="date" type="daterange" :clearable="false" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item label="分仓：">
+			<el-form-item label="仓储方：">
 				<el-select v-model="wms_co_id" clearable :popper-append-to-body="false" filterable placeholder="全部">
 					<el-option v-for="item in wms_list" :key="item.wms_co_id" :label="item.name" :value="item.wms_co_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="仓库：">
+			<el-form-item label="仓库类型：">
 				<el-select v-model="wh_id" clearable :popper-append-to-body="false" filterable placeholder="全部">
 					<el-option v-for="item in wh_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
