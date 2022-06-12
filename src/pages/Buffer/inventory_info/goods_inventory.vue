@@ -72,10 +72,10 @@
 				<div class="qcjdzhb" id="qcjdzhb"></div>
 			</el-card>
 		</div>
-		<div class="table_charts_row" v-for="item in clear_list">
+		<div class="table_charts_row" v-for="(item,index) in clear_list">
 			<div class="analysis_left">
 				<div class="title">{{item.name}}</div>
-				<el-table :data="item.list" size="small" max-height="300" :cell-style="itemStyle">
+				<el-table :data="item.list" size="small" max-height="300" style="width: 100%" :cell-style="itemStyle">
 					<el-table-column prop="name" :label="item.name.split('清仓进度')[0]" fixed show-overflow-tooltip align="center">
 					</el-table-column>
 					<el-table-column label="起始库存" align="center">
@@ -84,9 +84,9 @@
 						<el-table-column prop="start_kc" label="库存" align="center">
 						</el-table-column>
 						<el-table-column prop="start_progress" label="进度" align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.start_progress}}%</div>
-						</template>
+							<template slot-scope="scope">
+								<div>{{scope.row.start_progress}}%</div>
+							</template>
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label="第一周" align="center">
@@ -95,9 +95,9 @@
 						<el-table-column prop="one_week" label="库存" align="center">
 						</el-table-column>
 						<el-table-column prop="one_progress" label="进度" align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.one_progress}}%</div>
-						</template>
+							<template slot-scope="scope">
+								<div>{{scope.row.one_progress}}%</div>
+							</template>
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label="第二周" align="center">
@@ -106,9 +106,9 @@
 						<el-table-column prop="two_week" label="库存" align="center">
 						</el-table-column>
 						<el-table-column prop="two_progress" label="进度" align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.two_progress}}%</div>
-						</template>
+							<template slot-scope="scope">
+								<div>{{scope.row.two_progress}}%</div>
+							</template>
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label="第三周" align="center">
@@ -117,9 +117,9 @@
 						<el-table-column prop="three_week" label="库存" align="center">
 						</el-table-column>
 						<el-table-column prop="three_progress" label="进度" align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.three_progress}}%</div>
-						</template>
+							<template slot-scope="scope">
+								<div>{{scope.row.three_progress}}%</div>
+							</template>
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label="第四周" align="center">
@@ -128,9 +128,9 @@
 						<el-table-column prop="four_week" label="库存" align="center">
 						</el-table-column>
 						<el-table-column prop="four_progress" label="进度" align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.four_progress}}%</div>
-						</template>
+							<template slot-scope="scope">
+								<div>{{scope.row.four_progress}}%</div>
+							</template>
 						</el-table-column>
 					</el-table-column>
 					<el-table-column label="当前库存" align="center">
@@ -139,14 +139,14 @@
 						<el-table-column prop="now_kc" label="库存" align="center">
 						</el-table-column>
 						<el-table-column prop="now_progress" label="进度" align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.now_progress}}%</div>
-						</template>
+							<template slot-scope="scope">
+								<div>{{scope.row.now_progress}}%</div>
+							</template>
 						</el-table-column>
 					</el-table-column>
 				</el-table>
 			</div>
-			<!-- <div :id="`analysis_${index}`" class="analysis_right"></div> -->
+			<div :id="`analysis_${index}`" class="analysis_right"></div>
 		</div>
 	</div>
 </template>
@@ -362,7 +362,7 @@
 						if (this.qcjdChart == null) { 
 							this.qcjdChart = echarts.init(qcjd);
 						}
-						this.qcjdChart.setOption(this.setOptionsPie(series_data_pie));
+						this.qcjdChart.setOption(this.setOptionsPie('清仓进度',series_data_pie));
 						//清仓进度周环比
 						this.series_data_funnel.push({
 							name:"起始库存",
@@ -422,10 +422,10 @@
 				})
 			},
 			//环形图配置
-			setOptionsPie(series_data_pie){
+			setOptionsPie(title,series_data_pie){
 				return {
 					title: {
-						text: '清仓进度'
+						text: title
 					},
 					series: [
 					{
@@ -491,8 +491,10 @@
 			dynamicAnalysisclearList(){
 				resource.dynamicAnalysisclearList().then(res => {
 					if(res.data.code == 1){
-						let clear_list = res.data.data;
-						clear_list.map(item => {
+						this.clear_list = res.data.data;		//表格数据
+						var pie_list = [];
+						this.clear_list.map((item,index) => {
+							var list = [];
 							item.list.map(i => {
 								i['start_progress'] = i.progress.start;
 								i['one_progress'] = i.progress.one;
@@ -500,9 +502,34 @@
 								i['three_progress'] = i.progress.three;
 								i['four_progress'] = i.progress.four;
 								i['now_progress'] = i.progress.now;
-							})
+								var list_item_obj = {};
+								for(let k in i){
+									if(k.indexOf('now_') > -1){
+										list_item_obj[k] = i[k];
+									}
+									list_item_obj['name'] = i.name;
+								}
+								list.push(list_item_obj);
+							});
+							pie_list.push(list)
 						});
-						this.clear_list = clear_list;
+						var echarts = require("echarts");
+						this.$nextTick(() => {
+							pie_list.map((item,index) => {
+								var analysis_index = document.getElementById(`analysis_${index}`);
+								var temporaryChart = echarts.getInstanceByDom(analysis_index)
+								if (temporaryChart == null) { 
+									temporaryChart = echarts.init(analysis_index);
+								}
+								item.map(iii => {
+									for(let k in iii){
+										iii['num'] = iii.now_count;
+										iii['value'] = iii.now_progress;
+									}
+								})
+								temporaryChart.setOption(this.setOptionsPie('',item));
+							})
+						})
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -607,6 +634,7 @@
 	display: flex;
 	.analysis_left{
 		flex:1;
+		width: 100px;
 		.title{
 			margin-bottom: 15px;
 			font-size: 16px;

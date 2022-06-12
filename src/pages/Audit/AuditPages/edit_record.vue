@@ -23,6 +23,9 @@
 				</el-select>
 			</el-form-item>
 		</el-form>
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column type="index" label="序号" align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="新编码" align="center"></el-table-column>
@@ -163,9 +166,34 @@
 				<el-button type="primary" size="small" @click="detailDialog = false">关闭</el-button>
 			</div>
 		</el-dialog>
+		<!-- 导出弹框 -->
+		<el-dialog title="导出" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="exportDialog">
+			<el-form size="small">
+				<el-form-item label="供应商款号：">
+					<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
+						<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="调价时间：">
+					<el-date-picker size="small" v-model="export_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+					</el-date-picker>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button type="primary" size="small" @click="exportDialog = false">取消</el-button>
+				<el-button type="primary" size="small" @click="commitExport">确认</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <style lang="less" scoped>
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 .dialog_content{
 	display: flex;
 	justify-content: space-between;
@@ -198,6 +226,8 @@
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -243,7 +273,35 @@
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
 				dialog_title:"",		//详情弹窗标题
-				big_img_list:[]
+				big_img_list:[],
+				exportDialog:false,		//导出弹窗
+				pickerOptions: {
+					shortcuts: [{
+						text: '当月',
+						onClick(picker) {
+							const start = getMonthStartDate();
+							const end = getCurrentDate();
+							picker.$emit('pick', [start, end]);
+						}
+					},{
+						text: '上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(1);
+							const end = getLastMonthEndDate(0);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '上上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(2);
+							const end = getLastMonthEndDate(1);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},	 					//时间区间
+				export_date:[],			//导出日期区间
+				gyshh_list:[],			//所有供应商款号
+				select_gyshh_ids:[],	//选中的供应商款号
 			}
 		},
 		created(){
@@ -301,6 +359,46 @@
 				this.page = val;
 				//获取列表
 				this.getData();
+			},
+			//供应商货号
+			getGyshh(e){
+				if(e != ''){
+					resource.ajaxSupplierKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gyshh_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//关闭替换弹框
+			closeDialog(){
+				this.select_gyshh_ids = [];
+				this.export_date = [];
+			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						supplier_ksbm:this.select_gyshh_ids.join(','),
+						start_date:this.export_date && this.export_date.length > 0?this.export_date[0]:"",
+						end_date:this.export_date && this.export_date.length > 0?this.export_date[1]:"",
+					}
+					resource.zeroLogExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'修改记录表');
+						this.exportDialog = false;
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//获取详情
 			getDetail(id){

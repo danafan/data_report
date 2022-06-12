@@ -18,7 +18,7 @@
 			<el-table-column width="120" show-overflow-tooltip prop="shop_name" label="店铺" align="center"></el-table-column>
 			<el-table-column prop="ksbm" width="120" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
 			<el-table-column prop="cpfl" label="品类" align="center"></el-table-column>
-			<el-table-column prop="fk_sfsl" label="实发数量(付款)" align="center" width="130"></el-table-column>
+			<el-table-column prop="fk_sfsl" label="销售数量(付款)" align="center" width="130"></el-table-column>
 			<el-table-column width="100" show-overflow-tooltip label="图片" align="center">
 				<template slot-scope="scope">
 					<img style="width: 80px;height: 80px" :src="scope.row.tp" @click="bigImg(scope.row.tp)">

@@ -29,6 +29,7 @@ let path = {
 	ytReportTotal:'audit/yt_report_total',							//审计SD分析-头部汇总数据接口
 	ytReport:'audit/yt_report',										//审计SD分析-表格数据接口
 	ytReportExport:'audit/yt_report_export',						//审计SD分析-表格导出接口
+	zeroLogExport:'audit/zero_log_export',							//调价记录导出接口
 }						
 export default{
 	//款式编码列表
@@ -150,6 +151,10 @@ export default{
 	//审计SD分析-表格导出接口
 	ytReportExport(params){
 		return http.post(path.ytReportExport, params)
+	},
+	//调价记录导出接口
+	zeroLogExport(params){
+		return http.post(path.zeroLogExport, params)
 	},
 }
 
