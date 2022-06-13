@@ -146,7 +146,91 @@
 					</el-table-column>
 				</el-table>
 			</div>
-			<div :id="`analysis_${index}`" class="analysis_right"></div>
+			<div :id="`analysis_${index}_sss`" class="analysis_right"></div>
+		</div>
+		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="批次：">
+				<el-select v-model="select_record_branth" :popper-append-to-body="false" placeholder="全部">
+					<el-option v-for="item in record_branth_list" :key="item.start_rq" :label="item.start_rq" :value="item.start_rq">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="款式编码：">
+				<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="getKsbm" collapse-tags>
+					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="small" @click="searchRecord">搜索</el-button>
+			</el-form-item>
+		</el-form>
+		<div class="title">清仓进度明细表</div>
+		<el-table :data="dataObj.data" size="small" max-height="600" :row-class-name="tableRowClassName">
+			<el-table-column prop="ksbm" label="款式编码" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="gyshh" label="供应商款号" width="120" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="cpfl" label="名称" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="pl" label="品牌" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="dept" label="所属部门" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="sjcb" label="审计成本" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="type" label="类型" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="purchase_quantity" label="异常采购数" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column :label="i.time_interval" width="120" v-for="i in clear_date" align="center">
+				<el-table-column :prop="i.date_field" width="120" :label="i.sjxrrq" align="center">
+				</el-table-column>
+			</el-table-column>
+		</el-table>
+		<div class="page">
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+			</el-pagination>
+		</div>
+		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="款式编码：">
+				<el-select v-model="table_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="getTableKsbm" collapse-tags>
+					<el-option v-for="item in table_ks_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="small" @click="searchTable">搜索</el-button>
+			</el-form-item>
+		</el-form>
+		<div class="bottom_row">
+			<div class="bottom_left_charts">
+				<div class="charts_row">
+					<div class="title">异常采购趋势图（总数：<span>{{total_num}}</span>）</div>
+				</div>
+				<div class="charts_box" id="charts_box"></div>
+			</div>
+			<div class="bottom_right_table">
+				<div class="title">异常采购单</div>
+				<el-table :data="tableObj.data" size="small" max-height="420" @sort-change="sortChange">
+					<el-table-column prop="ksbm" sortable label="款式编码" show-overflow-tooltip align="center">
+					</el-table-column>
+					<el-table-column prop="rq" sortable label="日期" show-overflow-tooltip align="center">
+					</el-table-column>
+					<el-table-column prop="po_id" sortable label="采购单号" show-overflow-tooltip align="center">
+					</el-table-column>
+					<el-table-column prop="seller" sortable label="采购人" show-overflow-tooltip align="center">
+					</el-table-column>
+					<el-table-column prop="purchaser_name" sortable label="供应商" show-overflow-tooltip align="center">
+					</el-table-column>
+					<el-table-column prop="qty" label="数量" sortable show-overflow-tooltip align="center">
+					</el-table-column>
+				</el-table>
+				<div class="page">
+					<el-pagination @size-change="tableHandleSizeChange" @current-change="tableHandleCurrentChange" :current-page="yc_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="tableObj.total">
+					</el-pagination>
+				</div>
+			</div>
 		</div>
 	</div>
 </template>
@@ -170,6 +254,22 @@
 				series_data_funnel:[],	//清仓进度环比数据
 				qczjChart:null,			//清仓，折价趋势图
 				clear_list:[],			//清仓汇总-列表
+				record_branth_list:[],	//清仓进度明细批次列表
+				select_record_branth:"",//选中的清仓进度明细批次列表
+				ks_list:[],				//款式编码列表
+				select_ks_ids:[],		//选中的款式编码列表
+				page:1,
+				pagesize:10,
+				dataObj:{},
+				clear_date:[],			//列表后面的列
+				yc_page:1,
+				yc_pagesize:10,			
+				sort:"",
+				tableObj:{},			//清仓异常（右侧图表）
+				table_ks_ids:[],
+				table_ks_list:[],	
+				chartsBoxChart:null,
+				total_num:0
 			}
 		},
 		created(){
@@ -185,6 +285,8 @@
 			this.clearChart();
 			//清仓汇总-列表
 			this.dynamicAnalysisclearList();
+			//清仓汇总-清仓异常列表
+			this.clearAbnormal();
 		},
 		methods:{
 			//批次列表
@@ -192,6 +294,12 @@
 				resource.clearBatch().then(res => {
 					if(res.data.code == 1){
 						this.branth_list = res.data.data;
+						this.record_branth_list = this.branth_list;
+						this.select_record_branth = this.record_branth_list[0].start_rq;
+						//获取清仓进度明细
+						this.getClearProgress();
+						//清仓汇总-清仓日期(列表后面的列)
+						this.clearDate();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -229,11 +337,39 @@
 			},
 			//搜索
 			searchFn(){
-
+				//点击搜索切换批次备选项列表
+				this.getRecordBatchList();
+				//清仓汇总
+				this.dynamicAnalysisClear();
+				//清仓汇总-清仓，折价趋势图
+				this.clearChart();
+				//清仓汇总-列表
+				this.dynamicAnalysisclearList();
+			},
+			//点击搜索切换批次备选项列表
+			getRecordBatchList(){
+				if(this.start_rq.length > 0){
+					this.record_branth_list = this.start_rq;
+					this.select_record_branth = this.record_branth_list[0].start_rq;
+				}else{
+					this.record_branth_list = this.branth_list;
+					this.select_record_branth = this.record_branth_list[0].start_rq;
+				}
+				//获取清仓进度明细
+				this.getClearProgress();
+				//清仓汇总-清仓日期(列表后面的列)
+				this.clearDate();
 			},
 			//清仓汇总-清仓，折价趋势图
 			clearChart(){
-				resource.clearChart().then(res => {
+				let arg = {
+					start_rq:this.start_rq.join(','),
+					jj:this.select_jj_ids.join(','),
+					hy:this.hy,
+					cpfl:this.select_pl_ids.join(','),
+					dept:this.select_dept_ids.join(',')
+				}
+				resource.clearChart(arg).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let data_list = res.data.data;
@@ -319,7 +455,14 @@
 			},
 			//清仓汇总
 			dynamicAnalysisClear(){
-				resource.dynamicAnalysisClear().then(res => {
+				let arg = {
+					start_rq:this.start_rq.join(','),
+					jj:this.select_jj_ids.join(','),
+					hy:this.hy,
+					cpfl:this.select_pl_ids.join(','),
+					dept:this.select_dept_ids.join(',')
+				}
+				resource.dynamicAnalysisClear(arg).then(res => {
 					if(res.data.code == 1){
 						var echarts = require("echarts");
 						let data = res.data.data;
@@ -430,9 +573,9 @@
 					series: [
 					{
 						type: 'pie',
-						radius: [50, 200],
+						radius: [50, 150],
 						center: ['50%', '50%'],
-						roseType: 'area',
+						roseType: 'radius',
 						label:{
 							position:'inside',
 							lineHeight: 18,
@@ -463,7 +606,6 @@
 					{
 						name: 'Funnel',
 						type: 'funnel',
-						// left: '10%',
 						width: '80%',
 						min: 0,
 						max: max,
@@ -489,7 +631,14 @@
 			},
 			//清仓汇总-列表
 			dynamicAnalysisclearList(){
-				resource.dynamicAnalysisclearList().then(res => {
+				let arg = {
+					start_rq:this.start_rq.join(','),
+					jj:this.select_jj_ids.join(','),
+					hy:this.hy,
+					cpfl:this.select_pl_ids.join(','),
+					dept:this.select_dept_ids.join(',')
+				}
+				resource.dynamicAnalysisclearList(arg).then(res => {
 					if(res.data.code == 1){
 						this.clear_list = res.data.data;		//表格数据
 						var pie_list = [];
@@ -516,7 +665,7 @@
 						var echarts = require("echarts");
 						this.$nextTick(() => {
 							pie_list.map((item,index) => {
-								var analysis_index = document.getElementById(`analysis_${index}`);
+								var analysis_index = document.getElementById(`analysis_${index}_sss`);
 								var temporaryChart = echarts.getInstanceByDom(analysis_index)
 								if (temporaryChart == null) { 
 									temporaryChart = echarts.init(analysis_index);
@@ -527,13 +676,59 @@
 										iii['value'] = iii.now_progress;
 									}
 								})
-								temporaryChart.setOption(this.setOptionsPie('',item));
+								if(index <= 2){
+									temporaryChart.setOption(this.setOptionsPie('',item));
+								}else{
+									
+									let ddd = item.sort(this.compareDown)
+									var cate_list = [];
+									var num_list = [];
+									ddd.map(i => {
+										cate_list.push(i.name);
+										num_list.push(i.num);
+									})
+									temporaryChart.setOption(this.setOptionsAxis(cate_list,num_list));
+								}
+								
 							})
 						})
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//柱状图排序
+			compareDown(v1,v2){
+				return v1.num - v2.num;
+			},
+			// 柱状图配置
+			setOptionsAxis(cate_list,num_list){
+				return {
+					tooltip: {
+						trigger: 'axis',
+					},
+					xAxis: {
+						type: 'value'
+					},
+					grid:{
+						left:'20%',
+					},
+					yAxis: {
+						type: 'category',
+						data: cate_list
+					},
+					series: [
+					{
+						type: 'bar',
+						label: {
+							show: true,
+							color:'#333333',
+							position: 'right'
+						},
+						data: num_list
+					},
+					]
+				}
 			},
 			//进度单元格背景色
 			itemStyle(item){
@@ -562,10 +757,177 @@
 					let opacity = progress/100;
 					return 'background: rgba(255,140,0,' + opacity + ');font-weight:bold'; 
 				}
-			}
+			},
+			//获取款式编码
+			getKsbm(e){
+				if(e != ''){
+					resource.ajaxKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.ks_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//底部款式编码
+			getTableKsbm(e){
+				if(e != ''){
+					resource.ajaxKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.table_ks_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//点击搜索明细
+			searchRecord(){
+				this.page = 1;
+				//获取清仓进度明细
+				this.getClearProgress();
+				//清仓汇总-清仓日期(列表后面的列)
+				this.clearDate();
+			},
+			//清仓汇总-清仓日期(列表后面的列)
+			clearDate(){
+				resource.clearDate({start_rq:this.select_record_branth,}).then(res => {
+					if(res.data.code == 1){
+						this.clear_date = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//获取清仓进度明细
+			getClearProgress(){
+				let arg = {
+					start_rq:this.select_record_branth,
+					ksbm:this.select_ks_ids.join(','),
+					page:this.page,
+					pagesize:this.pagesize
+				}
+				resource.clearProgress().then(res => {
+					if(res.data.code == 1){
+						this.dataObj = res.data.data.list;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//某一行添加颜色
+			tableRowClassName({row, rowIndex}) {
+				if (rowIndex == 0) {
+					return 'total_style';
+				}
+				return '';
+			},
+			//分页
+			handleSizeChange(val) {
+				this.pagesize = val;
+				//获取列表
+				this.getClearProgress();
+			},
+			handleCurrentChange(val) {
+				this.page = val;
+				//获取列表
+				this.getClearProgress();
+			},
+			//获取异常数据
+			searchTable(){
+				this.yc_page = 1;
+				//清仓汇总-清仓异常
+				this.clearAbnormal();
+			},
+			//清仓汇总-清仓异常
+			clearAbnormal(){
+				let arg = {
+					sort:this.sort,
+					page:this.yc_page,
+					pagesize:this.yc_pagesize
+				}
+				resource.clearAbnormal(arg).then(res => {
+					if(res.data.code == 1){
+						this.tableObj = res.data.data.list;
+						let x_data = [];
+						let series_data = [];
+						let chartList = res.data.data.chartList;
+						chartList.map(item => {
+							x_data.push(item.rq);
+							series_data.push(item.qty);
+							this.total_num += parseInt(item.qty);
+						})
+						var echarts = require("echarts");
+						var charts_box = document.getElementById('charts_box');
+						this.chartsBoxChart = echarts.getInstanceByDom(charts_box)
+						if (this.chartsBoxChart == null) { 
+							this.chartsBoxChart = echarts.init(charts_box);
+						}
+						this.chartsBoxChart.setOption(this.setOptionLine(x_data,series_data));
+						window.addEventListener('resize',() => {
+							this.chartsBoxChart.resize();
+						})
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//底部折线图配置
+			setOptionLine(x_data,series_data){
+				return {
+					xAxis: {
+						type: 'category',
+						data: x_data,
+						axisLabel: {
+        					color: '#333',
+        					rotate:50
+        				}
+					},
+					yAxis: {
+						type: 'value'
+					},
+					series: [
+					{
+						data: series_data,
+						label:{
+							show:true
+						},
+						type: 'line'
+					}
+					]
+				}
+			},
+			//排序
+			sortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'asc':'desc';
+					this.sort = column.prop + '-' + order;
+				}else{
+					this.sort = '';
+				}
+				this.clearAbnormal();
+			},
+			//分页
+			tableHandleSizeChange(val) {
+				this.yc_pagesize = val;
+				//获取列表
+				this.clearAbnormal();
+			},
+			tableHandleCurrentChange(val) {
+				this.yc_page = val;
+				//获取列表
+				this.clearAbnormal();
+			},
 		}
 	}
 </script>
+<style>
+.el-table .total_style {
+	font-weight: bold;
+	font-size: 14px;
+}
+</style>
 <style lang="less" scoped>
 .top_content{
 	width: 100%;
@@ -635,15 +997,43 @@
 	.analysis_left{
 		flex:1;
 		width: 100px;
-		.title{
-			margin-bottom: 15px;
-			font-size: 16px;
-			font-weight: bold;
-		}
 	}
 	.analysis_right{
+		margin-left: 15px;
 		width: 360px;
 		height: 360px;
+	}
+}
+.title{
+	margin-bottom: 15px;
+	font-size: 16px;
+	font-weight: bold;
+	span{
+		color:rgba(255,140,0,1);
+		font-size:20px;
+	}
+}
+.bottom_row{
+	margin-top: 15px;
+	display:flex;
+	.bottom_left_charts{
+		margin-right: 15px;
+		width: 45%;
+		height: 500px;
+		.charts_row{
+			height: 30px;
+			width: 100%;
+			display:flex;
+			align-items: center;
+		}
+		.charts_box{
+			height: 470px;
+			width: 100%;
+		}
+	}
+	.bottom_right_table{
+		width: 55%;
+		height: 500px;
 	}
 }
 </style>

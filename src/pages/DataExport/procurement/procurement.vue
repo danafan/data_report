@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="入库时间：">
-				<el-date-picker v-model="date" type="daterange" :clearable="false" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="仓储方：">
@@ -14,6 +14,14 @@
 			<el-form-item label="仓库类型：">
 				<el-select v-model="wh_id" clearable :popper-append-to-body="false" filterable placeholder="全部">
 					<el-option v-for="item in wh_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="进仓类型：">
+				<el-select v-model="type" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option label="加工进仓" value="加工进仓">
+					</el-option>
+					<el-option label="采购进仓" value="采购进仓">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -95,6 +103,7 @@
 				wms_co_id:"",		//选中的分仓编号
 				wms_list:[],		//分仓列表
 				wh_id:"",			//选中的主仓编号
+				type:"",			//进仓类型
 				wh_list:[{
 					id:1,
 					name:'主仓'
@@ -143,6 +152,7 @@
 					end_date:this.date && this.date.length > 0?this.date[1]:"",
 					wms_co_id:this.wms_co_id,
 					wh_id:this.wh_id,
+					type:this.type,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -165,7 +175,8 @@
 						start_date:this.date && this.date.length > 0?this.date[0]:"",
 						end_date:this.date && this.date.length > 0?this.date[1]:"",
 						wms_co_id:this.wms_co_id,
-						wh_id:this.wh_id
+						wh_id:this.wh_id,
+						type:this.type
 					}
 					resource.purinExport(arg).then(res => {
 						if(res){

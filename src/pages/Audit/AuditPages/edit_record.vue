@@ -169,7 +169,7 @@
 		<!-- 导出弹框 -->
 		<el-dialog title="导出" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="exportDialog">
 			<el-form size="small">
-				<el-form-item label="供应商款号：">
+				<el-form-item label="供应商：">
 					<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
 						<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 						</el-option>
@@ -385,7 +385,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						supplier_ksbm:this.select_gyshh_ids.join(','),
+						supplier:this.select_gyshh_ids.join(','),
 						start_date:this.export_date && this.export_date.length > 0?this.export_date[0]:"",
 						end_date:this.export_date && this.export_date.length > 0?this.export_date[1]:"",
 					}

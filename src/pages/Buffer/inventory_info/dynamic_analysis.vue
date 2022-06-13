@@ -128,6 +128,9 @@
 						<el-table-column prop="kc_total" label="库存" align="center"></el-table-column>
 						<el-table-column prop="cb_total" label="成本" align="center"></el-table-column>
 						<el-table-column prop="cb_rate" label="成本占比" align="center">
+							<template slot-scope="scope">
+								<div >{{scope.row.cb_rate}}%</div>
+							</template>
 						</el-table-column>
 					</el-table>
 				</div>
@@ -172,7 +175,7 @@
 					<div v-if="scope.row.outstock_rate_3_classify == '4'">持续缺货</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="sl" label="毛利率分类(三天)" sortable width="140" show-overflow-tooltip align="center">
+			<el-table-column prop="sl" label="毛利率分类" sortable width="140" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="scope.row.mlv_7d_classify == '1'">低毛利</div>
 					<div v-if="scope.row.mlv_7d_classify == '2'">正常毛利</div>
@@ -379,15 +382,15 @@
 				})
 			},
 			//排序
-        	sortChange(column){
-        		if(column.order){
-        			let order = column.order == 'ascending'?'asc':'desc';
-        			this.sort = column.prop + '-' + order;
-        		}else{
-        			this.sort = '';
-        		}
-        		this.dynamicAnalysisList();
-        	},
+			sortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'asc':'desc';
+					this.sort = column.prop + '-' + order;
+				}else{
+					this.sort = '';
+				}
+				this.dynamicAnalysisList();
+			},
         	//分页
         	handleSizeChange(val) {
         		this.pagesize = val;
@@ -404,8 +407,8 @@
         		this.imageDialog = true;
         		this.big_img_url = big_img_url;
         	},
-		}
-	}
+        }
+    }
 </script>
 
 

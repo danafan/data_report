@@ -91,7 +91,7 @@
 					</el-table-column>
 				</el-table>
 			</div>
-			<div :id="`analysis_${index}`" class="analysis_right"></div>
+			<div :id="`analysis_${index}_eee`" class="analysis_right"></div>
 		</div>
 		<!-- 右上（近一年库存/成本趋势图） -->
 		<div class="kc_cb">
@@ -310,7 +310,7 @@
 						})
 						this.$nextTick(() => {
 							gg.map((item,index) => {
-								var dp = document.getElementById(`analysis_${index}`);
+								var dp = document.getElementById(`analysis_${index}_eee`);
 								var dpChart = echarts.getInstanceByDom(dp)
 								if (dpChart == null) { 
 									dpChart = echarts.init(dp);

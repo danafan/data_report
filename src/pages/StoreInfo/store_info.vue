@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<dps @callBack="checkReq"></dps>
+		<dps from="1" @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="聚水潭编号：">
 				<el-input clearable v-model="jst_code" placeholder="聚水潭编号"></el-input>
