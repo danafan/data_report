@@ -2,10 +2,9 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<StaticAnalysis v-if="item.web_url == 'static_analysis'"/>
-				<DynamicAnalysis v-if="item.web_url == 'dynamic_analysis'"/>
-				<GoodsInfoCard v-if="item.web_url == 'goods_info_card'"/>
-				<GoodsInventory v-if="item.web_url == 'goods_inventory'"/>
+				<Thkbhsj v-if="item.web_url == 'thkbhsj'"/>
+				<Thkspbm v-if="item.web_url == 'thkspbm'"/>
+				<Bpkspbm v-if="item.web_url == 'bpkspbm'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -16,10 +15,9 @@
 }
 </style>
 <script>
-	import StaticAnalysis from './inventory_info/static_analysis.vue'
-	import DynamicAnalysis from './inventory_info/dynamic_analysis.vue'
-	import GoodsInfoCard from './inventory_info/goods_info_card.vue'
-	import GoodsInventory from './inventory_info/goods_inventory.vue'
+	import Thkbhsj from './procurement_order/thkbhsj.vue'
+	import Thkspbm from './procurement_order/thkspbm.vue'
+	import Bpkspbm from './procurement_order/bpkspbm.vue'
 	export default{
 		data(){
 			return{
@@ -44,7 +42,7 @@
 			},
 			getIndex(){
 				this.ss.map(item => {
-					if (item.web_url == 'inventory_info') {
+					if (item.web_url == 'procurement_order') {
 						this.menu_list = item.list;
 						let current_tab = this.$store.state.current_tab;
 						this.activeTab = current_tab == ''?this.menu_list[0].web_url:current_tab;
@@ -58,10 +56,9 @@
 			}
 		},
 		components:{
-			StaticAnalysis,
-			DynamicAnalysis,
-			GoodsInfoCard,
-			GoodsInventory
+			Thkbhsj,
+			Thkspbm,
+			Bpkspbm
 		}
 	}
 </script>

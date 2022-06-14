@@ -170,11 +170,11 @@
 		<el-dialog title="导出" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="exportDialog">
 			<el-form size="small">
 				<el-form-item label="供应商：">
-					<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
-						<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
+				<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
+					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 				<el-form-item label="调价时间：">
 					<el-date-picker size="small" v-model="export_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 					</el-date-picker>
@@ -300,8 +300,8 @@
 					}]
 				},	 					//时间区间
 				export_date:[],			//导出日期区间
-				gyshh_list:[],			//所有供应商款号
-				select_gyshh_ids:[],	//选中的供应商款号
+				gys_list:[],								//供应商列表
+				select_gys_ids:[],							//选中的供应商
 			}
 		},
 		created(){
@@ -360,12 +360,12 @@
 				//获取列表
 				this.getData();
 			},
-			//供应商货号
-			getGyshh(e){
+			//供应商列表
+			getGys(e){
 				if(e != ''){
-					resource.ajaxSupplierKsbm({name:e}).then(res => {
+					resource.ajaxSupplier({name:e}).then(res => {
 						if(res.data.code == 1){
-							this.gyshh_list = res.data.data;
+							this.gys_list = res.data.data;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -374,7 +374,7 @@
 			},
 			//关闭替换弹框
 			closeDialog(){
-				this.select_gyshh_ids = [];
+				this.select_gys_ids = [];
 				this.export_date = [];
 			},
 			//导出
@@ -385,7 +385,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						supplier:this.select_gyshh_ids.join(','),
+						supplier:this.select_gys_ids.join(','),
 						start_date:this.export_date && this.export_date.length > 0?this.export_date[0]:"",
 						end_date:this.export_date && this.export_date.length > 0?this.export_date[1]:"",
 					}

@@ -15,6 +15,7 @@ const property_rights = resolve=>require(['@/pages/Buffer/property_rights'],reso
 const report_page = resolve=>require(['@/pages/Buffer/report_page'],resolve)
 const goods_nature = resolve=>require(['@/pages/Buffer/goods_nature'],resolve)
 const inventory_info = resolve=>require(['@/pages/Buffer/inventory_info'],resolve)
+const procurement_order = resolve=>require(['@/pages/Buffer/procurement_order'],resolve)
 //审计管理
 const audit_index = resolve=>require(['@/pages/Audit/audit_index'],resolve)
 const report_management = resolve=>require(['@/pages/Audit/report_management'],resolve)
@@ -68,6 +69,7 @@ const router = new Router({
     { path: '/report_page',name:"分析报告", component: report_page},
     { path: '/goods_nature',name:"货品性质管理", component: goods_nature},
     { path: '/inventory_info',name:"", component: inventory_info},
+    { path: '/procurement_order',name:"", component: procurement_order},
     { path: '/audit_index',name:"成本管理", component: audit_index},
     { path: '/report_management',name:"报表管理", component: report_management},
     { path: '/inventory_summary',name:"商品库存信息", component: inventory_summary},

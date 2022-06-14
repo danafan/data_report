@@ -44,126 +44,102 @@
 						<div class="title">基本属性</div>
 						<div class="table_item">
 							<div class="table_label">款式编码</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.ksbm" placement="top-end">
 								<div class="table_value">{{cardInfo.ksbm}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">供应商款号</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.gyshh" placement="top-end">
 								<div class="table_value">{{cardInfo.gyshh}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">季节</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.jj}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.jj}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">性别</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.xb}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.xb}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">产品分类</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.cpfl" placement="top-end">
 								<div class="table_value">{{cardInfo.cpfl}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">波段</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.bd" placement="top-end">
 								<div class="table_value">{{cardInfo.bd}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">品牌</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.pl" placement="top-end">
 								<div class="table_value">{{cardInfo.pl}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">建档时间</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.cjsj}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.cjsj}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">价格带(¥)</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.jgd}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.jgd}}</div>
 						</div>
 					</div>
 					<div class="item">
 						<div class="title">商品性质</div>
 						<div class="table_item">
 							<div class="table_label">首次售卖日期</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.first_fkrq}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.first_fkrq}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">预计下架日期</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.xjrq}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.xjrq}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">毛利率分类</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.mlv_7d_classify" placement="top-end">
 								<div class="table_value">{{cardInfo.mlv_7d_classify}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">公司销售性质</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.xsxz_gs" placement="top-end">
 								<div class="table_value">{{cardInfo.xsxz_gs}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">实际货品性质</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="cardInfo.sjhpxz" placement="top-end">
 								<div class="table_value">{{cardInfo.sjhpxz}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">当天缺货率</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.outstock_rate_1}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.outstock_rate_1}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">综合缺货率(三天)</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.outstock_rate_3}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.outstock_rate_3}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">周转天数</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.Turnover_days_classify}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.Turnover_days_classify}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">累计3天销量</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.stxl}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.stxl}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">累计7天销量</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.qtxl}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.qtxl}}</div>
 						</div>
 						<div class="table_item">
 							<div class="table_label">累计15天销量</div>
-							<el-tooltip class="item" effect="dark" content="Top Right 提示文字" placement="top-end">
-								<div class="table_value">{{cardInfo.swtxl}}</div>
-							</el-tooltip>
+							<div class="table_value">{{cardInfo.swtxl}}</div>
 						</div>
 					</div>
 				</div>
@@ -175,6 +151,7 @@
 			</div>
 		</div>
 		<div class="buts">
+			<div class="title">款式销售数据</div>
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
 		</div>
 		<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
@@ -462,7 +439,7 @@
 			handleSizeChange(val) {
 				this.pagesize = val;
 				//获取列表
-				this.stockAnalysisKsList();
+				this.shopDetailCard();
 			},
 			handleCurrentChange(val) {
 				this.page = val;
@@ -519,20 +496,20 @@
 </style>
 <style lang="less" scoped>
 .buts{
-	margin-bottom: 15px;
 	display: flex;
 	align-items: center;
-	justify-content: flex-end;
+	justify-content: space-between;
+}
+.title{
+	margin-bottom: 10px;
+	font-size: 18px;
+	font-weight: bold;
 }
 .top_content{
 	display: flex;
 	.content_item{
 		width: 50%;
-		.title{
-			margin-bottom: 10px;
-			font-size: 18px;
-			font-weight: bold;
-		}
+		
 		.gk_row{
 			display:flex;
 			align-items: center;
