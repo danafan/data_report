@@ -573,7 +573,7 @@
 					series: [
 					{
 						type: 'pie',
-						radius: [50, 150],
+						radius: [50, 100],
 						center: ['50%', '50%'],
 						roseType: 'radius',
 						label:{

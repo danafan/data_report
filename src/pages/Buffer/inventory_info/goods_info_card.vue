@@ -101,13 +101,13 @@
 						</div>
 						<div class="table_item">
 							<div class="table_label">毛利率分类</div>
-							<el-tooltip class="item" effect="dark" :content="cardInfo.mlv_7d_classify" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="JSON.stringify(cardInfo.mlv_7d_classify)" placement="top-end">
 								<div class="table_value">{{cardInfo.mlv_7d_classify}}</div>
 							</el-tooltip>
 						</div>
 						<div class="table_item">
 							<div class="table_label">公司销售性质</div>
-							<el-tooltip class="item" effect="dark" :content="cardInfo.xsxz_gs" placement="top-end">
+							<el-tooltip class="item" effect="dark" :content="JSON.stringify(cardInfo.xsxz_gs)" placement="top-end">
 								<div class="table_value">{{cardInfo.xsxz_gs}}</div>
 							</el-tooltip>
 						</div>
@@ -154,8 +154,8 @@
 			<div class="title">款式销售数据</div>
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
 		</div>
-		<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
-			<el-table-column :label="item.row_name" :prop="item.row_field_name" sortable :width="maxWidth(item.row_field_name)" align="center" v-for="item in title_list" show-overflow-tooltip>
+		<el-table ref="multipleTable" max-height="800" size="small" :data="tableData" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
+			<el-table-column :label="item.row_name" :prop="item.row_field_name" sortable="custom" :width="maxWidth(item.row_field_name)" align="center" v-for="item in title_list" show-overflow-tooltip>
 				<template slot-scope="scope">
 					<!-- 总坑产 -->
 					<div class="background_box" :style="{width:`${max == 0?0:(160/max)*Math.abs(scope.row.xsje)}px`,background:'#FEDB6F'}" v-if="item.row_field_name == 'xsje' && scope.$index > 0">{{scope.row.xsje}}</div>
@@ -232,6 +232,7 @@
 				page:1,
 				sort:"",
 				dataObj:{},
+				tableData:[],
 				title_list:[],
 				max:0,
 				imageDialog:false,		//图片放大弹窗
@@ -407,6 +408,10 @@
 				resource.shopDetailCard(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data.detail;
+						let max_field = res.data.data.max_field;
+						var tableData = this.dataObj.data;
+						tableData.unshift(max_field);
+						this.tableData = tableData;
 						this.title_list = res.data.data.title_list;
 						this.view_row = res.data.data.view_row;
 						this.selected_ids = res.data.data.selected_ids;

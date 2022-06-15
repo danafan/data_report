@@ -112,7 +112,7 @@
 						if(field == 'bpspbm'){
 							this.bpkh_list = res.data.data;
 						}else if(field == 'gys'){
-							this.gysList = res.data.data;
+							this.gys_list = res.data.data;
 						}else if(field == 'gyshh'){
 							this.gysbm_list = res.data.data;
 						}

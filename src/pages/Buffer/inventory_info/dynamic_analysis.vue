@@ -175,7 +175,7 @@
 					<div v-if="scope.row.outstock_rate_3_classify == '4'">持续缺货</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="sl" label="毛利率分类" sortable width="140" show-overflow-tooltip align="center">
+			<el-table-column prop="mlv_7d_classify" label="毛利率分类" sortable width="140" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="scope.row.mlv_7d_classify == '1'">低毛利</div>
 					<div v-if="scope.row.mlv_7d_classify == '2'">正常毛利</div>
@@ -187,7 +187,7 @@
 					<div>{{scope.row.mlv_7d*100}}%</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="ckwz" label="周转天数" sortable width="100" show-overflow-tooltip align="center">
+			<el-table-column prop="Turnover_days_classify" label="周转天数" sortable width="100" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="scope.row.Turnover_days_classify == '1'">30天内</div>
 					<div v-if="scope.row.Turnover_days_classify == '2'">0-60天</div>
