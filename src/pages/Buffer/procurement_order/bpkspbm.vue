@@ -117,23 +117,13 @@
 				//总计
 				return total_row;
 			},
-			//白坯款号
+			//白坯商品编码
 			bpkhList(e){
 				this.searchDrawData('bpspbm',e)
 			},
-			//白坯商品编码
+			//白坯款式编码
 			ksbmList(e){
-				let arg = {
-					field:'bpkh',
-					field_value:e
-				}
-				resource.searchDrawData(arg).then(res => {
-					if(res.data.code == 1){
-						this.ksbm_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				this.searchDrawData('bpkh',e)
 			},
 			//供应商列表
 			gysList(e){
@@ -154,6 +144,8 @@
 					if(res.data.code == 1){
 						if(field == 'bpspbm'){
 							this.bpkh_list = res.data.data;
+						}else if(field == 'bpkh'){
+							this.ksbm_list = res.data.data;
 						}else if(field == 'gys'){
 							this.gys_list = res.data.data;
 						}else if(field == 'gyshh'){

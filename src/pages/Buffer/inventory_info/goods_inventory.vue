@@ -219,9 +219,9 @@
 					</el-table-column>
 					<el-table-column prop="po_id" sortable label="采购单号" show-overflow-tooltip align="center">
 					</el-table-column>
-					<el-table-column prop="seller" sortable label="采购人" show-overflow-tooltip align="center">
+					<el-table-column prop="purchaser_name" sortable label="采购人" show-overflow-tooltip align="center">
 					</el-table-column>
-					<el-table-column prop="purchaser_name" sortable label="供应商" show-overflow-tooltip align="center">
+					<el-table-column prop="seller" sortable label="供应商" show-overflow-tooltip align="center">
 					</el-table-column>
 					<el-table-column prop="qty" label="数量" sortable show-overflow-tooltip align="center">
 					</el-table-column>
@@ -285,6 +285,8 @@
 			this.clearChart();
 			//清仓汇总-列表
 			this.dynamicAnalysisclearList();
+			//清仓异常图表
+			this.clearAbnormalChart();
 			//清仓汇总-清仓异常列表
 			this.clearAbnormal();
 		},
@@ -507,6 +509,7 @@
 						}
 						this.qcjdChart.setOption(this.setOptionsPie('清仓进度',series_data_pie));
 						//清仓进度周环比
+						this.series_data_funnel = [];
 						this.series_data_funnel.push({
 							name:"起始库存",
 							value:data.start_kc,
@@ -808,7 +811,7 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
-				resource.clearProgress().then(res => {
+				resource.clearProgress(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data.list;
 					}else{
@@ -839,17 +842,16 @@
 				this.yc_page = 1;
 				//清仓汇总-清仓异常
 				this.clearAbnormal();
+				//清仓异常图表
+				this.clearAbnormalChart();
 			},
-			//清仓汇总-清仓异常
-			clearAbnormal(){
+			//清仓异常图表
+			clearAbnormalChart(){
 				let arg = {
-					sort:this.sort,
-					page:this.yc_page,
-					pagesize:this.yc_pagesize
+					ksbm:this.table_ks_ids.join(',')
 				}
-				resource.clearAbnormal(arg).then(res => {
+				resource.clearAbnormalChart(arg).then(res => {
 					if(res.data.code == 1){
-						this.tableObj = res.data.data.list;
 						let x_data = [];
 						let series_data = [];
 						let chartList = res.data.data.chartList;
@@ -868,6 +870,22 @@
 						window.addEventListener('resize',() => {
 							this.chartsBoxChart.resize();
 						})
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//清仓汇总-清仓异常
+			clearAbnormal(){
+				let arg = {
+					sort:this.sort,
+					ksbm:this.table_ks_ids.join(','),
+					page:this.yc_page,
+					pagesize:this.yc_pagesize
+				}
+				resource.clearAbnormal(arg).then(res => {
+					if(res.data.code == 1){
+						this.tableObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

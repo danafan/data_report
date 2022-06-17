@@ -53,11 +53,15 @@
 			<el-table-column prop="gyshh" label="供应商编码" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="color" label="颜色" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="size" label="尺码规格" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="yes_xssl" label="昨日销量" sortable show-overflow-tooltip width="120" align="center">
+			</el-table-column>
 			<el-table-column prop="3_xssl" label="三天销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="七天销量" width="100" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="available_num" label="可用数" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="stock" label="库存" sortable show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="xjcw_stock" width="120" label="箱及仓位库存" sortable show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="bp_stock" label="白坯库存" width="120" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="jhc_stock" label="进货仓库存" width="120" sortable show-overflow-tooltip align="center">

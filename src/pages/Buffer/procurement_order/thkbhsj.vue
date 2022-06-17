@@ -45,7 +45,7 @@
 			<el-table-column prop="available_num" label="可用数" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="stock" label="库存" sortable show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="xjcw_stock" label="箱及仓位库存" sortable show-overflow-tooltip align="center">
+			<el-table-column prop="xjcw_stock" width="120" label="箱及仓位库存" sortable show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="bp_stock" label="白坯库存" width="120" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="jhc_stock" label="进货仓库存" width="120" sortable show-overflow-tooltip align="center">
