@@ -212,6 +212,7 @@ let path = {
 	clearProgress:'dynamic_analysis/clear_progress',				//清仓汇总-清仓进度
 	clearDate:'dynamic_analysis/clear_date',						//清仓汇总-清仓日期
 	clearAbnormal:'dynamic_analysis/clear_abnormal',				//清仓汇总-清仓异常
+	
 
 }					
 export default{
@@ -1095,6 +1096,7 @@ export default{
 	clearAbnormal(params){
 		return http.get(path.clearAbnormal, params)
 	},
+	
 }
 
 

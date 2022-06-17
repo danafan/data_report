@@ -29,16 +29,23 @@
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :summary-method="getSummaries" show-summary @sort-change="sortChange">
 			<el-table-column prop="thkh" label="烫画款式编码" width="120" align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款式编码" width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gys" label="供应商名称" width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gyshh" label="供应商编码" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="yes_xssl" label="昨日销量" sortable show-overflow-tooltip width="120" align="center">
+			</el-table-column>
 			<el-table-column prop="3_xssl" label="三天销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="七天销量" width="120" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="available_num" label="可用数" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="stock" label="库存" sortable show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="xjcw_stock" label="箱及仓位库存" sortable show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="bp_stock" label="白坯库存" width="120" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="jhc_stock" label="进货仓库存" width="120" sortable show-overflow-tooltip align="center">
@@ -70,6 +77,8 @@
 </template>
 <script>
 	import resource from '../../../api/procurementResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -85,13 +94,24 @@
 				pagesize:10,
 				sort:"",
 				dataObj:{},
+				total_data:{}
 			}
 		},
 		created(){
 			//获取列表
- 			this.getList();
+			this.getList();
+			//总计
+			this.drawGoodsTotal();
 		},
 		methods:{
+			getSummaries(param) {
+				var total_row = [];
+				param.columns.map(item => {
+					total_row.push(this.total_data[item.property]);
+				})
+				//总计
+				return total_row;
+			},
 			//烫画款号
 			thkhList(e){
 				this.searchDrawData('thkh',e)
@@ -136,16 +156,44 @@
 				this.page = 1;
  				//获取列表
  				this.getList();
+ 				//总计
+ 				this.drawGoodsTotal();
  			},
  			//排序
-        	sortChange(column){
-        		if(column.order){
-        			let order = column.order == 'ascending'?'asc':'desc';
-        			this.sort = column.prop + '-' + order;
-        		}else{
-        			this.sort = '';
-        		}
-        		this.getList();
+ 			sortChange(column){
+ 				if(column.order){
+ 					let order = column.order == 'ascending'?'asc':'desc';
+ 					this.sort = column.prop + '-' + order;
+ 				}else{
+ 					this.sort = '';
+ 				}
+ 				this.getList();
+ 			},
+        	//导出
+        	commitExport(){
+        		MessageBox.confirm('确认导出?', '提示', {
+        			confirmButtonText: '确定',
+        			cancelButtonText: '取消',
+        			type: 'warning'
+        		}).then(() => {
+        			let arg = {
+        				thkh:this.select_thkh_list.join(','),
+        				bpkh:this.select_bpkh_list.join(','),
+        				gys:this.select_gys_list.join(','),
+        				gyshh:this.select_gysbm_list.join(','),
+        				sort:this.sort
+        			}
+        			resource.fillGoodsListExport(arg).then(res => {
+        				if(res){
+        					exportPost("\ufeff" + res.data,'烫画款补货数据');
+        				}
+        			})
+        		}).catch(() => {
+        			Message({
+        				type: 'info',
+        				message: '取消导出'
+        			});          
+        		});
         	},
 			//获取列表
 			getList(){
@@ -166,6 +214,26 @@
 					}
 				})
 			},
+			//总计
+			drawGoodsTotal(){
+				let arg = {
+					type:1,
+					thkh:this.select_thkh_list.join(','),
+					bpkh:this.select_bpkh_list.join(','),
+					gys:this.select_gys_list.join(','),
+					gyshh:this.select_gysbm_list.join(','),
+					sort:this.sort
+				}
+				resource.drawGoodsTotal(arg).then(res => {
+					if(res.data.code == 1){
+						var data = res.data.data;
+						data['thkh'] = '总计';
+						this.total_data = data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//分页
 			handleSizeChange(val) {
 				this.pagesize = val;
@@ -181,5 +249,10 @@
 	}
 </script>
 <style lang="less" scoped>
-
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 </style>

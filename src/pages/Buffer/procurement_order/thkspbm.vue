@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="烫画款式编码：">
+				<el-select v-model="select_thksbm_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入烫画款式编码" :remote-method="thksbmList" collapse-tags>
+					<el-option v-for="item in thksbm_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="烫画款商品编码：">
 				<el-select v-model="select_thkh_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入烫画款商品编码" :remote-method="thkhList" collapse-tags>
 					<el-option v-for="item in thkh_list" :key="item" :label="item" :value="item">
@@ -10,6 +16,12 @@
 			<el-form-item label="白坯款商品编码：">
 				<el-select v-model="select_bpkh_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入白坯款商品编码" :remote-method="bpkhList" collapse-tags>
 					<el-option v-for="item in bpkh_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="白坯款式编码：">
+				<el-select v-model="select_bpksbm_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入白坯款式编码" :remote-method="bpksbmList" collapse-tags>
+					<el-option v-for="item in bpksbm_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -29,7 +41,12 @@
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :summary-method="getSummaries" show-summary @sort-change="sortChange">
+			<el-table-column prop="thkh" label="烫画款式编码" width="120" align="center"></el-table-column>
+			<el-table-column prop="bpkh" label="白坯款式编码" width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thspbm" label="烫画款商品编码" width="120" align="center"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯款商品编码" width="130" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gys" label="供应商名称" width="100" show-overflow-tooltip align="center"></el-table-column>
@@ -72,9 +89,15 @@
 </template>
 <script>
 	import resource from '../../../api/procurementResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
+				select_thksbm_list:[],		//选中的烫画款式编码
+				thksbm_list:[],				//烫画款式编码
+				select_bpksbm_list:[],		//选中的白坯款式编码
+				bpksbm_list:[],				//白坯款式编码
 				thkh_list:[],				//烫画款号列表
 				select_thkh_list:[],		//选中的烫画款号列表
 				bpkh_list:[],				//白坯款号列表
@@ -87,13 +110,32 @@
 				pagesize:10,
 				sort:"",
 				dataObj:{},
+				total_data:{}
 			}
 		},
 		created(){
 			//获取列表
- 			this.getList();
+			this.getList();
+			//总计
+			this.drawGoodsTotal();
 		},
 		methods:{
+			getSummaries(param) {
+				var total_row = [];
+				param.columns.map(item => {
+					total_row.push(this.total_data[item.property]);
+				})
+				//总计
+				return total_row;
+			},
+			//烫画款式编码
+			thksbmList(e){
+				this.searchDrawData('thkh',e)
+			},
+			//白坯款号
+			bpksbmList(e){
+				this.searchDrawData('bpkh',e)
+			},
 			//烫画款号
 			thkhList(e){
 				this.searchDrawData('thspbm',e)
@@ -121,6 +163,10 @@
 					if(res.data.code == 1){
 						if(field == 'thspbm'){
 							this.thkh_list = res.data.data;
+						}else if(field == 'thkh'){
+							this.thksbm_list = res.data.data;
+						}else if(field == 'bpkh'){
+							this.bpksbm_list = res.data.data;
 						}else if(field == 'bpspbm'){
 							this.bpkh_list = res.data.data;
 						}else if(field == 'gys'){
@@ -138,20 +184,52 @@
 				this.page = 1;
  				//获取列表
  				this.getList();
+ 				//总计
+ 				this.drawGoodsTotal();
  			},
  			//排序
-        	sortChange(column){
-        		if(column.order){
-        			let order = column.order == 'ascending'?'asc':'desc';
-        			this.sort = column.prop + '-' + order;
-        		}else{
-        			this.sort = '';
-        		}
-        		this.getList();
+ 			sortChange(column){
+ 				if(column.order){
+ 					let order = column.order == 'ascending'?'asc':'desc';
+ 					this.sort = column.prop + '-' + order;
+ 				}else{
+ 					this.sort = '';
+ 				}
+ 				this.getList();
+ 			},
+        	//导出
+        	commitExport(){
+        		MessageBox.confirm('确认导出?', '提示', {
+        			confirmButtonText: '确定',
+        			cancelButtonText: '取消',
+        			type: 'warning'
+        		}).then(() => {
+        			let arg = {
+        				thkh:this.select_thksbm_list.join(','),
+        				bpkh:this.select_bpksbm_list.join(','),
+        				thspbm:this.select_thkh_list.join(','),
+        				bpspbm:this.select_bpkh_list.join(','),
+        				gys:this.select_gys_list.join(','),
+        				gyshh:this.select_gysbm_list.join(','),
+        				sort:this.sort
+        			}
+        			resource.drawGoodsListExport(arg).then(res => {
+        				if(res){
+        					exportPost("\ufeff" + res.data,'烫画款商品明细');
+        				}
+        			})
+        		}).catch(() => {
+        			Message({
+        				type: 'info',
+        				message: '取消导出'
+        			});          
+        		});
         	},
 			//获取列表
 			getList(){
 				let arg = {
+					thkh:this.select_thksbm_list.join(','),
+					bpkh:this.select_bpksbm_list.join(','),
 					thspbm:this.select_thkh_list.join(','),
 					bpspbm:this.select_bpkh_list.join(','),
 					gys:this.select_gys_list.join(','),
@@ -163,6 +241,28 @@
 				resource.drawGoodsList(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//总计
+			drawGoodsTotal(){
+				let arg = {
+					type:2,
+					thkh:this.select_thksbm_list.join(','),
+					bpkh:this.select_bpksbm_list.join(','),
+					thspbm:this.select_thkh_list.join(','),
+					bpspbm:this.select_bpkh_list.join(','),
+					gys:this.select_gys_list.join(','),
+					gyshh:this.select_gysbm_list.join(','),
+					sort:this.sort
+				}
+				resource.drawGoodsTotal(arg).then(res => {
+					if(res.data.code == 1){
+						var data = res.data.data;
+						data['thkh'] = '总计';
+						this.total_data = data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -183,5 +283,10 @@
 	}
 </script>
 <style lang="less" scoped>
-
+.buts{
+	margin-bottom: 15px;
+	display: flex;
+	align-items: center;
+	justify-content: flex-end;
+}
 </style>
