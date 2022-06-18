@@ -70,11 +70,10 @@
 <script>
 	import resource from '../../../api/targetSales.js'
 	import DeptDetail from './components/dept_detail.vue'
-	import {getCurrentMonth} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
-				date:getCurrentMonth(),		//选择的年月
+				log_id:"",
 				dept_1_id:"",			//选中的一级部门id
 				level1_dept_list:[],	//一级部门列表
 				dept_2_id:"",			//选中的二级部门ID
@@ -87,11 +86,26 @@
 				id:"",						//详情ID
 			}
 		},
-		created(){
-			//获取部门列表
-			this.getDepts();
+		beforeRouteLeave(to,from,next){
+			if(to.path == '/store_target'){	//拆分店铺
+				from.meta.isUseCache = true;
+			}else{
+				from.meta.isUseCache = false;
+			}
+			next();
+		},
+		activated(){
+			if(!this.$route.meta.isUseCache){
+				this.log_id = this.$route.query.id;
+				this.dept_2_id = "";
+				this.page = 1;
+				this.pagesize = 10;
+				//获取部门列表
+				this.getDepts();
+			}
 			//获取列表
 			this.getData();
+			this.$route.meta.isUseCache = false;
 		},
 		methods:{
 			//获取二级部门列表
@@ -120,9 +134,7 @@
 				this.page = type?1:this.page;
 				let arg = {
 					from_type:'admin',
-					// date:this.date?this.date:'',
-					log_id:this.$route.query.id,
-					// dept_1_id:this.dept_1_id,
+					log_id:this.log_id,
 					dept_2_id:this.dept_2_id,
 					page:this.page,
 					limit:this.pagesize

@@ -84,20 +84,44 @@ const router = new Router({
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},
     { path: '/operations_data_analysis',name:"运营中心数据分析", component: operations_data_analysis},
-    { path: '/store_sales_forecast',name:"店长销售收入预估", component: store_sales_forecast}, // 店长销售收入预估
+    { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: store_sales_forecast}, // 店长销售收入预估
     { path: '/create_target',name:"店铺填报", component: create_target}, // 店长填报
-    { path: '/audit_dept',name:"审核表（项目部审核店铺）", component: audit_dept},
-    { path: '/sales_forecast_dept',name:"销售额预估表（项目部）", component: sales_forecast_dept},
+    { path: '/audit_dept',name:"审核表（项目部审核店铺）", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: audit_dept},
+    { path: '/sales_forecast_dept',name:"销售额预估表（项目部）", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: sales_forecast_dept},
     { path: '/store_target',name:"拆分店铺", component: store_target},
-    { path: '/audit_division',name:"审核表（事业部审核项目部）", component: audit_division},
-    { path: '/sales_forecast_division',name:"销售额预估表（事业部）", component: sales_forecast_division},
-    { path: '/dept_target',name:"拆分项目部（事业部）", component: dept_target},
-    { path: '/audit_manager',name:"审核表（总经理）", component: audit_manager},
-    { path: '/dept_target_manager',name:"审核表（总经理）", component: dept_target_manager},
+    { path: '/audit_division',name:"审核表（事业部审核项目部）", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: audit_division},
+    { path: '/sales_forecast_division',name:"销售额预估表（事业部）", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: sales_forecast_division},
+    { path: '/dept_target',name:"拆分项目部（事业部）", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: dept_target},
+    { path: '/audit_manager',name:"审核表（总经理）", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: audit_manager},
+    { path: '/dept_target_manager',name:"审核表（总经理）", meta:{
+        isUseCache:false,
+        keepAlive:true
+    },component: dept_target_manager},
     { path: '/data_export',name:"数据导出", component: data_export},
     ]
-  }
-  ]
+}
+]
 })
 // 路由跳转前的钩子
 // router.beforeEach(function (to, from, next) {

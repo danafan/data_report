@@ -481,24 +481,24 @@
 							}
 							if(pie_k == 'now'){
 								pieObj.name = "当前库存";
-								pieObj.num = data.now_kc;
+								pieObj.value = data.now_kc;
 							}else if(pie_k == 'start'){
 								pieObj.name = "起始库存";
-								pieObj.num = data.start_kc;
+								pieObj.value = data.start_kc;
 							}else if(pie_k == 'one'){
 								pieObj.name = "第一周";
-								pieObj.num = data.one_week;
+								pieObj.value = data.one_week;
 							}else if(pie_k == 'two'){
 								pieObj.name = "第二周";
-								pieObj.num = data.two_week;
+								pieObj.value = data.two_week;
 							}else if(pie_k == 'three'){
 								pieObj.name = "第三周";
-								pieObj.num = data.three_week;
+								pieObj.value = data.three_week;
 							}else if(pie_k == 'four'){
 								pieObj.name = "第四周";
-								pieObj.num = data.four_week;
+								pieObj.value = data.four_week;
 							}
-							pieObj.value = data.progress[pie_k];
+							pieObj.num = data.progress[pie_k];
 							series_data_pie.push(pieObj);
 						}
 						//环形图配置(清仓进度)
@@ -576,7 +576,7 @@
 					series: [
 					{
 						type: 'pie',
-						radius: [50, 100],
+						radius: [50, title == ''?100:150],
 						center: ['50%', '50%'],
 						roseType: 'radius',
 						label:{
@@ -586,8 +586,8 @@
 							fontWeight:'bold',
 							formatter (params) {
 								var relVal = params.data.name;
-								relVal += '\n' + params.data.num
-								+ '\n' + params.data.value + '%';
+								relVal += '\n' + params.data.value
+								+ '\n' + params.data.num + '%';
 								return relVal;
 							},
 						},
@@ -675,8 +675,8 @@
 								}
 								item.map(iii => {
 									for(let k in iii){
-										iii['num'] = iii.now_count;
-										iii['value'] = iii.now_progress;
+										iii['value'] = iii.now_count;
+										iii['num'] = iii.now_progress;
 									}
 								})
 								if(index <= 2){
@@ -840,6 +840,7 @@
 			//获取异常数据
 			searchTable(){
 				this.yc_page = 1;
+				this.total_num = 0;
 				//清仓汇总-清仓异常
 				this.clearAbnormal();
 				//清仓异常图表

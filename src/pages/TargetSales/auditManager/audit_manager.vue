@@ -122,11 +122,27 @@
 				export_type:1,				//导出类型
 			}
 		},
-		created(){
-			//获取部门列表
-			this.getDepts();
+		beforeRouteLeave(to,from,next){
+			if(to.path == '/dept_target_manager'){	//拆分项目部
+				from.meta.isUseCache = true;
+			}else{
+				from.meta.isUseCache = false;
+			}
+			next();
+		},
+		activated(){
+			if(!this.$route.meta.isUseCache){
+				this.date = getCurrentMonth();
+				this.dept_1_id = "";
+				this.status = -1;
+				this.page = 1;
+				this.pagesize = 10;
+				//获取部门列表
+				this.getDepts();
+			}
 			//获取列表
 			this.getData();
+			this.$route.meta.isUseCache = false;
 		},
 		methods:{
 			//获取部门列表

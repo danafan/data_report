@@ -161,7 +161,8 @@
 					<div class="background_box" :style="{width:`${max == 0?0:(160/max)*Math.abs(scope.row.xsje)}px`,background:'#FEDB6F'}" v-if="item.row_field_name == 'xsje' && scope.$index > 0">{{scope.row.xsje}}</div>
 					<!-- 图片 -->
 					<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
-					<div v-else>{{scope.row[item.row_field_name]}}{{item.row_field_name == 'mlv'?'%':''}}</div>
+					<div v-else-if="item.row_field_name == 'mlv'">{{scope.row[item.row_field_name] === null?'':scope.row[item.row_field_name] + '%'}}</div>
+					<div v-else>{{scope.row[item.row_field_name]}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -253,8 +254,8 @@
 				resource.ajaxKsbm({name:e}).then(res => {
 					if(res.data.code == 1){
 						this.ks_list = res.data.data;
-						this.select_ks_ids = this.ks_list[0];
 						if(e == ''){
+							this.select_ks_ids = this.ks_list[0];
 							//获取顶部卡片信息
 							this.getShopCard();
 							//获取资料图表

@@ -144,11 +144,27 @@
 				step_list:[],				//审批流程列表
 			}
 		},
-		created(){
-			//获取店铺列表
-			this.getShops();
+		beforeRouteLeave(to,from,next){
+			if(to.path == '/create_target'){	//拆分店铺
+				from.meta.isUseCache = true;
+			}else{
+				from.meta.isUseCache = false;
+			}
+			next();
+		},
+		activated(){
+			if(!this.$route.meta.isUseCache){
+				this.date = "";
+				this.shop_id = "";
+				this.status = -1;
+				this.page = 1;
+				this.pagesize = 10;
+				//获取店铺列表
+				this.getShops();
+			}
 			//获取列表
 			this.getData();
+			this.$route.meta.isUseCache = false;
 		},
 		methods:{
 			//获取店铺列表
