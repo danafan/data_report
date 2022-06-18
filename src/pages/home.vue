@@ -57,6 +57,7 @@
 		<el-container class="content_box">
 			<div class="left_box">
 				<el-menu
+				class="el-menu-vertical-demo"
 				@select="handleSelect" 
 				:router="true" 
 				:unique-opened="true" 
@@ -94,11 +95,11 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/store_sales_forecast">
+				<!-- <el-menu-item index="/dw_delivery">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">店铺填报</span>
-				</el-menu-item>
-				<el-menu-item index="/audit_dept">
+					<span slot="title">得物发货情况分析</span>
+				</el-menu-item> -->
+				<!-- <el-menu-item index="/audit_dept">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">项目部审核</span>
 				</el-menu-item>
@@ -127,6 +128,12 @@
 @home="newWindow"></vue-context-menu>
 </div>
 </template>
+<style type="text/css">
+.el-menu-vertical-demo{
+	height: 100%;
+	overflow-y: scroll !important;
+}
+</style>
 <style lang="less" scoped>
 .box{
 	position: absolute;

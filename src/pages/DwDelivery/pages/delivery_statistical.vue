@@ -1,0 +1,92 @@
+<template>
+	<div>
+		<div class="title">得物-事业部发货情况</div>
+		<el-table size="small" :data="dept_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800">
+			<el-table-column prop="dept_name" label="事业部" align="center"></el-table-column>
+			<el-table-column prop="shop_name" label="店铺名称" align="center"></el-table-column>
+			<el-table-column prop="shop_id" label="聚水潭编码" align="center"></el-table-column>
+			<el-table-column prop="wfhdl" label="未发货" align="center"></el-table-column>
+			<el-table-column prop="yfhdl" label="今日已发货" align="center"></el-table-column>
+			<el-table-column prop="fhzdl" label="今日发货中" width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="fhzyfdl" width="130" label="今日发货中_预发货" align="center">
+			</el-table-column>
+			<el-table-column prop="24yfhdl" width="140" label="24小时内(今日已发货)" align="center"></el-table-column>
+			<el-table-column prop="24wfhdl" width="140" label="24小时内(今日未发货)" align="center"></el-table-column>
+			<el-table-column prop="24fhzdl" width="140" label="24小时内(今日发货中)" align="center"></el-table-column>
+			<el-table-column prop="24fhzyfdl" width="190" label="24小时内(今日发货中_预发货)" align="center"></el-table-column>
+			<el-table-column prop="99yfhdl" width="140" label="超时订单(今日已发货)" align="center"></el-table-column>
+			<el-table-column prop="99wfhdl" width="140" label="超时订单(今日未发货)" align="center"></el-table-column>
+			<el-table-column prop="99fhzdl" width="140" label="超时订单(今日发货中)" align="center"></el-table-column>
+			<el-table-column prop="99fhzyfdl" width="190" label="超时订单(今日发货中_预发货)" align="center"></el-table-column>
+		</el-table>
+		<div class="title margin">得物-店铺发货情况</div>
+		<el-table size="small" :data="shop_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800">
+			<el-table-column prop="dept_name" label="事业部" align="center"></el-table-column>
+			<el-table-column prop="shop_name" label="店铺名称" align="center"></el-table-column>
+			<el-table-column prop="shop_id" label="聚水潭编码" align="center"></el-table-column>
+			<el-table-column prop="wfhdl" label="未发货" align="center"></el-table-column>
+			<el-table-column prop="yfhdl" label="今日已发货" align="center"></el-table-column>
+			<el-table-column prop="fhzdl" label="今日发货中" width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="fhzyfdl" width="130" label="今日发货中_预发货" align="center">
+			</el-table-column>
+			<el-table-column prop="24yfhdl" width="140" label="24小时内(今日已发货)" align="center"></el-table-column>
+			<el-table-column prop="24wfhdl" width="140" label="24小时内(今日未发货)" align="center"></el-table-column>
+			<el-table-column prop="24fhzdl" width="140" label="24小时内(今日发货中)" align="center"></el-table-column>
+			<el-table-column prop="24fhzyfdl" width="190" label="24小时内(今日发货中_预发货)" align="center"></el-table-column>
+			<el-table-column prop="99yfhdl" width="140" label="超时订单(今日已发货)" align="center"></el-table-column>
+			<el-table-column prop="99wfhdl" width="140" label="超时订单(今日未发货)" align="center"></el-table-column>
+			<el-table-column prop="99fhzdl" width="140" label="超时订单(今日发货中)" align="center"></el-table-column>
+			<el-table-column prop="99fhzyfdl" width="190" label="超时订单(今日发货中_预发货)" align="center"></el-table-column>
+		</el-table>
+	</div>
+</template>
+<style lang="less" scoped>
+.title{
+	margin-bottom: 10px;
+	font-size: 18px;
+	font-weight: bold;
+}
+.margin{
+	margin-top: 15px;
+}
+</style>
+<script>
+	import resource from '../../../api/dwResource.js'
+	export default{
+		data(){
+			return{
+				dept_data:[],				//部门数据
+				shop_data:[],				//店铺数据
+			}
+		},
+		created(){
+			//获取列表
+			this.getData();
+		},
+		methods:{
+			//获取列表
+			getData(){
+				resource.deliverDewuTotal().then(res => {
+					if(res.data.code == 1){
+						this.dept_data = res.data.dept_data;
+						this.shop_data = res.data.shop_data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			}
+		}
+	}
+</script>
+
+
+
+
+
+
+
+
+
+

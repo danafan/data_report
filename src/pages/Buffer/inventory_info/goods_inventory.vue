@@ -9,7 +9,7 @@
 			</el-form-item>
 			<el-form-item label="部门：">
 				<el-select v-model="select_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -151,7 +151,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="批次：">
 				<el-select v-model="select_record_branth" :popper-append-to-body="false" placeholder="全部">
-					<el-option v-for="item in record_branth_list" :key="item.start_rq" :label="item.start_rq" :value="item.start_rq">
+					<el-option v-for="item in branth_list" :key="item.start_rq" :label="item.start_rq" :value="item.start_rq">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -167,7 +167,7 @@
 		</el-form>
 		<div class="title">清仓进度明细表</div>
 		<el-table :data="dataObj.data" size="small" max-height="600" :row-class-name="tableRowClassName">
-			<el-table-column prop="ksbm" label="款式编码" show-overflow-tooltip align="center">
+			<el-table-column prop="ksbm" label="款式编码" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="gyshh" label="供应商款号" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
@@ -241,6 +241,7 @@
 			return {
 				branth_list:[],			//批次列表
 				start_rq:[],			//选中的批次列表
+				select_record_branth:"",//选中的清仓进度明细批次
 				dept_list:[],			//部门列表
 				select_dept_ids:[],		//选中的部门列表
 				select_jj_ids:[],		//选中的季节
@@ -254,8 +255,6 @@
 				series_data_funnel:[],	//清仓进度环比数据
 				qczjChart:null,			//清仓，折价趋势图
 				clear_list:[],			//清仓汇总-列表
-				record_branth_list:[],	//清仓进度明细批次列表
-				select_record_branth:"",//选中的清仓进度明细批次列表
 				ks_list:[],				//款式编码列表
 				select_ks_ids:[],		//选中的款式编码列表
 				page:1,
@@ -296,8 +295,7 @@
 				resource.clearBatch().then(res => {
 					if(res.data.code == 1){
 						this.branth_list = res.data.data;
-						this.record_branth_list = this.branth_list;
-						this.select_record_branth = this.record_branth_list[0].start_rq;
+						this.select_record_branth = this.branth_list[0].start_rq;
 						//获取清仓进度明细
 						this.getClearProgress();
 						//清仓汇总-清仓日期(列表后面的列)
@@ -309,18 +307,13 @@
 			},
 			//部门列表
 			getDept(){
-				if(this.$store.state.dept_list.length == 0){  
-					resource.ajaxViewDept().then(res => {
-						if(res.data.code == 1){
-							this.dept_list = res.data.data;
-							this.$store.commit('setDeptList',this.dept_list);
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{
-					this.dept_list = this.$store.state.dept_list;
-				}
+				resource.clearDept().then(res => {
+					if(res.data.code == 1){
+						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//品类列表
 			getPl(){
@@ -339,24 +332,12 @@
 			},
 			//搜索
 			searchFn(){
-				//点击搜索切换批次备选项列表
-				this.getRecordBatchList();
 				//清仓汇总
 				this.dynamicAnalysisClear();
 				//清仓汇总-清仓，折价趋势图
 				this.clearChart();
 				//清仓汇总-列表
 				this.dynamicAnalysisclearList();
-			},
-			//点击搜索切换批次备选项列表
-			getRecordBatchList(){
-				if(this.start_rq.length > 0){
-					this.record_branth_list = this.start_rq;
-					this.select_record_branth = this.record_branth_list[0].start_rq;
-				}else{
-					this.record_branth_list = this.branth_list;
-					this.select_record_branth = this.record_branth_list[0].start_rq;
-				}
 				//获取清仓进度明细
 				this.getClearProgress();
 				//清仓汇总-清仓日期(列表后面的列)
@@ -795,7 +776,10 @@
 			},
 			//清仓汇总-清仓日期(列表后面的列)
 			clearDate(){
-				resource.clearDate({start_rq:this.select_record_branth,}).then(res => {
+				let arg = {
+					start_rq:this.select_record_branth
+				}
+				resource.clearDate({start_rq:this.select_record_branth}).then(res => {
 					if(res.data.code == 1){
 						this.clear_date = res.data.data;
 					}else{
@@ -808,6 +792,10 @@
 				let arg = {
 					start_rq:this.select_record_branth,
 					ksbm:this.select_ks_ids.join(','),
+					jj:this.select_jj_ids.join(','),
+					hy:this.hy,
+					cpfl:this.select_pl_ids.join(','),
+					dept:this.select_dept_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -899,9 +887,9 @@
 						type: 'category',
 						data: x_data,
 						axisLabel: {
-        					color: '#333',
-        					rotate:50
-        				}
+							color: '#333',
+							rotate:50
+						}
 					},
 					yAxis: {
 						type: 'value'

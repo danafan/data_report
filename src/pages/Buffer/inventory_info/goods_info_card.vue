@@ -161,7 +161,7 @@
 					<div class="background_box" :style="{width:`${max == 0?0:(160/max)*Math.abs(scope.row.xsje)}px`,background:'#FEDB6F'}" v-if="item.row_field_name == 'xsje' && scope.$index > 0">{{scope.row.xsje}}</div>
 					<!-- 图片 -->
 					<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
-					<div v-else-if="item.row_field_name == 'mlv'">{{scope.row[item.row_field_name] === null?'':scope.row[item.row_field_name] + '%'}}</div>
+					<div v-else-if="item.row_field_name == 'mlv' || item.row_field_name == 'bdbl' || item.row_field_name == 'fhqthl' || item.row_field_name == 'fhhthl'">{{scope.row[item.row_field_name] === null?'':scope.row[item.row_field_name] + '%'}}</div>
 					<div v-else>{{scope.row[item.row_field_name]}}</div>
 				</template>
 			</el-table-column>
@@ -193,7 +193,7 @@
 	</div>
 </template>
 <script>
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {getMonthStartDate,getNowDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
 	export default{
 		data(){
@@ -222,7 +222,7 @@
 						}
 					}]
 				},	 					//时间区间
-				date:[],				//选中的时间
+				date:[getLastMonthStartDate(2),getNowDate()],				//选中的时间
 				ks_list:[],				//款式编码列表
 				select_ks_ids:'',		//选中的款式编码
 				cardInfo:{},			//顶部卡片信息
@@ -413,7 +413,9 @@
 						this.dataObj = res.data.data.detail;
 						let max_field = res.data.data.max_field;
 						var tableData = this.dataObj.data;
-						tableData.unshift(max_field);
+						if (max_field.length > 0) {
+							tableData.unshift(max_field);
+						}
 						this.tableData = tableData;
 						this.title_list = res.data.data.title_list;
 						this.view_row = res.data.data.view_row;

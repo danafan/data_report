@@ -50,6 +50,8 @@ const audit_manager = resolve=>require(['@/pages/TargetSales/auditManager/audit_
 const dept_target_manager = resolve=>require(['@/pages/TargetSales/auditManager/dept_target'],resolve)   //拆分项目部（总经理）
 //数据导出
 const data_export = resolve=>require(['@/pages/DataExport/data_export'],resolve)   //采购入库
+//得物发货情况分析
+const dw_delivery = resolve=>require(['@/pages/DwDelivery/dw_delivery'],resolve)   //得物发货情况分析
 Vue.use(Router)
 
 const router = new Router({
@@ -119,6 +121,7 @@ const router = new Router({
         keepAlive:true
     },component: dept_target_manager},
     { path: '/data_export',name:"数据导出", component: data_export},
+    { path: '/dw_delivery',name:"得物发货情况分析", component: dw_delivery},
     ]
 }
 ]

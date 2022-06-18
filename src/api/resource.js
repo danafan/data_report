@@ -213,6 +213,7 @@ let path = {
 	clearDate:'dynamic_analysis/clear_date',						//清仓汇总-清仓日期
 	clearAbnormal:'dynamic_analysis/clear_abnormal',				//清仓汇总-清仓异常
 	clearAbnormalChart:'dynamic_analysis/clear_abnormal_chart',		//清仓异常图表
+	clearDept:'dynamic_analysis/clear_dept',						//清仓汇总- 部门
 	
 
 }					
@@ -1100,6 +1101,10 @@ export default{
 	//清仓异常图表
 	clearAbnormalChart(params){
 		return http.get(path.clearAbnormalChart, params)
+	},
+	//清仓汇总- 部门
+	clearDept(params){
+		return http.get(path.clearDept, params)
 	},
 	
 }
