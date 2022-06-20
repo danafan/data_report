@@ -2,9 +2,9 @@
 	<div>
 		<div class="title">得物-事业部发货情况</div>
 		<el-table size="small" :data="dept_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800">
-			<el-table-column prop="dept_name" label="事业部" align="center"></el-table-column>
-			<el-table-column prop="shop_name" label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="shop_id" label="聚水潭编码" align="center"></el-table-column>
+			<el-table-column prop="dept_name" width="120" show-overflow-tooltip label="事业部" align="center"></el-table-column>
+			<el-table-column prop="shop_name" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
+			<!-- <el-table-column prop="shop_id" label="聚水潭编码" align="center"></el-table-column> -->
 			<el-table-column prop="wfhdl" label="未发货" align="center"></el-table-column>
 			<el-table-column prop="yfhdl" label="今日已发货" align="center"></el-table-column>
 			<el-table-column prop="fhzdl" label="今日发货中" width="120" align="center">
@@ -22,9 +22,9 @@
 		</el-table>
 		<div class="title margin">得物-店铺发货情况</div>
 		<el-table size="small" :data="shop_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800">
-			<el-table-column prop="dept_name" label="事业部" align="center"></el-table-column>
-			<el-table-column prop="shop_name" label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="shop_id" label="聚水潭编码" align="center"></el-table-column>
+			<el-table-column prop="dept_name" width="120" show-overflow-tooltip label="事业部" align="center"></el-table-column>
+			<el-table-column prop="shop_name" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
+			<!-- <el-table-column prop="shop_id" label="聚水潭编码" align="center"></el-table-column> -->
 			<el-table-column prop="wfhdl" label="未发货" align="center"></el-table-column>
 			<el-table-column prop="yfhdl" label="今日已发货" align="center"></el-table-column>
 			<el-table-column prop="fhzdl" label="今日发货中" width="120" align="center">
@@ -70,8 +70,8 @@
 			getData(){
 				resource.deliverDewuTotal().then(res => {
 					if(res.data.code == 1){
-						this.dept_data = res.data.dept_data;
-						this.shop_data = res.data.shop_data;
+						this.dept_data = res.data.data.dept_data;
+						this.shop_data = res.data.data.shop_data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

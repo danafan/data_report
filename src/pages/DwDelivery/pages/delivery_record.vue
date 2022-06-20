@@ -16,7 +16,13 @@
 					<el-option label="未发货" value="3"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="店铺ID：">
+			<el-form-item label="事业部名称：">
+				<el-select v-model="dept_name" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option label="事业二部" value="事业二部"></el-option>
+					<el-option label="事业四部" value="事业四部"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="店铺名称：">
 				<el-select v-model="shop_id" clearable filterable reserve-keyword :popper-append-to-body="false" placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item.shop_id" :label="item.shop_name" :value="item.shop_id">
 					</el-option>
@@ -36,23 +42,22 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="shop_id" label="聚水潭编码" align="center"></el-table-column>
-			<el-table-column prop="shop_name" label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="trade_id" label="内部订单号" align="center"></el-table-column>
-			<el-table-column prop="trade_no" label="线上订单号" align="center"></el-table-column>
-			<el-table-column prop="goods_name" label="商品名称" align="center"></el-table-column>
+			<el-table-column prop="shop_name" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
+			<el-table-column prop="trade_id" width="120" show-overflow-tooltip label="内部订单号" align="center"></el-table-column>
+			<el-table-column prop="trade_no" width="120" show-overflow-tooltip label="线上订单号" align="center"></el-table-column>
+			<el-table-column prop="goods_name" width="120" show-overflow-tooltip label="商品名称" align="center"></el-table-column>
 			<el-table-column prop="sell_count" label="数量" width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="sndtime" width="130" label="发货时间" align="center">
+			<el-table-column prop="sndtime" width="160" label="发货时间" align="center">
 			</el-table-column>
-			<el-table-column prop="pay_time" width="140" label="支付时间" align="center"></el-table-column>
-			<el-table-column prop="i_id" width="140" label="款式编码" align="center"></el-table-column>
-			<el-table-column prop="goods_code" width="140" label="商品编码" align="center"></el-table-column>
-			<el-table-column prop="supplier_name" width="190" label="供应商名称" align="center"></el-table-column>
-			<el-table-column prop="supplier_sku_id" width="140" label="供应商款式编码" align="center"></el-table-column>
-			<el-table-column prop="supplier_i_id" width="140" label="供应商商品编码" align="center"></el-table-column>
-			<el-table-column prop="labels" width="140" label="预发货" align="center"></el-table-column>
-			<el-table-column prop="trade_status" width="190" label="状态" align="center"></el-table-column>
+			<el-table-column prop="pay_time" width="160" label="支付时间" align="center"></el-table-column>
+			<el-table-column prop="i_id" width="140" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
+			<el-table-column prop="goods_code" width="140" show-overflow-tooltip label="商品编码" align="center"></el-table-column>
+			<el-table-column prop="supplier_name" width="120" show-overflow-tooltip label="供应商名称" align="center"></el-table-column>
+			<el-table-column prop="supplier_sku_id" width="140" show-overflow-tooltip label="供应商款式编码" align="center"></el-table-column>
+			<el-table-column prop="supplier_i_id" width="140" show-overflow-tooltip label="供应商商品编码" align="center"></el-table-column>
+			<el-table-column prop="labels" label="预发货" align="center"></el-table-column>
+			<el-table-column prop="trade_status" label="状态" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -103,6 +108,7 @@
 				send_date:[],			//发货时间
 				pay_date:[],			//支付时间
 				trade_status:'',		//订单状态
+				dept_name:"",			//事业部名称
 				shop_list:[],			//店铺列表
 				shop_id:"",				//选中的店铺id
 				labels:"",				//是否预发货
@@ -141,6 +147,7 @@
 					pay_start_date:this.pay_date && this.pay_date.length> 0?this.pay_date[0]:"",
 					pay_end_date:this.pay_date && this.pay_date.length> 0?this.pay_date[1]:"",
 					trade_status:this.trade_status,
+					dept_name:this.dept_name,
 					labels:this.labels,
 					shop_id:this.shop_id,
 					page:this.page,
@@ -166,6 +173,7 @@
 						send_end_date:this.send_date && this.send_date.length> 0?this.send_date[1]:"",
 						pay_start_date:this.pay_date && this.pay_date.length> 0?this.pay_date[0]:"",
 						pay_end_date:this.pay_date && this.pay_date.length> 0?this.pay_date[1]:"",
+						dept_name:this.dept_name,
 						trade_status:this.trade_status,
 						labels:this.labels,
 						shop_id:this.shop_id,

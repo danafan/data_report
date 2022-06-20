@@ -24,15 +24,13 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-			<el-table-column prop="ksbm" label="款式编码" align="center"></el-table-column>
-			<el-table-column prop="spbm" label="商品编码" align="center"></el-table-column>
-			<el-table-column prop="gysmc" label="供应商名称" align="center"></el-table-column>
-			<el-table-column prop="gysksbm" label="供应商款式" align="center"></el-table-column>
-			<el-table-column prop="gysspbm" width="120" label="供应商商品编码" align="center"></el-table-column>
+			<el-table-column prop="ksbm" width="120" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
+			<el-table-column prop="spbm" width="120" show-overflow-tooltip label="商品编码" align="center"></el-table-column>
+			<el-table-column prop="gysmc" width="120" show-overflow-tooltip label="供应商名称" align="center"></el-table-column>
+			<el-table-column prop="gysksbm" width="120" show-overflow-tooltip label="供应商款式" align="center"></el-table-column>
+			<el-table-column prop="gysspbm" width="120" show-overflow-tooltip label="供应商商品编码" align="center"></el-table-column>
 			<el-table-column prop="sl" label="数量" width="120" align="center">
 			</el-table-column>
-			<!-- <el-table-column prop="xjcwkc" sortable width="130" label="箱及仓位库存" align="center">
-			</el-table-column> -->
 			<el-table-column prop="zcsjkc" sortable width="140" label="主仓实际库存" align="center"></el-table-column>
 			<el-table-column prop="ddzy" sortable width="140" label="订单占有" align="center"></el-table-column>
 			<el-table-column prop="kys" sortable width="140" label="可用数" align="center"></el-table-column>
@@ -148,7 +146,7 @@
 						sort_field:this.sort_field,
 						sort_type:this.sort_type,
 					}
-					resource.dewuSkuExport(arg).then(res => {
+					dwResource.dewuSkuExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,'未发货明细-包含预发');
 						}
