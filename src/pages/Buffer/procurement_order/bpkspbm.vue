@@ -33,8 +33,8 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :summary-method="getSummaries" show-summary @sort-change="sortChange">
-			<el-table-column prop="bpspbm" label="白坯款商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款款式编码" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="bpspbm" label="白坯款商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thkh_num" label="烫画款款数" sortable width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thkh_sale_num" label="动销款数" sortable width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="color" label="颜色" width="120" show-overflow-tooltip align="center"></el-table-column>
@@ -46,23 +46,6 @@
 			<el-table-column prop="3_xssl" label="三天销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="七天销量" width="100" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="available_num" label="可用数" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="stock" label="库存" sortable show-overflow-tooltip align="center">
-			</el-table-column>
-			<el-table-column prop="xjcw_stock" label="箱及仓位库存" sortable show-overflow-tooltip align="center">
-			</el-table-column>
-			<el-table-column prop="th_out_stock" width="120" label="烫画款负库存" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="th_stock" width="120" label="烫画款库存" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="jhc_stock" label="进货仓库存" width="120" sortable show-overflow-tooltip align="center">
-			</el-table-column>
-			<el-table-column prop="out_of_stock" label="缺货" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="safety_stock" width="100" label="安全库存" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="purchase_num" label="采购数" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="hgl" label="白坯合格率" show-overflow-tooltip align="center">
-				<template slot-scope="scope">
-					<div v-if="!!scope.row.hgl">{{scope.row.hgl}}%</div>
-				</template>
-			</el-table-column>
 			<el-table-column prop="pre_rate" label="售前退货率" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="!!scope.row.pre_rate">{{scope.row.pre_rate}}%</div>
@@ -73,6 +56,24 @@
 					<div v-if="!!scope.row.fut_rate">{{scope.row.fut_rate}}%</div>
 				</template>
 			</el-table-column>
+			<el-table-column prop="available_num" label="可用数" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="stock" label="库存" sortable show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="xjcw_stock" width="120" label="箱及仓位库存" sortable show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="th_out_stock" width="120" label="烫画款负库存" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="th_stock" width="120" label="烫画款库存" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="jhc_stock" label="进货仓库存" width="120" sortable show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="out_of_stock" label="缺货" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="safety_stock" width="100" label="安全库存" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="purchase_num" width="120" label="建议采购数" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="hgl" label="白坯合格率" show-overflow-tooltip align="center">
+				<template slot-scope="scope">
+					<div v-if="!!scope.row.hgl">{{scope.row.hgl}}%</div>
+				</template>
+			</el-table-column>
+			<el-table-column prop="bp_purchase" width="150" label="今日采购数(8:30前)" sortable show-overflow-tooltip align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -230,7 +231,7 @@
 				resource.whiteGoodsTotal(arg).then(res => {
 					if(res.data.code == 1){
 						var data = res.data.data;
-						data['bpspbm'] = '总计';
+						data['bpkh'] = '总计';
 						this.total_data = data;
 					}else{
 						this.$message.warning(res.data.msg);

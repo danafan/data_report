@@ -37,6 +37,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="有无对照白坯款：">
+				<el-select v-model="is_bp" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-option label="有" value="0"></el-option>
+					<el-option label="无" value="1"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
@@ -45,19 +51,32 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :summary-method="getSummaries" show-summary @sort-change="sortChange">
-			<el-table-column prop="thkh" label="烫画款式编码" width="120" align="center"></el-table-column>
+			<el-table-column prop="bp_gyshh" label="白坯供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款式编码" width="100" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="thspbm" label="烫画款商品编码" width="120" align="center"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯款商品编码" width="130" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="gys" label="供应商名称" width="100" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="gyshh" label="供应商编码" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="color" label="颜色" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="size" label="尺码规格" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="bp_color" label="白坯颜色" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="bp_size" label="白坯尺码规格" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="thkh" label="烫画款式编码" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="thspbm" label="烫画款商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="gys" label="烫画供应商" width="100" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="gyshh" label="烫画供应商款号" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="color" label="烫画颜色" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="size" label="烫画尺码规格" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="yes_xssl" label="昨日销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="3_xssl" label="三天销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="七天销量" width="100" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="pre_rate" label="售前退货率" show-overflow-tooltip align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.pre_rate !== null">{{scope.row.pre_rate}}%</div>
+				</template>
+			</el-table-column>
+			<el-table-column prop="fut_rate" label="售后退货率" show-overflow-tooltip align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.fut_rate !== null">{{scope.row.fut_rate}}%</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="available_num" label="可用数" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="stock" label="库存" sortable show-overflow-tooltip align="center">
 			</el-table-column>
@@ -68,20 +87,16 @@
 			</el-table-column>
 			<el-table-column prop="out_of_stock" label="缺货" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="safety_stock" label="安全库存" width="100" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="purchase_num" label="采购数" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="hgl" label="白坯合格率" show-overflow-tooltip align="center">
+			<el-table-column prop="purchase_num" label="建议采购数" width="120" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column label="白坯合格率" width="100" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="scope.row.hgl !== null">{{scope.row.hgl}}%</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="pre_rate" label="售前退货率" show-overflow-tooltip align="center">
+			<el-table-column prop="bp_purchase" width="150" label="今日采购数(8:30前)" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column width="150" label="有无对照白坯款" sortable show-overflow-tooltip align="center">
 				<template slot-scope="scope">
-					<div v-if="scope.row.pre_rate !== null">{{scope.row.pre_rate}}%</div>
-				</template>
-			</el-table-column>
-			<el-table-column prop="fut_rate" label="售后退货率" show-overflow-tooltip align="center">
-				<template slot-scope="scope">
-					<div v-if="scope.row.fut_rate !== null">{{scope.row.fut_rate}}%</div>
+					<div>{{scope.row.is_bp == 0?'有':'无'}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -110,6 +125,7 @@
 				select_gys_list:[],			//选中的供应商列表
 				gysbm_list:[],					//供应商编码列表
 				select_gysbm_list:[],			//选中的供应商编码列表
+				is_bp:"",						//有无对照白坯款 
 				page:1,
 				pagesize:10,
 				sort:"",
@@ -215,6 +231,7 @@
         				bpspbm:this.select_bpkh_list.join(','),
         				gys:this.select_gys_list.join(','),
         				gyshh:this.select_gysbm_list.join(','),
+        				is_bp:this.is_bp,
         				sort:this.sort
         			}
         			resource.drawGoodsListExport(arg).then(res => {
@@ -238,6 +255,7 @@
 					bpspbm:this.select_bpkh_list.join(','),
 					gys:this.select_gys_list.join(','),
 					gyshh:this.select_gysbm_list.join(','),
+					is_bp:this.is_bp,
 					page:this.page,
 					pagesize:this.pagesize,
 					sort:this.sort
@@ -265,7 +283,7 @@
 				resource.drawGoodsTotal(arg).then(res => {
 					if(res.data.code == 1){
 						var data = res.data.data;
-						data['thkh'] = '总计';
+						data['bp_gyshh'] = '总计';
 						this.total_data = data;
 					}else{
 						this.$message.warning(res.data.msg);
