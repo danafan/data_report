@@ -1,5 +1,8 @@
 <template>
 	<div>
+		<div class="search_row">
+			<el-button type="primary" size="mini" icon="el-icon-refresh" @click="getData">刷新</el-button>
+		</div>
 		<div class="title">得物-事业部发货情况<span>&nbsp&nbsp&nbsp每小时(整点)更新一次</span></div>
 		<el-table size="small" :data="dept_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800">
 			<el-table-column prop="dept_name" width="120" show-overflow-tooltip label="事业部" align="center"></el-table-column>
@@ -19,7 +22,7 @@
 			<el-table-column prop="99fhzdl" width="140" label="超时订单(今日发货中)" align="center"></el-table-column>
 			<el-table-column prop="99fhzyfdl" width="190" label="超时订单(今日发货中_预发货)" align="center"></el-table-column>
 		</el-table>
-		<div class="title margin">得物-店铺发货情况<span>&nbsp&nbsp&nbsp每小时(整点)更新一次</span></div>
+		<div class="title">得物-店铺发货情况<span>&nbsp&nbsp&nbsp每小时(整点)更新一次</span></div>
 		<el-table size="small" :data="shop_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800">
 			<el-table-column prop="dept_name" width="120" show-overflow-tooltip label="事业部" align="center"></el-table-column>
 			<el-table-column prop="shop_name" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
@@ -41,7 +44,12 @@
 	</div>
 </template>
 <style lang="less" scoped>
+.search_row{
+	display: flex;
+	justify-content: flex-end;
+}
 .title{
+	margin-top: 15px;
 	margin-bottom: 10px;
 	font-size: 18px;
 	font-weight: bold;
@@ -49,9 +57,6 @@
 		font-size:14px;
 		color: red;
 	}
-}
-.margin{
-	margin-top: 15px;
 }
 </style>
 <script>

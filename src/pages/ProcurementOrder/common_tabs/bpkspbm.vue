@@ -103,6 +103,12 @@
 				total_data:{}
 			}
 		},
+		props:{
+			dept:{
+				type:String,
+				default:''
+			}
+		},
 		created(){
 			//获取列表
 			this.getList();
@@ -183,6 +189,7 @@
  					type: 'warning'
  				}).then(() => {
  					let arg = {
+ 						dept_2:this.dept,
  						bpspbm:this.select_bpkh_list.join(','),
  						bpkh:this.select_ksbm_list.join(','),
  						gys:this.select_gys_list.join(','),
@@ -204,6 +211,7 @@
 			//获取列表
 			getList(type){
 				let arg = {
+					dept_2:this.dept,
 					bpspbm:this.select_bpkh_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
 					gys:this.select_gys_list.join(','),
@@ -223,6 +231,7 @@
 			//总计
 			drawGoodsTotal(){
 				let arg = {
+					dept_2:this.dept,
 					bpspbm:this.select_bpkh_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
 					gys:this.select_gys_list.join(','),

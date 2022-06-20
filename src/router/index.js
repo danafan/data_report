@@ -15,7 +15,6 @@ const property_rights = resolve=>require(['@/pages/Buffer/property_rights'],reso
 const report_page = resolve=>require(['@/pages/Buffer/report_page'],resolve)
 const goods_nature = resolve=>require(['@/pages/Buffer/goods_nature'],resolve)
 const inventory_info = resolve=>require(['@/pages/Buffer/inventory_info'],resolve)
-const procurement_order = resolve=>require(['@/pages/Buffer/procurement_order'],resolve)
 //审计管理
 const audit_index = resolve=>require(['@/pages/Audit/audit_index'],resolve)
 const report_management = resolve=>require(['@/pages/Audit/report_management'],resolve)
@@ -52,6 +51,9 @@ const dept_target_manager = resolve=>require(['@/pages/TargetSales/auditManager/
 const data_export = resolve=>require(['@/pages/DataExport/data_export'],resolve)   //采购入库
 //得物发货情况分析
 const dw_delivery = resolve=>require(['@/pages/DwDelivery/dw_delivery'],resolve)   //得物发货情况分析
+//得物采购下单
+const er_dept = resolve=>require(['@/pages/ProcurementOrder/er_dept'],resolve)
+const si_dept = resolve=>require(['@/pages/ProcurementOrder/si_dept'],resolve)
 Vue.use(Router)
 
 const router = new Router({
@@ -71,7 +73,6 @@ const router = new Router({
     { path: '/report_page',name:"分析报告", component: report_page},
     { path: '/goods_nature',name:"货品性质管理", component: goods_nature},
     { path: '/inventory_info',name:"", component: inventory_info},
-    { path: '/procurement_order',name:"", component: procurement_order},
     { path: '/audit_index',name:"成本管理", component: audit_index},
     { path: '/report_management',name:"报表管理", component: report_management},
     { path: '/inventory_summary',name:"商品库存信息", component: inventory_summary},
@@ -122,6 +123,8 @@ const router = new Router({
     },component: dept_target_manager},
     { path: '/data_export',name:"数据导出", component: data_export},
     { path: '/dw_delivery',name:"得物发货情况分析", component: dw_delivery},
+    { path: '/er_dept',name:"得物采购下单（二部）", component: er_dept},
+    { path: '/si_dept',name:"得物采购下单（四部）", component: si_dept},
     ]
 }
 ]

@@ -110,6 +110,12 @@
 				total_data:{}
 			}
 		},
+		props:{
+			dept:{
+				type:String,
+				default:''
+			}
+		},
 		created(){
 			//获取列表
 			this.getList();
@@ -190,6 +196,7 @@
         			type: 'warning'
         		}).then(() => {
         			let arg = {
+        				dept_2:this.dept,
         				thkh:this.select_thkh_list.join(','),
         				bpkh:this.select_bpkh_list.join(','),
         				gys:this.select_gys_list.join(','),
@@ -212,6 +219,7 @@
 			//获取列表
 			getList(){
 				let arg = {
+					dept_2:this.dept,
 					thkh:this.select_thkh_list.join(','),
 					bpkh:this.select_bpkh_list.join(','),
 					gys:this.select_gys_list.join(','),
@@ -233,6 +241,7 @@
 			drawGoodsTotal(){
 				let arg = {
 					type:1,
+					dept_2:this.dept,
 					thkh:this.select_thkh_list.join(','),
 					bpkh:this.select_bpkh_list.join(','),
 					gys:this.select_gys_list.join(','),
