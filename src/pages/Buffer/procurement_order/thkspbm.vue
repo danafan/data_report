@@ -94,7 +94,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="bp_purchase" width="150" label="今日采购数(8:30前)" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column width="150" label="有无对照白坯款" sortable show-overflow-tooltip align="center">
+			<el-table-column width="150" label="有无对照白坯款" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.is_bp == 0?'有':'无'}}</div>
 				</template>
