@@ -241,11 +241,19 @@
         				is_bp:this.is_bp,
         				sort:this.sort
         			}
-        			resource.drawGoodsListExport(arg).then(res => {
-        				if(res){
-        					exportPost("\ufeff" + res.data,'烫画款商品明细');
-        				}
-        			})
+        			if(this.dept == '四部得物组'){
+        				resource.drawGoodsListExportFour(arg).then(res => {
+        					if(res){
+        						exportPost("\ufeff" + res.data,'烫画款商品明细');
+        					}
+        				})
+        			}else{
+        				resource.drawGoodsListExport(arg).then(res => {
+        					if(res){
+        						exportPost("\ufeff" + res.data,'烫画款商品明细');
+        					}
+        				})
+        			}
         		}).catch(() => {
         			Message({
         				type: 'info',
@@ -268,13 +276,23 @@
 					pagesize:this.pagesize,
 					sort:this.sort
 				}
-				resource.drawGoodsList(arg).then(res => {
-					if(res.data.code == 1){
-						this.dataObj = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				if(this.dept == '四部得物组'){
+					resource.drawGoodsListFour(arg).then(res => {
+						if(res.data.code == 1){
+							this.dataObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.drawGoodsList(arg).then(res => {
+						if(res.data.code == 1){
+							this.dataObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//总计
 			drawGoodsTotal(){
@@ -289,15 +307,27 @@
 					gyshh:this.select_gysbm_list.join(','),
 					sort:this.sort
 				}
-				resource.drawGoodsTotal(arg).then(res => {
-					if(res.data.code == 1){
-						var data = res.data.data;
-						data['bp_gyshh'] = '总计';
-						this.total_data = data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				if(this.dept == '四部得物组'){
+					resource.drawGoodsTotalFour(arg).then(res => {
+						if(res.data.code == 1){
+							var data = res.data.data;
+							data['bp_gyshh'] = '总计';
+							this.total_data = data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.drawGoodsTotal(arg).then(res => {
+						if(res.data.code == 1){
+							var data = res.data.data;
+							data['bp_gyshh'] = '总计';
+							this.total_data = data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//分页
 			handleSizeChange(val) {

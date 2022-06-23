@@ -94,12 +94,12 @@
 	export default{
 		data(){
 			return{
-				thkh_list:[],				//烫画款号列表
-				select_thkh_list:[],		//选中的烫画款号列表
-				bpkh_list:[],				//白坯款号列表
-				select_bpkh_list:[],		//选中的白坯款号列表
+				thkh_list:[],					//烫画款号列表
+				select_thkh_list:[],			//选中的烫画款号列表
+				bpkh_list:[],					//白坯款号列表
+				select_bpkh_list:[],			//选中的白坯款号列表
 				gys_list:[],					//供应商列表
-				select_gys_list:[],			//选中的供应商列表
+				select_gys_list:[],				//选中的供应商列表
 				gysbm_list:[],					//供应商编码列表
 				select_gysbm_list:[],			//选中的供应商编码列表
 				is_bp:"",						//有无对照白坯款 
@@ -204,11 +204,19 @@
         				is_bp:this.is_bp,
         				sort:this.sort
         			}
-        			resource.fillGoodsListExport(arg).then(res => {
-        				if(res){
-        					exportPost("\ufeff" + res.data,'烫画款补货数据');
-        				}
-        			})
+        			if(this.dept == '四部得物组'){
+        				resource.fillGoodsListExportFour(arg).then(res => {
+        					if(res){
+        						exportPost("\ufeff" + res.data,'烫画款补货数据');
+        					}
+        				})
+        			}else{
+        				resource.fillGoodsListExport(arg).then(res => {
+        					if(res){
+        						exportPost("\ufeff" + res.data,'烫画款补货数据');
+        					}
+        				})
+        			}
         		}).catch(() => {
         			Message({
         				type: 'info',
@@ -229,13 +237,23 @@
 					pagesize:this.pagesize,
 					sort:this.sort
 				}
-				resource.fillGoodsList(arg).then(res => {
-					if(res.data.code == 1){
-						this.dataObj = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				if(this.dept == '四部得物组'){
+					resource.fillGoodsListFour(arg).then(res => {
+						if(res.data.code == 1){
+							this.dataObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.fillGoodsList(arg).then(res => {
+						if(res.data.code == 1){
+							this.dataObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//总计
 			drawGoodsTotal(){
@@ -248,15 +266,27 @@
 					gyshh:this.select_gysbm_list.join(','),
 					sort:this.sort
 				}
-				resource.drawGoodsTotal(arg).then(res => {
-					if(res.data.code == 1){
-						var data = res.data.data;
-						data['bp_gyshh'] = '总计';
-						this.total_data = data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				if(this.dept == '四部得物组'){
+					resource.drawGoodsTotalFour(arg).then(res => {
+						if(res.data.code == 1){
+							var data = res.data.data;
+							data['bp_gyshh'] = '总计';
+							this.total_data = data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.drawGoodsTotal(arg).then(res => {
+						if(res.data.code == 1){
+							var data = res.data.data;
+							data['bp_gyshh'] = '总计';
+							this.total_data = data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//分页
 			handleSizeChange(val) {

@@ -214,7 +214,8 @@ let path = {
 	clearAbnormal:'dynamic_analysis/clear_abnormal',				//清仓汇总-清仓异常
 	clearAbnormalChart:'dynamic_analysis/clear_abnormal_chart',		//清仓异常图表
 	clearDept:'dynamic_analysis/clear_dept',						//清仓汇总- 部门
-	
+	clearProgressExport:'dynamic_analysis/clear_progress_export',	//清仓进度明细表导出
+		
 
 }					
 export default{
@@ -1105,6 +1106,10 @@ export default{
 	//清仓汇总- 部门
 	clearDept(params){
 		return http.get(path.clearDept, params)
+	},
+	//清仓进度明细表导出
+	clearProgressExport(params){
+		return http.get(path.clearProgressExport, params)
 	},
 	
 }

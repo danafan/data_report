@@ -196,11 +196,20 @@
  						gyshh:this.select_gysbm_list.join(','),
  						sort:this.sort
  					}
- 					resource.whiteGoodsListExport(arg).then(res => {
- 						if(res){
- 							exportPost("\ufeff" + res.data,'白坯款商品编码');
- 						}
- 					})
+ 					if(this.dept == '四部得物组'){
+ 						resource.whiteGoodsListExportFour(arg).then(res => {
+ 							if(res){
+ 								exportPost("\ufeff" + res.data,'白坯款商品编码');
+ 							}
+ 						})
+ 					}else{
+ 						resource.whiteGoodsListExport(arg).then(res => {
+ 							if(res){
+ 								exportPost("\ufeff" + res.data,'白坯款商品编码');
+ 							}
+ 						})
+ 					}
+ 					
  				}).catch(() => {
  					Message({
  						type: 'info',
@@ -220,13 +229,23 @@
 					pagesize:this.pagesize,
 					sort:this.sort
 				}
-				resource.whiteGoodsList(arg).then(res => {
-					if(res.data.code == 1){
-						this.dataObj = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				if(this.dept == '四部得物组'){
+					resource.whiteGoodsListFour(arg).then(res => {
+						if(res.data.code == 1){
+							this.dataObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.whiteGoodsList(arg).then(res => {
+						if(res.data.code == 1){
+							this.dataObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//总计
 			drawGoodsTotal(){
@@ -237,15 +256,27 @@
 					gys:this.select_gys_list.join(','),
 					gyshh:this.select_gysbm_list.join(',')
 				}
-				resource.whiteGoodsTotal(arg).then(res => {
-					if(res.data.code == 1){
-						var data = res.data.data;
-						data['bpkh'] = '总计';
-						this.total_data = data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+				if(this.dept == '四部得物组'){
+					resource.whiteGoodsTotalFour(arg).then(res => {
+						if(res.data.code == 1){
+							var data = res.data.data;
+							data['bpkh'] = '总计';
+							this.total_data = data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.whiteGoodsTotal(arg).then(res => {
+						if(res.data.code == 1){
+							var data = res.data.data;
+							data['bpkh'] = '总计';
+							this.total_data = data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//分页
 			handleSizeChange(val) {

@@ -165,7 +165,10 @@
 				<el-button type="primary" size="small" @click="searchRecord">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="title">清仓进度明细表</div>
+		<div class="buts">
+			<div class="title">清仓进度明细表</div>
+			<el-button type="primary" style="margin-bottom: 15px" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table :data="dataObj.data" size="small" max-height="600" :row-class-name="tableRowClassName">
 			<el-table-column prop="ksbm" label="款式编码" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
@@ -236,6 +239,8 @@
 </template>
 <script>
 	import resource from '../../../api/resource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return {
@@ -807,6 +812,31 @@
 					}
 				})
 			},
+			//导出
+			exportFile(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_rq:this.select_record_branth,
+						ksbm:this.select_ks_ids.join(','),
+						jj:this.select_jj_ids.join(','),
+						hy:this.hy,
+						cpfl:this.select_pl_ids.join(','),
+						dept:this.select_dept_ids.join(',')
+					}
+					resource.clearProgressExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'清仓进度明细');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//某一行添加颜色
 			tableRowClassName({row, rowIndex}) {
 				if (rowIndex == 0) {
@@ -880,6 +910,7 @@
 					}
 				})
 			},
+			
 			//底部折线图配置
 			setOptionLine(x_data,series_data){
 				return {
@@ -1019,6 +1050,12 @@
 		color:rgba(255,140,0,1);
 		font-size:20px;
 	}
+}
+.buts{
+	width: 100%;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 .bottom_row{
 	margin-top: 15px;
