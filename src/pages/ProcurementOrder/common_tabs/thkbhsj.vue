@@ -42,7 +42,11 @@
 			<el-table-column prop="bp_gyshh" label="白坯供应商款号" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款式编码" width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thkh" label="烫画款式编码" width="120" align="center"></el-table-column>
-			<el-table-column prop="yes_xssl" label="昨日销量" sortable show-overflow-tooltip width="100" align="center">
+			<el-table-column prop="thr_xssl" label="三天前销量" sortable show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="scd_xssl" label="两天前销量" sortable show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="yes_xssl" label="一天前销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="3_xssl" label="三天销量" sortable show-overflow-tooltip width="100" align="center">
 			</el-table-column>

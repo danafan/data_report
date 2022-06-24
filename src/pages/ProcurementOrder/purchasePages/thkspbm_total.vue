@@ -51,6 +51,7 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :summary-method="getSummaries" show-summary @sort-change="sortChange">
+			<el-table-column prop="dept_num" label="售卖部门数" width="120" align="center"></el-table-column>
 			<el-table-column prop="bp_gyshh" label="白坯供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款式编码" width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯款商品编码" width="130" show-overflow-tooltip align="center"></el-table-column>
@@ -137,17 +138,9 @@
 				total_data:{}
 			}
 		},
-		props:{
-			dept:{
-				type:String,
-				default:''
-			}
-		},
 		created(){
 			//获取列表
 			this.getList();
-			//总计
-			this.drawGoodsTotal();
 		},
 		methods:{
 			getSummaries(param) {
@@ -214,8 +207,6 @@
 				this.page = 1;
  				//获取列表
  				this.getList();
- 				//总计
- 				this.drawGoodsTotal();
  			},
  			//排序
  			sortChange(column){
@@ -235,7 +226,6 @@
         			type: 'warning'
         		}).then(() => {
         			let arg = {
-        				dept_2:this.dept,
         				thkh:this.select_thksbm_list.join(','),
         				bpkh:this.select_bpksbm_list.join(','),
         				thspbm:this.select_thkh_list.join(','),
@@ -245,19 +235,11 @@
         				is_bp:this.is_bp,
         				sort:this.sort
         			}
-        			if(this.dept == '四部得物组'){
-        				resource.drawGoodsListExportFour(arg).then(res => {
-        					if(res){
-        						exportPost("\ufeff" + res.data,'烫画款商品明细');
-        					}
-        				})
-        			}else{
-        				resource.drawGoodsListExport(arg).then(res => {
-        					if(res){
-        						exportPost("\ufeff" + res.data,'烫画款商品明细');
-        					}
-        				})
-        			}
+        			resource.drawGoodsCollectListExport(arg).then(res => {
+        				if(res){
+        					exportPost("\ufeff" + res.data,'烫画款商品明细汇总');
+        				}
+        			})
         		}).catch(() => {
         			Message({
         				type: 'info',
@@ -268,7 +250,6 @@
 			//获取列表
 			getList(){
 				let arg = {
-					dept_2:this.dept,
 					thkh:this.select_thksbm_list.join(','),
 					bpkh:this.select_bpksbm_list.join(','),
 					thspbm:this.select_thkh_list.join(','),
@@ -280,58 +261,15 @@
 					pagesize:this.pagesize,
 					sort:this.sort
 				}
-				if(this.dept == '四部得物组'){
-					resource.drawGoodsListFour(arg).then(res => {
-						if(res.data.code == 1){
-							this.dataObj = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{
-					resource.drawGoodsList(arg).then(res => {
-						if(res.data.code == 1){
-							this.dataObj = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
-			//总计
-			drawGoodsTotal(){
-				let arg = {
-					type:2,
-					dept_2:this.dept,
-					thkh:this.select_thksbm_list.join(','),
-					bpkh:this.select_bpksbm_list.join(','),
-					thspbm:this.select_thkh_list.join(','),
-					bpspbm:this.select_bpkh_list.join(','),
-					gys:this.select_gys_list.join(','),
-					gyshh:this.select_gysbm_list.join(','),
-					sort:this.sort
-				}
-				if(this.dept == '四部得物组'){
-					resource.drawGoodsTotalFour(arg).then(res => {
-						if(res.data.code == 1){
-							var data = res.data.data;
-							data['bp_gyshh'] = '总计';
-							this.total_data = data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{
-					resource.drawGoodsTotal(arg).then(res => {
-						if(res.data.code == 1){
-							var data = res.data.data;
-							data['bp_gyshh'] = '总计';
-							this.total_data = data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
+				resource.drawGoodsCollectList(arg).then(res => {
+					if(res.data.code == 1){
+						this.dataObj = res.data.data;
+						this.total_data = this.dataObj.data[this.dataObj.data.length - 1];
+						this.dataObj.data.splice(this.dataObj.data.length - 1,1);
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//分页
 			handleSizeChange(val) {

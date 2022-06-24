@@ -18,6 +18,12 @@ let path = {
 	drawGoodsListExportFour:'dynamic_analysis/draw_goods_list_export_four',	//烫画商品明细导出
 	drawGoodsTotalFour:'dynamic_analysis/draw_goods_total_four',				//烫画总计
 	whiteGoodsTotalFour:'dynamic_analysis/white_goods_total_four',			//白坯总计
+	whiteGoodsCollectList:'dynamic_analysis/white_goods_collect_list',		//白坯款商品编码列表-汇总
+	whiteGoodsCollectListExport:'dynamic_analysis/white_goods_collect_list_export',	//白坯款商品编码列表导出-汇总
+	fillGoodsCollectList:'dynamic_analysis/fill_goods_collect_list',		//烫画补货列表-汇总
+	fillGoodsCollectListExport:'dynamic_analysis/fill_goods_collect_list_export',	//烫画补货列表导出-汇总
+	drawGoodsCollectList:'dynamic_analysis/draw_goods_collect_list',		//烫画商品明细-汇总
+	drawGoodsCollectListExport:'dynamic_analysis/draw_goods_collect_list_export',	//烫画商品明细导出-汇总
 	
 }						
 export default{
@@ -92,6 +98,30 @@ export default{
 	//白坯总计
 	whiteGoodsTotalFour(params){
 		return http.get(path.whiteGoodsTotalFour, params)
+	},
+	//白坯款商品编码列表-汇总
+	whiteGoodsCollectList(params){
+		return http.get(path.whiteGoodsCollectList, params)
+	},
+	//白坯款商品编码列表导出-汇总
+	whiteGoodsCollectListExport(params){
+		return http.get(path.whiteGoodsCollectListExport, params)
+	},
+	//烫画补货列表-汇总
+	fillGoodsCollectList(params){
+		return http.get(path.fillGoodsCollectList, params)
+	},
+	//烫画补货列表导出-汇总
+	fillGoodsCollectListExport(params){
+		return http.get(path.fillGoodsCollectListExport, params)
+	},
+	//烫画商品明细-汇总
+	drawGoodsCollectList(params){
+		return http.get(path.drawGoodsCollectList, params)
+	},
+	//烫画商品明细导出-汇总
+	drawGoodsCollectListExport(params){
+		return http.get(path.drawGoodsCollectListExport, params)
 	},
 }
 

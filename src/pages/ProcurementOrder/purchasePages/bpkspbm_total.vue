@@ -35,6 +35,7 @@
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :summary-method="getSummaries" show-summary @sort-change="sortChange">
 			<el-table-column prop="bpkh" label="白坯款款式编码" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯款商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="dept_num" label="售卖部门数" width="120" align="center"></el-table-column>
 			<el-table-column prop="thkh_num" label="烫画款款数" sortable width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thkh_sale_num" label="动销款数" sortable width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="color" label="颜色" width="120" show-overflow-tooltip align="center"></el-table-column>
@@ -107,17 +108,9 @@
 				total_data:{}
 			}
 		},
-		props:{
-			dept:{
-				type:String,
-				default:''
-			}
-		},
 		created(){
 			//获取列表
 			this.getList();
-			//总计
-			this.drawGoodsTotal();
 		},
 		methods:{
 			getSummaries(param) {
@@ -193,26 +186,17 @@
  					type: 'warning'
  				}).then(() => {
  					let arg = {
- 						dept_2:this.dept,
  						bpspbm:this.select_bpkh_list.join(','),
  						bpkh:this.select_ksbm_list.join(','),
  						gys:this.select_gys_list.join(','),
  						gyshh:this.select_gysbm_list.join(','),
  						sort:this.sort
  					}
- 					if(this.dept == '四部得物组'){
- 						resource.whiteGoodsListExportFour(arg).then(res => {
- 							if(res){
- 								exportPost("\ufeff" + res.data,'白坯款商品编码');
- 							}
- 						})
- 					}else{
- 						resource.whiteGoodsListExport(arg).then(res => {
- 							if(res){
- 								exportPost("\ufeff" + res.data,'白坯款商品编码');
- 							}
- 						})
- 					}
+ 					resource.whiteGoodsCollectListExport(arg).then(res => {
+ 						if(res){
+ 							exportPost("\ufeff" + res.data,'白坯款商品编码汇总');
+ 						}
+ 					})
  					
  				}).catch(() => {
  					Message({
@@ -224,7 +208,6 @@
 			//获取列表
 			getList(type){
 				let arg = {
-					dept_2:this.dept,
 					bpspbm:this.select_bpkh_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
 					gys:this.select_gys_list.join(','),
@@ -233,54 +216,15 @@
 					pagesize:this.pagesize,
 					sort:this.sort
 				}
-				if(this.dept == '四部得物组'){
-					resource.whiteGoodsListFour(arg).then(res => {
-						if(res.data.code == 1){
-							this.dataObj = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{
-					resource.whiteGoodsList(arg).then(res => {
-						if(res.data.code == 1){
-							this.dataObj = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
-			//总计
-			drawGoodsTotal(){
-				let arg = {
-					dept_2:this.dept,
-					bpspbm:this.select_bpkh_list.join(','),
-					bpkh:this.select_ksbm_list.join(','),
-					gys:this.select_gys_list.join(','),
-					gyshh:this.select_gysbm_list.join(',')
-				}
-				if(this.dept == '四部得物组'){
-					resource.whiteGoodsTotalFour(arg).then(res => {
-						if(res.data.code == 1){
-							var data = res.data.data;
-							data['bpkh'] = '总计';
-							this.total_data = data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{
-					resource.whiteGoodsTotal(arg).then(res => {
-						if(res.data.code == 1){
-							var data = res.data.data;
-							data['bpkh'] = '总计';
-							this.total_data = data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
+				resource.whiteGoodsCollectList(arg).then(res => {
+					if(res.data.code == 1){
+						this.dataObj = res.data.data;
+						this.total_data = this.dataObj.data[this.dataObj.data.length - 1];
+						this.dataObj.data.splice(this.dataObj.data.length - 1,1);
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//分页
 			handleSizeChange(val) {

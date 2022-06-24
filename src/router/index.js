@@ -54,6 +54,7 @@ const dw_delivery = resolve=>require(['@/pages/DwDelivery/dw_delivery'],resolve)
 //得物采购下单
 const er_dept = resolve=>require(['@/pages/ProcurementOrder/er_dept'],resolve)
 const si_dept = resolve=>require(['@/pages/ProcurementOrder/si_dept'],resolve)
+const purchase_summary = resolve=>require(['@/pages/ProcurementOrder/purchase_summary'],resolve)
 Vue.use(Router)
 
 const router = new Router({
@@ -125,6 +126,7 @@ const router = new Router({
     { path: '/dw_delivery',name:"得物发货情况分析", component: dw_delivery},
     { path: '/er_dept',name:"得物采购下单（二部）", component: er_dept},
     { path: '/si_dept',name:"得物采购下单（四部）", component: si_dept},
+    { path: '/purchase_summary',name:"得物采购报货", component: purchase_summary},
     ]
 }
 ]
