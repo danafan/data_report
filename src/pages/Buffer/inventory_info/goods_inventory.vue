@@ -176,8 +176,6 @@
 			</el-table-column>
 			<el-table-column prop="cpfl" label="名称" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="pl" label="品牌" show-overflow-tooltip align="center">
-			</el-table-column>
 			<el-table-column prop="dept" label="所属部门" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="sjcb" label="审计成本" show-overflow-tooltip align="center">
@@ -185,6 +183,14 @@
 			<el-table-column prop="type" label="类型" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="purchase_quantity" label="异常采购数" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="dp_num" label="店铺数" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="3_sfsl" label="3天实发" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="15_sfsl" label="7天实发" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="purchase_quantity" label="15天实发" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column :label="i.time_interval" width="120" v-for="i in clear_date" align="center">
 				<el-table-column :prop="i.date_field" width="120" :label="i.sjxrrq" align="center">
@@ -195,7 +201,51 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<!-- 清仓款近2个月销售明细 -->
+		<el-form :inline="true" size="small" class="demo-form-inline" style="margin-top: 15px;">
+			<el-form-item label="项目部：">
+				<el-select v-model="jly_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="付款时间：">
+				<el-date-picker v-model="fk_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				</el-date-picker>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="small" @click="searchJly">搜索</el-button>
+			</el-form-item>
+		</el-form>
+		<div class="buts">
+			<div class="title">清仓款近两个月销售明细</div>
+			<el-button type="primary" style="margin-bottom: 15px" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table :data="jlyDataObj.data" size="small" max-height="600" @sort-change="jlySortChange">
+			<el-table-column prop="dept_name" sortable label="事业部" width="120" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="dept_2" sortable label="项目部" width="120" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="shop_name" sortable label="店铺名称" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="shop_code" sortable label="店铺编号" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="fkrq" sortable label="付款日期" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="ksbm" sortable label="款式编码" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="spbm" sortable label="商品编码" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="sfje" sortable label="实付金额" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+			<el-table-column prop="sfsl" sortable label="实发数量" show-overflow-tooltip width="120" align="center">
+			</el-table-column>
+		</el-table>
+		<div class="page">
+			<el-pagination @size-change="jlyHandleSizeChange" @current-change="jlyHandleCurrentChange" :current-page="jly_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="jlyDataObj.total">
+			</el-pagination>
+		</div>
+		<el-form :inline="true" size="small" class="demo-form-inline" style="margin-top: 15px;">
 			<el-form-item label="款式编码：">
 				<el-select v-model="table_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="getTableKsbm" collapse-tags>
 					<el-option v-for="item in table_ks_list" :key="item" :label="item" :value="item">
@@ -241,6 +291,7 @@
 	import resource from '../../../api/resource.js'
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return {
@@ -273,7 +324,37 @@
 				table_ks_ids:[],
 				table_ks_list:[],	
 				chartsBoxChart:null,
-				total_num:0
+				total_num:0,
+				pickerOptions: {
+					shortcuts: [{
+						text: '当月',
+						onClick(picker) {
+							const start = getMonthStartDate();
+							const end = getCurrentDate();
+							picker.$emit('pick', [start, end]);
+						}
+					},{
+						text: '上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(1);
+							const end = getLastMonthEndDate(0);
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '上上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(2);
+							const end = getLastMonthEndDate(1);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},	 										//时间区间
+				jly_dept_ids:[],		//近两月选中的项目部
+				fk_date:[],				//付款时间
+				jlyDataObj:{},			//近两月列表数据
+				jly_page:1,
+				jly_pagesize:10,
+				jly_sort:"",
 			}
 		},
 		created(){
@@ -293,6 +374,8 @@
 			this.clearAbnormalChart();
 			//清仓汇总-清仓异常列表
 			this.clearAbnormal();
+			//获取列表
+			this.nearTwoMonthClear();
 		},
 		methods:{
 			//批次列表
@@ -855,6 +938,51 @@
 				//获取列表
 				this.getClearProgress();
 			},
+			//清仓款近两个月销售明细搜索
+			searchJly(){
+				this.jly_page = 1;
+				//清仓款近两个月销售明细
+				this.nearTwoMonthClear();
+			},
+			//近两月排序
+			jlySortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'asc':'desc';
+					this.jly_sort = column.prop + '-' + order;
+				}else{
+					this.jly_sort = '';
+				}
+				this.nearTwoMonthClear();
+			},
+			//分页
+			jlyHandleSizeChange(val) {
+				this.jly_pagesize = val;
+				//获取列表
+				this.nearTwoMonthClear();
+			},
+			jlyHandleCurrentChange(val) {
+				this.jly_page = val;
+				//获取列表
+				this.nearTwoMonthClear();
+			},
+			//清仓款近两个月销售明细
+			nearTwoMonthClear(){
+				let arg = {
+					sort:this.jly_sort,
+					dept_2:this.jly_dept_ids.join(','),
+					fkrq_start:this.fk_date && this.fk_date.length > 0?this.fk_date[0]:"",
+					fkrq_end:this.fk_date && this.fk_date.length > 0?this.fk_date[1]:"",
+					page:this.jly_page,
+					pagesize:this.jly_pagesize
+				}
+				resource.nearTwoMonthClear(arg).then(res => {
+					if(res.data.code == 1){
+						this.jlyDataObj = res.data.data.list;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取异常数据
 			searchTable(){
 				this.yc_page = 1;
@@ -909,8 +1037,7 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			
+			},		
 			//底部折线图配置
 			setOptionLine(x_data,series_data){
 				return {

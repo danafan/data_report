@@ -71,11 +71,11 @@
 			<el-table-column prop="3_xssl" label="三天销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="七天销量" width="100" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="pre_rate" label="售前退货率" show-overflow-tooltip align="center">
+			<!-- <el-table-column prop="pre_rate" label="售前退货率" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="scope.row.pre_rate !== null">{{scope.row.pre_rate}}%</div>
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 			<el-table-column prop="fut_rate" label="售后退货率" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="scope.row.fut_rate !== null">{{scope.row.fut_rate}}%</div>
@@ -84,15 +84,42 @@
 			<el-table-column prop="available_num" label="可用数" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="stock" label="库存" sortable show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="xjcw_stock" width="120" label="箱及仓位库存" sortable show-overflow-tooltip align="center">
+			<el-table-column prop="xjcw_stock" width="130" sortable show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<span>箱及仓位库存</span>
+					<el-tooltip effect="dark" content="海外仓" placement="top-start">
+						<i class="el-icon-warning" style="color: #FFE58F"></i>
+					</el-tooltip>
+				</template>
 			</el-table-column>
 			<el-table-column prop="bp_stock" label="白坯库存" width="120" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="bp_xjcw_stock" width="180" sortable show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<span>白坯箱及仓位库存</span>
+					<el-tooltip effect="dark" content="海外仓" placement="top-start">
+						<i class="el-icon-warning" style="color: #FFE58F"></i>
+					</el-tooltip>
+				</template>
+			</el-table-column>
 			<el-table-column prop="jhc_stock" label="进货仓库存" width="120" sortable show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="out_of_stock" label="缺货" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="safety_stock" label="安全库存" width="100" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="purchase_num" label="建议采购数" width="120" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column label="白坯合格率" width="100" show-overflow-tooltip align="center">
+			<el-table-column prop="purchase_num" width="120" sortable show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<span>建议采购数</span>
+					<el-tooltip effect="dark" content="7天订单日均销量+3天日均销量+昨日销售）/3+欠单-进货仓*合格率-新项目仓箱及仓位库存" placement="top-start">
+						<i class="el-icon-warning" style="color: #FFE58F"></i>
+					</el-tooltip>
+				</template>
+			</el-table-column>
+			<el-table-column width="100" show-overflow-tooltip align="center">
+				<template slot="header" slot-scope="scope">
+					<span>白坯合格率</span>
+					<el-tooltip effect="dark" content="默认70%" placement="top-start">
+						<i class="el-icon-warning" style="color: #FFE58F"></i>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<div v-if="scope.row.hgl !== null">{{scope.row.hgl}}%</div>
 				</template>

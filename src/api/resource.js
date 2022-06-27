@@ -215,6 +215,7 @@ let path = {
 	clearAbnormalChart:'dynamic_analysis/clear_abnormal_chart',		//清仓异常图表
 	clearDept:'dynamic_analysis/clear_dept',						//清仓汇总- 部门
 	clearProgressExport:'dynamic_analysis/clear_progress_export',	//清仓进度明细表导出
+	nearTwoMonthClear:'dynamic_analysis/near_two_month_clear',		//清仓款近两个月销售明细
 		
 
 }					
@@ -1110,6 +1111,10 @@ export default{
 	//清仓进度明细表导出
 	clearProgressExport(params){
 		return http.get(path.clearProgressExport, params)
+	},
+	//清仓款近两个月销售明细
+	nearTwoMonthClear(params){
+		return http.get(path.nearTwoMonthClear, params)
 	},
 	
 }

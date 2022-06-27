@@ -51,11 +51,11 @@
 			<el-table-column prop="3_xssl" label="三天销量" sortable show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="七天销量" width="100" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="pre_rate" label="售前退货率" show-overflow-tooltip align="center">
+			<!-- <el-table-column prop="pre_rate" label="售前退货率" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="!!scope.row.pre_rate">{{scope.row.pre_rate}}%</div>
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 			<el-table-column prop="fut_rate" label="售后退货率" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div v-if="!!scope.row.fut_rate">{{scope.row.fut_rate}}%</div>

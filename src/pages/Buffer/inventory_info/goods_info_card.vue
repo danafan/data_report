@@ -413,9 +413,7 @@
 						this.dataObj = res.data.data.detail;
 						let max_field = res.data.data.max_field;
 						var tableData = this.dataObj.data;
-						if (max_field.length > 0) {
-							tableData.unshift(max_field);
-						}
+						tableData.unshift(max_field);
 						this.tableData = tableData;
 						this.title_list = res.data.data.title_list;
 						this.view_row = res.data.data.view_row;
