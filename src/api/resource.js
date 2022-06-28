@@ -216,6 +216,8 @@ let path = {
 	clearDept:'dynamic_analysis/clear_dept',						//清仓汇总- 部门
 	clearProgressExport:'dynamic_analysis/clear_progress_export',	//清仓进度明细表导出
 	nearTwoMonthClear:'dynamic_analysis/near_two_month_clear',		//清仓款近两个月销售明细
+	nearTwoMonthClearExport:'dynamic_analysis/near_two_month_clear_export',	//清仓款近两个月销售明细导出
+	projectDept:'Common/project_dept',								//项目部列表
 		
 
 }					
@@ -1115,6 +1117,14 @@ export default{
 	//清仓款近两个月销售明细
 	nearTwoMonthClear(params){
 		return http.get(path.nearTwoMonthClear, params)
+	},
+	//清仓款近两个月销售明细导出
+	nearTwoMonthClearExport(params){
+		return http.get(path.nearTwoMonthClearExport, params)
+	},
+	//项目部列表
+	projectDept(params){
+		return http.get(path.projectDept, params)
 	},
 	
 }

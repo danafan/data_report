@@ -13,7 +13,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%;height: 550px" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column type="index" label="序号" width="60" fixed="left"> </el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="shop_name" label="店铺" align="center"></el-table-column>
 			<el-table-column prop="ksbm" width="120" show-overflow-tooltip label="款式编码" align="center"></el-table-column>

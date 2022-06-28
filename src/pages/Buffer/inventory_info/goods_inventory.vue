@@ -205,7 +205,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline" style="margin-top: 15px;">
 			<el-form-item label="项目部：">
 				<el-select v-model="jly_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
+					<el-option v-for="item in jly_dept" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -219,26 +219,26 @@
 		</el-form>
 		<div class="buts">
 			<div class="title">清仓款近两个月销售明细</div>
-			<el-button type="primary" style="margin-bottom: 15px" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" style="margin-bottom: 15px" plain size="small" @click="exportJlyFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table :data="jlyDataObj.data" size="small" max-height="600" @sort-change="jlySortChange">
-			<el-table-column prop="dept_name" sortable label="事业部" width="120" show-overflow-tooltip align="center">
+			<el-table-column prop="dept_name" label="事业部" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="dept_2" sortable label="项目部" width="120" show-overflow-tooltip align="center">
+			<el-table-column prop="dept_2" label="项目部" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="shop_name" sortable label="店铺名称" show-overflow-tooltip align="center">
+			<el-table-column prop="shop_name" label="店铺名称" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="shop_code" sortable label="店铺编号" show-overflow-tooltip align="center">
+			<el-table-column prop="shop_code" label="店铺编号" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="fkrq" sortable label="付款日期" show-overflow-tooltip align="center">
+			<el-table-column prop="fkrq" label="付款日期" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="ksbm" sortable label="款式编码" show-overflow-tooltip align="center">
+			<el-table-column prop="ksbm" label="款式编码" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="spbm" sortable label="商品编码" show-overflow-tooltip width="120" align="center">
+			<el-table-column prop="spbm" label="商品编码" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="sfje" sortable label="实付金额" show-overflow-tooltip width="120" align="center">
+			<el-table-column prop="sfje" label="实付金额" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="sfsl" sortable label="实发数量" show-overflow-tooltip width="120" align="center">
+			<el-table-column prop="sfsl" label="实发数量" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -348,7 +348,8 @@
 							picker.$emit('pick', [start, end]);
 						}
 					}]
-				},	 										//时间区间
+				},	 					//时间区间
+				jly_dept:[],			//项目部
 				jly_dept_ids:[],		//近两月选中的项目部
 				fk_date:[],				//付款时间
 				jlyDataObj:{},			//近两月列表数据
@@ -374,6 +375,8 @@
 			this.clearAbnormalChart();
 			//清仓汇总-清仓异常列表
 			this.clearAbnormal();
+			//项目部列表
+			this.projectDept();
 			//获取列表
 			this.nearTwoMonthClear();
 		},
@@ -920,6 +923,29 @@
 					});          
 				});
 			},
+			//导出近两月数据
+			exportJlyFile(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						sort:this.jly_sort,
+						dept_2:this.jly_dept_ids.join(','),
+						fkrq_start:this.fk_date && this.fk_date.length > 0?this.fk_date[0]:"",
+						fkrq_end:this.fk_date && this.fk_date.length > 0?this.fk_date[1]:""
+					}
+					resource.nearTwoMonthClearExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'清仓款近两个月销售明细');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//某一行添加颜色
 			tableRowClassName({row, rowIndex}) {
 				if (rowIndex == 0) {
@@ -964,6 +990,16 @@
 				this.jly_page = val;
 				//获取列表
 				this.nearTwoMonthClear();
+			},
+			//项目部列表
+			projectDept(){
+				resource.projectDept().then(res => {
+					if(res.data.code == 1){
+						this.jly_dept = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//清仓款近两个月销售明细
 			nearTwoMonthClear(){
