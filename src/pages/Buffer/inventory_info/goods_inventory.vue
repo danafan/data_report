@@ -209,10 +209,6 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="付款时间：">
-				<el-date-picker v-model="fk_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
-				</el-date-picker>
-			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="searchJly">搜索</el-button>
 			</el-form-item>
@@ -291,7 +287,6 @@
 	import resource from '../../../api/resource.js'
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return {
@@ -325,33 +320,8 @@
 				table_ks_list:[],	
 				chartsBoxChart:null,
 				total_num:0,
-				pickerOptions: {
-					shortcuts: [{
-						text: '当月',
-						onClick(picker) {
-							const start = getMonthStartDate();
-							const end = getCurrentDate();
-							picker.$emit('pick', [start, end]);
-						}
-					},{
-						text: '上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(1);
-							const end = getLastMonthEndDate(0);
-							picker.$emit('pick', [start, end]);
-						}
-					}, {
-						text: '上上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(2);
-							const end = getLastMonthEndDate(1);
-							picker.$emit('pick', [start, end]);
-						}
-					}]
-				},	 					//时间区间
 				jly_dept:[],			//项目部
 				jly_dept_ids:[],		//近两月选中的项目部
-				fk_date:[],				//付款时间
 				jlyDataObj:{},			//近两月列表数据
 				jly_page:1,
 				jly_pagesize:10,
@@ -932,9 +902,7 @@
 				}).then(() => {
 					let arg = {
 						sort:this.jly_sort,
-						dept_2:this.jly_dept_ids.join(','),
-						fkrq_start:this.fk_date && this.fk_date.length > 0?this.fk_date[0]:"",
-						fkrq_end:this.fk_date && this.fk_date.length > 0?this.fk_date[1]:""
+						dept_2:this.jly_dept_ids.join(',')
 					}
 					resource.nearTwoMonthClearExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'清仓款近两个月销售明细');
@@ -1006,8 +974,6 @@
 				let arg = {
 					sort:this.jly_sort,
 					dept_2:this.jly_dept_ids.join(','),
-					fkrq_start:this.fk_date && this.fk_date.length > 0?this.fk_date[0]:"",
-					fkrq_end:this.fk_date && this.fk_date.length > 0?this.fk_date[1]:"",
 					page:this.jly_page,
 					pagesize:this.jly_pagesize
 				}

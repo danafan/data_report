@@ -216,7 +216,7 @@
         				thkh:this.select_thkh_list.join(','),
         				bpkh:this.select_bpkh_list.join(','),
         				bp_gys:this.select_gys_list.join(','),
-        				gyshh:this.select_gysbm_list.join(','),
+        				bp_gyshh:this.select_gysbm_list.join(','),
         				is_bp:this.is_bp,
         				sort:this.sort
         			}
@@ -238,7 +238,7 @@
 					thkh:this.select_thkh_list.join(','),
 					bpkh:this.select_bpkh_list.join(','),
 					bp_gys:this.select_gys_list.join(','),
-					gyshh:this.select_gysbm_list.join(','),
+					bp_gyshh:this.select_gysbm_list.join(','),
 					is_bp:this.is_bp,
 					page:this.page,
 					pagesize:this.pagesize,

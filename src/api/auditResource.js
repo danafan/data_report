@@ -32,6 +32,7 @@ let path = {
 	zeroLogExport:'audit/zero_log_export',							//调价记录导出接口
 	ajaxPlatform:'audit/ajaxPlatform',								//平台列表
 	platformBalanceData:'audit/platform_balance_data',				//平台金额信息
+	platformBalanceExport:'audit/platform_balance_export',			//店铺账户余额导出
 }						
 export default{
 	//款式编码列表
@@ -165,6 +166,10 @@ export default{
 	//平台金额信息
 	platformBalanceData(params){
 		return http.get(path.platformBalanceData, params)
+	},
+	//店铺账户余额导出
+	platformBalanceExport(params){
+		return http.post(path.platformBalanceExport, params)
 	},
 }
 

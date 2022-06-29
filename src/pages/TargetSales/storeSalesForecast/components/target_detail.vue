@@ -22,14 +22,14 @@
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="180" label="上月实际值" align="center">
-				<template slot-scope="scope">
-					<div>{{scope.row.actual_data}}{{scope.row.isPer?'%':''}}</div>
-				</template>
-			</el-table-column>
 			<el-table-column width="180" label="上月目标值" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.target_data}}{{scope.row.isPer?'%':''}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column width="180" label="上月实际值" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.actual_data}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column width="180" label="本月目标参数" align="center">

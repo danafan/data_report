@@ -14,6 +14,12 @@
 					<el-option label="否" value="0"></el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="是否进仓：">
+				<el-select v-model="is_warehousing" clearable :popper-append-to-body="false" placeholder="是否进仓">
+					<el-option label="是" value="1"></el-option>
+					<el-option label="否" value="0"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="便笺：">
 				<el-select v-model="bj" clearable :popper-append-to-body="false" placeholder="便笺">
 					<el-option label="WP" value="WP"></el-option>
@@ -132,6 +138,8 @@
 		</el-table-column>
 		<el-table-column prop="remarks" label="线下备注" show-overflow-tooltip align="center">
 		</el-table-column>
+		<el-table-column prop="is_warehousing" label="是否进仓" show-overflow-tooltip align="center">
+		</el-table-column>
 	</el-table>
 	<div class="page">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -153,6 +161,7 @@
 				select_store_ids:[],						//选中的店铺id列表
 				sfcz:"",									//是否称重
 				sfsh:"",									//是否售后
+				is_warehousing:"",							//是否进仓
 				bj:"",										//便笺
 				pickerOptions: {
 					shortcuts: [{
@@ -216,6 +225,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					is_weight:this.sfcz,
 					is_after_sale:this.sfsh,
+					is_warehousing:this.is_warehousing,
 					note:this.bj
 				}
 				resource.ytReportTotal(arg).then(res => {
@@ -247,6 +257,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					is_weight:this.sfcz,
 					is_after_sale:this.sfsh,
+					is_warehousing:this.is_warehousing,
 					note:this.bj,
 					page:this.page,
 					pagesize:this.pagesize
@@ -275,6 +286,7 @@
 						end_time:this.date && this.date.length> 0?this.date[1]:"",
 						is_weight:this.sfcz,
 						is_after_sale:this.sfsh,
+						is_warehousing:this.is_warehousing,
 						note:this.bj
 					}
 					resource.ytReportExport(arg).then(res => {
