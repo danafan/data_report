@@ -113,6 +113,10 @@
 		</el-card>
 	</div>
 	<div class="buts">
+		<el-button type="primary" size="small" @click="ykbDialog = true">
+			导入
+			<i class="el-icon-upload el-icon--right"></i>
+		</el-button>
 		<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -140,11 +144,42 @@
 		</el-table-column>
 		<el-table-column prop="is_warehousing" label="是否进仓" show-overflow-tooltip align="center">
 		</el-table-column>
+		<el-table-column prop="nbddh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
+		<el-table-column prop="nbddh" label="申请人" width="100" show-overflow-tooltip align="center"></el-table-column>
 	</el-table>
 	<div class="page">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 		</el-pagination>
 	</div>
+	<!-- 导入 -->
+	<el-dialog title="填写易快报信息" :visible.sync="ykbDialog" width="30%" @close="closeDialog">
+		<el-form size="small">
+			<el-form-item label="易快报单号：" required>
+				<el-input placeholder="请输入易快报单号" style="width: 300px" v-model="ykbdh">
+				</el-input>
+			</el-form-item>
+			<el-form-item label="申请人：" required>
+				<el-input placeholder="请输入申请人" style="width: 300px" v-model="sqr">
+				</el-input>
+			</el-form-item>
+			<el-form-item label="上传表格：" required>
+				<div>
+					<div class="imgBox" v-if="filename == ''">
+						<div class="text">请选择上传文件</div>
+						<input type="file" ref="fileUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadFn">
+					</div>
+					<div class="file_name_box" v-else>
+						<div class="file_name">{{filename}}</div>
+						<i class="el-icon-circle-close" @click="deleteFile"></i>
+					</div>
+				</div>
+			</el-form-item>
+		</el-form>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="ykbDialog = false">取 消</el-button>
+			<el-button size="small" type="primary" @click="confirmFn">确 认</el-button>
+		</div>
+	</el-dialog>
 </div>
 </template>
 <script>
@@ -156,6 +191,11 @@
 	export default{
 		data(){
 			return{
+				ykbDialog:false,							//易快报信息弹窗
+				ykbdh:"",									//易快报单号
+				sqr:"",										//申请人
+				filename:'',								//已上传的文件名
+				file:null,
 				select_department_ids:[],					//选中的部门id列表
 				select_plat_ids:[],							//选中的平台列表
 				select_store_ids:[],						//选中的店铺id列表
@@ -214,6 +254,43 @@
 				this.select_department_ids = reqObj.select_department_ids;
 				this.select_plat_ids = reqObj.select_plat_ids;
 				this.select_store_ids = reqObj.select_store_ids;
+			},
+			// 上传文件
+			uploadFn(){
+				if (this.$refs.fileUpload.files.length > 0) {
+					var file = this.$refs.fileUpload.files[0];
+					this.filename = file.name;
+					this.file = file;
+				}
+			},
+			//删除文件
+			deleteFile(){
+				this.filename = '';
+				this.file = null;
+			},
+			//关闭导入弹窗
+			closeDialog(){
+				this.ykbdh = "";
+				this.sqr = "";
+				this.filename = '';
+				this.file = null;
+			},
+			//导入提交
+			confirmFn(){
+				if(this.ykbdh == ''){
+					this.$message.warning('请输入易快报单号!');
+				}else if(this.sqr == ''){
+					this.$message.warning('请输入申请人!');
+				}else if(this.file == null){
+					this.$message.warning('请上传表格!');
+				}else{
+					let arg = {
+						ykbdh:this.ykbdh,
+						sqr:this.sqr,
+						file:this.file
+					}
+					console.log(arg)
+				}
 			},
 			//获取顶部分块数据
 			getYtReportTotal(){
@@ -357,5 +434,77 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
+}
+.imgBox{
+	background: #fff;
+	display: flex;
+	align-items:center;
+	justify-content:center;
+	width: 106px;
+	height: 30px;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	position: relative;
+	.text{
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+	}
+	.upload_file {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
+}
+.file_name_box{
+	display: flex;
+	align-items: center;
+	border-radius: 2px;
+	border: 1px solid #E0E0E0;
+	width: 206px;
+	height: 30px;
+	padding-left: 10px;
+	padding-right: 10px;
+	.file_name{
+		margin-right: 10px;
+		width: 100%;
+		text-align: center;
+		height: 100%;
+		line-height: 30px;
+		font-size: 13px;
+		color: #666666;
+		display: -webkit-box;
+		-webkit-box-orient: vertical;
+		-webkit-line-clamp: 1;
+		overflow: hidden;
+	}
+}
+.buttons{
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	.upload_box{
+		margin-left: 30px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+	}
 }
 </style>

@@ -77,6 +77,11 @@
 					show-word-limit placeholder="请输入备注" :disabled="user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
+			<el-table-column label="操作" align="center" fixed="right">
+				<template slot-scope="scope">
+					<el-button type="text" size="small" @click="feedBack(scope.row)">反馈</el-button>
+				</template>
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -115,6 +120,36 @@
 			<div slot="footer" class="dialog-footer">
 				<el-button type="primary" size="small" @click="exportDialog = false">取消</el-button>
 				<el-button type="primary" size="small" @click="commitExport">确认</el-button>
+			</div>
+		</el-dialog>
+		<!-- 反馈弹窗 -->
+		<el-dialog title="反馈" center @close="closeFeedBack" width="45%" :visible.sync="feedBackDialog">
+			<el-form size="small">
+				<el-form-item label="编码：">
+					{{ksbm}}
+				</el-form-item>
+				<el-form-item label="成本价：">
+					{{cb_price}}
+				</el-form-item>
+				<el-form-item label="反馈成本价：" required>
+					<el-input placeholder="请输入反馈成本价" type="number" style="width: 300px" v-model="new_cb_price">
+					</el-input>
+				</el-form-item>
+				<el-form-item label="原因：">
+					<el-input type="textarea" :rows="2" style="width: 300px" placeholder="请输入原因" v-model="feek_back_remark">
+					</el-input>
+				</el-form-item>
+			</el-form>
+			<el-dialog width="30%" title="提示" :visible.sync="innerDialog" append-to-body>
+				<div>反馈成本价是：{{new_cb_price}}元</div>
+				<div slot="footer" class="dialog-footer">
+					<el-button type="primary" size="small" @click="innerDialog = false">取消</el-button>
+					<el-button type="primary" size="small" @click="commitFeedBack">提交</el-button>
+				</div>
+			</el-dialog>
+			<div slot="footer" class="dialog-footer">
+				<el-button type="primary" size="small" @click="feedBackDialog = false">取消</el-button>
+				<el-button type="primary" size="small" @click="commitFn">确认</el-button>
 			</div>
 		</el-dialog>
 	</div>
@@ -207,6 +242,12 @@
 				export_date:[],			//导出日期区间
 				user_type:"",
 				current_supplier:"",	//当前点击的供应商
+				feedBackDialog:false,	//点击反馈的弹窗
+				ksbm:"",				//点击反馈的编码
+				cb_price:"",			//点击反馈的成本价
+				new_cb_price:"",		//点击反馈的新成本价
+				feek_back_remark:"",	//点击反馈的原因
+				innerDialog:false,		//内部提示
 			}
 		},
 		created(){
@@ -319,6 +360,35 @@
 						}
 					})
 				}
+			},
+			//点击反馈
+			feedBack(item_info){
+				this.ksbm = item_info.ksbm,					//点击反馈的编码
+				this.cb_price = item_info.cb_price,			//点击反馈的成本价
+				this.feedBackDialog = true;
+			},
+			//关闭反馈
+			closeFeedBack(){
+				this.ksbm = "";				//点击反馈的编码
+				this.cb_price = "";			//点击反馈的成本价
+				this.new_cb_price = "";		//点击反馈的新成本价
+				this.feek_back_remark = "";	//点击反馈的原因
+			},
+			//确认
+			commitFn(){
+				if(this.new_cb_price == ""){
+					this.$message.warning('请输入反馈成本价！');
+				}else{
+					this.innerDialog = true;
+				}
+			},
+			//提交反馈
+			commitFeedBack(){
+				let arg = {
+					new_cb_price:this.new_cb_price,
+					feek_back_remark:this.feek_back_remark
+				}
+				console.log(arg)
 			},
 			//分页
 			handleSizeChange(val) {

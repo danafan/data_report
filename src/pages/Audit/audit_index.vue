@@ -4,6 +4,9 @@
 			<el-tab-pane label="成本表" lazy name="/total_cost" class="tab_pane_box">
 				<ToastCost v-if="activeTab == '/total_cost'"/>
 			</el-tab-pane>
+			<el-tab-pane label="反馈表" lazy name="/feek_back" class="tab_pane_box">
+				<FeekBack/>
+			</el-tab-pane>
 			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
 				<EditRecord v-if="activeTab == '/edit_record'"/>
 			</el-tab-pane>
@@ -57,6 +60,7 @@
 </style>
 <script>
 	import ToastCost from './AuditPages/total_cost.vue'
+	import FeekBack from './AuditPages/feek_back.vue'
 	import EditRecord from './AuditPages/edit_record.vue'
 	import ReviewTable from './AuditPages/review_table.vue'
 	import PricingTable from './AuditPages/pricing_table.vue'
@@ -88,6 +92,7 @@
 		},
 		components:{
 			ToastCost,
+			FeekBack,
 			EditRecord,
 			ReviewTable,
 			PricingTable,

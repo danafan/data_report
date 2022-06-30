@@ -63,6 +63,7 @@ const router = new Router({
   {
     path: '/',
     component: home,
+    name:"首页",
     children:[
     { path: '/store_data',name:"店铺日数据", component: store_data},
     { path: '/store_results',name:"店铺业绩", component: store_results},
