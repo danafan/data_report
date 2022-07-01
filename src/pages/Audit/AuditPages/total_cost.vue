@@ -77,11 +77,11 @@
 					show-word-limit placeholder="请输入备注" :disabled="user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right">
+			<!-- <el-table-column label="操作" align="center" fixed="right">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="feedBack(scope.row)">反馈</el-button>
 				</template>
-			</el-table-column>
+			</el-table-column> -->
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">

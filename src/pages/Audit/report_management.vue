@@ -113,10 +113,10 @@
 		</el-card>
 	</div>
 	<div class="buts">
-		<el-button type="primary" size="small" @click="ykbDialog = true">
+		<!-- <el-button type="primary" size="small" @click="ykbDialog = true">
 			导入
 			<i class="el-icon-upload el-icon--right"></i>
-		</el-button>
+		</el-button> -->
 		<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
@@ -144,8 +144,8 @@
 		</el-table-column>
 		<el-table-column prop="is_warehousing" label="是否进仓" show-overflow-tooltip align="center">
 		</el-table-column>
-		<el-table-column prop="nbddh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
-		<el-table-column prop="nbddh" label="申请人" width="100" show-overflow-tooltip align="center"></el-table-column>
+		<!-- <el-table-column prop="nbddh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
+		<el-table-column prop="nbddh" label="申请人" width="100" show-overflow-tooltip align="center"></el-table-column> -->
 	</el-table>
 	<div class="page">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">

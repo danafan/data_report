@@ -3,9 +3,6 @@
 		<el-container class="box">
 			<el-header class="header">
 				<div class="gxk">德儿网络数据中心</div>
-				<!-- <el-breadcrumb>
-					<el-breadcrumb-item :to="{ path: item.path }" v-for="item in breadcrumb_list">{{item.title}}</el-breadcrumb-item>
-				</el-breadcrumb> -->
 				<div class="user_set">
 					<el-button type="primary" size="small" icon="el-icon-document-add" circle style="margin-right: 15px" @click="newWindow"></el-button>
 					<el-popover @show="getList" placement="bottom" width="460" trigger="hover">
@@ -307,18 +304,6 @@
          },
          watch:{
          	$route(n){
-         		let newArr = [{ path: '/', title: '首页' }];
-         		this.$route.matched.forEach((item) => {
-         			if (item.path != '') {
-         				newArr.push({
-         					path: item.path,
-         					title: item.name,
-         				})
-         			}
-         		})
-            	// 赋值
-            	this.breadcrumb_list = newArr;
-            	console.log(this.$route.matched)
             	if(n.path != '/'){
             		this.show_welcome = false;
             		if(n.path == '/data_management' || n.path == '/commit_data'){
