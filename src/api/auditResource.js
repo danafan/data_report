@@ -33,6 +33,11 @@ let path = {
 	ajaxPlatform:'audit/ajaxPlatform',								//平台列表
 	platformBalanceData:'audit/platform_balance_data',				//平台金额信息
 	platformBalanceExport:'audit/platform_balance_export',			//店铺账户余额导出
+	importYkb:'audit/import_ykb',									//易快报导入
+	feedbackList:'audit/feedback_list',								//反馈表
+	feedbackExport:'audit/feedback_export',							//反馈表导出
+	auditFeedback:'audit/audit_feedback',							//审核反馈
+	addFeedback:'audit/add_feedback',								//申请反馈
 }						
 export default{
 	//款式编码列表
@@ -170,6 +175,26 @@ export default{
 	//店铺账户余额导出
 	platformBalanceExport(params){
 		return http.post(path.platformBalanceExport, params)
+	},
+	//易快报导入
+	importYkb(params){
+		return http.post(path.importYkb, params)
+	},
+	//反馈表
+	feedbackList(params){
+		return http.get(path.feedbackList, params)
+	},
+	//反馈表导出
+	feedbackExport(params){
+		return http.post(path.feedbackExport, params)
+	},
+	//审核反馈
+	auditFeedback(params){
+		return http.post(path.auditFeedback, params)
+	},
+	//申请反馈
+	addFeedback(params){
+		return http.post(path.addFeedback, params)
 	},
 }
 

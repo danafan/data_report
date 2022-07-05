@@ -164,9 +164,12 @@
 					page:this.xl_page,
 					pagesize:this.xl_pagesize
 				}
-				console.log(arg)
 				operResource.getKsSalenum(arg).then(res => {
-
+					if(res.data.code == 1){
+						this.xlDataObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
 				})
 			},
 			//款式销量排行排序
@@ -227,9 +230,12 @@
 					page:this.xl_page,
 					pagesize:this.xl_pagesize
 				}
-				console.log(arg)
 				operResource.getKsOutstock(arg).then(res => {
-
+					if(res.data.code == 1){
+						this.qhDataObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
 				})
 			},
 			//款式缺货排序

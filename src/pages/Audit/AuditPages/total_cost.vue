@@ -77,11 +77,12 @@
 					show-word-limit placeholder="请输入备注" :disabled="user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
-			<!-- <el-table-column label="操作" align="center" fixed="right">
+			<el-table-column label="操作" align="center" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="feedBack(scope.row)">反馈</el-button>
+					<el-button type="text" size="small" @click="feedBack(scope.row)" v-if="scope.row.feedback_status == 1 || scope.row.feedback_status == 2">反馈</el-button>
+					<div v-else>已反馈</div>
 				</template>
-			</el-table-column> -->
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -243,6 +244,7 @@
 				user_type:"",
 				current_supplier:"",	//当前点击的供应商
 				feedBackDialog:false,	//点击反馈的弹窗
+				id:"",					//点击反馈的ID
 				ksbm:"",				//点击反馈的编码
 				cb_price:"",			//点击反馈的成本价
 				new_cb_price:"",		//点击反馈的新成本价
@@ -363,12 +365,14 @@
 			},
 			//点击反馈
 			feedBack(item_info){
-				this.ksbm = item_info.ksbm,					//点击反馈的编码
-				this.cb_price = item_info.cb_price,			//点击反馈的成本价
+				this.id = item_info.id;					//点击反馈的id
+				this.ksbm = item_info.ksbm;					//点击反馈的编码
+				this.cb_price = item_info.cb_price;			//点击反馈的成本价
 				this.feedBackDialog = true;
 			},
 			//关闭反馈
 			closeFeedBack(){
+				this.id = "";				//点击反馈的id
 				this.ksbm = "";				//点击反馈的编码
 				this.cb_price = "";			//点击反馈的成本价
 				this.new_cb_price = "";		//点击反馈的新成本价
@@ -385,10 +389,21 @@
 			//提交反馈
 			commitFeedBack(){
 				let arg = {
-					new_cb_price:this.new_cb_price,
-					feek_back_remark:this.feek_back_remark
+					id:this.id,
+					feedback_price:this.new_cb_price,
+					reason:this.feek_back_remark
 				}
-				console.log(arg)
+				resource.addFeedback(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.feedBackDialog = false;
+						this.innerDialog = false;
+						//获取列表
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//分页
 			handleSizeChange(val) {

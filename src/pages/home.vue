@@ -95,14 +95,14 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<el-menu-item index="/dept_demand">
+				<!-- <el-menu-item index="/dept_demand">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">项目部需求明细</span>
-				</el-menu-item>
-				<el-menu-item index="/supplier_ranking">
+				</el-menu-item> -->
+				<!-- <el-menu-item index="/supplier_ranking">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">供应商排行</span>
-				</el-menu-item>
+				</el-menu-item> -->
 				<!-- <el-menu-item index="/audit_dept">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">项目部审核</span>

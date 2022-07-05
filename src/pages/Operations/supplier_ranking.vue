@@ -1,15 +1,9 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
-			<!-- <el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<SupplierRankingPage v-if="item.web_url == 'supplier_ranking_page'"/>
 				<StyleRankingPage v-if="item.web_url == 'style_ranking_page'"/>
-			</el-tab-pane> -->
-			<el-tab-pane label="供应商排行" lazy name="supplier_ranking_page" class="tab_pane_box">
-				<SupplierRankingPage/>
-			</el-tab-pane>
-			<el-tab-pane label="款式排行" lazy name="style_ranking_page" class="tab_pane_box">
-				<StyleRankingPage/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

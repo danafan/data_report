@@ -142,7 +142,11 @@
 				}
 				console.log(arg)
 				operResource.getGysSalenum(arg).then(res => {
-
+					if(res.data.code == 1){
+						this.xlDataObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
 				})
 			},
 			//供应商销量排序
@@ -203,7 +207,11 @@
 				}
 				console.log(arg)
 				operResource.getGysOutStock(arg).then(res => {
-
+					if(res.data.code == 1){
+						this.qhDataObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
 				})
 			},
 			//供应商缺货排序

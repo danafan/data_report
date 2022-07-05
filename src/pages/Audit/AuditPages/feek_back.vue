@@ -28,21 +28,27 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%;height: 600px" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="ksbm" label="新编码" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="成本价" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="difference" label="反馈成本价" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="difference" label="反馈人" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="difference" label="反馈时间" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="difference" label="反馈原因" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="difference" label="状态" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="edit_cb_price" label="反馈成本价" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="opreater_name" label="反馈人" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="add_time" label="反馈时间" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="remark" label="反馈原因" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column label="状态" show-overflow-tooltip align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.status == 1">待审核</div>
+					<div v-if="scope.row.status == 2">审批通过</div>
+					<div v-if="scope.row.status == 3">审批拒绝</div>
+				</template>
+			</el-table-column>
 			<el-table-column label="处理" align="center" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="checkStatus('1')">拒绝</el-button>
-					<el-button type="text" size="small" @click="checkStatus('2')">同意</el-button>
-					<el-button type="text" size="small" @click="getDetail(scope.row)">详情</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status != 1">详情</el-button>
+					<el-button type="text" size="small" @click="checkStatus('0',scope.row.id)" v-if="scope.row.status == 1">拒绝</el-button>
+					<el-button type="text" size="small" @click="checkStatus('1',scope.row.id)" v-if="scope.row.status == 1">同意</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -56,38 +62,40 @@
 			</el-input>
 			<div slot="footer" class="dialog-footer">
 				<el-button type="primary" size="small" @click="closeRefused = false">取消</el-button>
-				<el-button type="primary" size="small" @click="commitFn('1')">提交</el-button>
+				<el-button type="primary" size="small" @click="commitFn('0')">提交</el-button>
 			</div>
 		</el-dialog>
 		<!-- 详情弹窗 -->
-		<el-dialog title="详情" center width="30%" :visible.sync="detailDialog">
+		<el-dialog title="详情" center width="40%" :visible.sync="detailDialog">
 			<el-form :inline="true" size="small" class="demo-form-inline">
 				<el-form-item label="编码：">
-					<div class="value">912837912837912</div>
+					<div class="value">{{itemInfo.ksbm}}</div>
 				</el-form-item>
 				<el-form-item label="成本价：">
-					<div class="value">912837912837912</div>
+					<div class="value">{{itemInfo.cb_price}}</div>
 				</el-form-item>
 				<el-form-item label="反馈成本价：">
-					<div class="value">912837912837912</div>
+					<div class="value">{{itemInfo.edit_cb_price}}</div>
 				</el-form-item>
 				<el-form-item label="原因：">
-					<div class="value">912837912837912</div>
+					<div class="value">{{itemInfo.remark}}</div>
 				</el-form-item>
 				<el-form-item label="反馈人：">
-					<div class="value">912837912837912</div>
+					<div class="value">{{itemInfo.opreater_name}}</div>
 				</el-form-item>
 				<el-form-item label="反馈时间：">
-					<div class="value">912837912837912</div>
+					<div class="value">{{itemInfo.add_time}}</div>
 				</el-form-item>
 				<el-form-item label="当前状态：">
-					<div class="value">912837912837912</div>
+					<div class="value" v-if="itemInfo.status == 1">待审核</div>
+					<div class="value" v-if="itemInfo.status == 2">审批通过</div>
+					<div class="value" v-if="itemInfo.status == 3">审批拒绝</div>
 				</el-form-item>
 				<el-form-item label="处理人：">
-					<div class="value">912837912837912</div>
+					<div class="value">{{itemInfo.approver}}</div>
 				</el-form-item>
-				<el-form-item label="拒绝原因：">
-					<div class="value">912837912837912</div>
+				<el-form-item label="拒绝原因：" v-if="itemInfo.status == 3">
+					<div class="value">{{itemInfo.refuse_reason}}</div>
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
@@ -109,8 +117,9 @@
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
-	import {exportUp} from '../../../api/export.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -159,12 +168,13 @@
 				dataObj:{},				//返回数据
 				refusedDialog:false,	//拒绝弹窗
 				refused_text:"",		//拒绝原因
-				detailDialog:true,		//详情弹窗
+				detailDialog:false,		//详情弹窗
+				itemInfo:{},			//详情
 			}
 		},
 		created(){
 			//获取列表
-			// this.getData();
+			this.getData();
 		},
 		methods:{
 			//款式编码列表
@@ -187,22 +197,22 @@
 			},
 			//获取列表
 			getData(){
-				// let arg = {
-				// 	ksbm:this.select_ksbm_ids.join(','),
-				// 	supplier_ksbm:this.select_gyshh_ids.join(','),
-				// 	supplier:this.select_gys_ids.join(','),
-				// 	is_zero_batch:!this.is_zero_batch?0:1,
-				// 	from:this.from,
-				// 	page:this.page,
-				// 	pagesize:this.pagesize
-				// }
-				// resource.totalAudit(arg).then(res => {
-				// 	if(res.data.code == 1){
-				// 		this.dataObj = res.data.data;
-				// 	}else{
-				// 		this.$message.warning(res.data.msg);
-				// 	}
-				// })
+				let arg = {
+					status:this.status,
+					ksbm:this.select_ksbm_ids.join(','),
+					start_time:this.date && this.date.length> 0?this.date[0]:"",
+					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					opreater_name:this.fkr_ids.join(','),
+					page:this.page,
+					pagesize:this.pagesize
+				}
+				resource.feedbackList(arg).then(res => {
+					if(res.data.code == 1){
+						this.dataObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//分页
 			handleSizeChange(val) {
@@ -216,8 +226,9 @@
 				this.getData();
 			},
 			//点击拒绝或同意
-			checkStatus(type){
-				if(type == '1'){	//拒绝
+			checkStatus(type,id){
+				this.id = id;
+				if(type == '0'){	//拒绝
 					this.refusedDialog = true;
 				}else{				//同意
 					this.$confirm('原成本价将改成反馈成本价', '提示', {
@@ -236,32 +247,61 @@
 				}
 			},
 			//提交处理
-			commitFn(type){	//1:拒绝；2:同意
-				console.log(type);
+			commitFn(type){	//0:拒绝；1:同意
+				let arg = {
+					id:this.id,
+					audit_type:type
+				}
+				if(type == '0' && this.refused_text != ''){
+					arg.remark = this.refused_text;
+				}
+				resource.auditFeedback(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.refusedDialog = false;
+						//获取列表
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//点击查看详情
-			getDetail(){
-				this.detailDialog = true;
+			getDetail(id){
+				resource.logDetail({id:id}).then(res => {
+					if(res.data.code == 1){
+						this.detailDialog = true;
+						this.itemInfo = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//导出
 			commitExport(){
-				if(this.export_type == 2 && (!this.export_date || this.export_date.length == 0)){	//按时间导出
-					this.$message.warning('请选择导出时间！');
-				}else{
-					//导出
-					var arr = [];
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
 					let arg = {
-						start_date:this.export_date && this.export_date.length> 0?this.export_date[0]:"",
-						end_date:this.export_date && this.export_date.length> 0?this.export_date[1]:"",
-						from:this.from
+						status:this.status,
+						ksbm:this.select_ksbm_ids.join(','),
+						start_time:this.date && this.date.length> 0?this.date[0]:"",
+						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						opreater_name:this.fkr_ids.join(','),
 					}
-					for(var item in arg){
-						let str = item + '=' + arg[item];
-						arr.push(str);
-					};
-					exportUp(`audit/total_export?${arr.join('&')}`);
-					this.exportDialog = false;
-				}
+					resource.feedbackExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'反馈表');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			}
 		}
 	}
