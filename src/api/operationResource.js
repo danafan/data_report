@@ -11,6 +11,14 @@ let path = {
 	saleAnalysisChart:'operate/sale_analysis_chart',//数据分析/销售分析图表
 	dataStatistics:'operate/data_statistics',		//数据分析/数据统计
 	incomeAnalysisDelivery:'operate/income_analysis_delivery',	//收入分析
+	getGysSalenum:'operate/get_gys_salenum',		//供应商销量排行
+	gysSalenumExport:'operate/gys_salenum_export',	//供应商销量排行导出
+	getGysOutStock:'operate/get_gys_outStock',		//供应商缺货排行
+	gysOutstockExport:'operate/gys_outstock_export',//供应商缺货排行导出
+	getKsSalenum:'operate/get_ks_salenum',			//款式销量排行
+	ksSalenumExport:'operate/ks_salenum_export',	//款式销量排行导出
+	getKsOutstock:'operate/get_ks_outstock',		//款式缺货排行
+	ksOutstockExport:'operate/ks_outstock_export',	//款式缺货排行导出
 }						
 export default{
 	//获取款式编码
@@ -56,6 +64,38 @@ export default{
 	//收入分析
 	incomeAnalysisDelivery(params){
 		return http.get(path.incomeAnalysisDelivery, params)
+	},
+	//供应商销量
+	getGysSalenum(params){
+		return http.get(path.getGysSalenum, params)
+	},
+	//供应商销量排行导出
+	gysSalenumExport(params){
+		return http.post(path.gysSalenumExport, params)
+	},
+	//供应商缺货排行
+	getGysOutStock(params){
+		return http.get(path.getGysOutStock, params)
+	},
+	//供应商缺货排行导出
+	gysOutstockExport(params){
+		return http.post(path.gysOutstockExport, params)
+	},
+	//款式销量排行
+	getKsSalenum(params){
+		return http.get(path.getKsSalenum, params)
+	},
+	//款式销量排行导出
+	ksSalenumExport(params){
+		return http.post(path.ksSalenumExport, params)
+	},
+	//款式缺货排行
+	getKsOutstock(params){
+		return http.get(path.getKsOutstock, params)
+	},
+	//款式缺货排行导出
+	ksOutstockExport(params){
+		return http.post(path.ksOutstockExport, params)
 	},
 }
 
