@@ -77,7 +77,7 @@
 					show-word-limit placeholder="请输入备注" :disabled="user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right">
+			<el-table-column label="操作" align="center" fixed="right" v-if="user_type == '4'">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="feedBack(scope.row)" v-if="scope.row.feedback_status == 1 || scope.row.feedback_status == 2">反馈</el-button>
 					<div v-else>已反馈</div>

@@ -19,7 +19,7 @@
 			<el-button type="primary" size="small" @click="getList">搜索</el-button>
 		</el-form-item>
 	</el-form>
-	<div class="title">平台汇总<span>（每两天更新一次）</span></div>
+	<div class="title">平台汇总<span>（每日更新一次）</span></div>
 	<el-table ref="multipleTable" size="small" :data="platform_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
 		<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in platform_total.title" show-overflow-tooltip>
 			<template slot-scope="scope">
@@ -27,7 +27,7 @@
 			</template>
 		</el-table-column>
 	</el-table>
-	<div class="title">事业部汇总<span>（每两天更新一次）</span></div>
+	<div class="title">事业部汇总<span>（每日更新一次）</span></div>
 	<el-table ref="multipleTable" size="small" :data="dept_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
 		<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in dept_total.title" show-overflow-tooltip>
 			<template slot-scope="scope">
@@ -36,7 +36,7 @@
 		</el-table-column>
 	</el-table>
 	<div class="buts">
-		<div class="title">店铺明细<span>（每两天更新一次）</span></div>
+		<div class="title">店铺明细<span>（每日更新一次）</span></div>
 		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<el-table ref="multipleTable" size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" @sort-change="sortChange" v-if="show_table">

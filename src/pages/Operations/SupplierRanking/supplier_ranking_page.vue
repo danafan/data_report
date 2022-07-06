@@ -30,32 +30,32 @@
 		<div class="table_row">
 			<div class="table_item xl_table">
 				<div class="table_title_row">
-					<div class="title">供应商销量排行</div>
+					<div class="title">供应商销量排名</div>
 					<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
-				<el-table size="small" :data="xlDataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-					<el-table-column prop="id" sortable width="120" label="销量排行" align="center"></el-table-column>
-					<el-table-column prop="gys" width="150" show-overflow-tooltip label="供应商" align="center"></el-table-column>
-					<el-table-column prop="xl" width="120" label="销量" align="center"></el-table-column>
-					<el-table-column prop="ksbm_num" width="120" sortable label="款式数量" align="center"></el-table-column>
+				<el-table size="small" :data="xlDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+					<el-table-column prop="id" label="排名" align="center"></el-table-column>
+					<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center"></el-table-column>
+					<el-table-column prop="xl" sortable='custom' label="销量" align="center"></el-table-column>
+					<el-table-column prop="ksbm_num" sortable='custom' label="款式数量" align="center"></el-table-column>
 				</el-table>
 				<div class="page">
-					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="xl_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="xlDataObj.total">
+					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="xl_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="xlDataObj.total">
 					</el-pagination>
 				</div>
 			</div>
 			<div class="table_item qh_table">
 				<div class="table_title_row">
-					<div class="title">供应商缺货排行</div>
+					<div class="title">供应商缺货排名</div>
 					<el-button type="primary" plain size="small" @click="qhCommitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
-				<el-table size="small" :data="qhDataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="qhSortChange">
-					<el-table-column prop="id" sortable width="120" label="缺货排行" align="center"></el-table-column>
-					<el-table-column prop="gys" label="供应商" width="150" show-overflow-tooltip align="center"></el-table-column>
-					<el-table-column prop="kys" sortable width="120" label="缺货数" align="center"></el-table-column>
+				<el-table size="small" :data="qhDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="qhSortChange">
+					<el-table-column prop="id" label="排名" align="center"></el-table-column>
+					<el-table-column prop="gys" label="供应商" show-overflow-tooltip align="center"></el-table-column>
+					<el-table-column prop="kys" sortable='custom' label="缺货数" align="center"></el-table-column>
 				</el-table>
 				<div class="page">
-					<el-pagination @size-change="qhHandleSizeChange" @current-change="qhHandleCurrentChange" :current-page="qh_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="qhDataObj.total">
+					<el-pagination @size-change="qhHandleSizeChange" @current-change="qhHandleCurrentChange" :current-page="qh_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="qhDataObj.total">
 					</el-pagination>
 				</div>
 			</div>
@@ -140,7 +140,6 @@
 					page:this.xl_page,
 					pagesize:this.xl_pagesize
 				}
-				console.log(arg)
 				operResource.getGysSalenum(arg).then(res => {
 					if(res.data.code == 1){
 						this.xlDataObj = res.data.data;
@@ -205,7 +204,6 @@
 					page:this.qh_page,
 					pagesize:this.qh_pagesize
 				}
-				console.log(arg)
 				operResource.getGysOutStock(arg).then(res => {
 					if(res.data.code == 1){
 						this.qhDataObj = res.data.data;
@@ -263,16 +261,17 @@
 </script>
 <style lang="less" scoped>
 .table_row{
+	height: 700px;
 	width: 100%;
 	display: flex;
 	.xl_table{
-		width: 510px;
+		padding-right: 30px;
+		width: 50%;
 	}
 	.qh_table{
-		width: 390px;
+		width: 50%;
 	}
 	.table_item{
-		margin-right: 100px;
 		.table_title_row{
 			margin-bottom: 15px;
 			display: flex;

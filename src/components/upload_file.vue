@@ -49,6 +49,10 @@
 			is_csv:{
 				type:Boolean,
 				default:false
+			},
+			is_max:{
+				type:Boolean,
+				default:true
 			}
 		},
 		methods:{
@@ -56,7 +60,7 @@
 			uploadFn(){
 				if (this.$refs.imgUpload.files.length > 0) {
 					let files = this.$refs.imgUpload.files;
-					if(this.current_num + this.$refs.imgUpload.files.length > 9){
+					if(this.current_num + this.$refs.imgUpload.files.length > 9 && this.is_max == true){
 						this.$refs.imgUpload.value = null;
 						this.$message.warning('图片最多不超过9张');
 						return;

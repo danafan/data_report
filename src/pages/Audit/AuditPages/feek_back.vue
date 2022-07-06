@@ -44,11 +44,11 @@
 					<div v-if="scope.row.status == 3">审批拒绝</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="处理" align="center" fixed="right">
+			<el-table-column label="处理" align="center" fixed="right" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status != 1">详情</el-button>
-					<el-button type="text" size="small" @click="checkStatus('0',scope.row.id)" v-if="scope.row.status == 1">拒绝</el-button>
-					<el-button type="text" size="small" @click="checkStatus('1',scope.row.id)" v-if="scope.row.status == 1">同意</el-button>
+					<el-button type="text" size="small" @click="checkStatus('0',scope.row.id)" v-if="scope.row.status == 1 && (user_type == '2' || user_type == '3')">拒绝</el-button>
+					<el-button type="text" size="small" @click="checkStatus('1',scope.row.id)" v-if="scope.row.status == 1 && (user_type == '2' || user_type == '3')">同意</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -123,6 +123,7 @@
 	export default{
 		data(){
 			return{
+				user_type:"",
 				page:1,
 				pagesize:10,
 				ksbm_list:[],			//所有款式编码
@@ -173,6 +174,7 @@
 			}
 		},
 		created(){
+			this.user_type = localStorage.getItem('user_type');
 			//获取列表
 			this.getData();
 		},

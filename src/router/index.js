@@ -37,7 +37,6 @@ const store_info = resolve=>require(['@/pages/StoreInfo/store_info'],resolve)
 const new_data = resolve=>require(['@/pages/Operations/GoodsInfo/new_data'],resolve)    //上新数据
 const delivery_data = resolve=>require(['@/pages/Operations/GoodsInfo/delivery_data'],resolve)    //发货数据
 const operations_data_analysis = resolve=>require(['@/pages/Operations/operations_data_analysis'],resolve)    //发货数据
-const dept_demand = resolve=>require(['@/pages/Operations/dept_demand'],resolve)    //项目部需求明细
 const supplier_ranking = resolve=>require(['@/pages/Operations/supplier_ranking'],resolve)    //供应商排行
 //目标销售额管理
 const store_sales_forecast = resolve=>require(['@/pages/TargetSales/storeSalesForecast/store_sales_forecast'],resolve)   //店长销售收入预估表
@@ -58,6 +57,10 @@ const dw_delivery = resolve=>require(['@/pages/DwDelivery/dw_delivery'],resolve)
 const er_dept = resolve=>require(['@/pages/ProcurementOrder/er_dept'],resolve)
 const si_dept = resolve=>require(['@/pages/ProcurementOrder/si_dept'],resolve)
 const purchase_summary = resolve=>require(['@/pages/ProcurementOrder/purchase_summary'],resolve)
+// 供应链中心
+const supply_chain = resolve=>require(['@/pages/SupplyChain/supply_chain'],resolve)
+const created_demand = resolve=>require(['@/pages/SupplyChain/created_demand'],resolve)
+
 Vue.use(Router)
 
 const router = new Router({
@@ -93,7 +96,6 @@ const router = new Router({
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},
     { path: '/operations_data_analysis',name:"运营中心数据分析", component: operations_data_analysis},
-    { path: '/dept_demand',name:"项目部需求明细", component: dept_demand},
     { path: '/supplier_ranking',name:"供应商排行", component: supplier_ranking},
     { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
         isUseCache:false,
@@ -134,6 +136,8 @@ const router = new Router({
     { path: '/er_dept',name:"得物采购下单（二部）", component: er_dept},
     { path: '/si_dept',name:"得物采购下单（四部）", component: si_dept},
     { path: '/purchase_summary',name:"得物采购报货", component: purchase_summary},
+    { path: '/supply_chain',name:"供应链中心", component: supply_chain},
+    { path: '/created_demand',name:"新建外采需求", component: created_demand},
     ]
 }
 ]
