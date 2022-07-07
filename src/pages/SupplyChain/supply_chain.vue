@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="buts">
-			<el-button type="primary" plain size="small">批量处理</el-button>
+			<el-button type="primary" plain size="small" @click="allDeal">批量处理</el-button>
 			<div class="right_buts">
 				<el-button type="primary" plain size="small">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				<el-button type="primary" plain size="small" @click="$router.push('/created_demand')">新建<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
@@ -11,7 +11,7 @@
 			<el-table-column type="selection" width="55" fixed="left"></el-table-column>
 			<el-table-column label="操作" align="center" width="120" fixed="left">
 				<template slot-scope="scope">
-					<el-button type="text" size="small">详情</el-button>
+					<el-button type="text" size="small" @click="$router.push('/procurement_info')">详情</el-button>
 					<el-button type="text" size="small">处理</el-button>
 				</template>
 			</el-table-column>
@@ -94,6 +94,39 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
+		<!-- 批量处理弹窗 -->
+		<el-dialog title="批量处理弹窗" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="dealDialog">
+			<el-form size="small">
+				<el-form-item label="合理性评估：" required>
+					<el-select v-model="hlxpg" :popper-append-to-body="false">
+						<el-option label="接受" value="1"></el-option>
+						<el-option label="不接受" value="0"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+				placeholder="请填写不接受原因"
+				:rows="7"
+				v-model="hlxpg_remark"
+				maxlength="100"
+				show-word-limit v-if="hlxpg == '0'"></el-input>
+				<el-form-item label="预计达成时间：" required>
+					<el-date-picker v-model="yjdcsj" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+					</el-date-picker>
+				</el-form-item>
+				<el-form-item label="备注：">
+					<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+					placeholder="备注"
+					:rows="7"
+					v-model="remark"
+					maxlength="100"
+					show-word-limit></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button type="primary" size="small" @click="dealDialog = false">取消</el-button>
+				<el-button type="primary" size="small" @click="commitFn">提交</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -114,7 +147,12 @@
 						]
 					}]
 				},	
-				multipleSelection:[],		//选中的列表		
+				multipleSelection:[],		//选中的列表	
+				dealDialog:false,			//处理弹窗	
+				hlxpg:'1',			//选中的合理性评估
+				hlxpg_remark:"",	//不接受的合理性评估的原因
+				yjdcsj:"",			//预计达成时间
+				remark:"",			//备注
 			}
 		},
 		methods:{
@@ -138,6 +176,44 @@
 				//获取列表
 				this.getData();
 			},
+			//点击批量处理
+			allDeal(){
+				if(this.multipleSelection.length == 0){
+					this.$message.warning('请至少勾选一条记录!')
+				}else{
+					this.dealDialog = true;
+				}
+			},
+			//关闭批量修改弹窗
+			closeDialog(){
+				this.hlxpg = '1';
+				this.hlxpg_remark = '';
+				this.yjdcsj = '';
+				this.remark = '';
+			},
+			//提交批量处理
+			commitFn(){
+				if(this.hlxpg == '0' && this.hlxpg_remark == ''){
+					this.$message.warning('请输入不接受的原因！');
+				}else if(!this.yjdcsj){
+					this.$message.warning('请选择预计达成时间！');
+				}else{
+					var ids = [];
+					this.multipleSelection.map(item => {
+						ids.push(item.id);
+					});
+					let arg = {
+						ids:ids.join(','),
+						hlxpg:this.hlxpg,
+						yjdcsj:this.yjdcsj,
+						remark:this.remark
+					}
+					if(this.hlxpg == '0'){
+						arg.hlxpg_remark = this.hlxpg_remark;
+					}
+					console.log(arg)
+				}
+			}
 		}
 	}
 </script>

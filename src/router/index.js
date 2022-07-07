@@ -60,6 +60,7 @@ const purchase_summary = resolve=>require(['@/pages/ProcurementOrder/purchase_su
 // 供应链中心
 const supply_chain = resolve=>require(['@/pages/SupplyChain/supply_chain'],resolve)
 const created_demand = resolve=>require(['@/pages/SupplyChain/created_demand'],resolve)
+const procurement_info = resolve=>require(['@/pages/SupplyChain/procurement_info'],resolve)
 
 Vue.use(Router)
 
@@ -138,6 +139,7 @@ const router = new Router({
     { path: '/purchase_summary',name:"得物采购报货", component: purchase_summary},
     { path: '/supply_chain',name:"供应链中心", component: supply_chain},
     { path: '/created_demand',name:"新建外采需求", component: created_demand},
+    { path: '/procurement_info',name:"运营外采信息", component: procurement_info},
     ]
 }
 ]
