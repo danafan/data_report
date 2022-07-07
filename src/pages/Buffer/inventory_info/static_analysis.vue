@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="自有货品：">
 				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option label="CHRISUNO" value="CHRISUNO"></el-option>
@@ -55,14 +55,14 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<!-- 页面左侧 -->
 		<div class="analysis_row" v-for="(item,index) in tableData">
 			<div class="analysis_left">
 				<div class="title">{{item.name}}库存分析</div>
-				<el-table :data="item.list" size="small" max-height="300">
+				<el-table :data="item.list" size="mini" max-height="300">
 					<el-table-column prop="name" :label="item.name" fixed show-overflow-tooltip align="center">
 						<template slot-scope="scope">
 								<div>{{scope.row.name == null?'-':scope.row.name}}</div>
@@ -132,7 +132,7 @@
 		<!-- 表格 -->
 		<div class="title">款式库存数量</div>
 		<div class="toast">总成本：{{cbj_total}}万</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" @sort-change="sortChange">
+		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" @sort-change="sortChange">
 			<el-table-column prop="sjxrrq" label="日期" sortable width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="图片" width="120" align="center">
 				<template slot-scope="scope">

@@ -34,7 +34,6 @@
 					<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
 				<el-table size="small" :data="xlDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-					<el-table-column prop="id" label="排名" align="center"></el-table-column>
 					<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center"></el-table-column>
 					<el-table-column prop="xl" sortable='custom' label="销量" align="center"></el-table-column>
 					<el-table-column prop="ksbm_num" sortable='custom' label="款式数量" align="center"></el-table-column>
@@ -50,7 +49,6 @@
 					<el-button type="primary" plain size="small" @click="qhCommitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
 				<el-table size="small" :data="qhDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="qhSortChange">
-					<el-table-column prop="id" label="排名" align="center"></el-table-column>
 					<el-table-column prop="gys" label="供应商" show-overflow-tooltip align="center"></el-table-column>
 					<el-table-column prop="kys" sortable='custom' label="缺货数" align="center"></el-table-column>
 				</el-table>

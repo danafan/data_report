@@ -3,23 +3,23 @@
 		<condition page_type="6" @callBack="searchFun"/>
 		<div class="buts">
 			<div style="display:flex">
-				<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-				<el-button type="primary" plain size="small" @click="showSearch = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
+				<el-button type="primary" size="mini" @click="customFun">自定义列表</el-button>
+				<el-button type="primary" plain size="mini" @click="showSearch = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
 			</div>
 			<div style="display:flex">
-				<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
-				<el-button type="primary" plain size="small" @click="decisionAdd" v-if="button_list.add_decision == 1">导入决策管理<i class="el-icon-download"></i></el-button>
+				<el-button type="primary" plain size="mini" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="mini" @click="decisionAdd" v-if="button_list.add_decision == 1">导入决策管理<i class="el-icon-download"></i></el-button>
 			</div>
 		</div>
-		<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
 					<!-- 编辑框 -->
-					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0 || button_list.edit != 1" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'ksbm'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
+					<el-input v-model="scope.row[item.row_field_name]" size="mini" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="scope.row.edit_status == 0 || button_list.edit != 1" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'ksbm'" @change="editFun($event,item.row_field_name,scope.row.ksbm)"></el-input>
 					<!-- 下钻 -->
 					<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm' && button_list.detail == 1">
 						<div slot="content">
-							<el-button type="text" size="small" @click="getDetail(scope.row.ksbm)">下钻</el-button>
+							<el-button type="text" size="mini" @click="getDetail(scope.row.ksbm)">下钻</el-button>
 						</div>
 						<div style="color: #1890FF">{{scope.row[item.row_field_name]}}</div>
 					</el-tooltip>
@@ -33,7 +33,7 @@
 					clearable
 					value-format="yyyy-MM-dd"
 					placeholder="选择日期"
-					size="small"
+					size="mini"
 					></el-date-picker>
 					<!-- 实际货品性质 -->
 					<el-select 
@@ -42,7 +42,7 @@
 					v-else-if="item.row_field_name == 'sjhpxz'"
 					:disabled="scope.row.edit_status == 0 || button_list.edit != 1" 
 					clearable 
-					size="small"
+					size="mini"
 					placeholder="全部">
 					<el-option label="试" value="1"></el-option>
 					<el-option label="补" value="2"></el-option>
@@ -75,19 +75,19 @@
 		</el-checkbox-group>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="Restore">恢复默认</el-button>
-		<el-button size="small" @click="show_custom = false">取消</el-button>
-		<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+		<el-button size="mini" @click="Restore">恢复默认</el-button>
+		<el-button size="mini" @click="show_custom = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="setColumns">保存</el-button>
 	</div>
 </el-dialog>
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-	<el-table :data="detailData.data" size="small">
+	<el-table :data="detailData.data" size="mini">
 		<el-table-column width="160" align="center" label="商品ID">
 			<template slot-scope="scope">
 				<el-tooltip placement="top-end">
 					<div slot="content">
-						<el-button type="text" size="small" @click="openWindow(scope.row.spid_url)">查看商品</el-button>
+						<el-button type="text" size="mini" @click="openWindow(scope.row.spid_url)">查看商品</el-button>
 					</div>
 					<div style="color: #1890FF">{{scope.row.spid}}</div>
 				</el-tooltip>
@@ -128,8 +128,8 @@
 		</div>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="showSearch = false">取消</el-button>
-		<el-button size="small" type="primary" @click="allSearch">批量查询</el-button>
+		<el-button size="mini" @click="showSearch = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="allSearch">批量查询</el-button>
 	</div>
 </el-dialog>
 <!-- 图片放大 -->
@@ -153,8 +153,8 @@ center>
 	justify-content: space-between;
 }
 .table_img{
-	width: 80px;
-	height: 80px;
+	width: 30px;
+	height: 30px;
 }
 .imgBox{
 	margin-top: 8px;

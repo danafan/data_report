@@ -9,26 +9,26 @@
 				width="150"
 				trigger="click">
 				<div class="setStyle">
-					<el-button type="primary" size="small" plain @click="setKs('1','试')" v-if="button_list.try == 1">试</el-button>
-					<el-button type="primary" size="small" plain @click="setKs('2','补')" v-if="button_list.replenishment == 1">补</el-button>
+					<el-button type="primary" size="mini" plain @click="setKs('1','试')" v-if="button_list.try == 1">试</el-button>
+					<el-button type="primary" size="mini" plain @click="setKs('2','补')" v-if="button_list.replenishment == 1">补</el-button>
 				</div>
 				<div class="setStyle">
-					<el-button type="warning" size="small" plain @click="setKs('3','停')" v-if="button_list.stop == 1">停</el-button>
-					<el-button type="danger" size="small" plain @click="setKs('4','清')" v-if="button_list.clear == 1">清</el-button>
+					<el-button type="warning" size="mini" plain @click="setKs('3','停')" v-if="button_list.stop == 1">停</el-button>
+					<el-button type="danger" size="mini" plain @click="setKs('4','清')" v-if="button_list.clear == 1">清</el-button>
 				</div>
-				<el-button type="primary" size="small" slot="reference">批量设置</el-button>
+				<el-button type="primary" size="mini" slot="reference">批量设置</el-button>
 			</el-popover>
-			<el-button style="margin-left: 10px" type="primary" plain size="small" @click="showSearch = true" v-if="button_list.setprice == 1">批量填写内部核价<i class="el-icon-edit el-icon--right"></i></el-button>
-			<el-button type="primary" plain size="small" @click="showSearchAll = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
-			<el-button type="primary" plain size="small" @click="showAllUpload = true" v-if="button_list.day_upload == 1">批量上传店铺在售款式<i class="el-icon-search el-icon--right"></i></el-button>
-			<el-button type="primary" plain size="small" @click="showQcbm = true" v-if="button_list.clear_dept_upload == 1">清仓款部门导入<i class="el-icon-upload2 el-icon--right"></i></el-button>
+			<el-button style="margin-left: 10px" type="primary" plain size="mini" @click="showSearch = true" v-if="button_list.setprice == 1">批量填写内部核价<i class="el-icon-edit el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="mini" @click="showSearchAll = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="mini" @click="showAllUpload = true" v-if="button_list.day_upload == 1">批量上传店铺在售款式<i class="el-icon-search el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="mini" @click="showQcbm = true" v-if="button_list.clear_dept_upload == 1">清仓款部门导入<i class="el-icon-upload2 el-icon--right"></i></el-button>
 		</div>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" size="mini" @click="customFun">自定义列表</el-button>
+			<el-button type="primary" plain size="mini" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 	</div>
-	<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="maxWidth(item.row_field_name)" :sortable="isSort(item.row_field_name)?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="item.is_fixed == 1">
 			<template slot="header" slot-scope="scope">
 				<span>{{item.row_name}}</span>
@@ -38,11 +38,11 @@
 			</template>
 			<template slot-scope="scope">
 				<!-- 内部核价 -->
-				<el-input v-model="scope.row[item.row_field_name]" size="small" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)" :disabled="button_list.setprice != 1"></el-input>
+				<el-input v-model="scope.row[item.row_field_name]" size="mini" type="number" style='width: 100px' placeholder="请输入价格" v-if="item.row_field_name == 'nbhj'" @change="nuclearPrice($event,scope.row.ksbm)" :disabled="button_list.setprice != 1"></el-input>
 				<!-- 下钻 -->
 				<el-tooltip placement="top-end" v-else-if="item.row_field_name == 'ksbm' && button_list.detail == 1">
 					<div slot="content">
-						<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
+						<el-button type="text" size="mini" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
 					</div>
 					<div style="color: #1890FF">{{scope.row[item.row_field_name]}}</div>
 				</el-tooltip>
@@ -56,21 +56,21 @@
 				:disabled="button_list.setxjrq != 1"
 				value-format="yyyy-MM-dd"
 				placeholder="选择日期"
-				size="small"
+				size="mini"
 				></el-date-picker>
 				<!-- 图片 -->
-				<img style="width: 80px;height: 80px" :src="scope.row.tp" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
+				<img style="width: 30px;height: 30px" :src="scope.row.tp" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
 				<div v-else-if="item.row_field_name == 'qtqst'" class="chart_box" :id="`${scope.row.ksbm}`"></div>
 				<div v-else>{{scope.row[item.row_field_name]}}</div>
 			</template>
 		</el-table-column>
 		<el-table-column label="操作" align="center" width="180" fixed="right">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
-				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
-				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)" v-if="button_list.stop == 1">停</el-button>
-				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
-				<el-button type="text" size="small" @click="updateNum(scope.row.ksbm,scope.row.replenish_num,scope.row.sjxrrq)" v-if="button_list.modifynum == 1">修正数量</el-button>
+				<el-button type="text" size="mini" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
+				<el-button type="text" size="mini" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
+				<el-button type="text" size="mini" @click="setKs('3','停',scope.row.ksbm)" v-if="button_list.stop == 1">停</el-button>
+				<el-button type="text" size="mini" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
+				<el-button type="text" size="mini" @click="updateNum(scope.row.ksbm,scope.row.replenish_num,scope.row.sjxrrq)" v-if="button_list.modifynum == 1">修正数量</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -94,14 +94,14 @@
 		</el-checkbox-group>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="Restore">恢复默认</el-button>
-		<el-button size="small" @click="show_custom = false">取消</el-button>
-		<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+		<el-button size="mini" @click="Restore">恢复默认</el-button>
+		<el-button size="mini" @click="show_custom = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="setColumns">保存</el-button>
 	</div>
 </el-dialog>
 <!-- 修正数量 -->
 <el-dialog title="修正数量" @close="closeDialog" :visible.sync="updeteDialog">
-	<el-form size="small" label-width="100px">
+	<el-form size="mini" label-width="100px">
 		<el-form-item label="修正数量：" label-width="100px" required>
 			<el-input v-model="num" type="number" style='width: 300px' placeholder="请输入数量"></el-input>
 		</el-form-item>
@@ -111,13 +111,13 @@
 		</el-form-item>
 	</el-form>
 	<span slot="footer" class="dialog-footer">
-		<el-button size="small" @click="updeteDialog = false">取消</el-button>
-		<el-button size="small" type="primary" @click="submitUpdate">确 定</el-button>
+		<el-button size="mini" @click="updeteDialog = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="submitUpdate">确 定</el-button>
 	</span>
 </el-dialog>
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-	<el-table :data="detailData.data" size="small" @sort-change="sortDetail">
+	<el-table :data="detailData.data" size="mini" @sort-change="sortDetail">
 		<el-table-column width="160" show-overflow-tooltip align="center" property="spbm" label="商品编码"></el-table-column>
 		<el-table-column width="120" align="center" property="ys" label="颜色"></el-table-column>
 		<el-table-column width="120" align="center" property="cm" label="尺码"></el-table-column>
@@ -134,12 +134,12 @@
 		<el-table-column width="120" align="center" property="replenish_num" label="实际补货数量"></el-table-column>
 		<el-table-column align="center" label="操作">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" v-if="scope.$index > 0 && button_list.modifyskunum == 1" @click="updateSku(scope.row.spbm,scope.row.replenish_num)">修改数量</el-button>
+				<el-button type="text" size="mini" v-if="scope.$index > 0 && button_list.modifyskunum == 1" @click="updateSku(scope.row.spbm,scope.row.replenish_num)">修改数量</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
 	<el-dialog width="30%" title="修改SKU数量" @close="closeDialog" :visible.sync="innerVisible" append-to-body>
-		<el-form size="small" label-width="100px">
+		<el-form size="mini" label-width="100px">
 			<el-form-item label="修正数量：" label-width="100px" required>
 				<el-input v-model="num" type="number" style='width: 300px' placeholder="请输入数量"></el-input>
 			</el-form-item>
@@ -149,8 +149,8 @@
 			</el-form-item>
 		</el-form>
 		<span slot="footer" class="dialog-footer">
-			<el-button size="small" @click="innerVisible = false">取消</el-button>
-			<el-button size="small" type="primary" @click="submitSku">确 定</el-button>
+			<el-button size="mini" @click="innerVisible = false">取消</el-button>
+			<el-button size="mini" type="primary" @click="submitSku">确 定</el-button>
 		</span>
 	</el-dialog>
 	<div class="page">
@@ -184,8 +184,8 @@
 		</div>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="showSearch = false">取消</el-button>
-		<el-button size="small" type="primary" @click="allSearch">批量填写</el-button>
+		<el-button size="mini" @click="showSearch = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="allSearch">批量填写</el-button>
 	</div>
 </el-dialog>
 <!-- 批量查询商品编码 -->
@@ -206,8 +206,8 @@
 		</div>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="showSearchAll = false">取消</el-button>
-		<el-button size="small" type="primary" @click="allSearchFun">批量查询</el-button>
+		<el-button size="mini" @click="showSearchAll = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="allSearchFun">批量查询</el-button>
 	</div>
 </el-dialog>
 <!-- 每日上传店铺数据 -->
@@ -228,8 +228,8 @@
 		</div>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="showAllUpload = false">取消</el-button>
-		<el-button size="small" type="primary" @click="uploadStoreData">上传</el-button>
+		<el-button size="mini" @click="showAllUpload = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="uploadStoreData">上传</el-button>
 	</div>
 </el-dialog>
 <!-- 清仓款部门导入 -->
@@ -250,8 +250,8 @@
 		</div>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="showQcbm = false">取消</el-button>
-		<el-button size="small" type="primary" @click="uploadQcbm">上传</el-button>
+		<el-button size="mini" @click="showQcbm = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="uploadQcbm">上传</el-button>
 	</div>
 </el-dialog>
 <!-- 图片放大 -->

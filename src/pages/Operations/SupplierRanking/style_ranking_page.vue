@@ -40,7 +40,6 @@
 					<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
 				<el-table size="small" :data="xlDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
-					<el-table-column prop="id" label="排名" align="center"></el-table-column>
 					<el-table-column prop="ksbm" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
 					<el-table-column prop="xl" sortable='custom' label="销量" align="center"></el-table-column>
 					<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center"></el-table-column>
@@ -58,7 +57,6 @@
 					<el-button type="primary" plain size="small" @click="qhCommitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
 				<el-table size="small" :data="qhDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="qhSortChange">
-					<el-table-column prop="id" label="排名" align="center"></el-table-column>
 					<el-table-column prop="ksbm" label="款式编码" show-overflow-tooltip align="center"></el-table-column>
 					<el-table-column prop="kc" sortable='custom' label="库存" align="center"></el-table-column>
 					<el-table-column prop="kys" sortable='custom' label="缺货数" align="center"></el-table-column>
@@ -227,8 +225,8 @@
 					zyhp:this.zyhp,
 					sort_field:this.qh_sort_field,
 					sort_type:this.qh_sort_type,
-					page:this.xl_page,
-					pagesize:this.xl_pagesize
+					page:this.qh_page,
+					pagesize:this.qh_pagesize
 				}
 				operResource.getKsOutstock(arg).then(res => {
 					if(res.data.code == 1){
@@ -268,8 +266,8 @@
 						ksbm:this.select_ks_ids.join(','),
 						platform:this.select_plat_ids.join(','),
 						zyhp:this.zyhp,
-						sort_field:this.xl_sort_field,
-						sort_type:this.xl_sort_type,
+						sort_field:this.qh_sort_field,
+						sort_type:this.qh_sort_type,
 					}
 					operResource.ksOutstockExport(arg).then(res => {
 						if(res){

@@ -8,49 +8,45 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="日期：">
-				<el-date-picker
-				v-model="date"
-				type="month"
-				value-format="yyyy-MM"
-				placeholder="选择月">
-			</el-date-picker>
-		</el-form-item>
-		<el-form-item>
-			<el-button type="primary" size="small" @click="getList">搜索</el-button>
-		</el-form-item>
-	</el-form>
-	<div class="title">平台汇总<span>（每日更新一次）</span></div>
-	<el-table ref="multipleTable" size="small" :data="platform_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
-		<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in platform_total.title" show-overflow-tooltip>
-			<template slot-scope="scope">
-				<div >{{scope.row[item.field]}}</div>
-			</template>
-		</el-table-column>
-	</el-table>
-	<div class="title">事业部汇总<span>（每日更新一次）</span></div>
-	<el-table ref="multipleTable" size="small" :data="dept_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
-		<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in dept_total.title" show-overflow-tooltip>
-			<template slot-scope="scope">
-				<div >{{scope.row[item.field]}}</div>
-			</template>
-		</el-table-column>
-	</el-table>
-	<div class="buts">
-		<div class="title">店铺明细<span>（每日更新一次）</span></div>
-		<el-button type="primary" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-date-picker v-model="date" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+				</el-date-picker>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="small" @click="getList">搜索</el-button>
+			</el-form-item>
+		</el-form>
+		<div class="title">平台汇总<span>（每日更新一次）</span></div>
+		<el-table ref="multipleTable" size="small" :data="platform_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
+			<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in platform_total.title" show-overflow-tooltip>
+				<template slot-scope="scope">
+					<div >{{scope.row[item.field]}}</div>
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="title">事业部汇总<span>（每日更新一次）</span></div>
+		<el-table ref="multipleTable" size="small" :data="dept_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
+			<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in dept_total.title" show-overflow-tooltip>
+				<template slot-scope="scope">
+					<div >{{scope.row[item.field]}}</div>
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="buts">
+			<div class="title">店铺明细<span>（每日更新一次）</span><span>（店铺总数：{{total_shop_num}}；今日更新：{{today_shop_num}}）</span></div>
+			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table ref="multipleTable" size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" @sort-change="sortChange" v-if="show_table">
+			<el-table-column :prop="item.field" :label="item.name" :sortable="item.is_sort == 1?'custom':false" align="center" v-for="item in title_list" show-overflow-tooltip>
+				<template slot-scope="scope">
+					<div >{{scope.row[item.field]}}</div>
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="page">
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="table_data.total">
+			</el-pagination>
+		</div>
 	</div>
-	<el-table ref="multipleTable" size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" @sort-change="sortChange" v-if="show_table">
-		<el-table-column :prop="item.field" :label="item.name" :sortable="item.is_sort == 1?'custom':false" align="center" v-for="item in title_list" show-overflow-tooltip>
-			<template slot-scope="scope">
-				<div >{{scope.row[item.field]}}</div>
-			</template>
-		</el-table-column>
-	</el-table>
-	<div class="page">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="table_data.total">
-		</el-pagination>
-	</div>
-</div>
 </template>
 <style lang="less" scoped>
 .buts{
@@ -73,6 +69,7 @@
 <script>
 	import resource from '../../api/auditResource.js'
 	import {exportPost} from '../../api/export.js'
+	import {getNowDate} from '../../api/nowMonth.js'
 	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
@@ -86,10 +83,13 @@
 				title_list:[],			//最底部表格表头
 				dept_total:{},			//部门汇总
 				platform_total:{},		//平台汇总
+				total_shop_num:0,		//店铺总数
+				today_shop_num:0,		//今日更新店铺数
 				sort_field:"",
 				sort_type:"",
-				date:"",
-				show_table:false
+				date:getNowDate(),
+				show_table:false,
+				button_list:{},			//导出按钮
 			}
 		},
 		created(){
@@ -136,6 +136,9 @@
 						this.title_list = data.title;
 						this.dept_total = data.dept_total;
 						this.platform_total = data.platform_total;
+						this.total_shop_num = data.total_shop_num;//店铺总数
+						this.today_shop_num	= data.today_shop_num;//今日更新店铺数
+						this.button_list = data.button_list;
 						this.show_table = true;
 					}else{
 						this.$message.warning(res.data.msg);

@@ -7,8 +7,14 @@
 				<el-form-item label="提报日期：">
 					2022-07-05 13:34:12
 				</el-form-item>
-				<el-form-item label="项目部/店铺：">
-					事业一部/新兴事业部/拼多多店铺
+				<el-form-item label="事业部：">
+					事业一部
+				</el-form-item>
+				<el-form-item label="项目部：">
+					新兴事业部
+				</el-form-item>
+				<el-form-item label="店铺：">
+					拼多多店铺
 				</el-form-item>
 				<el-form-item label="店铺链接：">
 					www.zhuanqian.com
@@ -84,23 +90,17 @@
 						<el-option label="不接受" value="0"></el-option>
 					</el-select>
 				</el-form-item>
-				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
-				placeholder="请填写不接受原因"
-				:rows="7"
-				v-model="hlxpg_remark"
-				maxlength="100"
-				show-word-limit v-if="hlxpg == '0'"></el-input>
-				<el-form-item label="预计达成时间：" required>
-					<el-date-picker v-model="yjdcsj" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
-					</el-date-picker>
-				</el-form-item>
-				<el-form-item label="备注：">
+				<el-form-item label="备注：" :required="hlxpg == '0'">
 					<el-input style="width:360px;margin-bottom: 15px" type="textarea"
-					placeholder="备注"
+					:placeholder="hlxpg == '0'?'请输入不接受的原因':'请输入备注（选填）'"
 					:rows="7"
 					v-model="remark"
 					maxlength="100"
 					show-word-limit></el-input>
+				</el-form-item>
+				<el-form-item label="预计达成时间：" required>
+					<el-date-picker v-model="yjdcsj" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+					</el-date-picker>
 				</el-form-item>
 				<div class="button_row">
 					<el-button size="small" type="primary" @click="commitFn">提交</el-button>
@@ -120,7 +120,6 @@
 				'https://fuss10.elemecdn.com/1/8e/aeffeb4de74e2fde4bd74fc7b4486jpeg.jpeg'
 				],					//临时使用的图片列表
 				hlxpg:'1',			//选中的合理性评估
-				hlxpg_remark:"",	//不接受的合理性评估的原因
 				yjdcsj:"",			//预计达成时间
 				remark:"",			//备注
 			}
@@ -137,9 +136,6 @@
 						hlxpg:this.hlxpg,
 						yjdcsj:this.yjdcsj,
 						remark:this.remark
-					}
-					if(this.hlxpg == '0'){
-						arg.hlxpg_remark = this.hlxpg_remark;
 					}
 					console.log(arg)
 				}

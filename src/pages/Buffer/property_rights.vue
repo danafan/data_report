@@ -1,8 +1,9 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="款式：">
 				<el-select v-model="ks" clearable :popper-append-to-body="false" multiple filterable
+				 size="mini"
 				remote
 				reserve-keyword
 				placeholder="请输入款式"
@@ -25,10 +26,10 @@
 			</el-select>
 		</el-form-item>
 		<el-form-item>
-			<el-button type="primary" size="small" @click="getList('1')">搜索</el-button>
+			<el-button type="primary" size="mini" @click="getList('1')">搜索</el-button>
 		</el-form-item>
 	</el-form>
-	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+	<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 		<el-table-column align="center" :width="160" property="ksbm" label="款式"></el-table-column>
 		<el-table-column align="center" :width="160" property="gyshh" label="供应商货号"></el-table-column>
 		<el-table-column align="center" property="mc" label="品类"></el-table-column>
@@ -42,7 +43,7 @@
 				clearable
 				value-format="yyyy-MM-dd"
 				placeholder="选择日期"
-				size="small"
+				size="mini"
 				></el-date-picker>
 			</template>
 		</el-table-column>
@@ -51,12 +52,12 @@
 		<el-table-column align="center" :width="120" property="sjxrrq" label="建议日期"></el-table-column>
 		<el-table-column align="center" :width="120" property="remark" label="备注" show-overflow-tooltip>
 		</el-table-column>
-		<el-table-column label="操作" align="center" width="180" fixed="right">
+		<el-table-column label="操作" align="center" width="120" fixed="right">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
-				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
-				<el-button type="text" size="small" @click="setKs('3','停',scope.row.ksbm)" v-if="button_list.stop == 1">停</el-button>
-				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
+				<el-button type="text" size="mini" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
+				<el-button type="text" size="mini" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
+				<el-button type="text" size="mini" @click="setKs('3','停',scope.row.ksbm)" v-if="button_list.stop == 1">停</el-button>
+				<el-button type="text" size="mini" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
 			</template>
 		</el-table-column>
 	</el-table>

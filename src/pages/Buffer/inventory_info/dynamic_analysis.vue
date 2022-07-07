@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="款式编码：">
 				<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
@@ -94,7 +94,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="table_list">
@@ -122,7 +122,7 @@
 				</div>
 				<div v-else>
 					<div class="table_title">{{item.name}}{{index == 5?'（滚动三天）':index == 6?'（滚动七天）':''}}</div>
-					<el-table size="small" :data="item.list" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+					<el-table size="mini" :data="item.list" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 						<el-table-column prop="name" :label="item.name" align="center"></el-table-column>
 						<el-table-column prop="ks_count" label="款数" align="center"></el-table-column>
 						<el-table-column prop="kc_total" label="库存" align="center"></el-table-column>
@@ -136,10 +136,10 @@
 				</div>
 			</div>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column prop="supplier_ksbm" label="款式图片" width="120" align="center">
 				<template slot-scope="scope">
-					<img style="width: 80px;height: 80px" :src="scope.row.tp" @click="bigImg(scope.row.tp)">
+					<img style="width: 30px;height: 30px" :src="scope.row.tp" @click="bigImg(scope.row.tp)">
 				</template>
 			</el-table-column>
 			<el-table-column prop="ksbm" label="款式编码" sortable width="100" show-overflow-tooltip align="center"></el-table-column>

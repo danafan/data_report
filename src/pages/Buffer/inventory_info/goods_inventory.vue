@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="批次：">
 				<el-select v-model="start_rq" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in branth_list" :key="item.start_rq" :label="item.start_rq" :value="item.start_rq">
@@ -35,7 +35,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="top_content">
@@ -75,7 +75,7 @@
 		<div class="table_charts_row" v-for="(item,index) in clear_list">
 			<div class="analysis_left">
 				<div class="title">{{item.name}}</div>
-				<el-table :data="item.list" size="small" max-height="300" style="width: 100%" :cell-style="itemStyle">
+				<el-table :data="item.list" size="mini" max-height="300" style="width: 100%" :cell-style="itemStyle">
 					<el-table-column prop="name" :label="item.name.split('清仓进度')[0]" fixed show-overflow-tooltip align="center">
 					</el-table-column>
 					<el-table-column label="起始库存" align="center">
@@ -148,7 +148,7 @@
 			</div>
 			<div :id="`analysis_${index}_sss`" class="analysis_right"></div>
 		</div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="批次：">
 				<el-select v-model="select_record_branth" :popper-append-to-body="false" placeholder="全部">
 					<el-option v-for="item in branth_list" :key="item.start_rq" :label="item.start_rq" :value="item.start_rq">
@@ -162,14 +162,14 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchRecord">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchRecord">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
 			<div class="title">清仓进度明细表</div>
-			<el-button type="primary" style="margin-bottom: 15px" plain size="small" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" style="margin-bottom: 15px" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table :data="dataObj.data" size="small" max-height="600" :row-class-name="tableRowClassName">
+		<el-table :data="dataObj.data" size="mini" max-height="600" :row-class-name="tableRowClassName">
 			<el-table-column prop="ksbm" label="款式编码" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="gyshh" label="供应商款号" width="120" show-overflow-tooltip align="center">
@@ -202,7 +202,7 @@
 			</el-pagination>
 		</div>
 		<!-- 清仓款近2个月销售明细 -->
-		<el-form :inline="true" size="small" class="demo-form-inline" style="margin-top: 15px;">
+		<el-form :inline="true" size="mini" class="demo-form-inline" style="margin-top: 15px;">
 			<el-form-item label="项目部：">
 				<el-select v-model="jly_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in jly_dept" :key="item" :label="item" :value="item">
@@ -210,14 +210,14 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchJly">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchJly">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
 			<div class="title">清仓款近两个月销售明细</div>
-			<el-button type="primary" style="margin-bottom: 15px" plain size="small" @click="exportJlyFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" style="margin-bottom: 15px" plain size="mini" @click="exportJlyFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table :data="jlyDataObj.data" size="small" max-height="600" @sort-change="jlySortChange">
+		<el-table :data="jlyDataObj.data" size="mini" max-height="600" @sort-change="jlySortChange">
 			<el-table-column prop="dept_name" label="事业部" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="dept_2" label="项目部" width="120" show-overflow-tooltip align="center">
@@ -241,7 +241,7 @@
 			<el-pagination @size-change="jlyHandleSizeChange" @current-change="jlyHandleCurrentChange" :current-page="jly_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="jlyDataObj.total">
 			</el-pagination>
 		</div>
-		<el-form :inline="true" size="small" class="demo-form-inline" style="margin-top: 15px;">
+		<el-form :inline="true" size="mini" class="demo-form-inline" style="margin-top: 15px;">
 			<el-form-item label="款式编码：">
 				<el-select v-model="table_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="getTableKsbm" collapse-tags>
 					<el-option v-for="item in table_ks_list" :key="item" :label="item" :value="item">
@@ -249,7 +249,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchTable">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchTable">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="bottom_row">
@@ -261,7 +261,7 @@
 			</div>
 			<div class="bottom_right_table">
 				<div class="title">异常采购单</div>
-				<el-table :data="tableObj.data" size="small" max-height="420" @sort-change="sortChange">
+				<el-table :data="tableObj.data" size="mini" max-height="420" @sort-change="sortChange">
 					<el-table-column prop="ksbm" sortable label="款式编码" show-overflow-tooltip align="center">
 					</el-table-column>
 					<el-table-column prop="rq" sortable label="日期" show-overflow-tooltip align="center">

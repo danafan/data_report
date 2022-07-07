@@ -3,7 +3,7 @@
 		<el-card class="card_style">
 			<Widget01/>
 		</el-card>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="店铺:">
 				<el-select v-model="select_store_ids" :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">

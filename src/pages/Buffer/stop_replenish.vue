@@ -9,28 +9,28 @@
 				width="150"
 				trigger="click">
 				<div class="setStyle">
-					<el-button type="primary" size="small" plain @click="setKs('1','试')" v-if="button_list.try == 1">试</el-button>
-					<el-button type="primary" size="small" plain @click="setKs('2','补')" v-if="button_list.replenishment == 1">补</el-button>
+					<el-button type="primary" size="mini" plain @click="setKs('1','试')" v-if="button_list.try == 1">试</el-button>
+					<el-button type="primary" size="mini" plain @click="setKs('2','补')" v-if="button_list.replenishment == 1">补</el-button>
 				</div>
 				<div class="setStyle">
-					<el-button type="danger" size="small" plain @click="setKs('4','清')" v-if="button_list.clear == 1">清</el-button>
+					<el-button type="danger" size="mini" plain @click="setKs('4','清')" v-if="button_list.clear == 1">清</el-button>
 				</div>
-				<el-button type="primary" size="small" slot="reference">批量设置</el-button>
+				<el-button type="primary" size="mini" slot="reference">批量设置</el-button>
 			</el-popover>
-			<el-button type="primary" plain size="small" style="margin-left: 10px" @click="showSearch = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="mini" style="margin-left: 10px" @click="showSearch = true">批量查询款式编码<i class="el-icon-search el-icon--right"></i></el-button>
 		</div>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" size="mini" @click="customFun">自定义列表</el-button>
+			<el-button type="primary" plain size="mini" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 	</div>
-	<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%":header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%":header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'zskykc' || item.row_field_name == 'fskykc' || item.row_field_name == 'zts' || item.row_field_name == 'swtxl'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 			<template slot-scope="scope">
 				<!-- 下钻 -->
 				<el-tooltip placement="top-end" v-if="item.row_field_name == 'ksbm' && button_list.detail == 1">
 					<div slot="content">
-						<el-button type="text" size="small" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
+						<el-button type="text" size="mini" @click="getDetail(scope.row.ksbm,scope.row.sjxrrq)">下钻</el-button>
 					</div>
 					<div style="color: #1890FF">{{scope.row[item.row_field_name]}}</div>
 				</el-tooltip>
@@ -44,18 +44,18 @@
 				:disabled="button_list.setxjrq != 1"
 				value-format="yyyy-MM-dd"
 				placeholder="选择日期"
-				size="small"
+				size="mini"
 				></el-date-picker>
 				<!-- 图片 -->
-				<img style="width: 80px;height: 80px" :src="scope.row.tp" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
+				<img style="width: 30px;height: 30px" :src="scope.row.tp" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
 				<div v-else>{{scope.row[item.row_field_name]}}</div>
 			</template>
 		</el-table-column>
-		<el-table-column label="操作" align="center" width="180" fixed="right">
+		<el-table-column label="操作" align="center" width="120" fixed="right">
 			<template slot-scope="scope">
-				<el-button type="text" size="small" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
-				<el-button type="text" size="small" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
-				<el-button type="text" size="small" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
+				<el-button type="text" size="mini" @click="setKs('1','试',scope.row.ksbm)" v-if="button_list.try == 1">试</el-button>
+				<el-button type="text" size="mini" @click="setKs('2','补',scope.row.ksbm)" v-if="button_list.replenishment == 1">补</el-button>
+				<el-button type="text" size="mini" @click="setKs('4','清',scope.row.ksbm)" v-if="button_list.clear == 1">清</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -79,14 +79,14 @@
 		</el-checkbox-group>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="Restore">恢复默认</el-button>
-		<el-button size="small" @click="show_custom = false">取消</el-button>
-		<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+		<el-button size="mini" @click="Restore">恢复默认</el-button>
+		<el-button size="mini" @click="show_custom = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="setColumns">保存</el-button>
 	</div>
 </el-dialog>
 <!-- 下钻 -->
 <el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-	<el-table :data="detailData.data" size="small">
+	<el-table :data="detailData.data" size="mini">
 		<el-table-column show-overflow-tooltip width="120" align="center" property="spbm" label="商品编码"></el-table-column>
 		<el-table-column align="center" property="jsfhdqtxl" label="七天销量"></el-table-column>
 		<el-table-column align="center" property="kys" label="可用库存"></el-table-column>
@@ -134,8 +134,8 @@
 		</div>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="showSearch = false">取消</el-button>
-		<el-button size="small" type="primary" @click="allSearch">批量查询</el-button>
+		<el-button size="mini" @click="showSearch = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="allSearch">批量查询</el-button>
 	</div>
 </el-dialog>
 </div>

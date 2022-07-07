@@ -2,13 +2,13 @@
 	<div>
 		<condition page_type="7" @callBack="searchFun"/>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" size="mini" @click="customFun">自定义列表</el-button>
+			<el-button type="primary" plain size="mini" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table ref="multipleTable" max-height="800" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
+		<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
-					<el-input v-model="scope.row[item.row_field_name]" size="small" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"></el-input>
+					<el-input v-model="scope.row[item.row_field_name]" size="mini" type="text" style='width: 100px' :placeholder="item.row_name" :disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0" v-if="item.is_edit == 1 && item.row_field_name != 'sjxjrq' && item.row_field_name != 'tp' && item.row_field_name != 'sjhpxz' && item.row_field_name != 'jrsx' && item.row_field_name != 's2b' && item.row_field_name != 'b2t' && item.row_field_name != 't2q'" @change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"></el-input>
 					<!--  实际下架日期 -->
 					<el-date-picker
 					@change="editFun($event,item.row_field_name,scope.row.decision_rq,scope.row.ksbm)"
@@ -19,7 +19,7 @@
 					clearable
 					value-format="yyyy-MM-dd"
 					placeholder="选择日期"
-					size="small"
+					size="mini"
 					></el-date-picker>
 					<!-- 实际货品性质 -->
 					<el-select 
@@ -28,7 +28,7 @@
 					v-else-if="item.row_field_name == 'sjhpxz'" 
 					:disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0"
 					clearable 
-					size="small"
+					size="mini"
 					placeholder="全部">
 					<el-option label="试" value="1"></el-option>
 					<el-option label="补" value="2"></el-option>
@@ -42,7 +42,7 @@
 				v-else-if="item.row_field_name == 'jrsx' || item.row_field_name == 's2b' || item.row_field_name == 'b2t' || item.row_field_name == 't2q'" 
 				clearable 
 				:disabled="button_list.edit_decision != 1 || scope.row.is_self == 0 || scope.row.edit_status == 0"
-				size="small"
+				size="mini"
 				placeholder="全部">
 				<el-option label="是" :value="1"></el-option>
 				<el-option label="否" :value="0"></el-option>
@@ -54,8 +54,8 @@
 	</el-table-column>
 	<el-table-column label="操作" align="center" width="120" fixed="right">
 		<template slot-scope="scope">
-			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'1')" v-if="button_list.confirm == 1 && scope.row.is_self == 1 && (scope.row.is_done == 0 || scope.row.is_done == 2)">确认</el-button>
-			<el-button type="text" size="small" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'2')" v-if="button_list.cancel_confirm == 1 && scope.row.is_self == 1 && scope.row.is_done == 1">取消</el-button>
+			<el-button type="text" size="mini" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'1')" v-if="button_list.confirm == 1 && scope.row.is_self == 1 && (scope.row.is_done == 0 || scope.row.is_done == 2)">确认</el-button>
+			<el-button type="text" size="mini" @click="confirmFun(scope.row.decision_rq,scope.row.ksbm,'2')" v-if="button_list.cancel_confirm == 1 && scope.row.is_self == 1 && scope.row.is_done == 1">取消</el-button>
 		</template>
 	</el-table-column>
 </el-table>
@@ -79,9 +79,9 @@
 		</el-checkbox-group>
 	</div>
 	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="Restore">恢复默认</el-button>
-		<el-button size="small" @click="show_custom = false">取消</el-button>
-		<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+		<el-button size="mini" @click="Restore">恢复默认</el-button>
+		<el-button size="mini" @click="show_custom = false">取消</el-button>
+		<el-button size="mini" type="primary" @click="setColumns">保存</el-button>
 	</div>
 </el-dialog>
 <!-- 图片放大 -->
@@ -101,8 +101,8 @@
 	justify-content: space-between;
 }
 .table_img{
-	width: 80px;
-	height: 80px;
+	width: 30px;
+	height: 30px;
 }
 .big_img{
 	width: 100%;

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="款式编码：">
 				<el-select v-model="select_ks_ids" :popper-append-to-body="false" filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm">
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
@@ -12,7 +12,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="top_content">
@@ -152,15 +152,15 @@
 		</div>
 		<div class="buts">
 			<div class="title">款式销售数据</div>
-			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
+			<el-button type="primary" size="mini" @click="customFun">自定义列表</el-button>
 		</div>
-		<el-table ref="multipleTable" max-height="800" size="small" :data="tableData" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
+		<el-table ref="multipleTable" max-height="800" size="mini" :data="tableData" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" sortable="custom" :width="maxWidth(item.row_field_name)" align="center" v-for="item in title_list" show-overflow-tooltip>
 				<template slot-scope="scope">
 					<!-- 总坑产 -->
 					<div class="background_box" :style="{width:`${max == 0?0:(160/max)*Math.abs(scope.row.xsje)}px`,background:'#FEDB6F'}" v-if="item.row_field_name == 'xsje' && scope.$index > 0">{{scope.row.xsje}}</div>
 					<!-- 图片 -->
-					<img class="table_img" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
+					<img style="width: 30px;height: 30px" :src="scope.row[item.row_field_name]" v-else-if="item.row_field_name == 'tp'" @click="bigImg(scope.row.tp)">
 					<div v-else-if="item.row_field_name == 'mlv' || item.row_field_name == 'bdbl' || item.row_field_name == 'fhqthl' || item.row_field_name == 'fhhthl'">{{scope.row[item.row_field_name] === null?'':scope.row[item.row_field_name] + '%'}}</div>
 					<div v-else>{{scope.row[item.row_field_name]}}</div>
 				</template>
@@ -178,9 +178,9 @@
 				</el-checkbox-group>
 			</div>
 			<div slot="footer" class="dialog-footer">
-				<el-button size="small" @click="Restore">恢复默认</el-button>
-				<el-button size="small" @click="show_custom = false">取消</el-button>
-				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+				<el-button size="mini" @click="Restore">恢复默认</el-button>
+				<el-button size="mini" @click="show_custom = false">取消</el-button>
+				<el-button size="mini" type="primary" @click="setColumns">保存</el-button>
 			</div>
 		</el-dialog>
 		<!-- 图片放大 -->

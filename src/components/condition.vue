@@ -1,8 +1,10 @@
 <template>
 	<div>
-		<el-form :inline="true" size="small" class="demo-form-inline">
+		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="项目部：">
 				<el-cascader
+				 size="mini"
+				class="input_cascader"
 				ref="cascader"
 				:options="dept_list"
 				:props="props"
@@ -222,13 +224,15 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchFun">搜索</el-button>
 			</el-form-item>
 		</el-form>
 	</div>
 </template>
-<style lang="less" scoped>
-
+<style>
+.input_cascader .el-input__inner{
+	height: 28px!important;
+}
 </style>
 <script>
 	import resource from '../api/resource.js'
