@@ -5,8 +5,8 @@
 			<div class="page_title">新建外采需求</div>
 			<el-form size="small" class="form_box">
 				<el-form-item label="店铺：" required>
-					<el-select v-model="store_id" clearable :popper-append-to-body="false" placeholder="全部">
-						<el-option v-for="item in store_list" :key="item.id" :label="item.name" :value="item.id">
+					<el-select v-model="store_code" clearable :popper-append-to-body="false" placeholder="全部">
+						<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -14,14 +14,14 @@
 					<el-input style="width:200px" clearable v-model="store_url" placeholder="店铺链接"></el-input>
 				</el-form-item>
 				<el-form-item label="一级类目：" required>
-					<el-select v-model="level_1_cate" clearable :popper-append-to-body="false" placeholder="全部">
-						<el-option v-for="item in store_list" :key="item.id" :label="item.name" :value="item.id">
+					<el-select v-model="level_1_cate" :popper-append-to-body="false" placeholder="全部" @change="checkCate">
+						<el-option v-for="item in cate_1_list" :key="item" :label="item" :value="item">
 						</el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="二级类目：" required>
-					<el-select v-model="level_2_cate" clearable :popper-append-to-body="false" placeholder="全部">
-						<el-option v-for="item in store_list" :key="item.id" :label="item.name" :value="item.id">
+					<el-select v-model="level_2_cate" :popper-append-to-body="false" placeholder="全部">
+						<el-option v-for="item in cate_2_list" :key="item" :label="item" :value="item">
 						</el-option>
 					</el-select>
 				</el-form-item>
@@ -31,7 +31,7 @@
 					<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
 						<img class="img" :src="item.domain + item.urls">
 						<div class="modal" v-if="item.is_del == true">
-							<img src="../../static/deleteImg.png" @click="deteleFile(item.urls,index,'show_img')">
+							<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index,'show_img')">
 						</div>
 					</div>
 					<UploadFile :is_max="false" @callbackFn="uploadFile($event,'show_img')"/>
@@ -53,7 +53,7 @@
 					<div class="dialog_img" v-for="(item,index) in ck_store_cp_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
 						<img class="img" :src="item.domain + item.urls">
 						<div class="modal" v-if="item.is_del == true">
-							<img src="../../static/deleteImg.png" @click="deteleFile(item.urls,index,'ck_store_cp_img')">
+							<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index,'ck_store_cp_img')">
 						</div>
 					</div>
 					<UploadFile :is_max="false" @callbackFn="uploadFile($event,'ck_store_cp_img')"/>
@@ -68,8 +68,8 @@
 				show-word-limit></el-input>
 				<el-form-item label="特殊要求：" required>
 					<el-select v-model="tsyq" :popper-append-to-body="false">
-						<el-option label="是" value="1"></el-option>
-						<el-option label="否" value="0"></el-option>
+						<el-option label="是" :value="1"></el-option>
+						<el-option label="否" :value="2"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
@@ -90,9 +90,9 @@
 				</el-form-item>
 				<el-form-item label="款式定位：">
 					<el-select v-model="ksdw" clearable placeholder="全部" :popper-append-to-body="false">
-						<el-option label="引流款" value="1"></el-option>
-						<el-option label="利润款" value="2"></el-option>
-						<el-option label="形象款" value="3"></el-option>
+						<el-option label="引流款" :value="1"></el-option>
+						<el-option label="利润款" :value="2"></el-option>
+						<el-option label="形象款" :value="3"></el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="款式需要数量：" required>
@@ -126,19 +126,21 @@
 	</div>
 </template>
 <script>
-	import resource from '../../api/auditResource.js'
-	import UploadFile from '../../components/upload_file.vue'
+	import demandResource from '../../../api/demandResource.js'
+	import resource from '../../../api/resource.js'
+	import auditResource from '../../../api/auditResource.js'
+	import UploadFile from '../../../components/upload_file.vue'
 	export default{
 		data(){
 			return{
-				store_list:[{
-					id:'1',
-					name:'店铺1'
-				}],						//店铺列表
-				store_id:"",			//选中的店铺
+				id:"",					//页面ID
+				store_list:[],			//店铺列表
+				store_code:"",			//选中的店铺
 				store_url:"",			//店铺链接
 				level_1_cate:"",		//选中的一级类目
+				cate_1_list:[],			//一级类目列表
 				level_2_cate:"",		//选中的二级类目
+				cate_2_list:[],			//二级类目列表
 				show_img:[],			//版型、面料、工艺、颜色图片
 				bmgy_remark:"",			//版型、面料、工艺、颜色描述
 				ck_store_url:"",		//参考店铺链接
@@ -159,7 +161,105 @@
 				jhsxsj:"",				//计划上新时间
 			}
 		},
+		created(){
+			this.id = this.$route.query.id;
+			//初始化同步方法
+			this.initFn();
+		},
 		methods:{
+			//初始化方法
+			async initFn(){
+				//获取店铺列表
+				await this.getStoreList();
+				//获取一级类目列表
+				await this.supplyChainCate({level:'1'});
+				if(this.id){
+					//获取二级类目列表
+					await this.supplyChainCate({level:'2'});
+					//获取详情
+					await this.supplyChainInfo();
+				}
+			},
+			//获取店铺列表
+			getStoreList(){
+				resource.ajaxViewStore().then(res => {
+					if(res.data.code == 1){
+						this.store_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//切换一级类目
+			checkCate(){
+				//获取二级类目列表
+				this.supplyChainCate({level:'2',cate_1:this.level_1_cate});
+			},
+			//获取类目列表
+			supplyChainCate(arg){
+				demandResource.supplyChainCate(arg).then(res => {
+					if(res.data.code == 1){
+						if(arg.level == '1'){
+							this.cate_1_list = res.data.data;
+						}else{
+							this.level_2_cate = "";
+							this.cate_2_list = res.data.data;
+						}
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//获取详情
+			supplyChainInfo(){
+				demandResource.supplyChainInfo({id:this.id}).then(res => {
+					if(res.data.code == 1){
+						let info = res.data.data;
+						this.store_code = info.shop_code;
+						this.store_url = info.shop_link;
+						this.level_1_cate = info.cate_1;
+						this.level_2_cate = info.cate_2;
+						//版型、面料、工艺、颜色图片
+						info.version_image.map(item => {
+							let img_obj = {
+								is_del:false
+							}
+							img_obj.domain = item.split('com/')[0] + 'com/';
+							img_obj.urls = item.split('com/')[1];
+							this.show_img.push(img_obj);
+						})
+						this.bmgy_remark = info.version_describe;
+						this.tsyq = info.is_special;
+						this.tsyq_remark = info.special_content;
+						this.xsjg_start = info.sale_min_price;
+						this.xsjg_end = info.sale_max_price;
+						this.cb_start = info.min_price;
+						this.cb_end = info.max_price;
+						this.ksdw = info.style;
+						this.ksxysl = info.style_num;
+						this.zwdcsj = info.done_time;
+						this.jhsxsj = info.put_time;
+						this.ck_store_url = info.without_link;
+						// 参考店铺产品图片
+						if(info.without_image.length > 0){
+							info.without_image.map(item => {
+								let img_obj = {
+									is_del:false
+								}
+								img_obj.domain = item.split('com/')[0] + 'com/';
+								img_obj.urls = item.split('com/')[1];
+								this.ck_store_cp_img.push(img_obj);
+							})
+						}
+						this.ckdpcp_remark = info.without_describe;
+						this.ghs = info.gys;
+						this.ghsdyyq = info.gys_area;
+						this.hzms_ids = info.gys_model.split(',');
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//上传照片
 			uploadFile(arg,img_type){
 				arg.file.is_del = false;
@@ -171,7 +271,7 @@
 			},
 			//删除图片
 			deteleFile(url,index,img_type){
-				resource.delImage({url:url}).then(res => {
+				auditResource.delImage({url:url}).then(res => {
 					if(res.data.code == 1){
 						if(img_type == 'show_img'){
 							this.show_img.splice(index,1);
@@ -185,8 +285,11 @@
 			},
 			//点击保存
 			save(){
+				var version_image = [];	//版型、面料、工艺图片
+				var without_image = [];	//参考店铺图片
+
 				// 店铺
-				if(this.store_id == ''){
+				if(!this.store_code){
 					this.$message.warning('请选择店铺');
 					return;
 				}
@@ -209,6 +312,10 @@
 				if(this.show_img.length == 0){
 					this.$message.warning('请上传版型、面料、工艺、颜色图片');
 					return;
+				}else{
+					this.show_img.map(item => {
+						version_image.push(item.urls);
+					})
 				}
 				// 版型、面料、工艺、颜色描述
 				if(this.bmgy_remark == ''){
@@ -257,6 +364,71 @@
 					this.$message.warning('请选择计划上新时间');
 					return;
 				}
+				//参考店铺图片
+				this.ck_store_cp_img.map(item => {
+					without_image.push(item.urls);
+				})
+
+				let arg = {
+					shop_code:this.store_code,
+					shop_link:this.store_url,
+					cate_1:this.level_1_cate,
+					cate_2:this.level_2_cate,
+					version_image:version_image.join(','),
+					version_describe:this.bmgy_remark,
+					is_special:this.tsyq,
+					sale_min_price:this.xsjg_start,
+					sale_max_price:this.xsjg_end,
+					min_price:this.cb_start,
+					max_price:this.cb_end,
+					style:this.ksdw,
+					style_num:this.ksxysl,
+					done_time:this.zwdcsj,
+					put_time:this.jhsxsj,
+					without_link:this.ck_store_url,
+					without_image:without_image.join(','),
+					without_describe:this.ckdpcp_remark,
+					gys:this.ghs,
+					gys_area:this.ghsdyyq,
+					gys_model:this.hzms_ids.join(',')
+				}
+				//特殊要求
+				if(this.tsyq == '1'){
+					arg.special_content = this.tsyq_remark
+				}
+
+				//保存
+				if(this.id){
+					//编辑
+					this.supplyChainEdit(arg);
+				}else{
+					//创建
+					this.supplyChainAdd(arg);
+				}
+				
+			},
+			//创建
+			supplyChainAdd(arg){
+				demandResource.supplyChainAdd(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.$router.go(-1);
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//编辑
+			supplyChainEdit(arg){
+				arg.id = this.id;
+				demandResource.supplyChainEdit(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.$router.go(-1);
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			}
 		},
 		components:{

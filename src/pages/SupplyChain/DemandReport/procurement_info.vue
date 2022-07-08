@@ -111,7 +111,7 @@
 	</div>
 </template>
 <script>
-	import resource from '../../api/auditResource.js'
+	import resource from '../../../api/auditResource.js'
 	export default{
 		data(){
 			return{

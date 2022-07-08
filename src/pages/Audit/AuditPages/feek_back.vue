@@ -2,16 +2,10 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="新编码：">
-				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
-					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
+				<el-input style="width:200px" clearable v-model="ksbm" placeholder="请输入新编码"></el-input>
 			</el-form-item>
 			<el-form-item label="反馈人：">
-				<el-select v-model="fkr_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in fkr_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
+				<el-input style="width:200px" clearable v-model="fkr" placeholder="请输入反馈人"></el-input>
 			</el-form-item>
 			<el-form-item label="状态：">
 				<el-select v-model="status" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
@@ -126,10 +120,8 @@
 				user_type:"",
 				page:1,
 				pagesize:10,
-				ksbm_list:[],			//所有款式编码
-				select_ksbm_ids:[],		//选中的款式编码
-				fkr_list:['张三','李四','王五'],	//反馈人列表
-				fkr_ids:[],				//选中的反馈人列表
+				ksbm:"",					//款式编码
+				fkr:"",						//反馈人
 				status_list:[{
 					id:'1',
 					name:'待处理'
@@ -179,18 +171,6 @@
 			this.getData();
 		},
 		methods:{
-			//款式编码列表
-			ajaxKsbm(e){
-				if(e != ''){
-					resource.ajaxKsbm({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.ksbm_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
 			//搜索
 			getList(){
 				this.page = 1;
@@ -201,10 +181,10 @@
 			getData(){
 				let arg = {
 					status:this.status,
-					ksbm:this.select_ksbm_ids.join(','),
+					ksbm:this.ksbm,
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
-					opreater_name:this.fkr_ids.join(','),
+					opreater_name:this.fkr,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -288,10 +268,10 @@
 				}).then(() => {
 					let arg = {
 						status:this.status,
-						ksbm:this.select_ksbm_ids.join(','),
+						ksbm:this.ksbm,
 						start_time:this.date && this.date.length> 0?this.date[0]:"",
 						end_time:this.date && this.date.length> 0?this.date[1]:"",
-						opreater_name:this.fkr_ids.join(','),
+						opreater_name:this.fkr,
 					}
 					resource.feedbackExport(arg).then(res => {
 						if(res){
