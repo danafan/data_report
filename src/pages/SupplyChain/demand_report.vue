@@ -31,7 +31,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="allDeal">批量处理</el-button>
 			<div class="right_buts">
-				<el-button type="primary" plain size="small">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				<el-button type="primary" plain size="small" @click="$router.push('/created_demand')">新建<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 			</div>
 		</div>
@@ -39,9 +39,9 @@
 			<el-table-column type="selection" width="55" fixed="left" :selectable="selectFn"></el-table-column>
 			<el-table-column label="操作" align="center" width="120" fixed="left">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="$router.push('/procurement_info')">详情</el-button>
-					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)">编辑</el-button>
-					<el-button type="text" size="small">处理</el-button>
+					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=1')" v-if="user_type == '1' || (user_type == '2' && scope.row.is_accept != '待处理')">详情</el-button>
+					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="user_type == '1' && scope.row.is_accept == '待处理'">编辑</el-button>
+					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="user_type == '2' && scope.row.is_accept == '待处理'">处理</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_time" label="提报日期" align="center" width="120">
@@ -154,9 +154,12 @@
 	import resource from '../../api/resource.js'
 	import demandResource from '../../api/demandResource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+	import {exportPost} from '../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
+				user_type:'2',				//1:运营；2:供应商
 				store_list:[],				//所有店铺
 				select_store_ids:[],		//选中的店铺列表
 				tbr_list:[],				//提报人列表
@@ -286,6 +289,32 @@
 				this.hlxpg = '1';
 				this.yjdcsj = '';
 				this.remark = '';
+			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						shop_name:this.select_store_ids.join(','),
+						create_name:this.select_tbr_ids.join(','),
+						start_time:this.tb_date && this.tb_date.length> 0?this.tb_date[0]:"",
+						end_time:this.tb_date && this.tb_date.length> 0?this.tb_date[1]:"",
+						is_accept:this.status
+					}
+					demandResource.supplyChainExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'运营中心需求报表');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//提交批量处理
 			commitFn(){
