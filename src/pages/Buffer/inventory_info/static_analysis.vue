@@ -65,8 +65,8 @@
 				<el-table :data="item.list" size="mini" max-height="300">
 					<el-table-column prop="name" :label="item.name" fixed show-overflow-tooltip align="center">
 						<template slot-scope="scope">
-								<div>{{scope.row.name == null?'-':scope.row.name}}</div>
-							</template>
+							<div>{{scope.row.name == null?'-':scope.row.name}}</div>
+						</template>
 					</el-table-column>
 					<el-table-column :label="i" v-for="i in date_list" align="center">
 						<el-table-column :prop="`sl_total_${i}`" label="数量" align="center">
@@ -132,6 +132,9 @@
 		<!-- 表格 -->
 		<div class="title">款式库存数量</div>
 		<div class="toast">总成本：{{cbj_total}}万</div>
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" @sort-change="sortChange">
 			<el-table-column prop="sjxrrq" label="日期" sortable width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="图片" width="120" align="center">
@@ -175,6 +178,8 @@
 <script>
 	import resource from '../../../api/resource.js'
 	import {getNowDate} from '../../../api/nowMonth.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -526,6 +531,38 @@
 				});
         		return sums;
         	},
+        	//导出
+        	commitExport(){
+        		MessageBox.confirm('确认导出?', '提示', {
+        			confirmButtonText: '确定',
+        			cancelButtonText: '取消',
+        			type: 'warning'
+        		}).then(() => {
+        			let arg = {
+        				start_time:this.date,
+        				plbz:this.select_sfzzk_id.join(','),
+        				jj:this.select_jj_ids.join(','),
+        				ckwz:this.selected_ckwz_list.join(','),
+        				pl:this.select_pp_list.join(','),
+        				ksbm:this.select_ks_ids.join(','),
+        				xb:this.select_xb_id,
+        				cpfl:this.select_pl_ids.join(','),
+        			}
+        			if(this.sort != ''){
+        				arg.sort = this.sort;
+        			}
+        			resource.stockAnalysisKsExprot(arg).then(res => {
+        				if(res){
+        					exportPost("\ufeff" + res.data,'款式库存数量');
+        				}
+        			})
+        		}).catch(() => {
+        			Message({
+        				type: 'info',
+        				message: '取消导出'
+        			});          
+        		});
+        	},
         	//分页
         	handleSizeChange(val) {
         		this.pagesize = val;
@@ -546,6 +583,10 @@
     }
 </script>
 <style lang="less" scoped>
+.buts{
+	display: flex;
+	justify-content: flex-end;
+}
 .analysis_row{
 	width: 100%;
 	display: flex;

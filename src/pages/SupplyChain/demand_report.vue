@@ -29,19 +29,19 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" plain size="small" @click="allDeal">批量处理</el-button>
+			<el-button type="primary" plain size="small" @click="allDeal" v-if="button_list.handle == 1">批量处理</el-button>
 			<div class="right_buts">
-				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
-				<el-button type="primary" plain size="small" @click="$router.push('/created_demand')">新建<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="$router.push('/created_demand')" v-if="button_list.add == 1">新建<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
-			<el-table-column type="selection" width="55" fixed="left" :selectable="selectFn"></el-table-column>
+			<el-table-column type="selection" width="55" fixed="left" :selectable="selectFn" v-if="button_list.handle == 1"></el-table-column>
 			<el-table-column label="操作" align="center" width="120" fixed="left">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=1')" v-if="user_type == '1' || (user_type == '2' && scope.row.is_accept != '待处理')">详情</el-button>
-					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="user_type == '1' && scope.row.is_accept == '待处理'">编辑</el-button>
-					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="user_type == '2' && scope.row.is_accept == '待处理'">处理</el-button>
+					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=1')" v-if="button_list.detail == 1">详情</el-button>
+					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="button_list.edit == 1">编辑</el-button>
+					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="button_list.handle == 1 && scope.row.is_accept == '待处理'">处理</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_time" label="提报日期" align="center" width="120">
@@ -159,7 +159,6 @@
 	export default{
 		data(){
 			return{
-				user_type:'2',				//1:运营；2:供应商
 				store_list:[],				//所有店铺
 				select_store_ids:[],		//选中的店铺列表
 				tbr_list:[],				//提报人列表
@@ -193,6 +192,7 @@
 					}]
 				},	 										//时间区间
 				dataObj:{},	
+				button_list:{},				//按钮权限
 				multipleSelection:[],		//选中的列表	
 				dealDialog:false,			//处理弹窗	
 				hlxpg:'1',			//选中的合理性评估
@@ -248,6 +248,7 @@
 				demandResource.demandList(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

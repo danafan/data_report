@@ -2,7 +2,7 @@
 	<div>
 		<el-button type="primary" plain size='mini' icon="el-icon-arrow-left" @click="$router.go(-1)">返回</el-button>
 		<div class="form_content">
-			<div class="page_title">新建外采需求</div>
+			<div class="page_title">{{this.id?'编辑':'新建'}}外采需求</div>
 			<el-form size="small" class="form_box">
 				<el-form-item label="店铺：" required>
 					<el-select v-model="store_code" clearable :popper-append-to-body="false" placeholder="全部">
@@ -146,7 +146,7 @@
 				ck_store_url:"",		//参考店铺链接
 				ck_store_cp_img:[],		//参考店铺产品图片
 				ckdpcp_remark:"",		//参考店铺产品描述
-				tsyq:1,				//是否特殊要求
+				tsyq:1,					//是否特殊要求
 				tsyq_remark:"",			//特殊要求说明
 				xsjg_start:"",
 				xsjg_end:"",			//销售价格区间

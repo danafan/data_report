@@ -989,7 +989,10 @@
       				this.$message.warning("销售收入占比总和必须是100%");
       				return;
       			}
-      			this.$confirm('确认提交', '提示', {
+      			let cc = this.day_table_data.filter(item => {
+      				return item.xssr == '0.00';
+      			})
+      			this.$confirm(`${cc.length > 0?'当前月有存在日销量收入为0的哦，确认提交吗？':'确认提交'}`, '提示', {
       				confirmButtonText: '确定',
       				cancelButtonText: '取消',
       				type: 'warning'

@@ -218,6 +218,7 @@ let path = {
 	nearTwoMonthClear:'dynamic_analysis/near_two_month_clear',		//清仓款近两个月销售明细
 	nearTwoMonthClearExport:'dynamic_analysis/near_two_month_clear_export',	//清仓款近两个月销售明细导出
 	projectDept:'Common/project_dept',								//项目部列表
+	stockAnalysisKsExprot:'stock_analysis/ks_exprot',				//款式列表-导出
 		
 
 }					
@@ -1125,6 +1126,10 @@ export default{
 	//项目部列表
 	projectDept(params){
 		return http.get(path.projectDept, params)
+	},
+	//款式列表-导出
+	stockAnalysisKsExprot(params){
+		return http.get(path.stockAnalysisKsExprot, params)
 	},
 	
 }

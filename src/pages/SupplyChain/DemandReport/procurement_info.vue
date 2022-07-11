@@ -95,31 +95,32 @@
 					<div v-if="detail_info.is_accept == '1'">接受</div>
 					<div v-if="detail_info.is_accept == '2'">不接受</div>
 				</el-form-item>
-				<el-divider></el-divider>
-				<div class="page_title" v-if="(user_type == '1' && detail_info.is_accept != '0') || user_type == '2'">供应链回复：</div>
-				<el-form-item label="合理性评估：" required v-if="(user_type == '1' && detail_info.is_accept != '0') || user_type == '2'">
-					<el-select v-model="hlxpg" :popper-append-to-body="false" :disabled="user_type == '1' || (user_type == '2' && type == '1')">
-						<el-option label="接受" :value="1"></el-option>
-						<el-option label="不接受" :value="2"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="备注：" :required="hlxpg == '2'" v-if="(user_type == '1' && detail_info.is_accept != '0') || user_type == '2'">
-					<el-input style="width:360px;margin-bottom: 15px" type="textarea"
-					:placeholder="hlxpg == '2'?'请输入不接受的原因':'请输入备注（选填）'"
-					:rows="7"
-					v-model="remark"
-					:disabled="user_type == '1' || (user_type == '2' && type == '1')"
-					maxlength="100"
-					show-word-limit></el-input>
-				</el-form-item>
-				<el-form-item label="预计达成时间：" required v-if="(user_type == '1' && detail_info.is_accept != '0') || user_type == '2'">
-					<el-date-picker v-model="yjdcsj" type="date" clearable :disabled="user_type == '1' || (user_type == '2' && type == '1')" value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
-					</el-date-picker>
-				</el-form-item>
-				<div class="button_row" v-if="type == '2'">
-					<el-button size="small" type="primary" @click="commitFn">提交</el-button>
+				<div v-if="detail_info.is_accept != '0' || (detail_info.is_accept == '0' && type == '2')">
+					<el-divider></el-divider>
+					<div class="page_title">供应链回复：</div>
+					<el-form-item label="合理性评估：" required>
+						<el-select v-model="hlxpg" :popper-append-to-body="false" :disabled="detail_info.is_accept != '0'">
+							<el-option label="接受" :value="1"></el-option>
+							<el-option label="不接受" :value="2"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="备注：" :required="hlxpg == '2'">
+						<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+						:placeholder="hlxpg == '2'?'请输入不接受的原因':'请输入备注（选填）'"
+						:rows="7"
+						v-model="remark"
+						:disabled="detail_info.is_accept != '0'"
+						maxlength="100"
+						show-word-limit></el-input>
+					</el-form-item>
+					<el-form-item label="预计达成时间：" required>
+						<el-date-picker v-model="yjdcsj" type="date" clearable :disabled="detail_info.is_accept != '0'" value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+						</el-date-picker>
+					</el-form-item>
+					<div class="button_row" v-if="type == '2'">
+						<el-button size="small" type="primary" @click="commitFn">提交</el-button>
+					</div>
 				</div>
-				
 			</el-form>
 		</div>
 	</div>
@@ -129,10 +130,11 @@
 	export default{
 		data(){
 			return{
-				user_type:'2',		//1:运营；2:供应商
 				id:"",		
 				type:"1",			//1:详情；2:处理	
-				detail_info:{},		//详情数据
+				detail_info:{
+					gys_model:''
+				},		//详情数据
 				hlxpg:1,			//选中的合理性评估
 				yjdcsj:"",			//预计达成时间
 				remark:"",			//备注
@@ -150,7 +152,7 @@
 				demandResource.supplyChainInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
 						this.detail_info = res.data.data;
-						if(this.user_type == '2' && this.type == '1'){
+						if(this.type == '1'){
 							this.hlxpg = this.detail_info.is_accept;
 							this.yjdcsj = this.detail_info.arrival_time;
 							this.remark = this.detail_info.remark;
