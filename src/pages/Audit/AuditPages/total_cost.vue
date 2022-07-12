@@ -73,8 +73,7 @@
 			</el-table-column>
 			<el-table-column label="备注" align="center" v-if="user_type != '1'">
 				<template slot-scope="scope">
-					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20"
-					show-word-limit placeholder="请输入备注" :disabled="user_type == '4'"></el-input>
+					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20" placeholder="备注（最多20字）" :disabled="user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" v-if="user_type == '4'">

@@ -70,8 +70,9 @@
 			</el-table-column>
 			<el-table-column label="参看店铺图片" align="center" width="180">
 				<template slot-scope="scope">
-					<el-image fit="cover" style="width: 160px; height: 80px" :src="scope.row.without_image[0]" :preview-src-list="scope.row.without_image">
+					<el-image fit="cover" style="width: 160px; height: 80px" :src="scope.row.without_image[0]" :preview-src-list="scope.row.without_image" v-if="scope.row.without_image.length > 0">
 					</el-image>
+					<div v-else>暂无图片</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="without_describe" label="参考店铺描述" align="center" width="120" show-overflow-tooltip>
