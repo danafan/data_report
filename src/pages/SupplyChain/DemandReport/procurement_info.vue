@@ -78,11 +78,11 @@
 					{{detail_info.gys_area}}
 				</el-form-item>
 				<el-form-item label="供应商合作模式：">
-					<div v-for="item in detail_info.gys_model.split(',')">
-						<div v-if="item == '1'">现结</div>
-						<div v-if="item == '2'">代销</div>
-						<div v-if="item == '3'">下单备货</div>
-					</div>
+					<span v-for="item in detail_info.gys_model.split(',')">
+						<span v-if="item == '1'">现结</span>
+						<span v-if="item == '2'">代销</span>
+						<span v-if="item == '3'">下单备货</span>/
+					</span>
 				</el-form-item>
 				<el-form-item label="接受最晚达成时间：">
 					{{detail_info.done_time}}
@@ -116,6 +116,9 @@
 					<el-form-item label="预计达成时间：" required>
 						<el-date-picker v-model="yjdcsj" type="date" clearable :disabled="detail_info.is_accept != '0'" value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
 						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="处理人：" v-if="detail_info.is_accept != '0'">
+						{{detail_info.done_name}}
 					</el-form-item>
 					<div class="button_row" v-if="type == '2'">
 						<el-button size="small" type="primary" @click="commitFn">提交</el-button>

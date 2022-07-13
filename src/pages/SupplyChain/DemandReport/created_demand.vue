@@ -192,6 +192,7 @@
 			},
 			//切换一级类目
 			checkCate(){
+				this.level_2_cate = "";
 				//获取二级类目列表
 				this.supplyChainCate({level:'2',cate_1:this.level_1_cate});
 			},
@@ -202,7 +203,6 @@
 						if(arg.level == '1'){
 							this.cate_1_list = res.data.data;
 						}else{
-							this.level_2_cate = "";
 							this.cate_2_list = res.data.data;
 						}
 					}else{

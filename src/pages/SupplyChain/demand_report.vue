@@ -40,7 +40,7 @@
 			<el-table-column label="操作" align="center" width="120" fixed="left">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=1')" v-if="button_list.detail == 1">详情</el-button>
-					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="button_list.edit == 1">编辑</el-button>
+					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="button_list.edit == 1 && scope.row.is_accept == '待处理'">编辑</el-button>
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="button_list.handle == 1 && scope.row.is_accept == '待处理'">处理</el-button>
 				</template>
 			</el-table-column>

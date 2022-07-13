@@ -1,15 +1,6 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
-			<!-- <el-tab-pane label="发货情况统计" lazy name="delivery_statistical" class="tab_pane_box">
-				<DeliveryStatistical/>
-			</el-tab-pane>
-			<el-tab-pane label="发货情况明细(订单)" lazy name="delivery_record" class="tab_pane_box">
-				<DeliveryRecord/>
-			</el-tab-pane>
-			<el-tab-pane label="未发货明细-包含预发(商品编码)" lazy name="sku_record" class="tab_pane_box">
-				<SkuRecord/>
-			</el-tab-pane> -->
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<DeliveryStatistical v-if="item.web_url == 'delivery_statistical'"/>
 				<DeliveryRecord v-if="item.web_url == 'delivery_record'"/>

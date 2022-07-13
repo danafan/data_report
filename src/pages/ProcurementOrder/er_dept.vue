@@ -1,10 +1,23 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
-			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<Thkbhsj dept="得物项目部" v-if="item.web_url == 'thkbhsj'"/>
-				<Thkspbm dept="得物项目部" v-if="item.web_url == 'thkspbm'"/>
-				<Bpkspbm dept="得物项目部" v-if="item.web_url == 'bpkspbm'"/>
+			<!-- <el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+				<Bpcgxd dept="得物项目部" v-if="item.web_url == 'bpcgxd'"/>
+				<Thkspmx dept="得物项目部" v-if="item.web_url == 'thkspmx'"/>
+				<ZxbpThdzb dept="得物项目部" v-if="item.web_url == 'zxbp_thdzb'"/>
+				<Zxbphgl dept="得物项目部" v-if="item.web_url == 'zxbphgl'"/>
+			</el-tab-pane> -->
+			<el-tab-pane label="白坯采购下单" lazy name="bpcgxd" class="tab_pane_box">
+				<Bpcgxd dept="得物项目部"/>
+			</el-tab-pane>
+			<el-tab-pane label="烫画款商品明细表" lazy name="thkspmx" class="tab_pane_box">
+				<Thkspmx dept="得物项目部"/>
+			</el-tab-pane>
+			<el-tab-pane label="最新白坯-烫画对照表" lazy name="zxbp_thdzb" class="tab_pane_box">
+				<ZxbpThdzb dept="得物项目部"/>
+			</el-tab-pane>
+			<el-tab-pane label="最新白坯合格率" lazy name="zxbphgl" class="tab_pane_box">
+				<Zxbphgl dept="得物项目部"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -15,9 +28,10 @@
 }
 </style>
 <script>
-	import Thkbhsj from './common_tabs/thkbhsj.vue'
-	import Thkspbm from './common_tabs/thkspbm.vue'
-	import Bpkspbm from './common_tabs/bpkspbm.vue'
+	import Bpcgxd from './common_tabs/bpcgxd.vue'
+	import Thkspmx from './common_tabs/thkspmx.vue'
+	import ZxbpThdzb from './common_tabs/zxbp_thdzb.vue'
+	import Zxbphgl from './common_tabs/zxbphgl.vue'
 	export default{
 		data(){
 			return{
@@ -56,9 +70,10 @@
 			}
 		},
 		components:{
-			Thkbhsj,
-			Thkspbm,
-			Bpkspbm
+			Bpcgxd,
+			Thkspmx,
+			ZxbpThdzb,
+			Zxbphgl
 		}
 	}
 </script>

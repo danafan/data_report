@@ -8,7 +8,7 @@
 				<el-input style="width:200px" clearable v-model="fkr" placeholder="请输入反馈人"></el-input>
 			</el-form-item>
 			<el-form-item label="状态：">
-				<el-select v-model="status" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="status" clearable :popper-append-to-body="false" placeholder="全部">
 					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
@@ -24,7 +24,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%;height: 600px" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="ksbm" label="新编码" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="成本价" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="edit_cb_price" label="反馈成本价" show-overflow-tooltip align="center"></el-table-column>
@@ -38,7 +38,7 @@
 					<div v-if="scope.row.status == 3">审批拒绝</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="处理" align="center" fixed="right" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
+			<el-table-column label="处理" align="center" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status != 1">详情</el-button>
 					<el-button type="text" size="small" @click="checkStatus('0',scope.row.id)" v-if="scope.row.status == 1 && (user_type == '2' || user_type == '3')">拒绝</el-button>

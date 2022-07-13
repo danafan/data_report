@@ -42,6 +42,15 @@
 				:picker-options="pickerOptions">
 			</el-date-picker>
 		</el-form-item>
+		<el-form-item label="线上订单号：">
+			<el-input v-model="arg_xsddh" placeholder="线上订单号"></el-input>
+		</el-form-item>
+		<el-form-item label="易快报单号：">
+			<el-input v-model="arg_ykbdh" placeholder="线上订单号"></el-input>
+		</el-form-item>
+		<el-form-item label="申请人：">
+			<el-input v-model="arg_apply_user_name" placeholder="线上订单号"></el-input>
+		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 		</el-form-item>
@@ -144,7 +153,7 @@
 		</el-table-column>
 		<el-table-column prop="is_warehousing" label="是否进仓" show-overflow-tooltip align="center">
 		</el-table-column>
-		<el-table-column prop="ykbbh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
+		<el-table-column prop="ykbdh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
 		<el-table-column prop="apply_user_name" label="申请人" width="100" show-overflow-tooltip align="center"></el-table-column>
 	</el-table>
 	<div class="page">
@@ -203,6 +212,9 @@
 				sfsh:"",									//是否售后
 				is_warehousing:"",							//是否进仓
 				bj:"",										//便笺
+				arg_xsddh:"",									//线上订单号
+				arg_ykbdh:"",									//易快报单号
+				arg_apply_user_name:"",							//申请人
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -286,7 +298,7 @@
 				}else{
 					let arg = {
 						ykbdh:this.ykbdh,
-						sqr:this.sqr,
+						apply_user_name:this.sqr,
 						file:this.file
 					}
 					resource.importYkb(arg).then(res => {
@@ -311,7 +323,10 @@
 					is_weight:this.sfcz,
 					is_after_sale:this.sfsh,
 					is_warehousing:this.is_warehousing,
-					note:this.bj
+					note:this.bj,
+					xsddh:this.arg_xsddh,
+					ykbdh:this.arg_ykbdh,
+					apply_user_name:this.arg_apply_user_name,
 				}
 				resource.ytReportTotal(arg).then(res => {
 					if(res.data.code == 1){
@@ -344,6 +359,9 @@
 					is_after_sale:this.sfsh,
 					is_warehousing:this.is_warehousing,
 					note:this.bj,
+					xsddh:this.arg_xsddh,
+					ykbdh:this.arg_ykbdh,
+					apply_user_name:this.arg_apply_user_name,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -372,7 +390,10 @@
 						is_weight:this.sfcz,
 						is_after_sale:this.sfsh,
 						is_warehousing:this.is_warehousing,
-						note:this.bj
+						note:this.bj,
+						xsddh:this.arg_xsddh,
+						ykbdh:this.arg_ykbdh,
+						apply_user_name:this.arg_apply_user_name,
 					}
 					resource.ytReportExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'审计SD分析');

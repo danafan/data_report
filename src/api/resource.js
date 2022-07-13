@@ -219,6 +219,9 @@ let path = {
 	nearTwoMonthClearExport:'dynamic_analysis/near_two_month_clear_export',	//清仓款近两个月销售明细导出
 	projectDept:'Common/project_dept',								//项目部列表
 	stockAnalysisKsExprot:'stock_analysis/ks_exprot',				//款式列表-导出
+	overseasAdv:'overseas/adv',										//海外店铺广告数据接口
+	overseasGiftcard:'overseas/giftcard',							//海外店铺销售数据
+	overseasDaydata:'overseas/daydata',								//海外店铺日数据
 		
 
 }					
@@ -1131,7 +1134,18 @@ export default{
 	stockAnalysisKsExprot(params){
 		return http.get(path.stockAnalysisKsExprot, params)
 	},
-	
+	//海外店铺广告数据接口
+	overseasAdv(params){
+		return http.get(path.overseasAdv, params)
+	},
+	//海外店铺销售数据
+	overseasGiftcard(params){
+		return http.get(path.overseasGiftcard, params)
+	},
+	//海外店铺日数据
+	overseasDaydata(params){
+		return http.get(path.overseasDaydata, params)
+	},
 }
 
 
