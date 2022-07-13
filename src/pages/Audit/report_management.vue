@@ -304,6 +304,7 @@
 					resource.importYkb(arg).then(res => {
 						if(res.data.code == 1){
 							this.$message.success(res.data.msg);
+							this.ykbDialog = false;
 							//获取列表
 							this.getList();
 						}else{

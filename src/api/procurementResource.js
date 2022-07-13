@@ -25,10 +25,25 @@ let path = {
 	drawGoodsCollectList:'dynamic_analysis/draw_goods_collect_list',		//烫画商品明细-汇总
 	drawGoodsCollectListExport:'dynamic_analysis/draw_goods_collect_list_export',	//烫画商品明细导出-汇总
 
-	twoOrderTotalNum:'purchase_order/two_order_total_num',						//每日下单采购总数
+	twoOrderTotalNum:'purchase_order/two_order_total_num',						//每日下单采购总数(二部)
 	searchWhiteData:'dynamic_analysis/search_white_data',						//白坯搜索框
-	twoWhiteGysOrder:'purchase_order/two_white_gys_order',						//供应商下单表
-	twoWhiteGysOrderExport:'purchase_order/two_white_gys_order_export',			//供应商下单表导出
+	twoWhiteGysOrder:'purchase_order/two_white_gys_order',						//供应商下单表(二部)
+	twoWhiteGysOrderExport:'purchase_order/two_white_gys_order_export',			//供应商下单表导出(二部)
+	twoWhiteKsOrderExport:'purchase_order/two_white_ks_order_export',			//白坯款式编码下单表导出(二部)
+	twoWhiteKsOrder:'purchase_order/two_white_ks_order',						//白坯款式编码下单表(二部)
+	twoWhiteBmOrder:'purchase_order/two_white_bm_order',						//白胚商品编码下单表(二部)
+	twoWhiteBmOrderExport:'purchase_order/two_white_bm_order_export',			//白胚商品编码下单表导出(二部)
+	fourOrderTotalNum:'purchase_order/four_order_total_num',						//每日下单采购总数(四部)
+	fourWhiteGysOrder:'purchase_order/four_white_gys_order',						//供应商下单表(四部)
+	fourWhiteGysOrderExport:'purchase_order/four_white_gys_order_export',			//供应商下单表导出(四部)
+	fourWhiteKsOrderExport:'purchase_order/four_white_ks_order_export',				//白坯款式编码下单表导出(四部)
+	fourWhiteKsOrder:'purchase_order/four_white_ks_order',							//白坯款式编码下单表(四部)
+	fourWhiteBmOrder:'purchase_order/four_white_bm_order',							//白胚商品编码下单表(四部)
+	fourWhiteBmOrderExport:'purchase_order/four_white_bm_order_export',				//白胚商品编码下单表导出(四部)
+	twoDrawGoodsList:'purchase_order/two_draw_goods_list',						//烫画款商品明细(二部)
+	twoDrawGoodsExport:'purchase_order/two_draw_goods_export',					//烫画款商品明细导出(二部)
+	fourDrawGoodsList:'purchase_order/four_draw_goods_list',						//烫画款商品明细(四部)
+	fourDrawGoodsExport:'purchase_order/four_draw_goods_export',					//烫画款商品明细导出(四部)
 	
 }						
 export default{
@@ -140,6 +155,67 @@ export default{
 	//供应商下单表导出
 	twoWhiteGysOrderExport(params){
 		return http.get(path.twoWhiteGysOrderExport, params)
+	},
+	//白坯款式编码下单表导出
+	twoWhiteKsOrderExport(params){
+		return http.get(path.twoWhiteKsOrderExport, params)
+	},
+	//白坯款式编码下单表
+	twoWhiteKsOrder(params){
+		return http.get(path.twoWhiteKsOrder, params)
+	},
+	//白胚商品编码下单表
+	twoWhiteBmOrder(params){
+		return http.get(path.twoWhiteBmOrder, params)
+	},
+	//白胚商品编码下单表导出
+	twoWhiteBmOrderExport(params){
+		return http.get(path.twoWhiteBmOrderExport, params)
+	},
+	//每日下单采购总数
+	fourOrderTotalNum(params){
+		return http.get(path.fourOrderTotalNum, params)
+	},
+	//供应商下单表
+	fourWhiteGysOrder(params){
+		return http.get(path.fourWhiteGysOrder, params)
+	},
+	//供应商下单表导出
+	fourWhiteGysOrderExport(params){
+		return http.get(path.fourWhiteGysOrderExport, params)
+	},
+	//白坯款式编码下单表导出
+	fourWhiteKsOrderExport(params){
+		return http.get(path.fourWhiteKsOrderExport, params)
+	},
+	//白坯款式编码下单表
+	fourWhiteKsOrder(params){
+		return http.get(path.fourWhiteKsOrder, params)
+	},
+	//白胚商品编码下单表
+	fourWhiteBmOrder(params){
+		return http.get(path.fourWhiteBmOrder, params)
+	},
+	//白胚商品编码下单表导出
+	fourWhiteBmOrderExport(params){
+		return http.get(path.fourWhiteBmOrderExport, params)
+	},
+
+	//烫画款商品明细
+	twoDrawGoodsList(params){
+		return http.get(path.twoDrawGoodsList, params)
+	},
+	//烫画款商品明细导出
+	twoDrawGoodsExport(params){
+		return http.get(path.twoDrawGoodsExport, params)
+	},
+	//烫画款商品明细
+	fourDrawGoodsList(params){
+		return http.get(path.fourDrawGoodsList, params)
+	},
+	//烫画款商品明细导出
+	fourDrawGoodsExport(params){
+		return http.get(path.fourDrawGoodsExport, params)
 	},
 }
 
