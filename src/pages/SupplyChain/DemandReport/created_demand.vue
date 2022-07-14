@@ -254,7 +254,7 @@
 						this.ckdpcp_remark = info.without_describe;
 						this.ghs = info.gys;
 						this.ghsdyyq = info.gys_area;
-						this.hzms_ids = info.gys_model.split(',');
+						this.hzms_ids = info.gys_model == ''?[]:info.gys_model.split(',');
 					}else{
 						this.$message.warning(res.data.msg);
 					}

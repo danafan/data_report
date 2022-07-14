@@ -1,7 +1,9 @@
 import http from './request.js'
 let path = {	
 	twoOrderTotalNum:'purchase_order/two_order_total_num',						//每日下单采购总数(二部)
-	searchWhiteData:'dynamic_analysis/search_white_data',						//白坯搜索框
+	searchWhiteData:'purchase_order/search_white_data',							//白坯对照搜索框
+	searchDrawData:'purchase_order/search_draw_data',							//烫画明细-白坯下单搜索框
+	searchWhiteHglData:'purchase_order/search_white_hgl_data',					//白坯合格率搜索框
 	twoWhiteGysOrder:'purchase_order/two_white_gys_order',						//供应商下单表(二部)
 	twoWhiteGysOrderExport:'purchase_order/two_white_gys_order_export',			//供应商下单表导出(二部)
 	twoWhiteKsOrderExport:'purchase_order/two_white_ks_order_export',			//白坯款式编码下单表导出(二部)
@@ -50,6 +52,14 @@ export default{
 	//白坯搜索框
 	searchWhiteData(params){
 		return http.get(path.searchWhiteData, params)
+	},
+	//烫画明细-白坯下单搜索框
+	searchDrawData(params){
+		return http.get(path.searchDrawData, params)
+	},
+	//白坯合格率搜索框
+	searchWhiteHglData(params){
+		return http.get(path.searchWhiteHglData, params)
 	},
 	//供应商下单表
 	twoWhiteGysOrder(params){

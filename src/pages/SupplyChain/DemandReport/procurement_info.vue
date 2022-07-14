@@ -78,11 +78,7 @@
 					{{detail_info.gys_area}}
 				</el-form-item>
 				<el-form-item label="供应商合作模式：">
-					<span v-for="item in detail_info.gys_model.split(',')">
-						<span v-if="item == '1'">现结</span>
-						<span v-if="item == '2'">代销</span>
-						<span v-if="item == '3'">下单备货</span>/
-					</span>
+					{{detail_info.gys_model_str}}
 				</el-form-item>
 				<el-form-item label="接受最晚达成时间：">
 					{{detail_info.done_time}}

@@ -222,6 +222,9 @@ let path = {
 	overseasAdv:'overseas/adv',										//海外店铺广告数据接口
 	overseasGiftcard:'overseas/giftcard',							//海外店铺销售数据
 	overseasDaydata:'overseas/daydata',								//海外店铺日数据
+	daydataExport:'overseas/daydata_export',						//海外店铺日数据导出
+	giftcardExport:'overseas/giftcard_export',						//海外店铺销售数据导出
+	advExport:'overseas/adv_export',								//海外店铺广告数据导出
 		
 
 }					
@@ -1145,6 +1148,18 @@ export default{
 	//海外店铺日数据
 	overseasDaydata(params){
 		return http.get(path.overseasDaydata, params)
+	},
+	//海外店铺日数据导出
+	daydataExport(params){
+		return http.post(path.daydataExport, params)
+	},
+	//海外店铺销售数据导出
+	giftcardExport(params){
+		return http.post(path.giftcardExport, params)
+	},
+	//海外店铺广告数据导出
+	advExport(params){
+		return http.post(path.advExport, params)
 	},
 }
 

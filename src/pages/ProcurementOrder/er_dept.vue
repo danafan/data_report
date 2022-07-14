@@ -2,10 +2,10 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<Bpcgxd dept="total_table" v-if="item.web_url == 'bpcgxd'"/>
-				<Thkspmx dept="total_table" v-if="item.web_url == 'thkspmx'"/>
-				<ZxbpThdzb dept="total_table" v-if="item.web_url == 'zxbp_thdzb'"/>
-				<Zxbphgl dept="total_table" v-if="item.web_url == 'zxbphgl'"/>
+				<Bpcgxd dept="er_dept" v-if="item.web_url == 'bpcgxd'"/>
+				<Thkspmx dept="er_dept" v-if="item.web_url == 'thkspmx'"/>
+				<ZxbpThdzb dept="er_dept" v-if="item.web_url == 'zxbp_thdzb'"/>
+				<Zxbphgl dept="er_dept" v-if="item.web_url == 'zxbphgl'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

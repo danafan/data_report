@@ -36,7 +36,7 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="400px" :header-cell-style="tableCellStyle">
+		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="tableCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商款号" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款式编码" width="100" align="center"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯款商品编码" width="130" align="center"></el-table-column>
@@ -76,7 +76,7 @@
 			<el-table-column prop="fut_rate" label="售后退货率" width="120" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.list.total">
 			</el-pagination>
 		</div>
 	</div>
@@ -98,7 +98,10 @@
 				select_thkh_list:[],	//选中的烫画商品编码
 				thksbm_list:[],			//烫画款式编码
 				select_thksbm_list:[],	//选中的烫画款式编码
-				dataObj:{},				//获取到的数据
+				dataObj:{
+					list:{
+						data:[]
+					}},				//获取到的数据
 				page:1,
 				pagesize:10
 			}
@@ -145,7 +148,7 @@
 					field:field,
 					field_value:field_value
 				}
-				resource.searchWhiteData(arg).then(res => {
+				resource.searchDrawData(arg).then(res => {
 					if(res.data.code == 1){
 						if(field == 'thspbm'){
 							this.thkh_list = res.data.data;

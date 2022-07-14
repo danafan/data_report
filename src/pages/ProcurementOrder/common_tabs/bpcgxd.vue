@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="title">每日下单采购汇总</div>
-		<el-table size="small" :data="totalObj.data" tooltip-effect="dark" style="width: 100%" max-height="400px" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="totalObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_2" label="所属事业部" show-overflow-tooltip width="130" align="center" v-if="dept == 'total_table'"></el-table-column>
 			<el-table-column prop="rq" label="日期" width="100" align="center"></el-table-column>
 			<el-table-column prop="bpkh_num" label="今日白坯数量" width="130" align="center"></el-table-column>
@@ -23,7 +23,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="totalPageSize" @current-change="totalPage" :current-page="total_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="totalObj.total">
+			<el-pagination @size-change="totalPageSize" @current-change="totalPage" :current-page="total_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="totalObj.list.total">
 			</el-pagination>
 		</div>
 		<!-- 供应商下单表 -->
@@ -46,7 +46,7 @@
 			<div class="title">供应商下单表</div>
 			<el-button type="primary" plain size="mini" @click="commitExport('gysxd')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="gysxdObj.data" tooltip-effect="dark" style="width: 100%" max-height="400px" :header-cell-style="gysxdCellStyle">
+		<el-table size="small" :data="gysxdObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="gysxdCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="bpkh_num" label="白坯款数" width="100" align="center"></el-table-column>
 			<el-table-column prop="th_num" label="烫画款数" width="130" align="center"></el-table-column>
@@ -71,7 +71,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="gysxdPageSize" @current-change="gysxdPage" :current-page="gysxd_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="gysxdObj.total">
+			<el-pagination @size-change="gysxdPageSize" @current-change="gysxdPage" :current-page="gysxd_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="gysxdObj.list.total">
 			</el-pagination>
 		</div>
 		<!-- 白坯款式编码下单表 -->
@@ -90,7 +90,7 @@
 			<div class="title">白坯款式编码下单表</div>
 			<el-button type="primary" plain size="mini" @click="commitExport('bpksbm')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="bpkxdObj.data" tooltip-effect="dark" style="width: 100%" max-height="400px" :header-cell-style="bpkxdCellStyle">
+		<el-table size="small" :data="bpkxdObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="bpkxdCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款式编码" width="100" align="center"></el-table-column>
 			<el-table-column prop="cpfl" label="白坯品类" width="130" align="center"></el-table-column>
@@ -119,7 +119,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="bpkxdPageSize" @current-change="bpkxdPage" :current-page="bpkxd_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="bpkxdObj.total">
+			<el-pagination @size-change="bpkxdPageSize" @current-change="bpkxdPage" :current-page="bpkxd_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="bpkxdObj.list.total">
 			</el-pagination>
 		</div>
 		<!-- 白坯商品编码下单表 -->
@@ -138,7 +138,7 @@
 			<div class="title">白坯商品编码下单表</div>
 			<el-button type="primary" plain size="mini" @click="commitExport('bpspbm')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="bpspbmObj.data" tooltip-effect="dark" style="width: 100%" max-height="400px" :header-cell-style="bpspbmCellStyle">
+		<el-table size="small" :data="bpspbmObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="bpspbmCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款式编码" width="100" align="center"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯商品编码" width="130" align="center"></el-table-column>
@@ -172,7 +172,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="bpspbmPageSize" @current-change="bpspbmPage" :current-page="bpspbm_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="bpkxdObj.total">
+			<el-pagination @size-change="bpspbmPageSize" @current-change="bpspbmPage" :current-page="bpspbm_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="bpkxdObj.list.total">
 			</el-pagination>
 		</div>
 	</div>
@@ -187,23 +187,38 @@
 			return{
 				total_page:1,			//采购总数页码
 				total_pagesize:10,
-				totalObj:{},			//采购总数数据
+				totalObj:{
+					list:{
+						data:[]
+					}
+				},			//采购总数数据
 				gys_list:[],			//供应商列表
 				select_gys_list:[],		//选中的供应商
 				creat_rq:getNowDate(),	//日期
 				gysxd_page:1,			//供应商下单页码
 				gysxd_pagesize:10,
-				gysxdObj:{},			//供应商下单数据
+				gysxdObj:{
+					list:{
+						data:[]
+					}},			//供应商下单数据
 				ksbm_list:[],			//白坯款式编码
 				select_ksbm_list:[],	//选中的白坯款式编码
 				bpkxd_page:1,			//白坯款下单页码
 				bpkxd_pagesize:10,		
-				bpkxdObj:{},			//白坯款下单数据
+				bpkxdObj:{
+					list:{
+						data:[]
+					}
+				},			//白坯款下单数据
 				bpkh_list:[],				//白坯商品编码
 				select_bpkh_list:[],		//选中的白坯商品编码列表
 				bpspbm_page:1,			//白坯商品编码下单页码
 				bpspbm_pagesize:10,		
-				bpspbmObj:{},			//白坯商品编码下单数据
+				bpspbmObj:{
+					list:{
+						data:[]
+					}
+				},			//白坯商品编码下单数据
 			}
 		},
 		props:{
@@ -268,7 +283,7 @@
 			},
 			//供应商列表
 			gysList(e){
-				this.searchDrawData('gys',e)
+				this.searchDrawData('bp_gys',e)
 			},
 			//白坯款式编码
 			ksbmList(e){
@@ -284,7 +299,7 @@
 					field:field,
 					field_value:field_value
 				}
-				resource.searchWhiteData(arg).then(res => {
+				resource.searchDrawData(arg).then(res => {
 					if(res.data.code == 1){
 						if(field == 'bpspbm'){
 							this.bpkh_list = res.data.data;
@@ -304,10 +319,16 @@
 					this.gysxd_page = 1;
 					//供应商下单表
 					this.twoWhiteGysOrder();
+					//白坯款下单表
+					this.twoWhiteKsOrder();
+					//白坯商品编码下单表
+					this.twoWhiteBmOrder();
 				}else if(type == 'bpksbm'){
 					this.bpkxd_page = 1;
 					//白坯款下单表
 					this.twoWhiteKsOrder();
+					//白坯商品编码下单表
+					this.twoWhiteBmOrder();
 				}else if(type == 'bpspbm'){
 					this.bpspbm_page = 1;
 					//白坯商品编码下单表

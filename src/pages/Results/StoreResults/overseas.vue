@@ -15,7 +15,86 @@
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="title">海外店铺广告数据</div>
+		<div class="buts">
+			<div class="title">海外店铺日数据</div>
+			<el-button type="primary" plain size="small" @click="commitExport('daydata')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table size="small" :data="daydataData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
+			<el-table-column prop="rq" label="日期" width="120" align="center"></el-table-column>
+			<el-table-column prop="xq" label="星期" align="center"></el-table-column>
+			<el-table-column prop="rbhd" label="日本活动" align="center"></el-table-column>
+			<el-table-column prop="hd" label="活动" align="center"></el-table-column>
+			<el-table-column prop="jhfks" width="100" label="计划-访客数" align="center"></el-table-column>
+			<el-table-column prop="sjfks" width="100" label="实际-访客数" align="center"></el-table-column>
+			<el-table-column prop="jhzhl" width="100" label="计划-转化率" align="center"></el-table-column>
+			<el-table-column prop="sjzhl" width="100" label="实际-转化率" align="center"></el-table-column>
+			<el-table-column prop="jhkdj" width="100" label="计划-客单价" align="center"></el-table-column>
+			<el-table-column prop="sjkdj" width="100" label="实际-客单价" align="center"></el-table-column>
+			<el-table-column prop="jhdds" width="100" label="计划-订单数" align="center"></el-table-column>
+			<el-table-column prop="sjdds" width="100" label="实际-订单数" align="center"></el-table-column>
+			<el-table-column prop="jhgmv" width="100" label="计划-GMV" align="center"></el-table-column>
+			<el-table-column prop="sjGMV" width="100" label="实际-GMV" align="center"></el-table-column>
+			<el-table-column prop="jhzchy" width="100" label="计划-注册会员" align="center"></el-table-column>
+			<el-table-column prop="sjzchy" width="100" label="实际-注册会员" align="center"></el-table-column>
+			<el-table-column prop="dghkcb" width="100" label="单个获客成本" align="center"></el-table-column>
+			<el-table-column prop="jhINSzf" width="110" label="计划-INS涨粉数" align="center"></el-table-column>
+			<el-table-column prop="sjINSzfs" width="110" label="实际-INS涨粉数" align="center"></el-table-column>
+			<el-table-column prop="tiktokfss" width="100" label="tiktok粉丝数" align="center"></el-table-column>
+			<el-table-column prop="sjttfss" width="120" label="实际-推特粉丝数" align="center"></el-table-column>
+			<el-table-column prop="jhtgfy" width="120" label="计划-推广费用" align="center"></el-table-column>
+			<el-table-column prop="sjtgfy" width="120" label="实际-推广费用" align="center"></el-table-column>
+			<el-table-column prop="FB" label="FB" align="center"></el-table-column>
+			<el-table-column prop="Google" label="Google" align="center"></el-table-column>
+			<el-table-column prop="TWITTER" label="TWITTER" align="center"></el-table-column>
+			<el-table-column prop="yahoo" label="yahoo" align="center"></el-table-column>
+			<el-table-column prop="tiktok" label="tiktok" align="center"></el-table-column>
+			<el-table-column prop="whzscb" width="100" label="网红赠送成本" align="center"></el-table-column>
+			<el-table-column prop="jhfs" label="计划-费损" align="center"></el-table-column>
+			<el-table-column prop="sjfs" label="实际-费损" align="center"></el-table-column>
+			<el-table-column prop="jhfd" width="100" label="计划返点(5%)" align="center"></el-table-column>
+			<el-table-column prop="sjfd" width="100" label="实际返点(5%)" align="center"></el-table-column>
+			<el-table-column prop="jhwlfy" width="100" label="计划-物流费用" align="center"></el-table-column>
+			<el-table-column prop="sjwlfy" width="100" label="实际-物流费用" align="center"></el-table-column>
+			<el-table-column prop="jhyxfy" width="100" label="计划-营销费用" align="center"></el-table-column>
+			<el-table-column prop="sjyxfy" width="100" label="实际-营销费用" align="center"></el-table-column>
+			<el-table-column prop="jhyxfyzb" width="130" label="计划-营销费用占比" align="center"></el-table-column>
+			<el-table-column prop="sjyxfyzb" width="130" label="实际-营销费用占比" align="center"></el-table-column>
+			<el-table-column prop="jhROI" label="计划-ROI" align="center"></el-table-column>
+			<el-table-column prop="sjROI" label="实际-ROI" align="center"></el-table-column>
+		</el-table>
+		<div class="page">
+			<el-pagination @size-change="daydataPageSize" @current-change="daydataPage" :current-page="daydata_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="daydataData.total">
+			</el-pagination>
+		</div>
+		<div class="buts">
+			<div class="title">海外店铺销售数据</div>
+			<el-button type="primary" plain size="small" @click="commitExport('giftcard')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table size="small" :data="giftcardData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
+			<el-table-column prop="rq" label="日期" align="center"></el-table-column>
+			<el-table-column prop="zfkry" label="总付款(日元)" align="center"></el-table-column>
+			<el-table-column prop="lpkry" label="礼品卡(日元)" align="center"></el-table-column>
+			<el-table-column prop="xssrry" label="销售收入(日元)" align="center"></el-table-column>
+			<el-table-column prop="ryhl" label="日元汇率" align="center"></el-table-column>
+			<el-table-column prop="xssrrmb" label="销售收入(人民币)" align="center"></el-table-column>
+			<el-table-column prop="xyk" label="信用卡" align="center"></el-table-column>
+			<el-table-column prop="paypal" label="Paypal" align="center"></el-table-column>
+			<el-table-column prop="bld" label="便利店" align="center"></el-table-column>
+			<el-table-column prop="dds" label="订单数" align="center"></el-table-column>
+			<el-table-column prop="lpkdd" label="礼品卡订单" align="center"></el-table-column>
+			<el-table-column prop="tkds" label="退款单数" align="center"></el-table-column>
+			<el-table-column prop="tkje" label="退款金额" align="center"></el-table-column>
+		</el-table>
+		<div class="page">
+			<el-pagination @size-change="giftcardPageSize" @current-change="giftcardPage" :current-page="giftcard_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="giftcardData.total">
+			</el-pagination>
+		</div>
+		<div class="buts">
+			<div class="title">海外店铺广告数据</div>
+			<el-button type="primary" plain size="small" @click="commitExport('adv')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="small" :data="advData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
 			<el-table-column prop="rq" width="120" label="日期" align="center"></el-table-column>
@@ -77,90 +156,26 @@
 			<el-pagination @size-change="advPageSize" @current-change="advPage" :current-page="adv_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="advData.total">
 			</el-pagination>
 		</div>
-		<div class="title">海外店铺销售数据</div>
-		<el-table size="small" :data="giftcardData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="rq" label="日期" align="center"></el-table-column>
-			<el-table-column prop="zfkry" label="总付款(日元)" align="center"></el-table-column>
-			<el-table-column prop="lpkry" label="礼品卡(日元)" align="center"></el-table-column>
-			<el-table-column prop="xssrry" label="销售收入(日元)" align="center"></el-table-column>
-			<el-table-column prop="ryhl" label="日元汇率" align="center"></el-table-column>
-			<el-table-column prop="xssrrmb" label="销售收入(人民币)" align="center"></el-table-column>
-			<el-table-column prop="xyk" label="信用卡" align="center"></el-table-column>
-			<el-table-column prop="paypal" label="Paypal" align="center"></el-table-column>
-			<el-table-column prop="bld" label="便利店" align="center"></el-table-column>
-			<el-table-column prop="dds" label="订单数" align="center"></el-table-column>
-			<el-table-column prop="lpkdd" label="礼品卡订单" align="center"></el-table-column>
-			<el-table-column prop="tkds" label="退款单数" align="center"></el-table-column>
-			<el-table-column prop="tkje" label="退款金额" align="center"></el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="giftcardPageSize" @current-change="giftcardPage" :current-page="giftcard_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="giftcardData.total">
-			</el-pagination>
-		</div>
-		<div class="title">海外店铺日数据</div>
-		<el-table size="small" :data="daydataData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="rq" label="日期" width="120" align="center"></el-table-column>
-			<el-table-column prop="xq" label="星期" align="center"></el-table-column>
-			<el-table-column prop="rbhd" label="日本活动" align="center"></el-table-column>
-			<el-table-column prop="hd" label="活动" align="center"></el-table-column>
-			<el-table-column prop="jhfks" width="100" label="计划-访客数" align="center"></el-table-column>
-			<el-table-column prop="sjfks" width="100" label="实际-访客数" align="center"></el-table-column>
-			<el-table-column prop="jhzhl" width="100" label="计划-转化率" align="center"></el-table-column>
-			<el-table-column prop="sjzhl" width="100" label="实际-转化率" align="center"></el-table-column>
-			<el-table-column prop="jhkdj" width="100" label="计划-客单价" align="center"></el-table-column>
-			<el-table-column prop="sjkdj" width="100" label="实际-客单价" align="center"></el-table-column>
-			<el-table-column prop="jhdds" width="100" label="计划-订单数" align="center"></el-table-column>
-			<el-table-column prop="sjdds" width="100" label="实际-订单数" align="center"></el-table-column>
-			<el-table-column prop="jhgmv" width="100" label="计划-GMV" align="center"></el-table-column>
-			<el-table-column prop="sjGMV" width="100" label="实际-GMV" align="center"></el-table-column>
-			<el-table-column prop="jhzchy" width="100" label="计划-注册会员" align="center"></el-table-column>
-			<el-table-column prop="sjzchy" width="100" label="实际-注册会员" align="center"></el-table-column>
-			<el-table-column prop="dghkcb" width="100" label="单个获客成本" align="center"></el-table-column>
-			<el-table-column prop="jhINSzf" width="110" label="计划-INS涨粉数" align="center"></el-table-column>
-			<el-table-column prop="sjINSzfs" width="110" label="实际-INS涨粉数" align="center"></el-table-column>
-			<el-table-column prop="tiktokfss" width="100" label="tiktok粉丝数" align="center"></el-table-column>
-			<el-table-column prop="sjttfss" width="120" label="实际-推特粉丝数" align="center"></el-table-column>
-			<el-table-column prop="jhtgfy" width="120" label="计划-推广费用" align="center"></el-table-column>
-			<el-table-column prop="sjtgfy" width="120" label="实际-推广费用" align="center"></el-table-column>
-			<el-table-column prop="FB" label="FB" align="center"></el-table-column>
-			<el-table-column prop="Google" label="Google" align="center"></el-table-column>
-			<el-table-column prop="TWITTER" label="TWITTER" align="center"></el-table-column>
-			<el-table-column prop="yahoo" label="yahoo" align="center"></el-table-column>
-			<el-table-column prop="tiktok" label="tiktok" align="center"></el-table-column>
-			<el-table-column prop="whzscb" width="100" label="网红赠送成本" align="center"></el-table-column>
-			<el-table-column prop="jhfs" label="计划-费损" align="center"></el-table-column>
-			<el-table-column prop="sjfs" label="实际-费损" align="center"></el-table-column>
-			<el-table-column prop="jhfd" width="100" label="计划返点(5%)" align="center"></el-table-column>
-			<el-table-column prop="sjfd" width="100" label="实际返点(5%)" align="center"></el-table-column>
-			<el-table-column prop="jhwlfy" width="100" label="计划-物流费用" align="center"></el-table-column>
-			<el-table-column prop="sjwlfy" width="100" label="实际-物流费用" align="center"></el-table-column>
-			<el-table-column prop="jhyxfy" width="100" label="计划-营销费用" align="center"></el-table-column>
-			<el-table-column prop="sjyxfy" width="100" label="实际-营销费用" align="center"></el-table-column>
-			<el-table-column prop="jhyxfyzb" width="130" label="计划-营销费用占比" align="center"></el-table-column>
-			<el-table-column prop="sjyxfyzb" width="130" label="实际-营销费用占比" align="center"></el-table-column>
-			<el-table-column prop="jhROI" label="计划-ROI" align="center"></el-table-column>
-			<el-table-column prop="sjROI" label="实际-ROI" align="center"></el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="daydataPageSize" @current-change="daydataPage" :current-page="daydata_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="daydataData.total">
-			</el-pagination>
-		</div>
 	</div>
 </template>
 <style lang="less" scoped>
-.title{
-	font-size:14px;
-	color: #333333;
-	font-weight: bold;
+.buts{
+	display: flex;
+	justify-content: space-between;
 	margin-top: 15px;
 	margin-bottom: 15px;
+	.title{
+		font-size:14px;
+		color: #333333;
+		font-weight: bold;
+	}
 }
 </style>
 <script>
 	import resource from '../../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -319,7 +334,45 @@
 				//海外店铺日数据
 				this.overseasDaydata();
 			},
-			
+			//导出
+			commitExport(type){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						dpmc:this.dpmc_ids.join(','),
+						start_date:this.date && this.date.length> 0?this.date[0]:"",
+						end_date:this.date && this.date.length> 0?this.date[1]:""
+					}
+					if(type == 'daydata'){
+						resource.daydataExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'海外店铺日数据');
+							}
+						})
+					}else if(type == 'giftcard'){
+						resource.giftcardExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'海外店铺销售数据');
+							}
+						})
+					}else{
+						resource.advExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'海外店铺广告数据');
+							}
+						})
+					}
+					
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 		}
 	}
 </script>

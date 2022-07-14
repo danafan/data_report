@@ -14,7 +14,7 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="400px" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="bpkh" label="白坯款号" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="hgl" label="合格率" align="center"></el-table-column>
 			<el-table-column prop="creator_name" label="提交人" align="center"></el-table-column>
@@ -22,7 +22,7 @@
 			<el-table-column prop="dept_2" label="所属事业部" show-overflow-tooltip width="130" align="center" v-if="dept == 'total_table'"></el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.list.total">
 			</el-pagination>
 		</div>
 	</div>
@@ -37,7 +37,11 @@
 			return{
 				ksbm_list:[],			//白坯款式编码
 				select_ksbm_list:[],	//选中的白坯款式编码
-				dataObj:{},				//获取到的数据
+				dataObj:{
+					list:{
+						data:[]
+					}
+				},				//获取到的数据
 				page:1,
 				pagesize:10
 			}
@@ -63,7 +67,7 @@
 					field:field,
 					field_value:field_value
 				}
-				resource.searchWhiteData(arg).then(res => {
+				resource.searchWhiteHglData(arg).then(res => {
 					if(res.data.code == 1){
 						if(field == 'bpkh'){
 							this.ksbm_list = res.data.data;
