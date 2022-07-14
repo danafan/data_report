@@ -109,6 +109,10 @@
 				default:''
 			}
 		},
+		created(){
+			//获取列表
+			this.getData();
+		},
 		methods:{
 			tableCellStyle(v){
 				if((v.columnIndex == 5 && v.rowIndex == 0) || (v.columnIndex >= 0 && v.columnIndex <= 14  && v.rowIndex == 1)) {
@@ -174,7 +178,7 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoDrawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
 							this.dataObj = res.data.data;
@@ -182,8 +186,16 @@
 							this.$message.warning(res.data.msg);
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourDrawGoodsList(arg).then(res => {
+						if(res.data.code == 1){
+							this.dataObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.drawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
 							this.dataObj = res.data.data;
 						}else{
@@ -217,14 +229,20 @@
 						bpspbm:this.select_bpkh_list.join(','),
 						bpkh:this.select_ksbm_list.join(',')
 					}
-					if(this.dept == '得物项目部'){
+					if(this.dept == 'er_dept'){
 						resource.twoDrawGoodsExport(arg).then(res => {
 							if(res){
 								exportPost("\ufeff" + res.data,'烫画款商品明细');
 							}
 						})
-					}else{
+					}else if(this.dept == 'si_dept'){
 						resource.fourDrawGoodsExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'烫画款商品明细');
+							}
+						})
+					}else{
+						resource.drawGoodsExport(arg).then(res => {
 							if(res){
 								exportPost("\ufeff" + res.data,'烫画款商品明细');
 							}

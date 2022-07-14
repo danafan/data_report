@@ -46,10 +46,10 @@
 			<el-input v-model="arg_xsddh" placeholder="线上订单号"></el-input>
 		</el-form-item>
 		<el-form-item label="易快报单号：">
-			<el-input v-model="arg_ykbdh" placeholder="线上订单号"></el-input>
+			<el-input v-model="arg_ykbdh" placeholder="易快报单号"></el-input>
 		</el-form-item>
 		<el-form-item label="申请人：">
-			<el-input v-model="arg_apply_user_name" placeholder="线上订单号"></el-input>
+			<el-input v-model="arg_apply_user_name" placeholder="申请人"></el-input>
 		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>

@@ -1,23 +1,11 @@
 <template>
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
-			<!-- <el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<Bpcgxd dept="得物项目部" v-if="item.web_url == 'bpcgxd'"/>
-				<Thkspmx dept="得物项目部" v-if="item.web_url == 'thkspmx'"/>
-				<ZxbpThdzb dept="得物项目部" v-if="item.web_url == 'zxbp_thdzb'"/>
-				<Zxbphgl dept="得物项目部" v-if="item.web_url == 'zxbphgl'"/>
-			</el-tab-pane> -->
-			<el-tab-pane label="白坯采购下单" lazy name="bpcgxd" class="tab_pane_box">
-				<Bpcgxd dept="得物项目部"/>
-			</el-tab-pane>
-			<el-tab-pane label="烫画款商品明细表" lazy name="thkspmx" class="tab_pane_box">
-				<Thkspmx dept="得物项目部"/>
-			</el-tab-pane>
-			<el-tab-pane label="最新白坯-烫画对照表" lazy name="zxbp_thdzb" class="tab_pane_box">
-				<ZxbpThdzb dept="得物项目部"/>
-			</el-tab-pane>
-			<el-tab-pane label="最新白坯合格率" lazy name="zxbphgl" class="tab_pane_box">
-				<Zxbphgl dept="得物项目部"/>
+			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+				<Bpcgxd dept="total_table" v-if="item.web_url == 'bpcgxd'"/>
+				<Thkspmx dept="total_table" v-if="item.web_url == 'thkspmx'"/>
+				<ZxbpThdzb dept="total_table" v-if="item.web_url == 'zxbp_thdzb'"/>
+				<Zxbphgl dept="total_table" v-if="item.web_url == 'zxbphgl'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

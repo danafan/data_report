@@ -2,7 +2,7 @@
 	<div>
 		<div class="title">每日下单采购汇总</div>
 		<el-table size="small" :data="totalObj.data" tooltip-effect="dark" style="width: 100%" max-height="400px" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="bp_gyshh" label="所属事业部" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="dept_2" label="所属事业部" show-overflow-tooltip width="130" align="center" v-if="dept == 'total_table'"></el-table-column>
 			<el-table-column prop="rq" label="日期" width="100" align="center"></el-table-column>
 			<el-table-column prop="bpkh_num" label="今日白坯数量" width="130" align="center"></el-table-column>
 			<el-table-column prop="th_num" label="对应烫画款数量" width="120" align="center"></el-table-column>
@@ -229,7 +229,7 @@
 					page:this.total_page,
 					pagesize:this.total_pagesize
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoOrderTotalNum(arg).then(res => {
 						if(res.data.code == 1){
 							this.totalObj = res.data.data;
@@ -237,8 +237,16 @@
 							this.$message.warning(res.data.msg);
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourOrderTotalNum(arg).then(res => {
+						if(res.data.code == 1){
+							this.totalObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.orderTotalNum().then(res => {
 						if(res.data.code == 1){
 							this.totalObj = res.data.data;
 						}else{
@@ -314,7 +322,7 @@
 					page:this.gysxd_page,
 					pagesize:this.gysxd_pagesize
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoWhiteGysOrder(arg).then(res => {
 						if(res.data.code == 1){
 							this.gysxdObj = res.data.data;
@@ -322,8 +330,16 @@
 							this.$message.warning(res.data.msg);
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteGysOrder(arg).then(res => {
+						if(res.data.code == 1){
+							this.gysxdObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.whiteGysOrder(arg).then(res => {
 						if(res.data.code == 1){
 							this.gysxdObj = res.data.data;
 						}else{
@@ -338,14 +354,20 @@
 					creat_rq:this.creat_rq,
 					bp_gys:this.select_gys_list.join(',')
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoWhiteGysOrderExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,'供应商下单表');
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteGysOrderExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'供应商下单表');
+						}
+					})
+				}else{
+					resource.whiteGysOrderExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,'供应商下单表');
 						}
@@ -382,7 +404,7 @@
 					page:this.bpkxd_page,
 					pagesize:this.bpkxd_pagesize
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoWhiteKsOrder(arg).then(res => {
 						if(res.data.code == 1){
 							this.bpkxdObj = res.data.data;
@@ -390,8 +412,16 @@
 							this.$message.warning(res.data.msg);
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteKsOrder(arg).then(res => {
+						if(res.data.code == 1){
+							this.bpkxdObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.whiteKsOrder(arg).then(res => {
 						if(res.data.code == 1){
 							this.bpkxdObj = res.data.data;
 						}else{
@@ -407,14 +437,20 @@
 					bp_gys:this.select_gys_list.join(','),
 					bpkh:this.select_ksbm_list.join(',')
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoWhiteKsOrderExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,'白坯款式下单表');
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteKsOrderExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'白坯款式下单表');
+						}
+					})
+				}else{
+					resource.whiteKsOrderExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,'白坯款式下单表');
 						}
@@ -452,7 +488,7 @@
 					page:this.bpspbm_page,
 					pagesize:this.bpspbm_pagesize
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoWhiteBmOrder(arg).then(res => {
 						if(res.data.code == 1){
 							this.bpspbmObj = res.data.data;
@@ -460,8 +496,16 @@
 							this.$message.warning(res.data.msg);
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteBmOrder(arg).then(res => {
+						if(res.data.code == 1){
+							this.bpspbmObj = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					resource.whiteBmOrder(arg).then(res => {
 						if(res.data.code == 1){
 							this.bpspbmObj = res.data.data;
 						}else{
@@ -499,14 +543,20 @@
 					bpkh:this.select_ksbm_list.join(','),
 					bpspbm:this.select_bpkh_list.join(',')
 				}
-				if(this.dept == '得物项目部'){
+				if(this.dept == 'er_dept'){
 					resource.twoWhiteBmOrderExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,'白坯款商品编码下单表');
 						}
 					})
-				}else{
+				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteBmOrderExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'白坯款商品编码下单表');
+						}
+					})
+				}else{
+					resource.whiteBmOrderExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,'白坯款商品编码下单表');
 						}

@@ -2,9 +2,10 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<ThkbhsjTotal v-if="item.web_url == 'thkbhsj_total'"/>
-				<ThkspbmTotal v-if="item.web_url == 'thkspbm_total'"/>
-				<BpkspbmTotal v-if="item.web_url == 'bpkspbm_total'"/>
+				<Bpcgxd dept="total_table" v-if="item.web_url == 'bpcgxd'"/>
+				<Thkspmx dept="total_table" v-if="item.web_url == 'thkspmx'"/>
+				<ZxbpThdzb dept="total_table" v-if="item.web_url == 'zxbp_thdzb'"/>
+				<Zxbphgl dept="total_table" v-if="item.web_url == 'zxbphgl'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -15,9 +16,10 @@
 }
 </style>
 <script>
-	import ThkbhsjTotal from './purchasePages/thkbhsj_total.vue'
-	import ThkspbmTotal from './purchasePages/thkspbm_total.vue'
-	import BpkspbmTotal from './purchasePages/bpkspbm_total.vue'
+	import Bpcgxd from './common_tabs/bpcgxd.vue'
+	import Thkspmx from './common_tabs/thkspmx.vue'
+	import ZxbpThdzb from './common_tabs/zxbp_thdzb.vue'
+	import Zxbphgl from './common_tabs/zxbphgl.vue'
 	export default{
 		data(){
 			return{
@@ -56,9 +58,10 @@
 			}
 		},
 		components:{
-			ThkbhsjTotal,
-			ThkspbmTotal,
-			BpkspbmTotal
+			Bpcgxd,
+			Thkspmx,
+			ZxbpThdzb,
+			Zxbphgl
 		}
 	}
 </script>
