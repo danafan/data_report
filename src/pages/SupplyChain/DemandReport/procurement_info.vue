@@ -54,8 +54,11 @@
 					{{detail_info.without_describe}}
 				</div>
 				<el-form-item label="特殊要求：">
-					{{detail_info.is_special == '1'?'是':'否'}}
-					{{detail_info.is_special == '1'?'：' + detail_info.special_content:''}}
+					<div class="remark">
+						{{detail_info.is_special == '1'?'是':'否'}}
+						{{detail_info.is_special == '1'?'：' + detail_info.special_content:''}}
+					</div>
+					
 				</el-form-item>
 				<el-form-item label="销售价格区间：">
 					{{detail_info.sale_min_price}}-{{detail_info.sale_max_price}}
@@ -218,6 +221,8 @@
 			}
 		}
 		.remark{
+			width: 500px;
+			word-wrap:break-word;
 			margin-bottom: 10px;
 			font-size: 14px;
 			color:#333333;

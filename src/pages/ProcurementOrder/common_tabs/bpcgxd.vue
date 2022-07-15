@@ -3,23 +3,23 @@
 		<div class="title">每日下单采购汇总</div>
 		<el-table size="small" :data="totalObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_2" label="所属事业部" show-overflow-tooltip width="130" align="center" v-if="dept == 'total_table'"></el-table-column>
-			<el-table-column prop="rq" label="日期" width="100" align="center"></el-table-column>
-			<el-table-column prop="bpkh_num" label="今日白坯数量" width="130" align="center"></el-table-column>
-			<el-table-column prop="th_num" label="对应烫画款数量" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_yes_xssl" label="烫画款日销" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_3_xssl" label="烫画款3日销" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_week_xssl" label="烫画款周销" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_kys" label="烫画款可用数" width="100" align="center"></el-table-column>
-			<el-table-column prop="th_xjcw_stock" label="烫画款箱及仓位库存" width="130" align="center"></el-table-column>
-			<el-table-column prop="th_out_of_stock" label="烫画款缺货汇总" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_cgzt" label="烫画款采购在途数" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_jhc_stock" label="烫画款进货仓库存" width="120" align="center">
+			<el-table-column prop="rq" label="日期" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="bpkh_num" label="今日白坯数量" show-overflow-tooltip width="130" align="center"></el-table-column>
+			<el-table-column prop="th_num" label="对应烫画款数量" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_yes_xssl" label="烫画款日销" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_3_xssl" label="烫画款3日销" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_week_xssl" label="烫画款周销" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_kys" label="烫画款可用数" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="th_xjcw_stock" label="烫画款箱及仓位库存" show-overflow-tooltip width="130" align="center"></el-table-column>
+			<el-table-column prop="th_out_of_stock" label="烫画款缺货汇总" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_cgzt" label="烫画款采购在途数" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_jhc_stock" label="烫画款进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="jy_purchase" label="今天下单量" width="120" align="center">
+			<el-table-column prop="jy_purchase" label="今天下单量" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_jhc_stock" label="今天到仓量" width="120" align="center">
+			<el-table-column prop="bp_jhc_stock" label="今天到仓量" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_cgzt" label="在途量" width="120" align="center">
+			<el-table-column prop="bp_cgzt" label="在途量" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -48,26 +48,26 @@
 		</div>
 		<el-table size="small" :data="gysxdObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="gysxdCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="bpkh_num" label="白坯款数" width="100" align="center"></el-table-column>
-			<el-table-column prop="th_num" label="烫画款数" width="130" align="center"></el-table-column>
-			<el-table-column prop="th_week_sale" label="烫画周销" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_xjcw_stock" label="烫画箱及仓位库存" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_kys" label="烫画可用数" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_out_of_stock" label="烫画缺货情况" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_cgzt" label="烫画采购在途" width="100" align="center"></el-table-column>
-			<el-table-column prop="th_jhc_stock" label="烫画款进货仓库存" width="120" align="center">
+			<el-table-column prop="bpkh_num" label="白坯款数" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="th_num" label="烫画款数" show-overflow-tooltip width="130" align="center"></el-table-column>
+			<el-table-column prop="th_week_sale" label="烫画周销" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_xjcw_stock" label="烫画箱及仓位库存" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_kys" label="烫画可用数" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_out_of_stock" label="烫画缺货情况" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_cgzt" label="烫画采购在途" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="th_jhc_stock" label="烫画款进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" width="120" align="center">
+			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_kys" label="白坯可用数" width="120" align="center">
+			<el-table-column prop="bp_kys" label="白坯可用数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_cgzt" label="白坯采购在途" width="120" align="center">
+			<el-table-column prop="bp_cgzt" label="白坯采购在途" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" width="120" align="center">
+			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_hgl" label="白坯合格率" width="120" align="center">
+			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="jy_purchase" label="白坯建议采购数" width="120" align="center">
+			<el-table-column prop="jy_purchase" label="白坯建议采购数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -92,30 +92,30 @@
 		</div>
 		<el-table size="small" :data="bpkxdObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="bpkxdCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="bpkh" label="白坯款式编码" width="100" align="center"></el-table-column>
-			<el-table-column prop="cpfl" label="白坯品类" width="130" align="center"></el-table-column>
-			<el-table-column prop="bp_spbm_num" label="白坯商品编码款数" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_num" label="烫画款数" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_week_sale" label="烫画周销" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_xjcw_stock" label="烫画箱及仓位库存" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_kys" label="烫画可用数" width="100" align="center"></el-table-column>
-			<el-table-column prop="th_out_of_stock" label="烫画缺货情况" width="120" align="center">
+			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="cpfl" label="白坯品类" show-overflow-tooltip width="130" align="center"></el-table-column>
+			<el-table-column prop="bp_spbm_num" label="白坯商品编码款数" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_num" label="烫画款数" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_week_sale" label="烫画周销" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_xjcw_stock" label="烫画箱及仓位库存" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_kys" label="烫画可用数" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="th_out_of_stock" label="烫画缺货情况" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="th_cgzt" label="烫画采购在途" width="120" align="center">
+			<el-table-column prop="th_cgzt" label="烫画采购在途" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="th_jhc_stock" label="烫画进货仓库存" width="120" align="center">
+			<el-table-column prop="th_jhc_stock" label="烫画进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" width="120" align="center">
+			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_kys" label="白坯可用数" width="120" align="center">
+			<el-table-column prop="bp_kys" label="白坯可用数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_cgzt" label="白坯采购在途" width="120" align="center">
+			<el-table-column prop="bp_cgzt" label="白坯采购在途" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" width="120" align="center">
+			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_hgl" label="白坯合格率" width="120" align="center">
+			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="jy_purchase" label="白坯建议采购数" width="120" align="center">
+			<el-table-column prop="jy_purchase" label="白坯建议采购数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -140,39 +140,39 @@
 		</div>
 		<el-table size="small" :data="bpspbmObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="bpspbmCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="bpkh" label="白坯款式编码" width="100" align="center"></el-table-column>
-			<el-table-column prop="bpspbm" label="白坯商品编码" width="130" align="center"></el-table-column>
-			<el-table-column prop="cpfl" label="白坯品类" width="120" align="center"></el-table-column>
-			<el-table-column label="白坯颜色规格" width="120" align="center">
+			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="bpspbm" label="白坯商品编码" show-overflow-tooltip width="130" align="center"></el-table-column>
+			<el-table-column prop="cpfl" label="白坯品类" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column label="白坯颜色规格" show-overflow-tooltip width="120" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.bp_color}}/{{scope.row.bp_size}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="th_num" label="烫画款数" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_week_sale" label="烫画款周销" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_xjcw_stock" label="烫画箱及仓位库存" width="120" align="center"></el-table-column>
-			<el-table-column prop="th_kys" label="烫画可用数" width="100" align="center"></el-table-column>
-			<el-table-column prop="th_out_of_stock" label="烫画缺货情况" width="120" align="center">
+			<el-table-column prop="th_num" label="烫画款数" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="th_week_sale" show-overflow-tooltip label="烫画款周销" width="120" align="center"></el-table-column>
+			<el-table-column prop="th_xjcw_stock" show-overflow-tooltip label="烫画箱及仓位库存" width="120" align="center"></el-table-column>
+			<el-table-column prop="th_kys" label="烫画可用数" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="th_out_of_stock" label="烫画缺货情况" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="th_cgzt" label="烫画采购在途" width="120" align="center">
+			<el-table-column prop="th_cgzt" label="烫画采购在途" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="th_jhc_stock" label="烫画进货仓库存" width="120" align="center">
+			<el-table-column prop="th_jhc_stock" label="烫画进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" width="120" align="center">
+			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_kys" label="白坯可用数" width="120" align="center">
+			<el-table-column prop="bp_kys" label="白坯可用数" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="bp_cgzt" label="白坯采购在途" width="120" align="center">
+			<el-table-column prop="bp_cgzt" label="白坯采购在途" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
-			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" width="120" align="center">
+			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="jy_purchase" label="白坯建议采购数" width="120" align="center">
+			<el-table-column prop="jy_purchase" label="白坯建议采购数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_hgl" label="白坯合格率" width="120" align="center">
+			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="bpspbmPageSize" @current-change="bpspbmPage" :current-page="bpspbm_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="bpkxdObj.list.total">
+			<el-pagination @size-change="bpspbmPageSize" @current-change="bpspbmPage" :current-page="bpspbm_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="bpspbmObj.list.total">
 			</el-pagination>
 		</div>
 	</div>
@@ -305,7 +305,7 @@
 							this.bpkh_list = res.data.data;
 						}else if(field == 'bpkh'){
 							this.ksbm_list = res.data.data;
-						}else if(field == 'gys'){
+						}else if(field == 'bp_gys'){
 							this.gys_list = res.data.data;
 						}
 					}else{

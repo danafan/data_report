@@ -38,42 +38,42 @@
 		</div>
 		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="tableCellStyle">
 			<el-table-column prop="bp_gys" label="白坯供应商款号" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="bpkh" label="白坯款式编码" width="100" align="center"></el-table-column>
-			<el-table-column prop="bpspbm" label="白坯款商品编码" width="130" align="center"></el-table-column>
-			<el-table-column prop="bp_color" label="白坯颜色" width="120" align="center"></el-table-column>
-			<el-table-column prop="bp_size" label="白坯尺码" width="120" align="center"></el-table-column>
+			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="100" align="center"></el-table-column>
+			<el-table-column prop="bpspbm" label="白坯款商品编码" show-overflow-tooltip width="130" align="center"></el-table-column>
+			<el-table-column prop="bp_color" label="白坯颜色" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column prop="bp_size" label="白坯尺码" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column label="烫画款" align="center">
-				<el-table-column prop="thkh" label="烫画款式编码" width="120" align="center"></el-table-column>
-				<el-table-column prop="thspbm" label="商品编码" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_gys" label="供应商" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_gyshh" label="供应商款号" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_color" label="颜色" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_size" label="尺码" width="120" align="center"></el-table-column>
-				<el-table-column prop="thr_xssl" label="三天前销量" width="120" align="center"></el-table-column>
-				<el-table-column prop="scd_xssl" label="两天前销量" width="120" align="center"></el-table-column>
-				<el-table-column prop="yes_xssl" label="一天前销量" width="120" align="center"></el-table-column>
-				<el-table-column prop="3_xssl" label="三天销量" width="120" align="center"></el-table-column>
-				<el-table-column prop="7_xssl" label="七天销量" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_xjcw_stock" label="箱及仓位库存" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_kys" label="可用数" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_cgzt" label="采购在途" width="120" align="center"></el-table-column>
-				<el-table-column prop="th_jhc_stock" label="进货仓库存" width="120" align="center"></el-table-column>
+				<el-table-column prop="thkh" label="烫画款式编码" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="thspbm" label="商品编码" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_gys" label="供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_gyshh" label="供应商款号" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_color" label="颜色" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_size" label="尺码" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="thr_xssl" label="三天前销量" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="scd_xssl" label="两天前销量" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="yes_xssl" label="一天前销量" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="3_xssl" label="三天销量" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="7_xssl" label="七天销量" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_xjcw_stock" label="箱及仓位库存" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_kys" label="可用数" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_cgzt" label="采购在途" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="th_jhc_stock" label="进货仓库存" show-overflow-tooltip width="120" align="center"></el-table-column>
 			</el-table-column>
 			<el-table-column label="白坯款" align="center">
-				<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_kys" label="可用数" width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_cgzt" label="采购在途" width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_jhc_stock" label="进货仓库存" width="120" align="center"></el-table-column>
-				<el-table-column prop="min_qty" label="安全库存" width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_hgl" label="白坯合格率" width="120" align="center"></el-table-column>
+				<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="bp_kys" label="可用数" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="bp_cgzt" label="采购在途" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="bp_jhc_stock" label="进货仓库存" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="min_qty" label="安全库存" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center"></el-table-column>
 			</el-table-column>
-			<el-table-column prop="th_stock_up" label="是否备货" width="120" align="center"></el-table-column>
-			<el-table-column label="有无对照白坯款" width="120" align="center">
+			<el-table-column prop="th_stock_up" label="是否备货" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column label="有无对照白坯款" width="120" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.is_bp=='1'?'无':'有'}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="fut_rate" label="售后退货率" width="120" align="center"></el-table-column>
+			<el-table-column prop="fut_rate" label="售后退货率" show-overflow-tooltip width="120" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.list.total">
