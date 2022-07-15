@@ -16,7 +16,11 @@
 		</div>
 		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="bpkh" label="白坯款号" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="hgl" label="合格率" align="center"></el-table-column>
+			<el-table-column prop="hgl" label="合格率" align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.hgl">{{scope.row.hgl}}%</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="creator_name" label="提交人" align="center"></el-table-column>
 			<el-table-column prop="add_time" label="提交时间" align="center"></el-table-column>
 			<el-table-column prop="dept_2" label="所属事业部" show-overflow-tooltip width="130" align="center" v-if="dept == 'total_table'"></el-table-column>

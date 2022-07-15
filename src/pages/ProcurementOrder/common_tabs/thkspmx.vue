@@ -65,7 +65,11 @@
 				<el-table-column prop="bp_cgzt" label="采购在途" show-overflow-tooltip width="120" align="center"></el-table-column>
 				<el-table-column prop="bp_jhc_stock" label="进货仓库存" show-overflow-tooltip width="120" align="center"></el-table-column>
 				<el-table-column prop="min_qty" label="安全库存" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
+					<template slot-scope="scope">
+						<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
+					</template>
+				</el-table-column>
 			</el-table-column>
 			<el-table-column prop="th_stock_up" label="是否备货" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column label="有无对照白坯款" width="120" show-overflow-tooltip align="center">
@@ -73,7 +77,11 @@
 					<div>{{scope.row.is_bp=='1'?'无':'有'}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="fut_rate" label="售后退货率" show-overflow-tooltip width="120" align="center"></el-table-column>
+			<el-table-column label="售后退货率" show-overflow-tooltip width="120" align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.fut_rate">{{scope.row.fut_rate}}%</div>
+				</template>
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.list.total">
@@ -102,17 +110,17 @@
 					list:{
 						data:[]
 					}},				//获取到的数据
-				page:1,
-				pagesize:10
-			}
-		},
-		props:{
-			dept:{
-				type:String,
-				default:''
-			}
-		},
-		created(){
+					page:1,
+					pagesize:10
+				}
+			},
+			props:{
+				dept:{
+					type:String,
+					default:''
+				}
+			},
+			created(){
 			//获取列表
 			this.getData();
 		},

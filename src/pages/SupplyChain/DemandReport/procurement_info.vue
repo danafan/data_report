@@ -3,7 +3,8 @@
 		<el-button type="primary" plain size='mini' icon="el-icon-arrow-left" @click="$router.go(-1)">返回</el-button>
 		<div class="form_content">
 			<div class="page_title">运营外采信息</div>
-			<el-form size="small" class="form_box">
+			<div class="form_box">
+			<el-form size="small">
 				<el-form-item label="提报日期：">
 					{{detail_info.create_time}}
 				</el-form-item>
@@ -124,6 +125,7 @@
 					</div>
 				</div>
 			</el-form>
+			</div>
 		</div>
 	</div>
 </template>
@@ -206,8 +208,10 @@
 		color: #333333;
 	}
 	.form_box{
-		max-height: 700px;
-		width: 500px;
+		display: flex;
+		justify-content: center;
+		height: 720px;
+		width: 100%;
 		overflow-y: scroll;
 		.img_list{
 			margin-bottom: 10px;

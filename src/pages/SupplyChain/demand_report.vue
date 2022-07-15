@@ -35,7 +35,7 @@
 				<el-button type="primary" plain size="small" @click="$router.push('/created_demand')" v-if="button_list.add == 1">新建<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
+		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
 			<el-table-column type="selection" width="55" fixed="left" :selectable="selectFn" v-if="button_list.handle == 1"></el-table-column>
 			<el-table-column label="操作" align="center" width="120" fixed="left">
 				<template slot-scope="scope">
@@ -68,7 +68,7 @@
 			</el-table-column>
 			<el-table-column prop="without_link" label="参考店铺链接" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column label="参看店铺图片" align="center" width="180">
+			<el-table-column label="参考店铺图片" align="center" width="180">
 				<template slot-scope="scope">
 					<el-image fit="cover" style="width: 160px; height: 80px" :src="scope.row.without_image[0]" :preview-src-list="scope.row.without_image" v-if="scope.row.without_image.length > 0">
 					</el-image>
@@ -202,12 +202,33 @@
 			}
 		},
 		created(){
+			
+		},
+		beforeRouteLeave(to,from,next){
+			console.log(to)
+			if(to.path == '/procurement_info' || (to.path == '/created_demand' && to.query.id)){	
+				from.meta.isUseCache = true;
+			}else{
+				from.meta.isUseCache = false;
+			}
+			next();
+		},
+		activated(){
+			if(!this.$route.meta.isUseCache){
+				this.select_store_ids = [];
+				this.select_tbr_ids = [];
+				this.tb_date = [];
+				this.status = "";
+				this.page = 1;
+				this.pagesize = 10;
+			}
 			//获取店铺列表
 			this.getStoreList();
 			//获取提报人列表
 			this.searchList({field:"create_name"});
 			//获取列表数据
 			this.getData();
+			this.$route.meta.isUseCache = false;
 		},
 		methods:{
 			//获取店铺列表

@@ -3,9 +3,10 @@
 		<el-button type="primary" plain size='mini' icon="el-icon-arrow-left" @click="$router.go(-1)">返回</el-button>
 		<div class="form_content">
 			<div class="page_title">{{this.id?'编辑':'新建'}}外采需求</div>
-			<el-form size="small" class="form_box">
+			<div class="form_box">
+			<el-form size="small">
 				<el-form-item label="店铺：" required>
-					<el-select v-model="store_code" clearable :popper-append-to-body="false" placeholder="全部">
+					<el-select v-model="store_code" clearable filterable :popper-append-to-body="false" placeholder="全部">
 						<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 						</el-option>
 					</el-select>
@@ -77,7 +78,7 @@
 				:rows="7"
 				v-model="tsyq_remark"
 				maxlength="100"
-				show-word-limit v-if="tsyq == '1'"></el-input>
+				show-word-limit v-if="tsyq == 1"></el-input>
 				<el-form-item label="销售价格区间：" required>
 					<el-input style="width:100px" type="number" v-model="xsjg_start"></el-input>
 					~
@@ -120,7 +121,7 @@
 					</el-date-picker>
 				</el-form-item>
 			</el-form>
-
+			</div>
 			<el-button size="small" type="primary" @click="save">保存</el-button>
 		</div>
 	</div>
@@ -230,7 +231,7 @@
 						})
 						this.bmgy_remark = info.version_describe;
 						this.tsyq = info.is_special;
-						this.tsyq_remark = info.special_content;
+						this.tsyq_remark = !info.special_content?'':info.special_content;
 						this.xsjg_start = info.sale_min_price;
 						this.xsjg_end = info.sale_max_price;
 						this.cb_start = info.min_price;
@@ -323,7 +324,7 @@
 					return;
 				}
 				//特殊要求说明
-				if(this.tsyq == '1' && this.tsyq_remark == ''){
+				if(this.tsyq == 1 && this.tsyq_remark == ''){
 					this.$message.warning('请输入特殊要求说明');
 					return;
 				}
@@ -450,8 +451,10 @@
 		color: #333333;
 	}
 	.form_box{
-		max-height: 700px;
-		width: 500px;
+		display: flex;
+		justify-content: center;
+		height: 720px;
+		width: 100%;
 		overflow-y: scroll;
 		.img_list{
 			margin-bottom: 10px;

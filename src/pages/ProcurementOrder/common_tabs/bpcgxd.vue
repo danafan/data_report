@@ -65,7 +65,10 @@
 			</el-table-column>
 			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
+			<el-table-column label="白坯合格率" show-overflow-tooltip width="120" align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
+				</template>
 			</el-table-column>
 			<el-table-column prop="jy_purchase" label="白坯建议采购数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
@@ -113,7 +116,10 @@
 			</el-table-column>
 			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
+			<el-table-column label="白坯合格率" show-overflow-tooltip width="120" align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
+				</template>
 			</el-table-column>
 			<el-table-column prop="jy_purchase" label="白坯建议采购数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
@@ -168,7 +174,10 @@
 			</el-table-column>
 			<el-table-column prop="jy_purchase" label="白坯建议采购数" show-overflow-tooltip width="120" align="center">
 			</el-table-column>
-			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
+			<el-table-column label="白坯合格率" show-overflow-tooltip width="120" align="center">
+				<template slot-scope="scope">
+					<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
+				</template>
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -261,7 +270,7 @@
 						}
 					})
 				}else{
-					resource.orderTotalNum().then(res => {
+					resource.orderTotalNum(arg).then(res => {
 						if(res.data.code == 1){
 							this.totalObj = res.data.data;
 						}else{

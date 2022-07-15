@@ -19,6 +19,10 @@ let path = {
 	ksSalenumExport:'operate/ks_salenum_export',	//款式销量排行导出
 	getKsOutstock:'operate/get_ks_outstock',		//款式缺货排行
 	ksOutstockExport:'operate/ks_outstock_export',	//款式缺货排行导出
+	selectType:'operate/select_type',				//查询条件列表
+	operateIndex:'operate/index',					//商品品类列表
+	operateEdit:'operate/edit',						//商品品类编辑
+	operateExport:'operate/export',					//商品品类列表导出
 }						
 export default{
 	//获取款式编码
@@ -96,6 +100,22 @@ export default{
 	//款式缺货排行导出
 	ksOutstockExport(params){
 		return http.post(path.ksOutstockExport, params)
+	},
+	//查询条件列表
+	selectType(params){
+		return http.get(path.selectType, params)
+	},
+	//商品品类列表
+	operateIndex(params){
+		return http.get(path.operateIndex, params)
+	},
+	//商品品类编辑
+	operateEdit(params){
+		return http.post(path.operateEdit, params)
+	},
+	//商品品类列表导出
+	operateExport(params){
+		return http.get(path.operateExport, params)
 	},
 }
 

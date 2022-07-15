@@ -37,6 +37,7 @@ const store_info = resolve=>require(['@/pages/StoreInfo/store_info'],resolve)
 const new_data = resolve=>require(['@/pages/Operations/GoodsInfo/new_data'],resolve)    //上新数据
 const delivery_data = resolve=>require(['@/pages/Operations/GoodsInfo/delivery_data'],resolve)    //发货数据
 const operations_data_analysis = resolve=>require(['@/pages/Operations/operations_data_analysis'],resolve)    //发货数据
+const goods_cate = resolve=>require(['@/pages/Operations/GoodsInfo/goods_cate'],resolve)    //商品品类
 //目标销售额管理
 const store_sales_forecast = resolve=>require(['@/pages/TargetSales/storeSalesForecast/store_sales_forecast'],resolve)   //店长销售收入预估表
 const create_target = resolve=>require(['@/pages/TargetSales/storeSalesForecast/create_target'],resolve)   //店铺填报
@@ -97,6 +98,7 @@ const router = new Router({
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},
     { path: '/operations_data_analysis',name:"运营中心数据分析", component: operations_data_analysis},
+    { path: '/goods_cate',name:"商品分类", component: goods_cate},
     { path: '/supplier_ranking',name:"供应商排行", component: supplier_ranking},
     { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
         isUseCache:false,
@@ -137,7 +139,10 @@ const router = new Router({
     { path: '/er_dept',name:"得物采购下单（二部）", component: er_dept},
     { path: '/si_dept',name:"得物采购下单（四部）", component: si_dept},
     { path: '/purchase_summary',name:"得物采购报货", component: purchase_summary},
-    { path: '/demand_report',name:"运营需求报表", component: demand_report},
+    { path: '/demand_report',name:"运营需求报表", meta:{
+        isUseCache:false,
+        keepAlive:true
+    }, component: demand_report},
     { path: '/created_demand',name:"新建外采需求", component: created_demand},
     { path: '/procurement_info',name:"运营外采信息", component: procurement_info},
     ]
