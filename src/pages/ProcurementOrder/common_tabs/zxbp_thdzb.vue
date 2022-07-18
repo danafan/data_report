@@ -40,7 +40,7 @@
 		</div>
 		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="gyshh" label="烫画款供应商款号" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="thkh" label="烫画款号" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="thkh" label="烫画款号" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thspbm" label="烫画商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column label="烫画款颜色规格" width="120" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
@@ -48,7 +48,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="bp_gyshh" label="白坯款供应商款号" width="140" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="bpkh" label="白坯款号" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="bpkh" label="白坯款号" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cpfl" label="白坯分类" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column label="白坯款颜色规格" width="120" show-overflow-tooltip align="center">
@@ -63,7 +63,7 @@
 			</el-table-column>
 			<el-table-column prop="creator_name" label="提交人" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="add_time" label="提交时间" show-overflow-tooltip width="160" align="center"></el-table-column>
-			<el-table-column prop="dept_2" label="所属事业部" show-overflow-tooltip align="center" v-if="dept == 'total_table'"></el-table-column>
+			<el-table-column prop="dept_2" label="所属事业部" width="120" show-overflow-tooltip align="center" v-if="dept == 'total_table'"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.list.total">

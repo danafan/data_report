@@ -170,6 +170,12 @@
 			//查询条件列表
 			this.selectType();
 		},
+		watch:{
+			// 处理款号批量查询
+			code:function(n,o){
+				this.code = n.replaceAll(' ',',');
+			}
+		},
 		methods:{
 			//图片放大
 			bigImg(big_img_url){

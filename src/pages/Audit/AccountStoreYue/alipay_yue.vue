@@ -2,13 +2,13 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="支付宝账号：">
-				<el-select v-model="select_zfb_ids" clearable :popper-append-to-body="false" multiple filterable reserve-keyword placeholder="请选择支付宝账号" collapse-tags>
+				<el-select v-model="select_zfb_ids" clearable multiple filterable reserve-keyword placeholder="请选择支付宝账号" collapse-tags>
 					<el-option v-for="item in zfb_list" :key="item.id" :label="item.alipay_name" :value="item.id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="日期：">
-				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -73,7 +73,9 @@
 				date:[],					//日期
 				page:1,
 				pagesize:10,				
-				dataObj:{},					
+				dataObj:{
+					data:{}
+				},					
 			}
 		},
 		created(){
@@ -102,8 +104,8 @@
 			//支付宝账单
 			alipayBill(){
 				let arg = {
-					start_time:this.date && this.date.length> 0?this.date[0]:"",
-					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					start_date:this.date && this.date.length> 0?this.date[0]:"",
+					end_date:this.date && this.date.length> 0?this.date[1]:"",
 					alipay_account_id:this.select_zfb_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize
@@ -136,8 +138,8 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						start_time:this.date && this.date.length> 0?this.date[0]:"",
-						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						start_date:this.date && this.date.length> 0?this.date[0]:"",
+						end_date:this.date && this.date.length> 0?this.date[1]:"",
 						alipay_account_id:this.select_zfb_ids.join(',')
 					}
 					resource.alipayBillExport(arg).then(res => {

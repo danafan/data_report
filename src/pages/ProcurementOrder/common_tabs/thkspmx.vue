@@ -36,48 +36,48 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="tableCellStyle">
-			<el-table-column prop="bp_gys" label="白坯供应商款号" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="100" align="center"></el-table-column>
-			<el-table-column prop="bpspbm" label="白坯款商品编码" show-overflow-tooltip width="130" align="center"></el-table-column>
-			<el-table-column prop="bp_color" label="白坯颜色" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="bp_size" label="白坯尺码" show-overflow-tooltip width="120" align="center"></el-table-column>
+		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="tableCellStyle" @sort-change='sortChange'>
+			<el-table-column prop="bp_gys" label="白坯供应商款号" show-overflow-tooltip width="130" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="bpspbm" label="白坯款商品编码" show-overflow-tooltip width="130" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="bp_color" label="白坯颜色" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="bp_size" label="白坯尺码" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
 			<el-table-column label="烫画款" align="center">
-				<el-table-column prop="thkh" label="烫画款式编码" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="thspbm" label="商品编码" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_gys" label="供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_gyshh" label="供应商款号" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_color" label="颜色" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_size" label="尺码" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="thr_xssl" label="三天前销量" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="scd_xssl" label="两天前销量" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="yes_xssl" label="一天前销量" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="3_xssl" label="三天销量" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="7_xssl" label="七天销量" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_xjcw_stock" label="箱及仓位库存" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_kys" label="可用数" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_cgzt" label="采购在途" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="th_jhc_stock" label="进货仓库存" show-overflow-tooltip width="120" align="center"></el-table-column>
+				<el-table-column prop="thkh" label="烫画款式编码" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="thspbm" label="商品编码" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_gys" label="供应商" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_gyshh" label="供应商款号" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_color" label="颜色" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_size" label="尺码" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="thr_xssl" label="三天前销量" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="scd_xssl" label="两天前销量" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="yes_xssl" label="一天前销量" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="3_xssl" label="三天销量" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="7_xssl" label="七天销量" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_xjcw_stock" label="箱及仓位库存" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_kys" label="可用数" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_cgzt" label="采购在途" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="th_jhc_stock" label="进货仓库存" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
 			</el-table-column>
 			<el-table-column label="白坯款" align="center">
-				<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_kys" label="可用数" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_cgzt" label="采购在途" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_jhc_stock" label="进货仓库存" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="min_qty" label="安全库存" show-overflow-tooltip width="120" align="center"></el-table-column>
-				<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center">
+				<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="150" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="bp_kys" label="可用数" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="bp_cgzt" label="采购在途" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="bp_jhc_stock" label="进货仓库存" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="min_qty" label="安全库存" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+				<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center" sortable="custom">
 					<template slot-scope="scope">
 						<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
 					</template>
 				</el-table-column>
 			</el-table-column>
-			<el-table-column prop="th_stock_up" label="是否备货" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column label="有无对照白坯款" width="120" show-overflow-tooltip align="center">
+			<el-table-column prop="th_stock_up" label="是否备货" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
+			<el-table-column label="有无对照白坯款" width="130" show-overflow-tooltip align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div>{{scope.row.is_bp=='1'?'无':'有'}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="售后退货率" show-overflow-tooltip width="120" align="center">
+			<el-table-column label="售后退货率" show-overflow-tooltip width="120" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div v-if="scope.row.fut_rate">{{scope.row.fut_rate}}%</div>
 				</template>
@@ -109,18 +109,19 @@
 				dataObj:{
 					list:{
 						data:[]
-					}},				//获取到的数据
-					page:1,
-					pagesize:10
-				}
-			},
-			props:{
-				dept:{
-					type:String,
-					default:''
-				}
-			},
-			created(){
+				}},				//获取到的数据
+				page:1,
+				pagesize:10,
+				sort:""
+			}
+		},
+		props:{
+			dept:{
+				type:String,
+				default:''
+			}
+		},
+		created(){
 			//获取列表
 			this.getData();
 		},
@@ -178,6 +179,17 @@
 				//获取列表
 				this.getData();
 			},
+			//排序
+			sortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'asc':'desc';
+					this.sort = column.prop + '-' + order;
+				}else{
+					this.sort = '';
+				}
+        		//采购总数
+        		this.getData();
+        	},
 			//获取列表
 			getData(){
 				let arg = {
@@ -186,6 +198,7 @@
 					thspbm:this.select_thkh_list.join(','),
 					bpspbm:this.select_bpkh_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
+					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -238,7 +251,8 @@
 						thkh:this.select_thksbm_list.join(','),
 						thspbm:this.select_thkh_list.join(','),
 						bpspbm:this.select_bpkh_list.join(','),
-						bpkh:this.select_ksbm_list.join(',')
+						bpkh:this.select_ksbm_list.join(','),
+						sort:this.sort
 					}
 					if(this.dept == 'er_dept'){
 						resource.twoDrawGoodsExport(arg).then(res => {
