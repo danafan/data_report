@@ -113,7 +113,7 @@
 					</el-select>
 				</el-form-item>
 				<el-form-item label="接受最晚达成时间：" required>
-					<el-date-picker v-model="zwdcsj" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
+					<el-date-picker v-model="zwdcsj" style="width:200px" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
 					</el-date-picker>
 				</el-form-item>
 				<el-form-item label="计划上新时间：" required>

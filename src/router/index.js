@@ -18,7 +18,7 @@ const inventory_info = resolve=>require(['@/pages/Buffer/inventory_info'],resolv
 //审计管理
 const audit_index = resolve=>require(['@/pages/Audit/audit_index'],resolve)
 const report_management = resolve=>require(['@/pages/Audit/report_management'],resolve)
-const platform_balance = resolve=>require(['@/pages/Audit/platform_balance'],resolve)
+const account_store = resolve=>require(['@/pages/Audit/account_store'],resolve)
 //库存情况汇总
 const inventory_summary = resolve=>require(['@/pages/Inventory/inventory_summary'],resolve)
 //权限
@@ -85,7 +85,7 @@ const router = new Router({
     { path: '/inventory_info',name:"", component: inventory_info},
     { path: '/audit_index',name:"成本管理", component: audit_index},
     { path: '/report_management',name:"报表管理", component: report_management},
-    { path: '/platform_balance',name:"平台金额", component: platform_balance},
+    { path: '/account_store',name:"账号店铺余额", component: account_store},
     { path: '/inventory_summary',name:"商品库存信息", component: inventory_summary},
     { path: '/permssions_index',name:"权限管理", component: permssions_index},
     { path: '/role_user',name:"角色人员", component: role_user},

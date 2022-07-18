@@ -38,6 +38,9 @@ let path = {
 	feedbackExport:'audit/feedback_export',							//反馈表导出
 	auditFeedback:'audit/audit_feedback',							//审核反馈
 	addFeedback:'audit/add_feedback',								//申请反馈
+	alipayAccounts:'audit/alipay_accounts',							//获取所有支付宝账号列表
+	alipayBill:'audit/alipay_bill',									//支付宝账单
+	alipayBillExport:'audit/alipay_bill_export',					//支付宝账单导出
 }						
 export default{
 	//款式编码列表
@@ -195,6 +198,18 @@ export default{
 	//申请反馈
 	addFeedback(params){
 		return http.post(path.addFeedback, params)
+	},
+	//获取所有支付宝账号列表
+	alipayAccounts(params){
+		return http.get(path.alipayAccounts, params)
+	},
+	//支付宝账单
+	alipayBill(params){
+		return http.get(path.alipayBill, params)
+	},
+	//支付宝账单导出
+	alipayBillExport(params){
+		return http.post(path.alipayBillExport, params)
 	},
 }
 

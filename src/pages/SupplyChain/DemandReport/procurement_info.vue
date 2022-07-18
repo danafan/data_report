@@ -37,9 +37,13 @@
 				</div>
 				<el-form-item label="版型、面料、工艺、颜色说明：">
 				</el-form-item>
-				<div class="remark">
-					{{detail_info.version_describe}}
-				</div>
+				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+				placeholder="请填写是否有需要定制下单款"
+				disabled
+				:rows="7"
+				v-model="detail_info.version_describe"
+				maxlength="100"
+				show-word-limit></el-input>
 				<el-form-item label="参考店铺链接：">
 					{{detail_info.without_link}}
 				</el-form-item>
@@ -51,16 +55,25 @@
 				</div>
 				<el-form-item label="参考店铺产品描述：">
 				</el-form-item>
-				<div class="remark">
-					{{detail_info.without_describe}}
-				</div>
+				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+				placeholder="参考店铺产品描述"
+				disabled
+				:rows="7"
+				v-model="detail_info.without_describe"
+				maxlength="100"
+				show-word-limit></el-input>
 				<el-form-item label="特殊要求：">
 					<div class="remark">
 						{{detail_info.is_special == '1'?'是':'否'}}
-						{{detail_info.is_special == '1'?'：' + detail_info.special_content:''}}
 					</div>
-					
 				</el-form-item>
+				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+				placeholder="参考店铺产品描述"
+				disabled
+				:rows="7"
+				v-model="'特殊要求说明：' + detail_info.special_content"
+				maxlength="100"
+				show-word-limit v-if="detail_info.is_special == '1'"></el-input>
 				<el-form-item label="销售价格区间：">
 					{{detail_info.sale_min_price}}-{{detail_info.sale_max_price}}
 				</el-form-item>

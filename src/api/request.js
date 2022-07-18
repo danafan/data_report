@@ -37,7 +37,7 @@ export function middleWare(params,type) {
   })
   var sign_arr = [];
   for(let key in sort_obj){
-    if(key != 'image' && key != 'file' && key.indexOf('remark') == -1 && key != "refuse_reason"){
+    if(key != 'image' && key != 'file' && key.indexOf('remark') == -1 && key != "refuse_reason" && key != "version_describe" && key != "without_describe"&& key != "special_content"){
       sign_arr.push(`${key}=${sort_obj[key]}`);
     }
   }
@@ -55,9 +55,9 @@ export function middleWare(params,type) {
   var token = Base64.encode(JSON.stringify(token_obj));
   
   //组织参数
-  // var req = {...params,...{sign:sign,token:token}};
+  var req = {...params,...{sign:sign,token:token}};
   // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}};   //审计
-  var req = {...params,...{sign:sign,admin_id:'16242415743283525',token:token}};   //运营
+  // var req = {...params,...{sign:sign,admin_id:'16242415743283525',token:token}};   //运营
   // var req = {...params,...{sign:sign,admin_id:'15262575868677723',token:token}};   //普通
   // var req = {...params,...{sign:sign,admin_id:'016050173120277413',token:token}};  //老板
   // var req = {...params,...{sign:sign,admin_id:'2217',token:token}};                //超级店长

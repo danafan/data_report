@@ -135,7 +135,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" @sort-change="sortChange">
+		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
 			<el-table-column prop="sjxrrq" label="日期" sortable width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="图片" width="120" align="center">
 				<template slot-scope="scope">
@@ -143,6 +143,8 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="ksbm" label="款式编码" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="gys" label="供应商" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="gyshh" label="供应商货号" sortable width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="plbz" label="货品" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="pl" label="品牌" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="xb" label="性别" sortable show-overflow-tooltip width="120" align="center">
@@ -508,28 +510,6 @@
         			this.sort = '';
         		}
         		this.stockAnalysisKsList();
-        	},
-        	// 表尾合计行处理
-        	getSummaries(param) {
-        		const { columns, data } = param;
-        		const sums = [];
-        		columns.forEach((column, index) => {
-        			if (index === 0) {
-        				sums[index] = '总计';
-        				return;
-        			}
-        			const values = data.map(item => Number(item[column.property]));
-        			sums[index] = values.reduce((prev, curr) => {
-        				return prev + curr;
-        			}, 0);
-        			sums[index] = sums[index].toFixed(2);
-					if (index === 10) {	//总成本
-						sums[index] = sums[index] + '万';
-					}else{
-						sums[index] = '';
-					}
-				});
-        		return sums;
         	},
         	//导出
         	commitExport(){
