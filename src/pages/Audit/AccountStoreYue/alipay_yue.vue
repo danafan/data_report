@@ -24,7 +24,7 @@
 		</div>
 		<el-table size="small" :data="dataObj.data.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="bill_date" show-overflow-tooltip label="日期" align="center"></el-table-column>
-			<el-table-column prop="bill_account" label="支付宝账号" align="center"></el-table-column>
+			<el-table-column prop="bill_account" show-overflow-tooltip label="支付宝账号" align="center"></el-table-column>
 			<el-table-column prop="init_amount" show-overflow-tooltip label="初始余额" align="center"></el-table-column>
 			<el-table-column prop="income_amount" show-overflow-tooltip label="收入" align="center"></el-table-column>
 			<el-table-column prop="disburse_amount" label="支出" align="center"></el-table-column>

@@ -72,12 +72,12 @@
 				</el-table-column>
 			</el-table-column>
 			<el-table-column prop="th_stock_up" label="是否备货" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
-			<el-table-column label="有无对照白坯款" width="130" show-overflow-tooltip align="center" sortable="custom">
+			<el-table-column prop="is_bp" label="有无对照白坯款" width="130" show-overflow-tooltip align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div>{{scope.row.is_bp=='1'?'无':'有'}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="售后退货率" show-overflow-tooltip width="120" align="center" sortable="custom">
+			<el-table-column prop="fut_rate" label="售后退货率" show-overflow-tooltip width="120" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div v-if="scope.row.fut_rate">{{scope.row.fut_rate}}%</div>
 				</template>

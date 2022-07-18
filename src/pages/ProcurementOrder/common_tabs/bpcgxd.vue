@@ -127,7 +127,7 @@
 			</el-table-column>
 			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>
-			<el-table-column label="白坯合格率" show-overflow-tooltip width="120" align="center" sortable="custom">
+			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
 				</template>
@@ -178,7 +178,7 @@
 			</el-table-column>
 			<el-table-column prop="bp_jhc_stock" label="白坯进货仓库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>
-			<el-table-column label="白坯合格率" show-overflow-tooltip width="120" align="center" sortable="custom">
+			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
 				</template>
@@ -211,7 +211,7 @@
 			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="bpspbm" label="白坯商品编码" show-overflow-tooltip width="130" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="cpfl" label="白坯品类" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
-			<el-table-column label="白坯颜色规格" show-overflow-tooltip width="120" align="center" sortable="custom">
+			<el-table-column prop="bp_color" label="白坯颜色规格" show-overflow-tooltip width="120" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div>{{scope.row.bp_color}}/{{scope.row.bp_size}}</div>
 				</template>
@@ -236,7 +236,7 @@
 			</el-table-column>
 			<el-table-column prop="jy_purchase" label="白坯建议采购数" show-overflow-tooltip width="130" align="center" sortable="custom">
 			</el-table-column>
-			<el-table-column label="白坯合格率" show-overflow-tooltip width="120" align="center" sortable="custom">
+			<el-table-column prop="bp_hgl" label="白坯合格率" show-overflow-tooltip width="120" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div v-if="scope.row.bp_hgl">{{scope.row.bp_hgl}}%</div>
 				</template>
