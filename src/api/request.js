@@ -37,7 +37,14 @@ export function middleWare(params,type) {
   })
   var sign_arr = [];
   for(let key in sort_obj){
-    if(key != 'image' && key != 'file' && key.indexOf('remark') == -1 && key != "refuse_reason" && key != "version_describe" && key != "without_describe"&& key != "special_content"){
+    if(key != 'image' &&
+     key != 'file' && 
+     key.indexOf('remark') == -1 && 
+     key != "refuse_reason" && 
+     key != "version_describe" && 
+     key != "without_describe" && 
+     key != "special_content" && 
+     key != "operation_remark"){
       sign_arr.push(`${key}=${sort_obj[key]}`);
     }
   }

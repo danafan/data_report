@@ -117,6 +117,8 @@
 					</el-tooltip></div>
 				</template>
 			</el-table-column>
+			<el-table-column prop="operation_remark" label="备注" align="center" width="120" show-overflow-tooltip>
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">

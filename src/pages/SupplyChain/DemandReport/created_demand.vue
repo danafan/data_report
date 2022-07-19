@@ -4,125 +4,133 @@
 		<div class="form_content">
 			<div class="page_title">{{this.id?'编辑':'新建'}}外采需求</div>
 			<div class="form_box">
-			<el-form size="small">
-				<el-form-item label="店铺：" required>
-					<el-select v-model="store_code" clearable filterable :popper-append-to-body="false" placeholder="全部">
-						<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="店铺链接：" required>
-					<el-input style="width:200px" clearable v-model="store_url" placeholder="店铺链接"></el-input>
-				</el-form-item>
-				<el-form-item label="一级类目：" required>
-					<el-select v-model="level_1_cate" :popper-append-to-body="false" placeholder="全部" @change="checkCate">
-						<el-option v-for="item in cate_1_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="二级类目：" required>
-					<el-select v-model="level_2_cate" :popper-append-to-body="false" placeholder="全部">
-						<el-option v-for="item in cate_2_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="版型、面料、工艺、颜色图片：" required>
-				</el-form-item>
-				<div class="img_list">
-					<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
-						<img class="img" :src="item.domain + item.urls">
-						<div class="modal" v-if="item.is_del == true">
-							<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index,'show_img')">
+				<el-form size="small">
+					<el-form-item label="店铺：" required>
+						<el-select v-model="store_code" clearable filterable :popper-append-to-body="false" placeholder="全部">
+							<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="店铺链接：" required>
+						<el-input style="width:200px" clearable v-model="store_url" placeholder="店铺链接"></el-input>
+					</el-form-item>
+					<el-form-item label="一级类目：" required>
+						<el-select v-model="level_1_cate" :popper-append-to-body="false" placeholder="全部" @change="checkCate">
+							<el-option v-for="item in cate_1_list" :key="item" :label="item" :value="item">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="二级类目：" required>
+						<el-select v-model="level_2_cate" :popper-append-to-body="false" placeholder="全部">
+							<el-option v-for="item in cate_2_list" :key="item" :label="item" :value="item">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="版型、面料、工艺、颜色图片：" required>
+					</el-form-item>
+					<div class="img_list">
+						<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
+							<img class="img" :src="item.domain + item.urls">
+							<div class="modal" v-if="item.is_del == true">
+								<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index,'show_img')">
+							</div>
 						</div>
+						<UploadFile :is_max="false" @callbackFn="uploadFile($event,'show_img')"/>
 					</div>
-					<UploadFile :is_max="false" @callbackFn="uploadFile($event,'show_img')"/>
-				</div>
-				<el-form-item label="版型、面料、工艺、颜色描述：" required>
-				</el-form-item>
-				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
-				placeholder="请输入文字描述"
-				:rows="7"
-				v-model="bmgy_remark"
-				maxlength="100"
-				show-word-limit></el-input>
-				<el-form-item label="参考店铺链接：">
-					<el-input style="width:200px" clearable v-model="ck_store_url" placeholder="参考店铺链接"></el-input>
-				</el-form-item>
-				<el-form-item label="参考店铺产品图片：">
-				</el-form-item>
-				<div class="img_list">
-					<div class="dialog_img" v-for="(item,index) in ck_store_cp_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
-						<img class="img" :src="item.domain + item.urls">
-						<div class="modal" v-if="item.is_del == true">
-							<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index,'ck_store_cp_img')">
+					<el-form-item label="版型、面料、工艺、颜色描述：" required>
+					</el-form-item>
+					<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+					placeholder="请输入文字描述"
+					:rows="7"
+					v-model="bmgy_remark"
+					maxlength="100"
+					show-word-limit></el-input>
+					<el-form-item label="参考店铺链接：">
+						<el-input style="width:200px" clearable v-model="ck_store_url" placeholder="参考店铺链接"></el-input>
+					</el-form-item>
+					<el-form-item label="参考店铺产品图片：">
+					</el-form-item>
+					<div class="img_list">
+						<div class="dialog_img" v-for="(item,index) in ck_store_cp_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
+							<img class="img" :src="item.domain + item.urls">
+							<div class="modal" v-if="item.is_del == true">
+								<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index,'ck_store_cp_img')">
+							</div>
 						</div>
+						<UploadFile :is_max="false" @callbackFn="uploadFile($event,'ck_store_cp_img')"/>
 					</div>
-					<UploadFile :is_max="false" @callbackFn="uploadFile($event,'ck_store_cp_img')"/>
-				</div>
-				<el-form-item label="参考店铺产品描述：">
-				</el-form-item>
-				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
-				placeholder="请输入参考店铺产品描述"
-				:rows="7"
-				v-model="ckdpcp_remark"
-				maxlength="100"
-				show-word-limit></el-input>
-				<el-form-item label="特殊要求：" required>
-					<el-select v-model="tsyq" :popper-append-to-body="false">
-						<el-option label="是" :value="1"></el-option>
-						<el-option label="否" :value="2"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-input style="width:360px;margin-bottom: 15px" type="textarea"
-				placeholder="请填写是否有需要定制下单款"
-				:rows="7"
-				v-model="tsyq_remark"
-				maxlength="100"
-				show-word-limit v-if="tsyq == 1"></el-input>
-				<el-form-item label="销售价格区间：" required>
-					<el-input style="width:100px" type="number" v-model="xsjg_start"></el-input>
-					~
-					<el-input style="width:100px" type="number" v-model="xsjg_end"></el-input>
-				</el-form-item>
-				<el-form-item label="成本区间：" required>
-					<el-input style="width:100px" type="number" v-model="cb_start"></el-input>
-					~
-					<el-input style="width:100px" type="number" v-model="cb_end"></el-input>
-				</el-form-item>
-				<el-form-item label="款式定位：">
-					<el-select v-model="ksdw" clearable placeholder="全部" :popper-append-to-body="false">
-						<el-option label="引流款" :value="1"></el-option>
-						<el-option label="利润款" :value="2"></el-option>
-						<el-option label="形象款" :value="3"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="款式需要数量：" required>
-					<el-input style="width:200px" type="number" clearable v-model="ksxysl" placeholder="款式需要数量"></el-input>
-				</el-form-item>
-				<el-form-item label="供货商：">
-					<el-input style="width:200px" clearable v-model="ghs" placeholder="供货商"></el-input>
-				</el-form-item>
-				<el-form-item label="供货商地域要求：">
-					<el-input style="width:200px" clearable v-model="ghsdyyq" placeholder="供货商地域要求"></el-input>
-				</el-form-item>
-				<el-form-item label="可接受供应商合作模式：">
-					<el-select v-model="hzms_ids" clearable :popper-append-to-body="false" multiple collapse-tags placeholder="全部">
-						<el-option label="现结" value="1"></el-option>
-						<el-option label="代销" value="2"></el-option>
-						<el-option label="下单备货" value="3"></el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="接受最晚达成时间：" required>
-					<el-date-picker v-model="zwdcsj" style="width:200px" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
-					</el-date-picker>
-				</el-form-item>
-				<el-form-item label="计划上新时间：" required>
-					<el-date-picker v-model="jhsxsj" type="month" clearable value-format="yyyy-MM" placeholder="选择月">
-					</el-date-picker>
-				</el-form-item>
-			</el-form>
+					<el-form-item label="参考店铺产品描述：">
+					</el-form-item>
+					<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+					placeholder="请输入参考店铺产品描述"
+					:rows="7"
+					v-model="ckdpcp_remark"
+					maxlength="100"
+					show-word-limit></el-input>
+					<el-form-item label="特殊要求：" required>
+						<el-select v-model="tsyq" :popper-append-to-body="false">
+							<el-option label="是" :value="1"></el-option>
+							<el-option label="否" :value="2"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+					placeholder="请填写是否有需要定制下单款"
+					:rows="7"
+					v-model="tsyq_remark"
+					maxlength="100"
+					show-word-limit v-if="tsyq == 1"></el-input>
+					<el-form-item label="销售价格区间：" required>
+						<el-input style="width:100px" type="number" v-model="xsjg_start"></el-input>
+						~
+						<el-input style="width:100px" type="number" v-model="xsjg_end"></el-input>
+					</el-form-item>
+					<el-form-item label="成本区间：" required>
+						<el-input style="width:100px" type="number" v-model="cb_start"></el-input>
+						~
+						<el-input style="width:100px" type="number" v-model="cb_end"></el-input>
+					</el-form-item>
+					<el-form-item label="款式定位：">
+						<el-select v-model="ksdw" clearable placeholder="全部" :popper-append-to-body="false">
+							<el-option label="引流款" :value="1"></el-option>
+							<el-option label="利润款" :value="2"></el-option>
+							<el-option label="形象款" :value="3"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="款式需要数量：" required>
+						<el-input style="width:200px" type="number" clearable v-model="ksxysl" placeholder="款式需要数量"></el-input>
+					</el-form-item>
+					<el-form-item label="供货商：">
+						<el-input style="width:200px" clearable v-model="ghs" placeholder="供货商"></el-input>
+					</el-form-item>
+					<el-form-item label="供货商地域要求：">
+						<el-input style="width:200px" clearable v-model="ghsdyyq" placeholder="供货商地域要求"></el-input>
+					</el-form-item>
+					<el-form-item label="可接受供应商合作模式：">
+						<el-select v-model="hzms_ids" clearable :popper-append-to-body="false" multiple placeholder="全部">
+							<el-option label="现结" value="1"></el-option>
+							<el-option label="代销" value="2"></el-option>
+							<el-option label="下单备货" value="3"></el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item label="接受最晚达成时间：" required>
+						<el-date-picker v-model="zwdcsj" style="width:200px" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="计划上新时间：" required>
+						<el-date-picker v-model="jhsxsj" type="month" clearable value-format="yyyy-MM" placeholder="选择月">
+						</el-date-picker>
+					</el-form-item>
+					<el-form-item label="备注：">
+					</el-form-item>
+					<el-input style="width:360px;margin-bottom: 15px" type="textarea"
+					placeholder="请输入备注"
+					:rows="7"
+					v-model="operation_remark"
+					maxlength="100"
+					show-word-limit></el-input>
+				</el-form>
 			</div>
-			<el-button size="small" type="primary" @click="save">保存</el-button>
+			<el-button size="small" type="primary" @click="save">提交</el-button>
 		</div>
 	</div>
 </template>
@@ -160,6 +168,7 @@
 				hzms_ids:[],			//选中的可接受供应商合作模式
 				zwdcsj:"",				//接受最晚达成时间
 				jhsxsj:"",				//计划上新时间
+				operation_remark:"",	//备注
 			}
 		},
 		created(){
@@ -240,6 +249,7 @@
 						this.ksxysl = info.style_num;
 						this.zwdcsj = info.done_time;
 						this.jhsxsj = info.put_time;
+						this.operation_remark = info.operation_remark;
 						this.ck_store_url = info.without_link;
 						// 参考店铺产品图片
 						if(info.without_image.length > 0){
@@ -386,6 +396,7 @@
 					style_num:this.ksxysl,
 					done_time:this.zwdcsj,
 					put_time:this.jhsxsj,
+					operation_remark:this.operation_remark,
 					without_link:this.ck_store_url,
 					without_image:without_image.join(','),
 					without_describe:this.ckdpcp_remark,
