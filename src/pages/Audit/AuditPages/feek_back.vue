@@ -62,7 +62,7 @@
 		<!-- 同意弹窗 -->
 		<el-dialog title="同意" center @close="closeAgree" width="45%" :visible.sync="agreeDialog">
 			<el-form size="small">
-				<el-form-item label="起始时间：">
+				<el-form-item label="起始时间：" required>
 					<el-date-picker
 					:picker-options="startDateOptions"
 					v-model="start_time"
@@ -84,7 +84,7 @@
 				>
 			</el-date-picker>
 		</el-form-item>
-		<el-form-item label="聊天截图：">
+		<el-form-item label="聊天截图：" required>
 			<div class="img_list">
 				<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
 					<img class="img" :src="item.domain + item.urls">
@@ -103,7 +103,7 @@
 </el-dialog>
 <!-- 详情弹窗 -->
 <el-dialog title="详情" center width="40%" :visible.sync="detailDialog">
-	<el-form :inline="true" size="small" class="demo-form-inline">
+	<el-form size="small">
 		<el-form-item label="编码：">
 			<div class="value">{{itemInfo.ksbm}}</div>
 		</el-form-item>
@@ -133,10 +133,25 @@
 		<el-form-item label="拒绝原因：" v-if="itemInfo.status == 3">
 			<div class="value">{{itemInfo.refuse_reason}}</div>
 		</el-form-item>
-	</el-form>
-	<div slot="footer" class="dialog-footer">
-		<el-button type="primary" size="small" @click="detailDialog = false">关闭</el-button>
-	</div>
+		<el-form-item label="起始时间：">
+			<div class="value">{{itemInfo.start_date}}</div>
+		</el-form-item>
+		<el-form-item label="结束时间：">
+			<div class="value">{{itemInfo.end_date}}</div>
+		</el-form-item>
+		<el-form-item label="聊天截图：">
+			<el-image 
+			@click="handleClickItem"
+			v-for="item in itemInfo.ddd"
+			style="width: 100px; height: 100px"
+			:src="item" 
+			:preview-src-list="itemInfo.ddd">
+		</el-image>
+	</el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+	<el-button type="primary" size="small" @click="detailDialog = false">关闭</el-button>
+</div>
 </el-dialog>
 </div>
 </template>
@@ -269,6 +284,17 @@
 			this.getData();
 		},
 		methods:{
+			handleClickItem() {
+				this.$nextTick(() => {
+					let domImageMask = document.querySelector('.el-image-viewer__mask')
+					if (!domImageMask) {
+						return
+					}
+					domImageMask.addEventListener('click', () => {
+						document.querySelector('.el-image-viewer__close').click()
+					})
+				})
+			},
 			//搜索
 			getList(){
 				this.page = 1;
@@ -379,7 +405,12 @@
 				resource.logDetail({id:id}).then(res => {
 					if(res.data.code == 1){
 						this.detailDialog = true;
-						this.itemInfo = res.data.data;
+						let itemInfo = res.data.data;
+						itemInfo.ddd = [];
+						itemInfo.pictures.map(item => {
+							itemInfo.ddd.push(itemInfo.domain + item)
+						})
+						this.itemInfo = itemInfo;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
