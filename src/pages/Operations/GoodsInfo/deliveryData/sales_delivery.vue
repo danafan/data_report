@@ -175,7 +175,7 @@
 						start_date:this.sx_date && this.sx_date.length> 0?this.sx_date[0]:"",
 						end_date:this.sx_date && this.sx_date.length> 0?this.sx_date[1]:""
 					}
-					resource.fkSaleExport(arg).then(res => {
+					resource.fhSaleExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'款式销量（发货）');
 					})
 				}).catch(() => {

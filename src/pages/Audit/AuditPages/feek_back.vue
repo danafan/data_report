@@ -133,13 +133,13 @@
 		<el-form-item label="拒绝原因：" v-if="itemInfo.status == 3">
 			<div class="value">{{itemInfo.refuse_reason}}</div>
 		</el-form-item>
-		<el-form-item label="起始时间：">
+		<el-form-item label="起始时间：" v-if="itemInfo.status == 2">
 			<div class="value">{{itemInfo.start_date}}</div>
 		</el-form-item>
-		<el-form-item label="结束时间：">
+		<el-form-item label="结束时间：" v-if="itemInfo.status == 2">
 			<div class="value">{{itemInfo.end_date}}</div>
 		</el-form-item>
-		<el-form-item label="聊天截图：">
+		<el-form-item label="聊天截图：" v-if="itemInfo.status == 2">
 			<el-image 
 			@click="handleClickItem"
 			v-for="item in itemInfo.ddd"

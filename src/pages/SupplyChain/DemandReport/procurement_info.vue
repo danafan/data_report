@@ -134,7 +134,7 @@
 							maxlength="100"
 							show-word-limit></el-input>
 						</el-form-item>
-						<el-form-item label="预计达成时间：" required>
+						<el-form-item label="预计达成时间：" required v-if="hlxpg == 1">
 							<el-date-picker v-model="yjdcsj" type="date" clearable :disabled="detail_info.is_accept != '0'" value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
 							</el-date-picker>
 						</el-form-item>
@@ -191,7 +191,7 @@
 			commitFn(){
 				if(this.hlxpg == '2' && this.remark == ''){
 					this.$message.warning('请输入不接受的原因！');
-				}else if(!this.yjdcsj){
+				}else if(this.hlxpg == '2' && !this.yjdcsj){
 					this.$message.warning('请选择预计达成时间！');
 				}else{
 					let arg = {
