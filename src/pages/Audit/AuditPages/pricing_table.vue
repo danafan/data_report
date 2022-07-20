@@ -86,7 +86,7 @@
 								<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index)">
 							</div>
 						</div>
-						<UploadFile @callbackFn="uploadFile" :current_num="show_img.length" v-if="show_img.length < 9"/>
+						<UploadFile @callbackFn="uploadFile" :current_num="show_img.length" :max_num="9" v-if="show_img.length < 9"/>
 					</div>
 				</el-form-item>
 				<el-form-item label="备注：">

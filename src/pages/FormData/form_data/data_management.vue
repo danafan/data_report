@@ -321,7 +321,6 @@
 </style>
 <script>
 	import resource from '../../../api/formDataResource.js'
-	import UpLoadFile from '../../../components/upload_file.vue'
 	import {exportUp} from '../../../api/export.js'
 	export default{
 		data(){
@@ -736,9 +735,6 @@
 					}
 				});
 			}
-		},
-		components:{
-			UpLoadFile
 		}
 	}
 </script>

@@ -46,6 +46,10 @@
 				type:Number,
 				default:0
 			},
+			max_num:{
+				type:Number,
+				default:1
+			},
 			is_csv:{
 				type:Boolean,
 				default:false
@@ -60,11 +64,18 @@
 			uploadFn(){
 				if (this.$refs.imgUpload.files.length > 0) {
 					let files = this.$refs.imgUpload.files;
-					if(this.current_num + this.$refs.imgUpload.files.length > 9 && this.is_max == true){
-						this.$refs.imgUpload.value = null;
-						this.$message.warning('图片最多不超过9张');
-						return;
+					if(this.is_max == true){
+						if(this.current_num + this.$refs.imgUpload.files.length > this.max_num){
+							this.$refs.imgUpload.value = null;
+							this.$message.warning(`图片最多不超过${this.max_num}张`);
+							return;
+						}
 					}
+					// if(this.current_num + this.$refs.imgUpload.files.length > 9 && this.is_max == true){
+					// 	this.$refs.imgUpload.value = null;
+					// 	this.$message.warning('图片最多不超过9张');
+					// 	return;
+					// }
 					for(var i = 0;i < files.length;i ++){
 						resource.uploadImage({image:files[i]}).then(res => {
 							this.$refs.imgUpload.value = null;
