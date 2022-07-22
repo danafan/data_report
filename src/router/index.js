@@ -51,12 +51,12 @@ const audit_manager = resolve=>require(['@/pages/TargetSales/auditManager/audit_
 const dept_target_manager = resolve=>require(['@/pages/TargetSales/auditManager/dept_target'],resolve)   //拆分项目部（总经理）
 //数据导出
 const data_export = resolve=>require(['@/pages/DataExport/data_export'],resolve)   //采购入库
-//得物发货情况分析
+//得物缓冲机制
 const dw_delivery = resolve=>require(['@/pages/DwDelivery/dw_delivery'],resolve)   //得物发货情况分析
-//得物采购下单
 const er_dept = resolve=>require(['@/pages/ProcurementOrder/er_dept'],resolve)
 const si_dept = resolve=>require(['@/pages/ProcurementOrder/si_dept'],resolve)
 const purchase_summary = resolve=>require(['@/pages/ProcurementOrder/purchase_summary'],resolve)
+const lack_feekback = resolve=>require(['@/pages/ProcurementOrder/lack_feekback'],resolve)
 // 供应链中心
 const demand_report = resolve=>require(['@/pages/SupplyChain/demand_report'],resolve)
 const created_demand = resolve=>require(['@/pages/SupplyChain/DemandReport/created_demand'],resolve)
@@ -139,6 +139,7 @@ const router = new Router({
     { path: '/er_dept',name:"得物采购下单（二部）", component: er_dept},
     { path: '/si_dept',name:"得物采购下单（四部）", component: si_dept},
     { path: '/purchase_summary',name:"得物采购报货", component: purchase_summary},
+    { path: '/lack_feekback',name:"得物-缺货跟踪情况", component: lack_feekback},
     { path: '/demand_report',name:"运营需求报表", meta:{
         isUseCache:false,
         keepAlive:true

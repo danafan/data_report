@@ -42,6 +42,11 @@ let path = {
 	drawContrastExport:'purchase_order/draw_contrast_export',					//白坯烫画对照表导出(汇总)
 	whiteHglList:'purchase_order/white_hgl_list',								//白坯合格率(汇总)
 	whiteHglExport:'purchase_order/white_hgl_export',							//白坯合格率导出(汇总)
+	shortageFeedback:'purchase_order/shortage_feedback',						//缺货反馈
+	shortageFeedbackExport:'purchase_order/shortage_feedback_export',			//缺货反馈导出
+	shortageRecordList:'purchase_order/shortage_record_list',					//记录详情
+	shortageRecordSave:'purchase_order/shortage_record_save',					//修改
+	searchShortage:'purchase_order/search_shortage',							//查询条件
 			
 }						
 export default{
@@ -213,6 +218,26 @@ export default{
 	//白坯合格率导出（汇总）
 	whiteHglExport(params){
 		return http.get(path.whiteHglExport, params)
+	},
+	//缺货反馈
+	shortageFeedback(params){
+		return http.get(path.shortageFeedback, params)
+	},
+	//缺货反馈导出
+	shortageFeedbackExport(params){
+		return http.get(path.shortageFeedbackExport, params)
+	},
+	//记录详情
+	shortageRecordList(params){
+		return http.get(path.shortageRecordList, params)
+	},
+	//修改
+	shortageRecordSave(params){
+		return http.post(path.shortageRecordSave, params)
+	},
+	//查询列表
+	searchShortage(params){
+		return http.get(path.searchShortage, params)
 	},
 }
 
