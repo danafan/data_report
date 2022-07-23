@@ -33,7 +33,7 @@
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange'>
-			<el-table-column prop="gyshh" label="事业部" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="dept_name" label="事业部" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="zmdp" label="主卖店铺" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gys" label="供应商" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="款式编码" width="120" show-overflow-tooltip align="center">
@@ -193,6 +193,7 @@
 					gys:this.gysmc,
 					ksbm:this.ksbm,
 					bpkh:this.select_ksbm_list.join(','),
+					dept_name:this.dept_name,
 					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
@@ -216,6 +217,7 @@
 						gys:this.gysmc,
 						ksbm:this.ksbm,
 						bpkh:this.select_ksbm_list.join(','),
+						dept_name:this.dept_name,
 						sort:this.sort,
 					}
 					proResource.shortageFeedbackExport(arg).then(res => {

@@ -93,7 +93,7 @@
 			},
 			select_store_key:function(){
 				this.select_store_ids = [];
-				this.emitCallBack();
+				// this.emitCallBack();
 			},
 		},
 		methods:{
@@ -140,7 +140,6 @@
 					select_plat_ids:this.select_plat_ids,
 					select_store_ids:this.select_store_ids,
 				}
-				console.log(obj)
 				this.$emit('callBack',obj);
 			},
 			//部门列表

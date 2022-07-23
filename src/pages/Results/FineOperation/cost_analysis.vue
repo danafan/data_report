@@ -328,8 +328,6 @@
 				this.select_department_ids = reqObj.select_department_ids;
 				this.select_plat_ids = reqObj.select_plat_ids;
 				this.select_store_ids = reqObj.select_store_ids;
-				//项目名称列表
-				this.ajaxXmmc();
 			},
 			//用友店铺列表
 			ajaxYongyou(){
