@@ -191,7 +191,7 @@
 			commitFn(){
 				if(this.hlxpg == '2' && this.remark == ''){
 					this.$message.warning('请输入不接受的原因！');
-				}else if(this.hlxpg == '2' && !this.yjdcsj){
+				}else if(this.hlxpg == '1' && !this.yjdcsj){
 					this.$message.warning('请选择预计达成时间！');
 				}else{
 					let arg = {
