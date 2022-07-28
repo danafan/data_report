@@ -203,11 +203,7 @@
 				remark:"",			//备注
 			}
 		},
-		created(){
-			
-		},
 		beforeRouteLeave(to,from,next){
-			console.log(to)
 			if(to.path == '/procurement_info' || (to.path == '/created_demand' && to.query.id)){	
 				from.meta.isUseCache = true;
 			}else{
@@ -254,7 +250,7 @@
 				})
 			},
 			getList(){
-				this.page == 1;
+				this.page = 1;
 				//获取列表数据
 				this.getData();
 			},	

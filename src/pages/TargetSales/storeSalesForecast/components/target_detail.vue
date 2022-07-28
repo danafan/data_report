@@ -262,11 +262,16 @@
 			</div>
 		</div>
 		<!-- 拒绝 -->
-		<el-dialog :title="refuse_type == '1'?'拒绝':'通过'" :visible.sync="showRefuse" append-to-body>
+		<el-dialog :visible.sync="showRefuse" append-to-body>
+			<div slot="title" class="title_row">
+				<div>{{refuse_type == '1'?'拒绝':'同意'}}</div>
+				<img class="sh_icon" src="../../../../static/jujue_icon.png" v-if="refuse_type == '1'">
+				<img class="sh_icon" src="../../../../static/tongyi_icon.png" v-else>
+			</div>
 			<el-input
 			type="textarea"
 			:rows="3"
-			:placeholder="refuse_type == '1'?'请输入拒绝原因（必填）':'请输入备注原因（选填）'"
+			:placeholder="refuse_type == '1'?'请输入拒绝原因（必填）':'请输入通过原因（选填）'"
 			v-model="reason">
 		</el-input>
 		<div slot="footer" class="dialog-footer">
@@ -310,6 +315,15 @@
 	overflow: hidden;/*超出部分隐藏*/
 	white-space: nowrap;/*不换行*/
 	text-overflow:ellipsis;/*超出部分文字以...显示*/
+}
+.title_row{
+	display: flex;
+	align-items: center;
+}
+.sh_icon{
+	margin-left: 10px;
+	width: 26px;
+	height: 26px;
 }
 </style>
 <script>

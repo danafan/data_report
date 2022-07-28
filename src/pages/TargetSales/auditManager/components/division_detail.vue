@@ -70,7 +70,12 @@
 			</div>
 		</div>
 		<!-- 拒绝 -->
-		<el-dialog :title="refuse_type == '1'?'拒绝':'通过'" :visible.sync="showRefuse" append-to-body>
+		<el-dialog :visible.sync="showRefuse" append-to-body>
+			<div slot="title" class="title_row">
+				<div>{{refuse_type == '1'?'拒绝':'同意'}}</div>
+				<img class="sh_icon" src="../../../../static/jujue_icon.png" v-if="refuse_type == '1'">
+				<img class="sh_icon" src="../../../../static/tongyi_icon.png" v-else>
+			</div>
 			<el-input
 			type="textarea"
 			:rows="3"
@@ -108,6 +113,15 @@
 			padding-bottom: 10px;
 		}
 	}
+}
+.title_row{
+	display: flex;
+	align-items: center;
+}
+.sh_icon{
+	margin-left: 10px;
+	width: 26px;
+	height: 26px;
 }
 </style>
 <script>
