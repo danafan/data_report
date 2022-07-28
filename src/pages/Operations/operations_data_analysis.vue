@@ -5,6 +5,7 @@
 				<SalesAnalysis v-if="item.web_url == 'sales_analysis'"/>
 				<DataStatistical v-if="item.web_url == 'data_statistical'"/>
 				<IncomeAnalysis v-if="item.web_url == 'income_analysis'"/>
+				<JstOrderAnalysis v-if="item.web_url == 'jst_order_analysis'"/>
 			</el-tab-pane>
 
 		</el-tabs>
@@ -19,6 +20,7 @@
 	import SalesAnalysis from './OperationsDataAnalysis/sales_analysis.vue'
 	import DataStatistical from './OperationsDataAnalysis/data_statistical.vue'
 	import IncomeAnalysis from './OperationsDataAnalysis/income_analysis.vue'
+	import JstOrderAnalysis from './OperationsDataAnalysis/jst_order_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -59,7 +61,8 @@
 		components:{
 			SalesAnalysis,
 			DataStatistical,
-			IncomeAnalysis
+			IncomeAnalysis,
+			JstOrderAnalysis
 		}
 	}
 </script>

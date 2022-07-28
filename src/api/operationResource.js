@@ -23,6 +23,9 @@ let path = {
 	operateIndex:'operate/index',					//商品品类列表
 	operateEdit:'operate/edit',						//商品品类编辑
 	operateExport:'operate/export',					//商品品类列表导出
+	monthlyDailyNumber:'operate/monthly_daily_number',	//月度日均单数
+	jstOrderAnalyse:'operate/jstOrderAnalyse',			//订单分析-图表
+	orderYesterday:'operate/order_yesterday',			//店铺昨日订单数
 }						
 export default{
 	//获取款式编码
@@ -116,6 +119,18 @@ export default{
 	//商品品类列表导出
 	operateExport(params){
 		return http.get(path.operateExport, params)
+	},
+	//月度日均单数
+	monthlyDailyNumber(params){
+		return http.get(path.monthlyDailyNumber, params)
+	},
+	//订单分析-图表
+	jstOrderAnalyse(params){
+		return http.get(path.jstOrderAnalyse, params)
+	},
+	//店铺昨日订单数
+	orderYesterday(params){
+		return http.get(path.orderYesterday, params)
 	},
 }
 
