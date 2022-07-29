@@ -4,12 +4,6 @@
 			<el-form-item label="款式编码：">
 				<el-input clearable v-model="ksbm" placeholder="款式编码"></el-input>
 			</el-form-item>
-			<!-- <el-form-item label="店铺名称：">
-				<el-select v-model="dpmc" clearable filterable placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
-					</el-option>
-				</el-select>
-			</el-form-item> -->
 			<el-form-item label="店铺名称：">
 				<el-select v-model="dpmc" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
@@ -167,9 +161,9 @@
 }
 </style>
 <script>
-	import resource from '../../api/shelvesResource.js'
-	import {exportPost} from '../../api/export.js'
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../api/nowMonth.js'
+	import resource from '../../../api/shelvesResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../../api/nowMonth.js'
 	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){

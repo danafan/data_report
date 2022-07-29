@@ -40,10 +40,10 @@
 			</el-table-column>
 			<el-table-column prop="gyskh" label="供应商款号" width="150" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="3_xssl" label="3天销量" width="80" align="center"></el-table-column>
-			<el-table-column prop="xssl_3" label="19日销量" width="80" align="center"></el-table-column>
-			<el-table-column prop="xssl_2" label="20日销量" width="80" align="center"></el-table-column>
+			<el-table-column :prop="item.key" :label="item.value" width="80" align="center" v-for="item in title_list"></el-table-column>
+			<!-- <el-table-column prop="xssl_2" label="20日销量" width="80" align="center"></el-table-column>
 			<el-table-column prop="xssl_1" label="21日销量" width="80" align="center">
-			</el-table-column>
+			</el-table-column> -->
 			<el-table-column prop="xykc" label="库存" width="80" align="center">
 			</el-table-column>
 			<el-table-column prop="qhs" label="缺货数" width="100" align="center" sortable="custom"></el-table-column>
@@ -124,7 +124,8 @@
 				show_table:false,		//详情弹窗
 				table_page:1,
 				table_pagesize:10,
-				tableObj:{}
+				tableObj:{},
+				title_list:[]
 			}
 		},
 		created(){
@@ -201,6 +202,15 @@
 				proResource.shortageFeedback(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
+						let title_list = [];
+						for(let k in this.dataObj.title){
+							let obj = {
+								key:k,
+								value:this.dataObj.title[k]
+							}
+							title_list.push(obj)
+						}
+						this.title_list = title_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

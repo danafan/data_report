@@ -15,6 +15,8 @@ let path = {
 	ajaxZxr:'offshelf/ajaxZxr',						//获取执行人列表
 	offshelfTj:'offshelf/tj',						//店铺下架统计表
 	exportTj:'offshelf/export_tj',					//店铺下架统计表导出
+	searchList:'offshelf/search_list',				//信息管控查询条件列表
+	violationList:'offshelf/violation_list',		//信息管控列表
 
 	
 }						
@@ -78,6 +80,14 @@ export default{
 	//店铺下架统计表导出
 	exportTj(params){
 		return http.post(path.exportTj, params)
+	},
+	//信息管控查询条件列表
+	searchList(params){
+		return http.get(path.searchList, params)
+	},
+	//信息管控列表
+	violationList(params){
+		return http.get(path.violationList, params)
 	},
 }
 

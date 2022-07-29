@@ -208,8 +208,8 @@
 		</div>
 		<el-table size="small" :data="bpspbmObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="bpspbmCellStyle" @sort-change='bmOrderSortChange'>
 			<el-table-column prop="bp_gys" label="白坯供应商" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="bpspbm" label="白坯商品编码" show-overflow-tooltip width="130" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="bpkh" label="白坯款式编码" show-overflow-tooltip width="130" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="bpspbm" label="白坯商品编码" show-overflow-tooltip width="140" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="cpfl" label="白坯品类" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="bp_color" label="白坯颜色规格" show-overflow-tooltip width="120" align="center" sortable="custom">
 				<template slot-scope="scope">

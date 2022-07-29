@@ -4,6 +4,8 @@
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<ShelvesRecord v-if="item.web_url == 'shelves_record'"/>
 				<shelvesStatistics v-if="item.web_url == 'shelves_statistics'"/>
+				<InfoControls v-if="item.web_url == 'info_controls'"/>
+				<ViolationStatistics v-if="item.web_url == 'violation_statistics'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -14,8 +16,10 @@
 }
 </style>
 <script>
-	import ShelvesRecord from './shelves_record.vue'
-	import shelvesStatistics from './shelves_statistics.vue'
+	import ShelvesRecord from './pages/shelves_record.vue'
+	import shelvesStatistics from './pages/shelves_statistics.vue'
+	import InfoControls from './pages/info_controls.vue'
+	import ViolationStatistics from './pages/violation_statistics.vue'
 	export default{
 		data(){
 			return{
@@ -55,7 +59,9 @@
 		},
 		components:{
 			shelvesStatistics,
-			ShelvesRecord
+			ShelvesRecord,
+			InfoControls,
+			ViolationStatistics
 		}
 	}
 </script>

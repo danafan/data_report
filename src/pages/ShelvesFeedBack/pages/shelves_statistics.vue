@@ -63,9 +63,9 @@
 }
 </style>
 <script>
-	import resource from '../../api/shelvesResource.js'
-	import {exportPost} from '../../api/export.js'
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../api/nowMonth.js'
+	import resource from '../../../api/shelvesResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../../api/nowMonth.js'
 	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
