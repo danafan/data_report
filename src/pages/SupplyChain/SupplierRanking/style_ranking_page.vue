@@ -45,6 +45,8 @@
 					<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center"></el-table-column>
 					<el-table-column prop="gyshh" show-overflow-tooltip label="供应商款号" align="center"></el-table-column>
 					<el-table-column prop="zyhp" label="自有货品" align="center"></el-table-column>
+					<el-table-column prop="dhl" show-overflow-tooltip label="到货率" align="center"></el-table-column>
+					<el-table-column prop="mll" show-overflow-tooltip label="毛利率" align="center"></el-table-column>
 				</el-table>
 				<div class="page">
 					<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="xl_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="xlDataObj.total">
@@ -60,6 +62,7 @@
 					<el-table-column prop="ksbm" label="款式编码" show-overflow-tooltip align="center"></el-table-column>
 					<el-table-column prop="kc" sortable='custom' label="库存" align="center"></el-table-column>
 					<el-table-column prop="kys" sortable='custom' label="缺货数" align="center"></el-table-column>
+					<el-table-column prop="qhl" label="缺货率" show-overflow-tooltip align="center"></el-table-column>
 				</el-table>
 				<div class="page">
 					<el-pagination @size-change="qhHandleSizeChange" @current-change="qhHandleCurrentChange" :current-page="qh_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="qhDataObj.total">

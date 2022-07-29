@@ -6,16 +6,32 @@
 			<el-table-column prop="ztdl" label="整体单量" align="center"></el-table-column>
 			<el-table-column prop="ztrj" label="整体日均" align="center"></el-table-column>
 			<el-table-column prop="tbdl" label="淘宝单量" align="center"></el-table-column>
-			<el-table-column prop="tbzb" label="淘宝占比" align="center"></el-table-column>
+			<el-table-column prop="tbzb" label="淘宝占比" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.tbzb}}%</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="tbrj" label="淘宝日均" align="center"></el-table-column>
 			<el-table-column prop="tmdl" label="天猫单量" align="center"></el-table-column>
-			<el-table-column prop="tmzb" label="天猫占比" align="center"></el-table-column>
+			<el-table-column prop="tmzb" label="天猫占比" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.tmzb}}%</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="tmrj" label="天猫日均" align="center"></el-table-column>
 			<el-table-column prop="pdddl" label="拼多多单量" align="center"></el-table-column>
-			<el-table-column prop="pddzb" label="拼多多占比" align="center"></el-table-column>
+			<el-table-column prop="pddzb" label="拼多多占比" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.pddzb}}%</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="pddrj" label="拼多多日均" align="center"></el-table-column>
 			<el-table-column prop="dwdl" label="得物单量" align="center"></el-table-column>
-			<el-table-column prop="dwzb" label="得物占比" align="center"></el-table-column>
+			<el-table-column prop="dwzb" label="得物占比" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.dwzb}}%</div>
+				</template>
+			</el-table-column>
 			<el-table-column prop="dwrj" label="得物日均" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
@@ -408,7 +424,7 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
+},
 			//切换销量范围
 			changeSec(v){
 				//店铺昨日订单数
