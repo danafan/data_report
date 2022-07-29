@@ -20,6 +20,7 @@ let path = {
 	violationUp:'offshelf/violation_up',			//违规截图上传
 	violationDealUp:'offshelf/violation_deal_up',	//处理结果截图上传
 	violationCheck:'offshelf/violation_check',		//审核
+	violationAnalysis:'offshelf/violation_analysis',//违规统计
 
 	
 }						
@@ -103,6 +104,10 @@ export default{
 	//审核
 	violationCheck(params){
 		return http.post(path.violationCheck, params)
+	},
+	//违规统计
+	violationAnalysis(params){
+		return http.get(path.violationAnalysis, params)
 	},
 }
 
