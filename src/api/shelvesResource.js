@@ -17,6 +17,9 @@ let path = {
 	exportTj:'offshelf/export_tj',					//店铺下架统计表导出
 	searchList:'offshelf/search_list',				//信息管控查询条件列表
 	violationList:'offshelf/violation_list',		//信息管控列表
+	violationUp:'offshelf/violation_up',			//违规截图上传
+	violationDealUp:'offshelf/violation_deal_up',	//处理结果截图上传
+	violationCheck:'offshelf/violation_check',		//审核
 
 	
 }						
@@ -88,6 +91,18 @@ export default{
 	//信息管控列表
 	violationList(params){
 		return http.get(path.violationList, params)
+	},
+	//违规截图上传
+	violationUp(params){
+		return http.post(path.violationUp, params)
+	},
+	//处理结果截图上传
+	violationDealUp(params){
+		return http.post(path.violationDealUp, params)
+	},
+	//审核
+	violationCheck(params){
+		return http.post(path.violationCheck, params)
 	},
 }
 
