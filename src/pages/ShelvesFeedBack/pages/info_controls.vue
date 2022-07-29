@@ -59,7 +59,11 @@
 			<el-table-column prop="violations_why" show-overflow-tooltip width="120" label="违规原因" align="center"></el-table-column>
 			<el-table-column prop="violations_impact" show-overflow-tooltip width="120" label="违规影响" align="center"></el-table-column>
 			<el-table-column prop="severity" show-overflow-tooltip width="120" label="违规情况" align="center"></el-table-column>
-			<el-table-column prop="goods_link" show-overflow-tooltip width="120" label="商品链接" align="center"></el-table-column>
+			<el-table-column show-overflow-tooltip width="120" label="商品链接" align="center">
+				<template slot-scope="scope">
+					<el-button type="text" size="small" @click="openUrl(scope.row.goods_link)">查看</el-button>
+				</template>
+			</el-table-column>
 			<el-table-column label="违规截图" width="120" align="center">
 				<template slot-scope="scope">
 					<img style="width: 30px;height: 30px" :src="scope.row.violations_img" @click="bigImg(scope.row.violations_img)">
@@ -357,6 +361,10 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//跳转商品链接
+			openUrl(url){
+				window.open(url);
 			},
 			//点击上传图片
 			uploadImg(type,id){

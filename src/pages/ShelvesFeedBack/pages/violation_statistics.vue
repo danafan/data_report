@@ -29,7 +29,7 @@
 		</el-form>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="dept_name" label="事业部" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="shop" label="店铺" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="shop" label="店铺ID" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="num" label="违规总数量" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="no_deal_num" label="超时未处理/未上传截图数量" show-overflow-tooltip align="center">
 			</el-table-column>
