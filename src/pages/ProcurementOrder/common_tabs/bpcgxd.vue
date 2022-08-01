@@ -34,15 +34,15 @@
 			<div class="small_title">计算逻辑：</div>
 			<div class="item_row">
 				<div class="dian"></div>
-				<div>周销：（7天订单日均销量+3天日均销量+昨日销售）/3*7</div>
+				<div>库存=箱及仓位库存+进仓库存*合格率</div>
 			</div>
 			<div class="item_row">
 				<div class="dian"></div>
-				<div>库存：（箱及仓位库存+（采购在途+进仓库存）*合格率</div>
+				<div>安全库存=（7天订单日均销量+3天日均销量+昨日销售）/3*7</div>
 			</div>
 			<div class="item_row">
 				<div class="dian"></div>
-				<div>建议采购数：（{汇总所有烫画款【（烫画款的周销-烫画款的库存（不考虑合格率））+烫画款的缺货】-对应白胚的库存}/白胚合格率</div>
+				<div>建议采购数：{汇总所有烫画款【（烫画款的周销-烫画款的库存（不考虑合格率）-烫画采购在途）+烫画款的缺货】-对应白胚的库存-白坯采购在途*合格率}/白胚合格率</div>
 			</div>
 			<div class="small_title">注意事项：</div>
 			<div class="item_row">
@@ -119,6 +119,8 @@
 			<el-table-column prop="th_cgzt" label="烫画采购在途" show-overflow-tooltip width="120" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="th_jhc_stock" label="烫画款进货仓库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>
+			<el-table-column prop="bp_aqkc" label="白坯安全库存" show-overflow-tooltip width="140" align="center" sortable="custom">
+			</el-table-column>
 			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>
 			<el-table-column prop="bp_kys" label="白坯可用数" show-overflow-tooltip width="120" align="center" sortable="custom">
@@ -169,6 +171,8 @@
 			<el-table-column prop="th_cgzt" label="烫画采购在途" show-overflow-tooltip width="120" align="center" sortable="custom">
 			</el-table-column>
 			<el-table-column prop="th_jhc_stock" label="烫画进货仓库存" show-overflow-tooltip width="130" align="center" sortable="custom">
+			</el-table-column>
+			<el-table-column prop="bp_aqkc" label="白坯安全库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>
 			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>
@@ -225,6 +229,8 @@
 			<el-table-column prop="th_cgzt" label="烫画采购在途" show-overflow-tooltip width="120" align="center" sortable="custom">
 			</el-table-column>
 			<el-table-column prop="th_jhc_stock" label="烫画进货仓库存" show-overflow-tooltip width="140" align="center" sortable="custom">
+			</el-table-column>
+			<el-table-column prop="bp_aqkc" label="白坯安全库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>
 			<el-table-column prop="bp_xjcw_stock" label="白坯箱及仓位库存" show-overflow-tooltip width="140" align="center" sortable="custom">
 			</el-table-column>

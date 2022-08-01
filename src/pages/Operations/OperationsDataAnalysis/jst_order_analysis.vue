@@ -166,7 +166,7 @@
 						let payment_amount = res.data.data.payment_amount;
 						let payment_amount_legend = {
 							name_list:['销售金额','销售金额-日环比增长率'],
-							unit_list:['','%']
+							unit_list:['万','%']
 						};	
 						let payment_amount_xAxis = payment_amount.fkrq;	
 						var payment_amount_series = [
@@ -212,6 +212,11 @@
 							name: '淘宝单量',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -221,6 +226,11 @@
 							name: '天猫单量',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -230,6 +240,11 @@
 							name: '拼多多单量',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -239,6 +254,11 @@
 							name: '得物单量',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -311,7 +331,7 @@
 						let proportion_amount = res.data.data.proportion_amount;
 						let proportion_amount_legend = {
 							name_list:['淘宝金额','天猫金额','拼多多金额','得物金额','淘宝金额占比','天猫金额占比','拼多多金额占比','得物金额占比'],
-							unit_list:['','','','','%','%','%','%']
+							unit_list:['万','万','万','万','%','%','%','%']
 						};	
 						let proportion_amount_xAxis = proportion_amount.fkrq;	
 						var proportion_amount_series = [
@@ -319,6 +339,11 @@
 							name: '淘宝金额',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}万'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -328,6 +353,11 @@
 							name: '天猫金额',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}万'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -337,6 +367,11 @@
 							name: '拼多多金额',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}万'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -346,6 +381,11 @@
 							name: '得物金额',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}万'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -446,6 +486,11 @@
 							name: '销售单量',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -455,6 +500,11 @@
 							name: '鱼塘单量',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -512,6 +562,7 @@
 					},
 					legend: {
 						data: legend.name_list,
+						selectedMode:false,
 						top:"10%",
 						left:0
 					},

@@ -21,6 +21,7 @@ let path = {
 	violationDealUp:'offshelf/violation_deal_up',	//处理结果截图上传
 	violationCheck:'offshelf/violation_check',		//审核
 	violationAnalysis:'offshelf/violation_analysis',//违规统计
+	violationExport:'offshelf/violation_export',	//信息管控列表导出
 
 	
 }						
@@ -108,6 +109,10 @@ export default{
 	//违规统计
 	violationAnalysis(params){
 		return http.get(path.violationAnalysis, params)
+	},
+	//信息管控列表导出
+	violationExport(params){
+		return http.get(path.violationExport, params)
 	},
 }
 

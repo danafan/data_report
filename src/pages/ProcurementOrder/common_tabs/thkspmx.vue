@@ -29,6 +29,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="有无白坯：">
+				<el-select v-model="is_bp" clearable placeholder="全部">
+					<el-option label="有" value="0"></el-option>
+					<el-option label="无" value="1"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
@@ -109,7 +115,8 @@
 				}},				//获取到的数据
 				page:1,
 				pagesize:10,
-				sort:""
+				sort:"",
+				is_bp:""
 			}
 		},
 		props:{
@@ -195,6 +202,7 @@
 					thspbm:this.select_thkh_list.join(','),
 					bpspbm:this.select_bpkh_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
+					is_bp:this.is_bp,
 					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
@@ -249,7 +257,8 @@
 						thspbm:this.select_thkh_list.join(','),
 						bpspbm:this.select_bpkh_list.join(','),
 						bpkh:this.select_ksbm_list.join(','),
-						sort:this.sort
+						sort:this.sort,
+						is_bp:this.is_bp,
 					}
 					if(this.dept == 'er_dept'){
 						resource.twoDrawGoodsExport(arg).then(res => {

@@ -23,7 +23,7 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		<div class="title">事业部汇总<span>（每日更新一次）</span></div>
+		<div class="title">各平台汇总<span>（每日更新一次）</span></div>
 		<el-table ref="multipleTable" size="small" :data="dept_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
 			<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in dept_total.title" show-overflow-tooltip>
 				<template slot-scope="scope">

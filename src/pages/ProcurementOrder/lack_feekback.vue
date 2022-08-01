@@ -39,17 +39,14 @@
 			<el-table-column prop="ksbm" label="款式编码" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="gyskh" label="供应商款号" width="150" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="3_xssl" label="3天销量" width="80" align="center"></el-table-column>
-			<el-table-column :prop="item.key" :label="item.value" width="80" align="center" v-for="item in title_list"></el-table-column>
-			<!-- <el-table-column prop="xssl_2" label="20日销量" width="80" align="center"></el-table-column>
-			<el-table-column prop="xssl_1" label="21日销量" width="80" align="center">
-			</el-table-column> -->
-			<el-table-column prop="xykc" label="库存" width="80" align="center">
+			<el-table-column prop="3_xssl" label="3天销量" sortable="custom" width="90" align="center"></el-table-column>
+			<el-table-column :prop="item.key" :label="item.value" sortable="custom" width="100" align="center" v-for="item in title_list"></el-table-column>
+			<el-table-column prop="xykc" label="库存" sortable="custom" width="80" align="center">
 			</el-table-column>
-			<el-table-column prop="qhs" label="缺货数" width="100" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="jhcs" label="进货仓数" width="80" align="center"></el-table-column>
-			<el-table-column prop="drcgzts" label="当日采购在途数" width="120" align="center"></el-table-column>
-			<el-table-column label="到货率" width="80" align="center">
+			<el-table-column prop="qhs" label="缺货数" width="90" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="jhcs" label="进货仓数" sortable="custom" width="100" align="center"></el-table-column>
+			<el-table-column prop="drcgzts" label="当日采购在途数" sortable="custom" width="130" align="center"></el-table-column>
+			<el-table-column prop="dhl" label="到货率" width="80" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<div v-if="scope.row.dhl">{{scope.row.dhl}}%</div>
 				</template>

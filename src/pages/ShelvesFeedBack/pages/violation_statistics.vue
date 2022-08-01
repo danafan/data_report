@@ -2,19 +2,19 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="事业部：">
-				<el-select v-model="dept_name_ids" multiple filterable collapse-tags clearable :popper-append-to-body="false" placeholder="全部" @change="getStoreList">
-					<el-option v-for="item in dept_list" :key="item.id" :label="item.name" :value="item.id">
+				<el-select v-model="dept_name_ids" multiple filterable collapse-tags clearable placeholder="全部" @change="getStoreList">
+					<el-option v-for="item in dept_list" :key="item.id" :label="item.name" :value="item.name">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
-				<el-select v-model="shop_name_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="shop_name_ids" clearable multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.shop_name" :value="item.shop_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺ID：">
-				<el-select v-model="shop_code_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="shop_code_ids" clearable multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 					</el-option>
 				</el-select>
@@ -105,8 +105,22 @@
 		methods:{
 			// 获取店铺
 			getStoreList(){
+				let dept_ids_str = "";
+				if(this.dept_name_ids.length == 0){
+					dept_ids_str = '442802518,443780108';
+				}else{
+					var dept_ids = [];
+					this.dept_name_ids.map(item => {
+						this.dept_list.map(i => {
+							if(item == i.name){
+								dept_ids.push(i.id);
+							}
+						})
+					})
+					dept_ids_str = dept_ids.join(',');
+				}
 				let arg = {
-					dept_id:this.dept_name_ids.length > 0?this.dept_name_ids.join(','):'442802518,443780108'
+					dept_id:dept_ids_str
 				}
 				resource.ajaxViewStore(arg).then(res => {
 					if(res.data.code == 1){
