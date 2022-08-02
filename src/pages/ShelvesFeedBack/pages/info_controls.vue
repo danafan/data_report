@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="事业部：">
 				<el-select v-model="dept_name_ids" multiple filterable collapse-tags clearable placeholder="全部" @change="getStoreList">
-					<el-option v-for="item in dept_list" :key="item.id" :label="item.name" :value="item.name">
+					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -193,13 +193,7 @@
 	export default{
 		data(){
 			return{
-				dept_list:[{
-					id:'442802518',
-					name:'事业二部'
-				},{
-					id:'443780108',
-					name:'事业四部'
-				}],					//事业部列表
+				dept_list:['事业二部','事业四部'],					//事业部列表
 				dept_name_ids:[],	//选中的事业部列表
 				store_list:[],		//店铺列表
 				shop_name_ids:[],	//选中的店铺名称列表
@@ -299,7 +293,7 @@
 			// 获取店铺
 			getStoreList(){
 				let arg = {
-					dept_id:this.dept_name_ids.length == 0?'442802518,443780108':this.dept_name_ids.join(',')
+					dept_name:this.dept_name_ids.join(',')
 				}
 				shelvesResource.violationShopName(arg).then(res => {
 					if(res.data.code == 1){
