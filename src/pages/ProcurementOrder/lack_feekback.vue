@@ -32,46 +32,44 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange'>
-			<el-table-column prop="dept_name" label="事业部" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="zmdp" label="主卖店铺" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="gys" label="供应商" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="ksbm" label="款式编码" width="120" show-overflow-tooltip align="center">
-			</el-table-column>
-			<el-table-column prop="gyskh" label="供应商款号" width="150" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="3_xssl" label="3天销量" sortable="custom" width="90" align="center"></el-table-column>
-			<el-table-column :prop="item.key" :label="item.value" sortable="custom" width="100" align="center" v-for="item in title_list"></el-table-column>
-			<el-table-column prop="xykc" label="库存" sortable="custom" width="80" align="center">
-			</el-table-column>
-			<el-table-column prop="qhs" label="缺货数" width="90" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="jhcs" label="进货仓数" sortable="custom" width="100" align="center"></el-table-column>
-			<el-table-column prop="drcgzts" label="当日采购在途数" sortable="custom" width="130" align="center"></el-table-column>
-			<el-table-column prop="dhl" label="到货率" width="80" align="center" sortable="custom">
+		<el-table size="small" :data="dataObj.data" border tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange'>
+			<el-table-column :prop="item.prop" :sortable="item.sort" width="65" align="center" show-overflow-tooltip v-for="item in column_list">
+				<template slot="header">
+					<el-tooltip effect="dark" :content="item.label" placement="top-start">
+						<span>{{item.label}}</span>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
-					<div v-if="scope.row.dhl">{{scope.row.dhl}}%</div>
+					<div class="prop_text">{{scope.row[item.prop]}}{{item.unit && scope.row[item.prop]?item.unit:''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="bpkh" label="白坯款号" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="bpgyskh" label="白坯供应商款号" width="150" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="bpkc" label="白坯库存" width="80" align="center"></el-table-column>
-			<el-table-column label="合格率" width="80" align="center">
-				<template slot-scope="scope">
-					<div v-if="scope.row.hgl">{{scope.row.hgl}}%</div>
+			<el-table-column width="160" align="center">
+				<template slot="header">
+					<el-tooltip effect="dark" content="当日供应链反馈结果" placement="top-start">
+						<span>当日供应链反馈结果</span>
+					</el-tooltip>
 				</template>
-			</el-table-column>
-			<el-table-column prop="cpfl" label="产品分类" width="100" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column label="当日供应链反馈结果" width="200" align="center">
 				<template slot-scope="scope">
 					<el-input size="small" placeholder="当日供应链反馈结果" v-model="scope.row.fkjg" @change="changeResult($event,scope.row.ksbm,'0')">
 					</el-input>
 				</template>
 			</el-table-column>
-			<el-table-column label="历史供应链反馈结果" width="150" align="center">
+			<el-table-column width="80" align="center">
+				<template slot="header">
+					<el-tooltip effect="dark" content="历史供应链反馈结果" placement="top-start">
+						<span>历史供应链反馈结果</span>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getRecord(scope.row.ksbm)">查看</el-button>
 				</template>
 			</el-table-column>
-			<el-table-column label="供应链建议" width="200" align="center">
+			<el-table-column width="160" align="center">
+				<template slot="header">
+					<el-tooltip effect="dark" content="供应链建议" placement="top-start">
+						<span>供应链建议</span>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<el-input size="small" placeholder="供应链建议" v-model="scope.row.jy" @change="changeResult($event,scope.row.ksbm,'1')">
 					</el-input>
@@ -122,7 +120,73 @@
 				table_page:1,
 				table_pagesize:10,
 				tableObj:{},
-				title_list:[]
+				column_list:[{
+					label:'事业部',
+					prop:'dept_name',
+					sort:false
+				},{
+					label:'主卖店铺',
+					prop:'zmdp',
+					sort:false
+				},{
+					label:'供应商',
+					prop:'gys',
+					sort:false
+				},{
+					label:'款式编码',
+					prop:'ksbm',
+					sort:false
+				},{
+					label:'供应商款号',
+					prop:'gyskh',
+					sort:false
+				},{
+					label:'3天销量',
+					prop:'3_xssl',
+					sort:'custom'
+				},{
+					label:'库存',
+					prop:'xykc',
+					sort:'custom'
+				},{
+					label:'缺货数',
+					prop:'qhs',
+					sort:'custom'
+				},{
+					label:'进货仓数',
+					prop:'jhcs',
+					sort:'custom'
+				},{
+					label:'当日采购在途数',
+					prop:'drcgzts',
+					sort:'custom'
+				},{
+					label:'到货率',
+					prop:'dhl',
+					sort:'custom',
+					unit:'%'
+				},{
+					label:'白坯款号',
+					prop:'bpkh',
+					sort:false
+				},{
+					label:'白坯供应商款号',
+					prop:'bpgyskh',
+					sort:false
+				},{
+					label:'白坯库存',
+					prop:'bpkc',
+					sort:false
+				},{
+					label:'合格率',
+					prop:'hgl',
+					sort:false,
+					unit:'%'
+				},{
+					label:'产品分类',
+					prop:'cpfl',
+					sort:false
+				}]
 			}
 		},
 		created(){
@@ -182,6 +246,7 @@
 				}else{
 					this.sort = '';
 				}
+				this.column_list.splice(6,3);
         		//采购总数
         		this.getData();
         	},
@@ -199,15 +264,16 @@
 				proResource.shortageFeedback(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data;
-						let title_list = [];
+						var i = 5;
 						for(let k in this.dataObj.title){
+							i += 1;
 							let obj = {
-								key:k,
-								value:this.dataObj.title[k]
+								label:this.dataObj.title[k],
+								prop:k,
+								sort:'custom'
 							}
-							title_list.push(obj)
+							this.column_list.splice(i,0,obj);
 						}
-						this.title_list = title_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -243,11 +309,13 @@
 			changePageSize(val) {
 				this.pagesize = val;
 				//获取列表
+				this.column_list.splice(6,3);
 				this.getData();
 			},
 			changePage(val) {
 				this.page = val;
 				//获取列表
+				this.column_list.splice(6,3);
 				this.getData();
 			},
 			//点击查看
@@ -300,10 +368,13 @@
 		}
 	}
 </script>
+
 <style lang="less" scoped>
 .table_top{
 	margin-bottom: 15px;
 	display: flex;
 	justify-content: flex-end;
 }
+
+
 </style>

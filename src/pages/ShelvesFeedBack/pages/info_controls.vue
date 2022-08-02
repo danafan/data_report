@@ -64,7 +64,8 @@
 			<el-table-column prop="severity" show-overflow-tooltip width="120" label="违规情况" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip width="120" label="商品链接" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="openUrl(scope.row.goods_link)">查看</el-button>
+					<div v-if="!scope.row.goods_link">无</div>
+					<el-button type="text" size="small" @click="openUrl(scope.row.goods_link)" v-else>查看</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column label="违规截图" width="120" align="center">
@@ -85,7 +86,7 @@
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="uploadImg('1',scope.row.id)" v-if="scope.row.status == '1'">上传违规截图</el-button>
 					<el-button type="text" size="small" @click="uploadImg('2',scope.row.id)" v-if="scope.row.status == '2'">上传处理结果</el-button>
-					<el-button type="text" size="small" v-if="scope.row.status == '3'" @click="openDetail('1',scope.row)">审核</el-button>
+					<el-button type="text" size="small" v-if="scope.row.status == '3' && button_list.check == 1" @click="openDetail('1',scope.row)">审核</el-button>
 					<el-button type="text" size="small" v-if="scope.row.status == '4' || scope.row.status == '5'" @click="openDetail('2',scope.row)">查看</el-button>
 				</template>
 			</el-table-column>
@@ -253,6 +254,7 @@
 				page:1,
 				pagesize:10,
 				dataObj:{},
+				button_list:{},					//审核按钮
 				imageDialog:false,
 				id:"",						//点击的某一条ID
 				big_img_url:"",
@@ -369,6 +371,7 @@
 				shelvesResource.violationList(arg).then(res => {
 					if(res.data.code == 1){
 						this.dataObj = res.data.data.list;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

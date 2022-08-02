@@ -44,19 +44,19 @@
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="shop_name" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
-			<el-table-column prop="trade_id" width="120" show-overflow-tooltip label="内部订单号" align="center"></el-table-column>
+			<el-table-column prop="trade_id" width="110" show-overflow-tooltip label="内部订单号" align="center"></el-table-column>
 			<el-table-column prop="trade_no" width="120" show-overflow-tooltip label="线上订单号" align="center"></el-table-column>
 			<el-table-column prop="goods_name" width="120" show-overflow-tooltip label="商品名称" align="center"></el-table-column>
-			<el-table-column prop="sell_count" label="数量" width="120" align="center">
+			<el-table-column prop="sell_count" label="数量" width="60" align="center">
 			</el-table-column>
 			<el-table-column prop="sndtime" width="160" label="发货时间" align="center">
 			</el-table-column>
 			<el-table-column prop="pay_time" width="160" label="支付时间" align="center"></el-table-column>
-			<el-table-column prop="i_id" width="140" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
+			<el-table-column prop="i_id" width="110" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
 			<el-table-column prop="goods_code" width="140" show-overflow-tooltip label="商品编码" align="center"></el-table-column>
-			<el-table-column prop="supplier_name" width="120" show-overflow-tooltip label="供应商名称" align="center"></el-table-column>
-			<el-table-column prop="supplier_sku_id" width="140" show-overflow-tooltip label="供应商款式编码" align="center"></el-table-column>
-			<el-table-column prop="supplier_i_id" width="140" show-overflow-tooltip label="供应商商品编码" align="center"></el-table-column>
+			<el-table-column prop="supplier_name" width="110" show-overflow-tooltip label="供应商名称" align="center"></el-table-column>
+			<el-table-column prop="supplier_sku_id" width="120" show-overflow-tooltip label="供应商款式编码" align="center"></el-table-column>
+			<el-table-column prop="supplier_i_id" width="120" show-overflow-tooltip label="供应商商品编码" align="center"></el-table-column>
 			<el-table-column prop="labels" label="预发货" align="center"></el-table-column>
 			<el-table-column prop="trade_status" label="状态" align="center"></el-table-column>
 		</el-table>
