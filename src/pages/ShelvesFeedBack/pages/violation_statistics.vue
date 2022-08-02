@@ -9,13 +9,13 @@
 			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="shop_name_ids" clearable multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.shop_name" :value="item.shop_name">
+					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺ID：">
 				<el-select v-model="shop_code_ids" clearable multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
+					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_code" :value="item.shop_code">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -49,7 +49,6 @@
 </div>
 </template>
 <script>
-	import resource from '../../../api/resource.js'
 	import shelvesResource from '../../../api/shelvesResource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../../api/nowMonth.js'
 	export default{
@@ -105,24 +104,10 @@
 		methods:{
 			// 获取店铺
 			getStoreList(){
-				let dept_ids_str = "";
-				if(this.dept_name_ids.length == 0){
-					dept_ids_str = '442802518,443780108';
-				}else{
-					var dept_ids = [];
-					this.dept_name_ids.map(item => {
-						this.dept_list.map(i => {
-							if(item == i.name){
-								dept_ids.push(i.id);
-							}
-						})
-					})
-					dept_ids_str = dept_ids.join(',');
-				}
 				let arg = {
-					dept_id:dept_ids_str
+					dept_id:this.dept_name_ids.length == 0?'442802518,443780108':this.dept_name_ids.join(',')
 				}
-				resource.ajaxViewStore(arg).then(res => {
+				shelvesResource.violationShopName(arg).then(res => {
 					if(res.data.code == 1){
 						this.shop_name_ids = [];	//选中的店铺名称列表
 						this.shop_code_ids = [];	//选中的店铺ID列表

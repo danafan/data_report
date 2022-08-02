@@ -23,12 +23,15 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table-column prop="company_body" show-overflow-tooltip label="公司主体" align="center"></el-table-column>
+			<el-table-column prop="shop" show-overflow-tooltip label="店铺" align="center"></el-table-column>
 			<el-table-column prop="bill_date" show-overflow-tooltip label="日期" align="center"></el-table-column>
 			<el-table-column prop="bill_account" show-overflow-tooltip label="支付宝账号" align="center"></el-table-column>
 			<el-table-column prop="init_amount" show-overflow-tooltip label="初始余额" align="center"></el-table-column>
 			<el-table-column prop="income_amount" show-overflow-tooltip label="收入" align="center"></el-table-column>
 			<el-table-column prop="disburse_amount" label="支出" align="center"></el-table-column>
 			<el-table-column prop="final_amount" label="最终余额" align="center"></el-table-column>
+			<el-table-column prop="remark" show-overflow-tooltip label="备注" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.data.total">

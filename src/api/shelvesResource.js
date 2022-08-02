@@ -22,6 +22,7 @@ let path = {
 	violationCheck:'offshelf/violation_check',		//审核
 	violationAnalysis:'offshelf/violation_analysis',//违规统计
 	violationExport:'offshelf/violation_export',	//信息管控列表导出
+	violationShopName:'offshelf/violation_shop_name',	//店铺列表
 
 	
 }						
@@ -113,6 +114,10 @@ export default{
 	//信息管控列表导出
 	violationExport(params){
 		return http.get(path.violationExport, params)
+	},
+	//店铺列表
+	violationShopName(params){
+		return http.get(path.violationShopName, params)
 	},
 }
 
