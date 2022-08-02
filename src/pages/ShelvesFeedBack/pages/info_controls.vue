@@ -82,10 +82,11 @@
 			<el-table-column prop="state" label="平台处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="status_string" label="店长处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="note" label="审核备注" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column label="操作" width="120" align="center" fixed="right">
+			<el-table-column label="操作" width="190" align="center" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="uploadImg('1',scope.row.id)" v-if="scope.row.status == '1'">上传违规截图</el-button>
-					<el-button type="text" size="small" @click="uploadImg('2',scope.row.id)" v-if="scope.row.status == '2'">上传处理结果</el-button>
+					<el-button type="text" size="small" @click="uploadImg('1',scope.row)" v-if="scope.row.status == '1' || scope.row.status == '4'">上传违规截图</el-button>
+					<el-button type="text" size="small" @click="uploadImg('2',scope.row)" v-if="scope.row.status == '2'">上传处理结果</el-button>
+					<el-button type="text" size="small" v-if="scope.row.status == '1' || scope.row.status == '2' || scope.row.status == '4'" @click="bigImg('1')">示例</el-button>
 					<el-button type="text" size="small" v-if="scope.row.status == '3' && button_list.check == 1" @click="openDetail('1',scope.row)">审核</el-button>
 					<el-button type="text" size="small" v-if="scope.row.status == '4' || scope.row.status == '5'" @click="openDetail('2',scope.row)">查看</el-button>
 				</template>
@@ -96,7 +97,7 @@
 			</el-pagination>
 		</div>
 		<!-- 图片放大 -->
-		<el-dialog title="图片" :visible.sync="imageDialog" width="30%" center>
+		<el-dialog title="图片" :visible.sync="imageDialog" width="50%" center>
 			<img class="big_img" :src="big_img_url">
 			<span slot="footer" class="dialog-footer">
 				<el-button type="primary" @click="imageDialog = false">关闭</el-button>
@@ -288,8 +289,12 @@
 		methods:{
 			//放大图片
 			bigImg(big_img_url){
+				if(big_img_url == '1'){
+					this.big_img_url = require('../../../static/slt_icon.png');
+				}else{
+					this.big_img_url = big_img_url;
+				}
 				this.imageDialog = true;
-				this.big_img_url = big_img_url;
 			},
 			// 获取店铺
 			getStoreList(){
@@ -410,9 +415,25 @@
 				window.open(url);
 			},
 			//点击上传图片
-			uploadImg(type,id){
+			uploadImg(type,item){
 				this.upload_type = type;
-				this.id = id;
+				this.id = item.id;
+				if(type == '1' && item.violations_img){	//违规图片
+					let file = {
+						domain:item.violations_img[0].split('com/')[0] + 'com/',
+						urls:item.violations_img[0].split('com/')[1],
+						is_del:false
+					}
+					this.violations_img.push(file);
+				} 
+				if(type == '2' && item.result){	//处理结果
+					let file = {
+						domain:item.result[0].split('com/')[0] + 'com/',
+						urls:item.result[0].split('com/')[1],
+						is_del:false
+					}
+					this.result_img.push(file);
+				}
 				this.imgDialog = true;
 			},
 			//关闭上传图片弹窗
@@ -506,7 +527,7 @@
 				let arg = {
 					id:this.detail_info.id,
 					status:this.audit_status,
-					note:this.note
+					note:this.note?this.note:''
 				}
 				shelvesResource.violationCheck(arg).then(res => {
 					if(res.data.code == 1){
