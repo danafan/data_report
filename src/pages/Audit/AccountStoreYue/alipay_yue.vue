@@ -31,7 +31,7 @@
 			<el-table-column prop="income_amount" show-overflow-tooltip label="收入" align="center"></el-table-column>
 			<el-table-column prop="disburse_amount" label="支出" align="center"></el-table-column>
 			<el-table-column prop="final_amount" label="最终余额" align="center"></el-table-column>
-			<el-table-column prop="remark" show-overflow-tooltip label="备注" align="center"></el-table-column>
+			<el-table-column prop="account_remark" show-overflow-tooltip label="备注" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.data.total">

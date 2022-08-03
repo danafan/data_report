@@ -7,7 +7,6 @@
 				<IncomeAnalysis v-if="item.web_url == 'income_analysis'"/>
 				<JstOrderAnalysis v-if="item.web_url == 'jst_order_analysis'"/>
 			</el-tab-pane>
-
 		</el-tabs>
 	</div>
 </template>

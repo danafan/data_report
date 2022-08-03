@@ -82,7 +82,7 @@
 			<el-table-column prop="state" label="平台处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="status_string" label="店长处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="note" label="审核备注" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column label="操作" width="190" align="center" fixed="right">
+			<el-table-column label="操作" width="190" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="uploadImg('1',scope.row)" v-if="scope.row.status == '1' || scope.row.status == '4'">上传违规截图</el-button>
 					<el-button type="text" size="small" @click="uploadImg('2',scope.row)" v-if="scope.row.status == '2'">上传处理结果</el-button>
@@ -93,7 +93,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" :page-size="15" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
 		<!-- 图片放大 -->
@@ -247,7 +247,7 @@
 				},	 										//时间区间
 				date:[],		//违规时间
 				page:1,
-				pagesize:10,
+				pagesize:15,
 				dataObj:{},
 				button_list:{},					//审核按钮
 				imageDialog:false,

@@ -122,6 +122,11 @@
 							name: '销售单量',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -174,6 +179,11 @@
 							name: '销售金额',
 							type: 'bar',
 							yAxisIndex:0,
+							label:{
+								show:true,
+								position: 'top',
+								formatter: '{c}万'
+							},
 							emphasis: {
 								focus: 'series'
 							},
@@ -548,7 +558,7 @@
 					tooltip: {
 						trigger: 'axis',
 						formatter (params) {
-							var relVal = '';
+							var relVal = params[0].axisValue + '<br/>';
 							for (var i = 0, l = params.length; i < l; i++) {
 								relVal += params[i].seriesName + ' : ' + params[i].value + legend.unit_list[i] + '<br/>';
 							}
