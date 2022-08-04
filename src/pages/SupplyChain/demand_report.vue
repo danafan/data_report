@@ -20,8 +20,12 @@
 			<el-form-item label="状态：">
 				<el-select v-model="status" clearable :popper-append-to-body="false" placeholder="全部">
 					<el-option label="待处理" value="0"></el-option>
-					<el-option label="接受" value="1"></el-option>
-					<el-option label="不接受" value="2"></el-option>
+					<el-option label="已接受" value="1"></el-option>
+					<el-option label="未接受" value="2"></el-option>
+					<el-option label="已转接" value="3"></el-option>
+					<el-option label="已延期" value="4"></el-option>
+					<el-option label="已完成" value="5"></el-option>
+					<el-option label="已结束" value="6"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -42,9 +46,9 @@
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=1')" v-if="button_list.detail == 1">详情</el-button>
 					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="button_list.edit == 1 && scope.row.is_accept == '待处理'">编辑</el-button>
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="button_list.handle == 1 && scope.row.is_accept == '待处理'">处理</el-button>
-					<!-- <el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=3')" v-if="button_list.turn_head == 1">转接负责人</el-button>
-					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=4')" v-if="button_list.confirm == 1">确认状态</el-button>
-					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=5')" v-if="button_list.delay == 1">延期解决</el-button> -->
+					<el-button type="text" size="small" @click="openZyq('1',scope.row.id)" v-if="button_list.turn_head == 1 && scope.row.is_accept == '未接受'">转接负责人</el-button>
+					<el-button type="text" size="small"" @click="openZyq('2',scope.row.id)" v-if="button_list.confirm == 1 && (scope.row.is_accept == '已接受' || scope.row.is_accept == '已延期')">确认状态</el-button>
+					<el-button type="text" size="small"" @click="openZyq('3',scope.row.id)" v-if="button_list.delay == 1 && scope.row.is_accept == '未接受'">延期解决</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_time" label="提报日期" align="center" width="120">
@@ -150,8 +154,29 @@
 				</el-form-item>
 			</el-form>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" size="small" @click="dealDialog = false">取消</el-button>
+				<el-button size="small" @click="dealDialog = false">取消</el-button>
 				<el-button type="primary" size="small" @click="commitFn">提交</el-button>
+			</div>
+		</el-dialog>
+		<!-- 转接负责人、延期解决、确认状态 -->
+		<el-dialog :title="dialog_title" center @close="closeZyq" width="45%" :close-on-click-modal="false" :visible.sync="zyqDialog">
+			<!-- 转接负责人 -->
+			<el-form size="small" v-if="zyq_type == '1'">
+				<el-form-item label="转接负责人：">
+					王芳
+				</el-form-item>
+				<el-form-item label="备注：" required>
+					<el-input style="width:360px" type="textarea"
+					placeholder="请输入备注（必填）"
+					:rows="5"
+					v-model="turn_remark"
+					maxlength="100"
+					show-word-limit></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="zyqDialog = false">取消</el-button>
+				<el-button type="primary" size="small" @click="commitZyq">提交</el-button>
 			</div>
 		</el-dialog>
 	</div>
@@ -204,6 +229,11 @@
 				hlxpg:'1',			//选中的合理性评估
 				yjdcsj:"",			//预计达成时间
 				remark:"",			//备注
+				zyqDialog:false,	//
+				id:"",				//点击的ID
+				zyq_type:"",		//弹窗类型
+				dialog_title:"",	//转接负责人、延期解决、确认状态弹窗标题
+				turn_remark:"",		//转接备注
 			}
 		},
 		beforeRouteLeave(to,from,next){
@@ -368,6 +398,55 @@
 						}
 					})
 				}
+			},
+			//转接、延期、确认弹窗打开
+			openZyq(type,id){
+				this.zyq_type = type;
+				this.id = id;
+				switch(type){
+					case '1':
+						this.dialog_title = '转接负责人';
+						break;
+					case '2':
+						this.dialog_title = '延期解决';
+						break;
+					case '3':
+						this.dialog_title = '确认状态';
+						break;
+				}
+				this.zyqDialog = true;
+			},
+			//转接、延期、确认弹窗关闭
+			closeZyq(){
+				this.turn_remark = "";
+			},
+			//提交
+			commitZyq(){
+				if(this.zyq_type == '1'){	//转接
+					if(this.turn_remark == ''){
+						this.$message.warning('请输入转接备注');
+						return;
+					}
+					//转接提交
+					this.commitZj();
+				}
+			},
+			//转接提交
+			commitZj(){
+				let arg = {
+					id:this.id,
+					turn_remark:this.turn_remark
+				}
+				demandResource.turnHead(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.zyqDialog = false;
+						//获取列表数据
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			}
 		}
 	}

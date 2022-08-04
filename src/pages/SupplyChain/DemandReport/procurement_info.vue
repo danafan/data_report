@@ -146,27 +146,6 @@
 							<el-button size="small" type="primary" @click="commitFn">提交</el-button>
 						</div>
 					</div>
-					<!-- 转接 -->
-					<div v-if="type == '3'">
-						<el-divider></el-divider>
-						<el-form-item label="转接人：">
-							{{detail_info.turn_name}}
-						</el-form-item>
-						<el-form-item label="转接负责人：">
-							王芳
-						</el-form-item>
-						<el-form-item label="备注：">
-							<el-input style="width:360px;margin-bottom: 15px" type="textarea"
-							placeholder="请输入备注"
-							:rows="7"
-							v-model="turn_remark"
-							maxlength="100"
-							show-word-limit></el-input>
-						</el-form-item>
-						<div class="button_row">
-							<el-button size="small" type="primary" @click="commitZj">提交</el-button>
-						</div>
-					</div>
 				</el-form>
 			</div>
 		</div>
@@ -178,14 +157,13 @@
 		data(){
 			return{
 				id:"",		
-				type:"1",			//1:详情；2:处理；3:转接；4:确认状态；5:延期处理	
+				type:"1",			//1:详情；2:处理	
 				detail_info:{
 					gys_model:''
 				},		//详情数据
 				hlxpg:1,			//选中的合理性评估
 				yjdcsj:"",			//预计达成时间
 				remark:"",			//备注
-				turn_remark:"",		//转接备注
 			}
 		},
 		created(){
@@ -232,21 +210,6 @@
 						}
 					})
 				}
-			},
-			//转接提交
-			commitZj(){
-				let arg = {
-					id:this.id,
-					turn_remark:this.turn_remark
-				}
-				demandResource.turnHead(arg).then(res => {
-					if(res.data.code == 1){
-						this.$message.success(res.data.msg);
-						this.$router.go(-1);
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
 			}
 		},
 		components:{
