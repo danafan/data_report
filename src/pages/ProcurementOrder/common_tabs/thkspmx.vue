@@ -117,7 +117,7 @@
 				}},				//获取到的数据
 				columnDataObj:[{
 					label:'白坯供应商款号',
-					prop:'bp_gys'
+					prop:'bp_gyshh'
 				},{
 					label:'白坯款式编码',
 					prop:'bpkh'

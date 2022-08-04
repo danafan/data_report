@@ -8,6 +8,7 @@ let path = {
 	searchList:'supply_chain/search_list',		//查询条件列表
 	supplyChainAudit:'supply_chain/audit',		//审核
 	supplyChainExport:'supply_chain/export',	//导出
+	turnHead:'supply_chain/turn_head',			//转接提交
 	
 }						
 export default{
@@ -42,6 +43,10 @@ export default{
 	//导出
 	supplyChainExport(params){
 		return http.get(path.supplyChainExport, params)
+	},
+	//转接提交
+	turnHead(params){
+		return http.post(path.turnHead, params)
 	},
 	
 }

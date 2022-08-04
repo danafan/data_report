@@ -37,11 +37,14 @@
 		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
 			<el-table-column type="selection" width="55" fixed="left" :selectable="selectFn" v-if="button_list.handle == 1"></el-table-column>
-			<el-table-column label="操作" align="center" width="120" fixed="left">
+			<el-table-column label="操作" align="center" width="320" fixed="left">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=1')" v-if="button_list.detail == 1">详情</el-button>
 					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="button_list.edit == 1 && scope.row.is_accept == '待处理'">编辑</el-button>
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="button_list.handle == 1 && scope.row.is_accept == '待处理'">处理</el-button>
+					<!-- <el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=3')" v-if="button_list.turn_head == 1">转接负责人</el-button>
+					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=4')" v-if="button_list.confirm == 1">确认状态</el-button>
+					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=5')" v-if="button_list.delay == 1">延期解决</el-button> -->
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_time" label="提报日期" align="center" width="120">

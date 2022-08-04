@@ -28,6 +28,7 @@
 			<el-table-column prop="ksbm" label="新编码" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="成本价" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="edit_cb_price" label="反馈成本价" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="billing_time" label="开单时间" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="opreater_name" label="反馈人" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="add_time" label="反馈时间" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="remark" label="反馈原因" show-overflow-tooltip align="center"></el-table-column>
@@ -55,7 +56,7 @@
 			<el-input type="textarea" :rows="5" placeholder="拒绝原因（选填）" v-model="refused_text">
 			</el-input>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" size="small" @click="closeRefused = false">取消</el-button>
+				<el-button type="primary" size="small" @click="refusedDialog = false">取消</el-button>
 				<el-button type="primary" size="small" @click="commitFn('0')">提交</el-button>
 			</div>
 		</el-dialog>

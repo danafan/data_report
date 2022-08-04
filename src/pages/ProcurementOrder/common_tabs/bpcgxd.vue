@@ -579,7 +579,7 @@
 			//供应商下单表
 			twoWhiteGysOrder(){
 				let arg = {
-					creat_rq:this.creat_rq,
+					creat_rq:this.creat_rq?this.creat_rq:'',
 					bp_gys:this.select_gys_list.join(','),
 					sort:this.gys_order_sort,
 					page:this.gysxd_page,
@@ -615,7 +615,7 @@
 			twoWhiteGysOrderExport(){
 				let arg = {
 					sort:this.gys_order_sort,
-					creat_rq:this.creat_rq,
+					creat_rq:this.creat_rq?this.creat_rq:'',
 					bp_gys:this.select_gys_list.join(',')
 				}
 				if(this.dept == 'er_dept'){
@@ -673,7 +673,7 @@
 			//白坯款下单表
 			twoWhiteKsOrder(){
 				let arg = {
-					creat_rq:this.creat_rq,
+					creat_rq:this.creat_rq?this.creat_rq:'',
 					bp_gys:this.select_gys_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
 					sort:this.ks_order_sort,
@@ -709,7 +709,7 @@
 			//白坯款式下单表导出
 			twoWhiteKsOrderExport(){
 				let arg = {
-					creat_rq:this.creat_rq,
+					creat_rq:this.creat_rq?this.creat_rq:'',
 					sort:this.ks_order_sort,
 					bp_gys:this.select_gys_list.join(','),
 					bpkh:this.select_ksbm_list.join(',')
@@ -769,7 +769,7 @@
 			//白坯款商品编码下单表
 			twoWhiteBmOrder(){
 				let arg = {
-					creat_rq:this.creat_rq,
+					creat_rq:this.creat_rq?this.creat_rq:'',
 					bp_gys:this.select_gys_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
 					bpspbm:this.select_bpkh_list.join(','),
@@ -827,7 +827,7 @@
 			//白坯款商品编码下单表导出
 			twoWhiteBmOrderExport(){
 				let arg = {
-					creat_rq:this.creat_rq,
+					creat_rq:this.creat_rq?this.creat_rq:'',
 					sort:this.bm_order_sort,
 					bp_gys:this.select_gys_list.join(','),
 					bpkh:this.select_ksbm_list.join(','),
