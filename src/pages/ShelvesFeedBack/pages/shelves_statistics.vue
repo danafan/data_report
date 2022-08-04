@@ -217,6 +217,7 @@
 						}
 					},
 					legend: {
+						left:'200',
 						data: legend
 					},
 					xAxis: [{
@@ -250,6 +251,20 @@
 							focus: 'series'
 						},
 						data: list[2].list
+					},{
+						name: list[3].name,
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						data: list[3].list
+					},{
+						name: list[4].name,
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						data: list[4].list
 					}]
 				}
 			},
