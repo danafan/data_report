@@ -6,6 +6,8 @@
 					<el-option label="事业二部" value="事业二部"></el-option>
 					<el-option label="事业四部" value="事业四部"></el-option>
 					<el-option label="新兴事业部" value="新兴事业部"></el-option>
+					<el-option label="抖店中心" value="抖店中心"></el-option>
+					<el-option label="直播BD项目部" value="直播BD项目部"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺名称：">

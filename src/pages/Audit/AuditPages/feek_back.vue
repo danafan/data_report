@@ -113,6 +113,9 @@
 		<el-form-item label="反馈成本价：">
 			<div class="value">{{itemInfo.edit_cb_price}}</div>
 		</el-form-item>
+		<el-form-item label="开单时间：">
+			<div class="value">{{itemInfo.billing_time}}</div>
+		</el-form-item>
 		<el-form-item label="原因：">
 			<div class="value">{{itemInfo.remark}}</div>
 		</el-form-item>

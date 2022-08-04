@@ -2,8 +2,8 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<ShelvesRecord v-if="item.web_url == 'shelves_record'"/>
-				<shelvesStatistics v-if="item.web_url == 'shelves_statistics'"/>
+				<InfoControls v-if="item.web_url == 'info_controls'"/>
+				<ViolationStatistics v-if="item.web_url == 'violation_statistics'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -14,8 +14,8 @@
 }
 </style>
 <script>
-	import ShelvesRecord from './pages/shelves_record.vue'
-	import shelvesStatistics from './pages/shelves_statistics.vue'
+	import InfoControls from './pages/info_controls.vue'
+	import ViolationStatistics from './pages/violation_statistics.vue'
 	export default{
 		data(){
 			return{
@@ -40,7 +40,7 @@
 			},
 			getIndex(){
 				this.ss.map(item => {
-					if (item.web_url == 'shelves_feedback') {
+					if (item.web_url == 'illegal_control') {
 						this.menu_list = item.list;
 						let current_tab = this.$store.state.current_tab;
 						this.activeTab = current_tab == ''?this.menu_list[0].web_url:current_tab;
@@ -54,8 +54,8 @@
 			}
 		},
 		components:{
-			shelvesStatistics,
-			ShelvesRecord
+			InfoControls,
+			ViolationStatistics
 		}
 	}
 </script>

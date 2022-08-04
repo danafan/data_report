@@ -166,7 +166,7 @@
 						if (dayOrdersChart == null) { 
 							dayOrdersChart = echarts.init(day_orders_ele);
 						}
-						dayOrdersChart.setOption(this.setChartOption('日订单数',day_orders_legend,day_orders_xAxis,day_orders_series));
+						dayOrdersChart.setOption(this.setChartOption('日订单数-去除黑标（不包含唯品、京东）',day_orders_legend,day_orders_xAxis,day_orders_series));
 						//付款金额
 						let payment_amount = res.data.data.payment_amount;
 						let payment_amount_legend = {
@@ -209,7 +209,7 @@
 						if (payMentAmountChart == null) { 
 							payMentAmountChart = echarts.init(payment_amount_ele);
 						}
-						payMentAmountChart.setOption(this.setChartOption('付款金额',payment_amount_legend,payment_amount_xAxis,payment_amount_series));	
+						payMentAmountChart.setOption(this.setChartOption('付款金额-去除黑标（不包含唯品、京东）',payment_amount_legend,payment_amount_xAxis,payment_amount_series));	
 						//渠道订单占比
 						let proportion_orders = res.data.data.proportion_orders;
 						let proportion_orders_legend = {

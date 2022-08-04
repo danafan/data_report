@@ -131,28 +131,36 @@
 				<el-form-item label="成本价：">
 					{{cb_price}}
 				</el-form-item>
-				<el-form-item label="反馈成本价：" required>
-					<el-input placeholder="请输入反馈成本价" type="number" style="width: 300px" v-model="new_cb_price">
-					</el-input>
-				</el-form-item>
-				<el-form-item label="原因：">
-					<el-input type="textarea" :rows="2" style="width: 300px" placeholder="请输入原因" v-model="feek_back_remark">
-					</el-input>
-				</el-form-item>
-			</el-form>
-			<el-dialog width="30%" title="提示" :visible.sync="innerDialog" append-to-body>
-				<div>反馈成本价是：{{new_cb_price}}元</div>
-				<div slot="footer" class="dialog-footer">
-					<el-button type="primary" size="small" @click="innerDialog = false">取消</el-button>
-					<el-button type="primary" size="small" @click="commitFeedBack">提交</el-button>
-				</div>
-			</el-dialog>
+				<el-form-item label="开单时间：" required>
+					<el-date-picker
+					v-model="kd_time"
+					value-format="yyyy-MM-dd HH:mm:ss"
+					type="datetime"
+					placeholder="选择日期时间">
+				</el-date-picker>
+			</el-form-item>
+			<el-form-item label="反馈成本价：" required>
+				<el-input placeholder="请输入反馈成本价" type="number" style="width: 300px" v-model="new_cb_price">
+				</el-input>
+			</el-form-item>
+			<el-form-item label="原因：">
+				<el-input type="textarea" :rows="2" style="width: 300px" placeholder="请输入原因" v-model="feek_back_remark">
+				</el-input>
+			</el-form-item>
+		</el-form>
+		<el-dialog width="30%" title="提示" :visible.sync="innerDialog" append-to-body>
+			<div>反馈成本价是：{{new_cb_price}}元</div>
 			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" size="small" @click="feedBackDialog = false">取消</el-button>
-				<el-button type="primary" size="small" @click="commitFn">确认</el-button>
+				<el-button type="primary" size="small" @click="innerDialog = false">取消</el-button>
+				<el-button type="primary" size="small" @click="commitFeedBack">提交</el-button>
 			</div>
 		</el-dialog>
-	</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button type="primary" size="small" @click="feedBackDialog = false">取消</el-button>
+			<el-button type="primary" size="small" @click="commitFn">确认</el-button>
+		</div>
+	</el-dialog>
+</div>
 </template>
 <style lang="less" scoped>
 .buts{
@@ -246,6 +254,7 @@
 				id:"",					//点击反馈的ID
 				ksbm:"",				//点击反馈的编码
 				cb_price:"",			//点击反馈的成本价
+				kd_time:"",				//开单时间
 				new_cb_price:"",		//点击反馈的新成本价
 				feek_back_remark:"",	//点击反馈的原因
 				innerDialog:false,		//内部提示
@@ -375,11 +384,14 @@
 				this.ksbm = "";				//点击反馈的编码
 				this.cb_price = "";			//点击反馈的成本价
 				this.new_cb_price = "";		//点击反馈的新成本价
+				this.kd_time = "";			//开单时间
 				this.feek_back_remark = "";	//点击反馈的原因
 			},
 			//确认
 			commitFn(){
-				if(this.new_cb_price == ""){
+				if(!this.kd_time){
+					this.$message.warning('请选择开单时间！');
+				}else if(this.new_cb_price == ""){
 					this.$message.warning('请输入反馈成本价！');
 				}else{
 					this.innerDialog = true;
@@ -389,6 +401,7 @@
 			commitFeedBack(){
 				let arg = {
 					id:this.id,
+					billing_time:this.kd_time,
 					feedback_price:this.new_cb_price,
 					reason:this.feek_back_remark
 				}
