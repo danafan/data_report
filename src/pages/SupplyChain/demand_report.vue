@@ -47,8 +47,9 @@
 					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="button_list.edit == 1 && scope.row.is_accept == '待处理'">编辑</el-button>
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="button_list.handle == 1 && scope.row.is_accept == '待处理'">处理</el-button>
 					<el-button type="text" size="small" @click="openZyq('1',scope.row.id)" v-if="button_list.turn_head == 1 && scope.row.is_accept == '未接受'">转接负责人</el-button>
-					<el-button type="text" size="small"" @click="openZyq('2',scope.row.id)" v-if="button_list.confirm == 1 && (scope.row.is_accept == '已接受' || scope.row.is_accept == '已延期')">确认状态</el-button>
-					<el-button type="text" size="small"" @click="openZyq('3',scope.row.id)" v-if="button_list.delay == 1 && scope.row.is_accept == '未接受'">延期解决</el-button>
+					<el-button type="text" size="small"" @click="openZyq('2',scope.row.id)" v-if="button_list.delay == 1 && scope.row.is_accept == '已接受'">延期解决</el-button>
+					<el-button type="text" size="small"" @click="openZyq('3',scope.row.id)" v-if="button_list.confirm == 1 && (scope.row.is_accept == '已接受' || scope.row.is_accept == '已延期')">确认状态</el-button>
+					<el-button type="text" size="small"" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=3')" v-if="button_list.reply == 1 && scope.row.is_accept == '已转接'">负责人回复</el-button>
 				</template>
 			</el-table-column>
 			<el-table-column prop="create_time" label="提报日期" align="center" width="120">
@@ -174,6 +175,49 @@
 					show-word-limit></el-input>
 				</el-form-item>
 			</el-form>
+			<!-- 延期解决 -->
+			<el-form size="small" v-if="zyq_type == '2'">
+				<el-form-item label="延期解决时间：" required>
+					<el-date-picker v-model="delay_date" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+					</el-date-picker>
+				</el-form-item>
+				<el-form-item label="延期备注：" required>
+					<el-input style="width:360px" type="textarea"
+					placeholder="请输入备注（必填）"
+					:rows="5"
+					v-model="delay_remark"
+					maxlength="100"
+					show-word-limit></el-input>
+				</el-form-item>
+			</el-form>
+			<!-- 确认状态 -->
+			<el-form size="small" v-if="zyq_type == '3'">
+				<el-form-item label="完成状态：">
+					<el-radio-group v-model="is_accept">
+						<el-radio :label="5">完成</el-radio>
+						<el-radio :label="3">未完成</el-radio>
+					</el-radio-group>
+				</el-form-item>
+				<el-form-item label="确认凭证：" required v-if="is_accept == 5">
+					<div class="img_list">
+						<div class="dialog_img" v-for="(item,index) in confirm_image" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
+							<img class="img" :src="item.domain + item.urls">
+							<div class="modal" v-if="item.is_del == true">
+								<img src="../../static/deleteImg.png" @click="deteleFile(item.urls,index)">
+							</div>
+						</div>
+						<UploadFile :max_num="3" :current_num="confirm_image.length" @callbackFn="uploadFile" v-if="confirm_image.length < 3"/>
+					</div>
+				</el-form-item>
+				<el-form-item label="转接王芳(负责人)：" required v-if="is_accept == 3">
+					<el-input style="width:360px" type="textarea"
+					placeholder="请输入备注（必填）"
+					:rows="5"
+					v-model="turn_remark"
+					maxlength="100"
+					show-word-limit></el-input>
+				</el-form-item>
+			</el-form>
 			<div slot="footer" class="dialog-footer">
 				<el-button size="small" @click="zyqDialog = false">取消</el-button>
 				<el-button type="primary" size="small" @click="commitZyq">提交</el-button>
@@ -183,10 +227,12 @@
 </template>
 <script>
 	import resource from '../../api/resource.js'
+	import auditResource from '../../api/auditResource.js'
 	import demandResource from '../../api/demandResource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+	import UploadFile from '../../components/upload_file.vue'
 	export default{
 		data(){
 			return{
@@ -234,6 +280,10 @@
 				zyq_type:"",		//弹窗类型
 				dialog_title:"",	//转接负责人、延期解决、确认状态弹窗标题
 				turn_remark:"",		//转接备注
+				delay_date:"",		//延期解决时间
+				delay_remark:"",	//延期备注
+				is_accept:5,		//完成状态
+				confirm_image:[],	//确认凭证
 			}
 		},
 		beforeRouteLeave(to,from,next){
@@ -405,20 +455,24 @@
 				this.id = id;
 				switch(type){
 					case '1':
-						this.dialog_title = '转接负责人';
-						break;
+					this.dialog_title = '转接负责人';
+					break;
 					case '2':
-						this.dialog_title = '延期解决';
-						break;
+					this.dialog_title = '延期解决';
+					break;
 					case '3':
-						this.dialog_title = '确认状态';
-						break;
+					this.dialog_title = '确认状态';
+					break;
 				}
 				this.zyqDialog = true;
 			},
 			//转接、延期、确认弹窗关闭
 			closeZyq(){
 				this.turn_remark = "";
+				this.delay_date = "";			//延期解决时间
+				this.delay_remark = "";			//延期备注
+				this.is_accept = 5;				//完成状态
+				this.confirm_image = [];		//确认凭证
 			},
 			//提交
 			commitZyq(){
@@ -429,6 +483,28 @@
 					}
 					//转接提交
 					this.commitZj();
+				}else if(this.zyq_type == '2'){	//延期
+					if(!this.delay_date){
+						this.$message.warning('请选择延期时间');
+						return;
+					}else if(this.delay_remark == ''){
+						this.$message.warning('请填写延期备注');
+						return;
+					}else{
+						//延期解决
+						this.commitYq();
+					}
+				}else if(this.zyq_type == '3'){	//确认状态
+					if(this.is_accept == 5 && this.confirm_image.length == 0){
+						this.$message.warning('请上传确认凭证');
+						return;
+					}else if(this.is_accept == 3 && this.turn_remark == ''){
+						this.$message.warning('请填写转接备注');
+						return;
+					}else{
+						//确认状态
+						this.confirmStatus();
+					}
 				}
 			},
 			//转接提交
@@ -447,7 +523,69 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//延期解决
+			commitYq(){
+				let arg = {
+					id:this.id,
+					delay_date:this.delay_date,
+					delay_remark:this.delay_remark
+				}
+				demandResource.delayDeal(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.zyqDialog = false;
+						//获取列表数据
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//上传照片
+			uploadFile(arg){
+				arg.file.is_del = false;
+				this.confirm_image.push(arg.file);
+			},
+			//删除图片
+			deteleFile(url,index){
+				auditResource.delImage({url:url}).then(res => {
+					if(res.data.code == 1){
+						this.confirm_image.splice(index,1);
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
+			},
+			//确认状态
+			confirmStatus(){
+				let arg = {
+					id:this.id,
+					is_accept:this.is_accept
+				}
+				if(this.is_accept == 5){	//完成
+					let confirm_image_arr = [];
+					this.confirm_image.map(item => {
+						confirm_image_arr.push(item.urls);
+					})
+					arg.confirm_image = confirm_image_arr.join(',');
+				}else{	//未完成
+					arg.turn_remark = this.turn_remark;
+				}
+				demandResource.confirmStatus(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.zyqDialog = false;
+						//获取列表数据
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			}
+		},
+		components:{
+			UploadFile
 		}
 	}
 </script>
@@ -460,6 +598,39 @@
 	.right_buts{
 		display: flex;
 		align-items: center;
+	}
+}
+.img_list{
+	margin-bottom: 10px;
+	display:flex;
+	flex-wrap: wrap;
+	.dialog_img{
+		margin-right: 10px;
+		margin-bottom: 10px;
+		position: relative;
+		width: 120px;
+		height: 120px;
+		.img{
+			width: 100%;
+			height: 100%;
+		}
+		.modal{
+			background: rgba(0,0,0,.6);
+			position: absolute;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+			img{
+				position: absolute;
+				top: 50%;
+				left: 50%;
+				transform: translate(-50%,-50%);
+				display:block;
+				width: 30px;
+				height: 30px;
+			}
+		}
 	}
 }
 </style>

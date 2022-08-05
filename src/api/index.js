@@ -30,14 +30,14 @@ function endLoading() {
 
 instance.interceptors.request.use(
   config => {
-    startLoading();
+    // startLoading();
     return config
   },error => {
-    endLoading()
+    // endLoading()
     return Promise.reject(error)
   })
 instance.interceptors.response.use(response => {
-  endLoading()
+  // endLoading()
   switch (response.data.code) {
     case 1:
     return response;
@@ -55,7 +55,7 @@ instance.interceptors.response.use(response => {
        return response;
   }
 },function (error) {
-  endLoading()
+  // endLoading()
   if (error.response) {
     switch (error.response.status) {
       case 404:

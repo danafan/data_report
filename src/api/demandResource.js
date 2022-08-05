@@ -9,6 +9,9 @@ let path = {
 	supplyChainAudit:'supply_chain/audit',		//审核
 	supplyChainExport:'supply_chain/export',	//导出
 	turnHead:'supply_chain/turn_head',			//转接提交
+	delayDeal:'supply_chain/delay_deal',		//延期解决
+	confirmStatus:'supply_chain/confirm_status',//确认状态
+	turnReply:'supply_chain/turn_reply',		//负责人回复
 	
 }						
 export default{
@@ -47,6 +50,18 @@ export default{
 	//转接提交
 	turnHead(params){
 		return http.post(path.turnHead, params)
+	},
+	//延期解决
+	delayDeal(params){
+		return http.post(path.delayDeal, params)
+	},
+	//确认状态
+	confirmStatus(params){
+		return http.post(path.confirmStatus, params)
+	},
+	//负责人回复
+	turnReply(params){
+		return http.post(path.turnReply, params)
 	},
 	
 }
