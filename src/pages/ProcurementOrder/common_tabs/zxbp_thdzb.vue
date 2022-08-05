@@ -39,18 +39,18 @@
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-			<el-table-column prop="gyshh" label="烫画款供应商款号" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="gyshh" label="烫画款供应商款号" width="150" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thkh" label="烫画款号" width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="thspbm" label="烫画商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="thspbm" label="烫画商品编码" width="150" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column label="烫画款颜色规格" width="120" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.th_color}}/{{scope.row.th_size}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column prop="bp_gyshh" label="白坯款供应商款号" width="140" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="bp_gyshh" label="白坯款供应商款号" width="150" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="bpkh" label="白坯款号" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cpfl" label="白坯分类" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="bpspbm" label="白坯商品编码" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="bpspbm" label="白坯商品编码" width="150" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column label="白坯款颜色规格" width="120" show-overflow-tooltip align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.bp_color}}/{{scope.row.bp_size}}</div>

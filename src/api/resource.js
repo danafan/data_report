@@ -225,6 +225,7 @@ let path = {
 	daydataExport:'overseas/daydata_export',						//海外店铺日数据导出
 	giftcardExport:'overseas/giftcard_export',						//海外店铺销售数据导出
 	advExport:'overseas/adv_export',								//海外店铺广告数据导出
+	tableSetting:'common/table_setting',							//表格列宽设置
 		
 
 }					
@@ -1160,6 +1161,10 @@ export default{
 	//海外店铺广告数据导出
 	advExport(params){
 		return http.post(path.advExport, params)
+	},
+	//列表列宽设置
+	tableSetting(params){
+		return http.post(path.tableSetting, params)
 	},
 }
 

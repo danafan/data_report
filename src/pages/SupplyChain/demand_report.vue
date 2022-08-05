@@ -47,7 +47,7 @@
 					<el-button type="text" size="small" @click="$router.push('/created_demand?id=' + scope.row.id)" v-if="button_list.edit == 1 && scope.row.is_accept == '待处理'">编辑</el-button>
 					<el-button type="text" size="small" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=2')" v-if="button_list.handle == 1 && scope.row.is_accept == '待处理'">处理</el-button>
 					<el-button type="text" size="small" @click="openZyq('1',scope.row.id)" v-if="button_list.turn_head == 1 && scope.row.is_accept == '未接受'">转接负责人</el-button>
-					<el-button type="text" size="small"" @click="openZyq('2',scope.row.id)" v-if="button_list.delay == 1 && scope.row.is_accept == '已接受'">延期解决</el-button>
+					<el-button type="text" size="small"" @click="openZyq('2',scope.row.id)" v-if="button_list.delay == 1 && (scope.row.is_accept == '已接受' || scope.row.is_accept == '已延期')">延期解决</el-button>
 					<el-button type="text" size="small"" @click="openZyq('3',scope.row.id)" v-if="button_list.confirm == 1 && (scope.row.is_accept == '已接受' || scope.row.is_accept == '已延期')">确认状态</el-button>
 					<el-button type="text" size="small"" @click="$router.push('/procurement_info?id=' + scope.row.id + '&type=3')" v-if="button_list.reply == 1 && scope.row.is_accept == '已转接'">负责人回复</el-button>
 				</template>

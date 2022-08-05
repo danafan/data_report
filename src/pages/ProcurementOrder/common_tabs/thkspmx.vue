@@ -42,8 +42,8 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="tableCellStyle" @sort-change='sortChange'>
-			<el-table-column :prop="item.prop" sortable="custom" width="60" align="center" show-overflow-tooltip v-for="item in columnDataObj">
+		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="tableCellStyle" @sort-change='sortChange' @header-dragend="dragendChange">
+			<el-table-column column-key="0" :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in columnDataObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
 						<span>{{item.label}}</span>
@@ -54,7 +54,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column align="center" label="烫画款">
-				<el-table-column :prop="item.prop" sortable="custom" width="60" align="center" show-overflow-tooltip v-for="item in thkDataObj">
+				<el-table-column column-key="1" :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in thkDataObj">
 					<template slot="header">
 						<el-tooltip effect="dark" :content="item.label" placement="top-start">
 							<span>{{item.label}}</span>
@@ -66,7 +66,7 @@
 				</el-table-column>
 			</el-table-column>
 			<el-table-column align="center" label="白坯款">
-				<el-table-column :prop="item.prop" sortable="custom" width="60" align="center" show-overflow-tooltip v-for="item in bpDataObj">
+				<el-table-column column-key="2" :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in bpDataObj">
 					<template slot="header">
 						<el-tooltip effect="dark" :content="item.label" placement="top-start">
 							<span>{{item.label}}</span>
@@ -77,7 +77,7 @@
 					</template>
 				</el-table-column>
 			</el-table-column>
-			<el-table-column :prop="item.prop" sortable="custom" width="60" align="center" show-overflow-tooltip v-for="item in endDataObj">
+			<el-table-column column-key="3" :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in endDataObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
 						<span>{{item.label}}</span>
@@ -95,6 +95,7 @@
 	</div>
 </template>
 <script>
+	import commonResource from '../../../api/resource.js'
 	import resource from '../../../api/procurementResource.js'
 	import {getNowDate} from '../../../api/nowMonth.js'
 	import {exportPost} from '../../../api/export.js'
@@ -117,95 +118,124 @@
 				}},				//获取到的数据
 				columnDataObj:[{
 					label:'白坯供应商款号',
-					prop:'bp_gyshh'
+					prop:'bp_gyshh',
+					width:60
 				},{
 					label:'白坯款式编码',
-					prop:'bpkh'
+					prop:'bpkh',
+					width:60
 				},{
 					label:'白坯款商品编码',
-					prop:'bpspbm'
+					prop:'bpspbm',
+					width:60
 				},{
 					label:'白坯颜色',
-					prop:'bp_color'
+					prop:'bp_color',
+					width:60
 				},{
 					label:'白坯尺码',
-					prop:'bp_size'
+					prop:'bp_size',
+					width:60
 				}],
 				thkDataObj:[{
 					label:'烫画款式编码',
-					prop:'thkh'
+					prop:'thkh',
+					width:60
 				},{
 					label:'商品编码',
-					prop:'thspbm'
+					prop:'thspbm',
+					width:60
 				},{
 					label:'供应商',
-					prop:'th_gys'
+					prop:'th_gys',
+					width:60
 				},{
 					label:'供应商款号',
-					prop:'th_gyshh'
+					prop:'th_gyshh',
+					width:60
 				},{
 					label:'颜色',
-					prop:'th_color'
+					prop:'th_color',
+					width:60
 				},{
 					label:'尺码',
-					prop:'th_size'
+					prop:'th_size',
+					width:60
 				},{
 					label:'三天前销量',
-					prop:'thr_xssl'
+					prop:'thr_xssl',
+					width:60
 				},{
 					label:'两天前销量',
-					prop:'scd_xssl'
+					prop:'scd_xssl',
+					width:60
 				},{
 					label:'一天前销量',
-					prop:'yes_xssl'
+					prop:'yes_xssl',
+					width:60
 				},{
 					label:'三天销量',
-					prop:'3_xssl'
+					prop:'3_xssl',
+					width:60
 				},{
 					label:'七天销量',
-					prop:'7_xssl'
+					prop:'7_xssl',
+					width:60
 				},{
 					label:'箱及仓位库存',
-					prop:'th_xjcw_stock'
+					prop:'th_xjcw_stock',
+					width:60
 				},{
 					label:'可用数',
-					prop:'th_kys'
+					prop:'th_kys',
+					width:60
 				},{
 					label:'采购在途',
-					prop:'th_cgzt'
+					prop:'th_cgzt',
+					width:60
 				},{
 					label:'进货仓库存',
-					prop:'th_jhc_stock'
+					prop:'th_jhc_stock',
+					width:60
 				}],						//烫画款
 				bpDataObj:[{
 					label:'白坯箱及仓位库存',
-					prop:'bp_xjcw_stock'
+					prop:'bp_xjcw_stock',
+					width:60
 				},{
 					label:'可用数',
-					prop:'bp_kys'
+					prop:'bp_kys',
+					width:60
 				},{
 					label:'采购在途',
-					prop:'bp_cgzt'
+					prop:'bp_cgzt',
+					width:60
 				},{
 					label:'进货仓库存',
-					prop:'bp_jhc_stock'
+					prop:'bp_jhc_stock',
+					width:60
 				},{
 					label:'安全库存',
-					prop:'min_qty'
+					prop:'min_qty',
+					width:60
 				},{
 					label:'白坯合格率',
 					prop:'bp_hgl',
+					width:60,
 					unit:'%'
 				}],						//白坯款
 				endDataObj:[{
 					label:'是否备货',
-					prop:'th_stock_up'
+					prop:'th_stock_up',
+					width:60
 				},{
 					label:'有无对照白坯款',
-					prop:'is_bp'
+					prop:'is_bp',
+					width:60
 				},{
 					label:'售后退货率',
 					prop:'fut_rate',
+					width:60,
 					unit:'%'
 				}],
 				page:1,
@@ -225,6 +255,52 @@
 			this.getData();
 		},
 		methods:{
+			dragendChange(newWidth, oldWidth, column, event){
+				let index = column.index;
+				if(column.columnKey == '0'){
+					this.columnDataObj[index].width = newWidth;
+				}else if(column.columnKey == '1'){
+					this.thkDataObj[index].width = newWidth;
+				}else if(column.columnKey == '3'){
+					this.bpDataObj[index].width = newWidth;
+				}else if(column.columnKey == '4'){
+					this.endDataObj[index].width = newWidth;
+				}
+				let arr = [];
+				this.columnDataObj.map(item => {
+					let str = item.prop + '-' + item.width;
+					arr.push(str);
+				})
+				this.thkDataObj.map(item => {
+					let str = item.prop + '-' + item.width;
+					arr.push(str);
+				})
+				this.bpDataObj.map(item => {
+					let str = item.prop + '-' + item.width;
+					arr.push(str);
+				})
+				this.endDataObj.map(item => {
+					let str = item.prop + '-' + item.width;
+					arr.push(str);
+				})
+				let arg = {
+					table_id:this.dataObj.table_setting.table_id,
+					setting:arr.join(','),
+				}
+				if(this.dataObj.table_setting.id){
+					arg.id = this.dataObj.table_setting.id;
+				}
+				//修改宽度
+				this.changeWidth(arg)
+			},
+			//修改宽度
+			changeWidth(arg){
+				commonResource.tableSetting(arg).then(res => {
+					if(res.data.code != 1){
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			tableCellStyle(v){
 				if((v.columnIndex == 5 && v.rowIndex == 0) || (v.columnIndex >= 0 && v.columnIndex <= 14  && v.rowIndex == 1)) {
 					return 'background:#87CEFA;color:#333333';
@@ -306,6 +382,31 @@
 					resource.twoDrawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
 							this.dataObj = res.data.data;
+							if(this.dataObj.table_setting.setting){
+								let setting_arr = this.dataObj.table_setting.setting.split(',');
+								setting_arr.map(item => {
+									this.columnDataObj.map(i => {
+										if(item.split('-')[0] == i.prop){
+											i.width = item.split('-')[1]
+										}
+									})
+									this.thkDataObj.map(ii => {
+										if(item.split('-')[0] == ii.prop){
+											ii.width = item.split('-')[1]
+										}
+									})
+									this.bpDataObj.map(iii => {
+										if(item.split('-')[0] == iii.prop){
+											iii.width = item.split('-')[1]
+										}
+									})
+									this.endDataObj.map(iiii => {
+										if(item.split('-')[0] == iiii.prop){
+											iiii.width = item.split('-')[1]
+										}
+									})
+								})
+							}
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -314,6 +415,31 @@
 					resource.fourDrawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
 							this.dataObj = res.data.data;
+							if(this.dataObj.table_setting.setting){
+								let setting_arr = this.dataObj.table_setting.setting.split(',');
+								setting_arr.map(item => {
+									this.columnDataObj.map(i => {
+										if(item.split('-')[0] == i.prop){
+											i.width = item.split('-')[1]
+										}
+									})
+									this.thkDataObj.map(ii => {
+										if(item.split('-')[0] == ii.prop){
+											ii.width = item.split('-')[1]
+										}
+									})
+									this.bpDataObj.map(iii => {
+										if(item.split('-')[0] == iii.prop){
+											iii.width = item.split('-')[1]
+										}
+									})
+									this.endDataObj.map(iiii => {
+										if(item.split('-')[0] == iiii.prop){
+											iiii.width = item.split('-')[1]
+										}
+									})
+								})
+							}
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -322,6 +448,31 @@
 					resource.drawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
 							this.dataObj = res.data.data;
+							if(this.dataObj.table_setting.setting){
+								let setting_arr = this.dataObj.table_setting.setting.split(',');
+								setting_arr.map(item => {
+									this.columnDataObj.map(i => {
+										if(item.split('-')[0] == i.prop){
+											i.width = item.split('-')[1]
+										}
+									})
+									this.thkDataObj.map(ii => {
+										if(item.split('-')[0] == ii.prop){
+											ii.width = item.split('-')[1]
+										}
+									})
+									this.bpDataObj.map(iii => {
+										if(item.split('-')[0] == iii.prop){
+											iii.width = item.split('-')[1]
+										}
+									})
+									this.endDataObj.map(iiii => {
+										if(item.split('-')[0] == iiii.prop){
+											iiii.width = item.split('-')[1]
+										}
+									})
+								})
+							}
 						}else{
 							this.$message.warning(res.data.msg);
 						}

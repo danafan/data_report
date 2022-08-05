@@ -1,6 +1,6 @@
 const path = require('path');
 function resolve (dir) {
-    return path.join(__dirname, dir)
+	return path.join(__dirname, dir)
 }
 module.exports = {	
 	devServer: {
@@ -18,5 +18,10 @@ module.exports = {
 	chainWebpack: (config)=>{
 		config.resolve.alias
 		.set('vendor',resolve('./src/vendor'))
+	},
+	configureWebpack: {
+		devtool: process.env.NODE_ENV === 'development' ? 'cheap-module-eval-source-map' : 'cheap-module-source-map',
 	}
+
+
 }
