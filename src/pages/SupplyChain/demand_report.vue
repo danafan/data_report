@@ -149,7 +149,7 @@
 					maxlength="100"
 					show-word-limit></el-input>
 				</el-form-item>
-				<el-form-item label="预计达成时间：" required>
+				<el-form-item label="预计达成时间：" required v-if="hlxpg == 1">
 					<el-date-picker v-model="yjdcsj" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
 					</el-date-picker>
 				</el-form-item>
@@ -164,7 +164,7 @@
 			<!-- 转接负责人 -->
 			<el-form size="small" v-if="zyq_type == '1'">
 				<el-form-item label="转接负责人：">
-					王芳
+					余宝玉
 				</el-form-item>
 				<el-form-item label="备注：" required>
 					<el-input style="width:360px" type="textarea"
@@ -209,7 +209,7 @@
 						<UploadFile :max_num="3" :current_num="confirm_image.length" @callbackFn="uploadFile" v-if="confirm_image.length < 3"/>
 					</div>
 				</el-form-item>
-				<el-form-item label="转接王芳(负责人)：" required v-if="is_accept == 3">
+				<el-form-item label="转接负责人：" required v-if="is_accept == 3">
 					<el-input style="width:360px" type="textarea"
 					placeholder="请输入备注（必填）"
 					:rows="5"
@@ -424,7 +424,7 @@
 			commitFn(){
 				if(this.hlxpg == '2' && this.remark == ''){
 					this.$message.warning('请输入不接受的原因！');
-				}else if(!this.yjdcsj){
+				}else if(this.hlxpg == '1' && !this.yjdcsj){
 					this.$message.warning('请选择预计达成时间！');
 				}else{
 					var ids = [];
@@ -434,8 +434,10 @@
 					let arg = {
 						id:ids.join(','),
 						is_accept:this.hlxpg,
-						arrival_time:this.yjdcsj,
 						remark:this.remark
+					}
+					if(this.hlxpg == '1'){
+						arg.arrival_time = this.yjdcsj;
 					}
 					demandResource.supplyChainAudit(arg).then(res => {
 						if(res.data.code == 1){

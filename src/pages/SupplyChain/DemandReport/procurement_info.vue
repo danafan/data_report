@@ -105,8 +105,12 @@
 					</el-form-item>
 					<el-form-item label="当前状态：">
 						<div v-if="detail_info.is_accept == '0'">待处理</div>
-						<div v-if="detail_info.is_accept == '1'">接受</div>
-						<div v-if="detail_info.is_accept == '2'">不接受</div>
+						<div v-if="detail_info.is_accept == '1'">已接受</div>
+						<div v-if="detail_info.is_accept == '2'">未接受</div>
+						<div v-if="detail_info.is_accept == '3'">已转接</div>
+						<div v-if="detail_info.is_accept == '4'">已延期</div>
+						<div v-if="detail_info.is_accept == '5'">已完成</div>
+						<div v-if="detail_info.is_accept == '6'">已结束</div>
 					</el-form-item>
 					<el-form-item label="备注：">
 						<el-input style="width:360px;margin-bottom: 15px" type="textarea"
@@ -245,13 +249,13 @@
 				type:"1",			//1:详情；2:处理；3:回复
 				detail_info:{
 					gys_model:''
-				},		//详情数据
+				},					//详情数据
 				hlxpg:1,			//选中的合理性评估
 				yjdcsj:"",			//预计达成时间
 				remark:"",			//备注
 				yqlb_dialog:false,	//延期列表
 				turn_reply:"",		//负责人回复内容
-				is_empty:'',			//负责人回复内容返回是否是空
+				is_empty:'',		//负责人回复内容返回是否是空
 			}
 		},
 		created(){
@@ -266,7 +270,7 @@
 				demandResource.supplyChainInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
 						this.detail_info = res.data.data;
-						if(this.type == '1'){
+						if(this.type == '1' || this.type == '3'){
 							this.yjdcsj = this.detail_info.arrival_time;
 							this.hlxpg = this.yjdcsj?1:2;
 							this.remark = this.detail_info.remark;
