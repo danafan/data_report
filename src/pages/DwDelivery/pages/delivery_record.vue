@@ -42,7 +42,7 @@
 			<div class="title">每小时(整点)更新一次</div>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="shop_name" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
 			<el-table-column prop="trade_id" width="110" show-overflow-tooltip label="内部订单号" align="center"></el-table-column>
 			<el-table-column prop="trade_no" width="120" show-overflow-tooltip label="线上订单号" align="center"></el-table-column>
@@ -117,6 +117,7 @@
 				labels:"",				//是否预发货
 				page:1,
 				pagesize:10,
+				loading:false,
 				dataObj:{},				//返回数据
 			}
 		},
@@ -156,8 +157,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.dewuOrder(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

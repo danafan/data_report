@@ -42,7 +42,7 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="tableCellStyle" @sort-change='sortChange' @header-dragend="dragendChange">
+		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="tableCellStyle" @sort-change='sortChange' @header-dragend="dragendChange" v-loading="loading">
 			<el-table-column column-key="0" :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in columnDataObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
@@ -112,6 +112,7 @@
 				select_thkh_list:[],	//选中的烫画商品编码
 				thksbm_list:[],			//烫画款式编码
 				select_thksbm_list:[],	//选中的烫画款式编码
+				loading:false,
 				dataObj:{
 					list:{
 						data:[]
@@ -378,9 +379,11 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				if(this.dept == 'er_dept'){
 					resource.twoDrawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
+							this.loading = false;
 							this.dataObj = res.data.data;
 							if(this.dataObj.table_setting.setting){
 								let setting_arr = this.dataObj.table_setting.setting.split(',');
@@ -414,6 +417,7 @@
 				}else if(this.dept == 'si_dept'){
 					resource.fourDrawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
+							this.loading = false;
 							this.dataObj = res.data.data;
 							if(this.dataObj.table_setting.setting){
 								let setting_arr = this.dataObj.table_setting.setting.split(',');
@@ -447,6 +451,7 @@
 				}else{
 					resource.drawGoodsList(arg).then(res => {
 						if(res.data.code == 1){
+							this.loading = false;
 							this.dataObj = res.data.data;
 							if(this.dataObj.table_setting.setting){
 								let setting_arr = this.dataObj.table_setting.setting.split(',');

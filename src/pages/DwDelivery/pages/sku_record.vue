@@ -24,20 +24,20 @@
 			<div class="title">每小时(整点)更新一次</div>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 			<el-table-column prop="ksbm" width="120" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
-			<el-table-column prop="spbm" width="120" show-overflow-tooltip label="商品编码" align="center"></el-table-column>
+			<el-table-column prop="spbm" show-overflow-tooltip label="商品编码" align="center"></el-table-column>
 			<el-table-column prop="gysmc" width="120" show-overflow-tooltip label="供应商名称" align="center"></el-table-column>
-			<el-table-column prop="gysksbm" width="120" show-overflow-tooltip label="供应商款式" align="center"></el-table-column>
-			<el-table-column prop="gysspbm" width="120" show-overflow-tooltip label="供应商商品编码" align="center"></el-table-column>
-			<el-table-column prop="sl" label="数量" width="120" align="center">
+			<el-table-column prop="gysksbm" width="150" show-overflow-tooltip label="供应商款式" align="center"></el-table-column>
+			<el-table-column prop="gysspbm" show-overflow-tooltip label="供应商商品编码" align="center"></el-table-column>
+			<el-table-column prop="sl" label="数量" width="80" align="center">
 			</el-table-column>
-			<el-table-column prop="zcsjkc" sortable width="140" label="主仓实际库存" align="center"></el-table-column>
-			<el-table-column prop="ddzy" sortable width="140" label="订单占有" align="center"></el-table-column>
-			<el-table-column prop="kys" sortable width="140" label="可用数" align="center"></el-table-column>
-			<el-table-column prop="jhckc" sortable width="190" label="进货仓库存" align="center"></el-table-column>
-			<el-table-column prop="cgxds" sortable width="140" label="采购下单数量" align="center"></el-table-column>
-			<el-table-column prop="cgrks" sortable width="140" label="采购入库数量" align="center"></el-table-column>
+			<el-table-column prop="zcsjkc" sortable width="120" label="主仓实际库存" align="center"></el-table-column>
+			<el-table-column prop="ddzy" sortable width="120" label="订单占有" align="center"></el-table-column>
+			<el-table-column prop="kys" sortable width="100" label="可用数" align="center"></el-table-column>
+			<el-table-column prop="jhckc" sortable width="120" label="进货仓库存" align="center"></el-table-column>
+			<el-table-column prop="cgxds" sortable width="120" label="采购下单数量" align="center"></el-table-column>
+			<el-table-column prop="cgrks" sortable width="120" label="采购入库数量" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -69,6 +69,7 @@
 				spbm:"",				//商品编码
 				gys_list:[],			//供应商
 				gysmc:"",				//选中的供应商
+				loading:false,
 				dataObj:{},				//返回数据
 				sort_field:"",			//排序字段
 				sort_type:"",			//排序方式
@@ -127,8 +128,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				dwResource.dewuSku(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

@@ -63,7 +63,7 @@
 			</div>
 		</div>
 		<div class="title">每日下单采购汇总</div>
-		<el-table size="small" :data="totalObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="orderTotalSortChange" @header-dragend="firstChange">
+		<el-table size="small" :data="totalObj.list.data" v-loading="total_loading" tooltip-effect="dark" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="orderTotalSortChange" @header-dragend="firstChange">
 			<el-table-column :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in columnTotalObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
@@ -96,7 +96,7 @@
 			<div class="title">供应商下单表</div>
 			<el-button type="primary" plain size="mini" @click="commitExport('gysxd')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="gysxdObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="gysxdCellStyle" @sort-change='gysOrderSortChange' @header-dragend="secondChange">
+		<el-table size="small" :data="gysxdObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="gysxdCellStyle" @sort-change='gysOrderSortChange' @header-dragend="secondChange" v-loading="gysxd_loading">
 			<el-table-column :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in culomnGysxdObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
@@ -128,7 +128,7 @@
 			<div class="title">白坯款式编码下单表</div>
 			<el-button type="primary" plain size="mini" @click="commitExport('bpksbm')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="bpkxdObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="bpkxdCellStyle" @sort-change='ksOrderSortChange' @header-dragend="thirdChange">
+		<el-table size="small" :data="bpkxdObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="bpkxdCellStyle" @sort-change='ksOrderSortChange' @header-dragend="thirdChange" v-loading="bpkxd_loading">
 			<el-table-column :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in columnBpkxdObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
@@ -160,7 +160,7 @@
 			<div class="title">白坯商品编码下单表</div>
 			<el-button type="primary" plain size="mini" @click="commitExport('bpspbm')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="bpspbmObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="bpspbmCellStyle" @sort-change='bmOrderSortChange' @header-dragend="fourthChange">
+		<el-table size="small" :data="bpspbmObj.list.data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="bpspbmCellStyle" @sort-change='bmOrderSortChange' @header-dragend="fourthChange" v-loading="bpspbm_loading">
 			<el-table-column :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in columnBpspbmObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
@@ -190,6 +190,7 @@
 				total_page:1,			//采购总数页码
 				total_pagesize:10,
 				order_total_sort:'',
+				total_loading:true,
 				totalObj:{
 					list:{
 						data:[]
@@ -262,6 +263,7 @@
 				gysxd_page:1,			//供应商下单页码
 				gysxd_pagesize:10,
 				gys_order_sort:"",		
+				gysxd_loading:false,
 				gysxdObj:{
 					list:{
 						data:[]
@@ -337,6 +339,7 @@
 				bpkxd_page:1,			//白坯款下单页码
 				bpkxd_pagesize:10,	
 				ks_order_sort:"",	
+				bpkxd_loading:false,	
 				bpkxdObj:{
 					list:{
 						data:[]
@@ -421,6 +424,7 @@
 				bpspbm_page:1,				//白坯商品编码下单页码
 				bpspbm_pagesize:10,		
 				bm_order_sort:"",
+				bpspbm_loading:false,
 				bpspbmObj:{
 					list:{
 						data:[]
@@ -628,9 +632,11 @@
 					page:this.total_page,
 					pagesize:this.total_pagesize
 				}
+				this.total_loading = true;
 				if(this.dept == 'er_dept'){
 					resource.twoOrderTotalNum(arg).then(res => {
 						if(res.data.code == 1){
+							this.total_loading = false;
 							this.totalObj = res.data.data;
 							if(this.totalObj.table_setting.setting){
 								let setting_arr = this.totalObj.table_setting.setting.split(',');
@@ -649,6 +655,7 @@
 				}else if(this.dept == 'si_dept'){
 					resource.fourOrderTotalNum(arg).then(res => {
 						if(res.data.code == 1){
+							this.total_loading = false;
 							this.totalObj = res.data.data;
 							if(this.totalObj.table_setting.setting){
 								let setting_arr = this.totalObj.table_setting.setting.split(',');
@@ -667,6 +674,7 @@
 				}else{
 					resource.orderTotalNum(arg).then(res => {
 						if(res.data.code == 1){
+							this.total_loading = false;
 							this.totalObj = res.data.data;
 							if(this.totalObj.table_setting.setting){
 								let setting_arr = this.totalObj.table_setting.setting.split(',');
@@ -769,9 +777,11 @@
 					page:this.gysxd_page,
 					pagesize:this.gysxd_pagesize
 				}
+				this.gysxd_loading = true;
 				if(this.dept == 'er_dept'){
 					resource.twoWhiteGysOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.gysxd_loading = false;
 							this.gysxdObj = res.data.data;
 							if(this.gysxdObj.table_setting.setting){
 								let setting_arr = this.gysxdObj.table_setting.setting.split(',');
@@ -790,6 +800,7 @@
 				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteGysOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.gysxd_loading = false;
 							this.gysxdObj = res.data.data;
 							if(this.gysxdObj.table_setting.setting){
 								let setting_arr = this.gysxdObj.table_setting.setting.split(',');
@@ -808,6 +819,7 @@
 				}else{
 					resource.whiteGysOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.gysxd_loading = false;
 							this.gysxdObj = res.data.data;
 							if(this.gysxdObj.table_setting.setting){
 								let setting_arr = this.gysxdObj.table_setting.setting.split(',');
@@ -894,9 +906,11 @@
 					page:this.bpkxd_page,
 					pagesize:this.bpkxd_pagesize
 				}
+				this.bpkxd_loading = true;
 				if(this.dept == 'er_dept'){
 					resource.twoWhiteKsOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.bpkxd_loading = false;
 							this.bpkxdObj = res.data.data;
 							if(this.bpkxdObj.table_setting.setting){
 								let setting_arr = this.bpkxdObj.table_setting.setting.split(',');
@@ -915,6 +929,7 @@
 				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteKsOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.bpkxd_loading = false;
 							this.bpkxdObj = res.data.data;
 							if(this.bpkxdObj.table_setting.setting){
 								let setting_arr = this.bpkxdObj.table_setting.setting.split(',');
@@ -933,6 +948,7 @@
 				}else{
 					resource.whiteKsOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.bpkxd_loading = false;
 							this.bpkxdObj = res.data.data;
 							if(this.bpkxdObj.table_setting.setting){
 								let setting_arr = this.bpkxdObj.table_setting.setting.split(',');
@@ -1021,9 +1037,11 @@
 					page:this.bpspbm_page,
 					pagesize:this.bpspbm_pagesize
 				}
+				this.bpspbm_loading = true;
 				if(this.dept == 'er_dept'){
 					resource.twoWhiteBmOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.bpspbm_loading = false;
 							this.bpspbmObj = res.data.data;
 							if(this.bpspbmObj.table_setting.setting){
 								let setting_arr = this.bpspbmObj.table_setting.setting.split(',');
@@ -1042,6 +1060,7 @@
 				}else if(this.dept == 'si_dept'){
 					resource.fourWhiteBmOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.bpspbm_loading = false;
 							this.bpspbmObj = res.data.data;
 							if(this.bpspbmObj.table_setting.setting){
 								let setting_arr = this.bpspbmObj.table_setting.setting.split(',');
@@ -1060,6 +1079,7 @@
 				}else{
 					resource.whiteBmOrder(arg).then(res => {
 						if(res.data.code == 1){
+							this.bpspbm_loading = false;
 							this.bpspbmObj = res.data.data;
 							if(this.bpspbmObj.table_setting.setting){
 								let setting_arr = this.bpspbmObj.table_setting.setting.split(',');

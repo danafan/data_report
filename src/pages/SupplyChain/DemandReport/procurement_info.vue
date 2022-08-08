@@ -184,9 +184,6 @@
 						<el-form-item label="是否完成：">
 							已完成
 						</el-form-item>
-						<el-form-item label="转接负责人：">
-							余宝玉
-						</el-form-item>
 						<el-form-item label="确认凭证：">
 							<div class="img_list">
 								<el-image class="img" :src="item" :preview-src-list="detail_info.confirm_image" v-for="item in detail_info.confirm_image">
@@ -270,8 +267,8 @@
 					if(res.data.code == 1){
 						this.detail_info = res.data.data;
 						if(this.type == '1'){
-							this.hlxpg = this.detail_info.is_accept;
 							this.yjdcsj = this.detail_info.arrival_time;
+							this.hlxpg = this.yjdcsj?1:2;
 							this.remark = this.detail_info.remark;
 							this.turn_reply = this.detail_info.turn_reply?this.detail_info.turn_reply:'已知晓';
 							this.is_empty = this.detail_info.turn_reply;

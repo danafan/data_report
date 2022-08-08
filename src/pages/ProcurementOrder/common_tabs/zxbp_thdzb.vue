@@ -38,7 +38,7 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="gyshh" label="烫画款供应商款号" width="150" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thkh" label="烫画款号" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="thspbm" label="烫画商品编码" width="150" show-overflow-tooltip align="center"></el-table-column>
@@ -88,6 +88,7 @@
 				ksbm_list:[],			//白坯款式编码
 				select_ksbm_list:[],	//选中的白坯款式编码
 				is_dif:"",				//有无差异
+				loading:false,
 				dataObj:{
 					list:{
 						data:[]
@@ -163,9 +164,11 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				if(this.dept == 'er_dept'){
 					resource.twoDrawContrastList(arg).then(res => {
 						if(res.data.code == 1){
+							this.loading = false;
 							this.dataObj = res.data.data;
 						}else{
 							this.$message.warning(res.data.msg);
@@ -174,6 +177,7 @@
 				}else if(this.dept == 'si_dept'){
 					resource.fourDrawContrastList(arg).then(res => {
 						if(res.data.code == 1){
+							this.loading = false;
 							this.dataObj = res.data.data;
 						}else{
 							this.$message.warning(res.data.msg);
@@ -182,6 +186,7 @@
 				}else{
 					resource.drawContrastList(arg).then(res => {
 						if(res.data.code == 1){
+							this.loading = false;
 							this.dataObj = res.data.data;
 						}else{
 							this.$message.warning(res.data.msg);

@@ -32,47 +32,18 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" border tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange'>
-			<el-table-column :prop="item.prop" :sortable="item.sort" width="65" align="center" show-overflow-tooltip v-for="item in column_list">
+		<el-table size="small" :data="dataObj.data" border tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange' @header-dragend="deptChange" v-loading="loading">
+			<el-table-column :index="index" :prop="item.prop" :sortable="item.sort" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in column_list">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
 						<span>{{item.label}}</span>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
-					<div class="prop_text">{{scope.row[item.prop]}}{{item.unit && scope.row[item.prop]?item.unit:''}}</div>
-				</template>
-			</el-table-column>
-			<el-table-column width="160" align="center">
-				<template slot="header">
-					<el-tooltip effect="dark" content="当日供应链反馈结果" placement="top-start">
-						<span>当日供应链反馈结果</span>
-					</el-tooltip>
-				</template>
-				<template slot-scope="scope">
-					<el-input size="small" placeholder="当日供应链反馈结果" v-model="scope.row.fkjg" @change="changeResult($event,scope.row.ksbm,'0')">
+					<el-input size="small" :placeholder="item.label" v-model="scope.row[item.prop]" @change="changeResult($event,scope.row.ksbm,item.type)" v-if="item.ele_type =='input'">
 					</el-input>
-				</template>
-			</el-table-column>
-			<el-table-column width="80" align="center">
-				<template slot="header">
-					<el-tooltip effect="dark" content="历史供应链反馈结果" placement="top-start">
-						<span>历史供应链反馈结果</span>
-					</el-tooltip>
-				</template>
-				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getRecord(scope.row.ksbm)">查看</el-button>
-				</template>
-			</el-table-column>
-			<el-table-column width="160" align="center">
-				<template slot="header">
-					<el-tooltip effect="dark" content="供应链建议" placement="top-start">
-						<span>供应链建议</span>
-					</el-tooltip>
-				</template>
-				<template slot-scope="scope">
-					<el-input size="small" placeholder="供应链建议" v-model="scope.row.jy" @change="changeResult($event,scope.row.ksbm,'1')">
-					</el-input>
+					<el-button type="text" size="small" @click="getRecord(scope.row.ksbm)" v-else-if="item.ele_type =='button'">查看</el-button>
+					<div class="prop_text" v-else>{{scope.row[item.prop]}}{{item.unit && scope.row[item.prop]?item.unit:''}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -100,6 +71,7 @@
 <script>
 	import resource from '../../api/resource.js'
 	import proResource from '../../api/procurementResource.js'
+	import commonResource from '../../api/resource.js'
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	export default{
@@ -120,72 +92,113 @@
 				table_page:1,
 				table_pagesize:10,
 				tableObj:{},
+				table_setting:{},
+				loading:false,
 				column_list:[{
 					label:'事业部',
 					prop:'dept_name',
+					width:65,
 					sort:false
 				},{
 					label:'主卖店铺',
 					prop:'zmdp',
+					width:65,
 					sort:false
 				},{
 					label:'供应商',
 					prop:'gys',
+					width:65,
 					sort:false
 				},{
 					label:'款式编码',
 					prop:'ksbm',
+					width:65,
 					sort:false
 				},{
 					label:'供应商款号',
 					prop:'gyskh',
+					width:65,
 					sort:false
 				},{
 					label:'3天销量',
 					prop:'3_xssl',
+					width:65,
 					sort:'custom'
 				},{
 					label:'库存',
 					prop:'xykc',
+					width:65,
 					sort:'custom'
 				},{
 					label:'缺货数',
 					prop:'qhs',
+					width:65,
 					sort:'custom'
 				},{
 					label:'进货仓数',
 					prop:'jhcs',
+					width:65,
 					sort:'custom'
 				},{
 					label:'当日采购在途数',
 					prop:'drcgzts',
+					width:65,
 					sort:'custom'
 				},{
 					label:'到货率',
 					prop:'dhl',
+					width:65,
 					sort:'custom',
 					unit:'%'
 				},{
 					label:'白坯款号',
 					prop:'bpkh',
+					width:65,
 					sort:false
 				},{
 					label:'白坯供应商款号',
 					prop:'bpgyskh',
+					width:65,
 					sort:false
 				},{
 					label:'白坯库存',
 					prop:'bpkc',
+					width:65,
 					sort:false
 				},{
 					label:'合格率',
 					prop:'hgl',
+					width:65,
 					sort:false,
 					unit:'%'
 				},{
 					label:'产品分类',
 					prop:'cpfl',
+					width:65,
 					sort:false
+				},{
+					label:'当日供应链反馈结果',
+					prop:'fkjg',
+					ele_type:'input',
+					type:'0',
+					width:80,
+					sort:false,
+
+				},{
+					label:'历史供应链反馈结果',
+					ele_type:'button',
+					prop:'history',
+					width:80,
+					sort:false,
+
+				},{
+					label:'供应链建议',
+					prop:'jy',
+					ele_type:'input',
+					type:'1',
+					width:160,
+					sort:false,
+
 				}]
 			}
 		},
@@ -261,20 +274,60 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				proResource.shortageFeedback(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
+						this.table_setting = res.data.data.table_setting;
 						var i = 5;
 						for(let k in this.dataObj.title){
 							i += 1;
 							let obj = {
 								label:this.dataObj.title[k],
 								prop:k,
+								width:65,
 								sort:'custom'
 							}
 							this.column_list.splice(i,0,obj);
 						}
+						if(this.table_setting.setting){
+							let setting_arr = this.table_setting.setting.split(',');
+							setting_arr.map(item => {
+								this.column_list.map(iii => {
+									if(item.split('-')[0] == iii.prop){
+										iii.width = item.split('-')[1]
+									}
+								})
+							})
+						}
 					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			deptChange(newWidth, oldWidth, column, event){
+				let index = column.index;
+				this.column_list[index].width = newWidth;
+				let arr = [];
+				this.column_list.map(item => {
+					let str = item.prop + '-' + item.width;
+					arr.push(str);
+				})
+				let arg = {
+					table_id:this.table_setting.table_id,
+					setting:arr.join(','),
+				}
+				if(this.table_setting.id){
+					arg.id = this.table_setting.id;
+				}
+				//修改宽度
+				this.changeWidth(arg)
+			},
+			//修改宽度
+			changeWidth(arg){
+				commonResource.tableSetting(arg).then(res => {
+					if(res.data.code != 1){
 						this.$message.warning(res.data.msg);
 					}
 				})
