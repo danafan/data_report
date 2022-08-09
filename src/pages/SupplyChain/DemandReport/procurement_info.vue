@@ -208,7 +208,7 @@
 							maxlength="100"
 							show-word-limit></el-input>
 						</el-form-item>
-						<div class="button_row">
+						<div class="button_row" v-if="type == '3'">
 							<el-button size="small" type="primary" @click="replyFn">提交</el-button>
 						</div>
 					</div>

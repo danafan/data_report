@@ -340,7 +340,7 @@
 			//获取列表数据
 			getData(){
 				let arg = {
-					shop_name:this.select_store_ids.join(','),
+					shopname:this.select_store_ids.join(','),
 					create_name:this.select_tbr_ids.join(','),
 					start_time:this.tb_date && this.tb_date.length> 0?this.tb_date[0]:"",
 					end_time:this.tb_date && this.tb_date.length> 0?this.tb_date[1]:"",
@@ -402,7 +402,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						shop_name:this.select_store_ids.join(','),
+						shopname:this.select_store_ids.join(','),
 						create_name:this.select_tbr_ids.join(','),
 						start_time:this.tb_date && this.tb_date.length> 0?this.tb_date[0]:"",
 						end_time:this.tb_date && this.tb_date.length> 0?this.tb_date[1]:"",

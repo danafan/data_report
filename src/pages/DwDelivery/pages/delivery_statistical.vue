@@ -11,7 +11,7 @@
 		</el-form>
 		<div class="title">得物-事业部发货情况<span>&nbsp&nbsp&nbsp每小时(整点)更新一次</span></div>
 		<el-table size="small" :data="dept_data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800" @header-dragend="deptChange" v-loading="loading">
-			<el-table-column :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in deptDataColumnObj">
+			<el-table-column :index="index" :prop="item.prop" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in deptDataColumnObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
 						<span>{{item.label}}</span>
@@ -24,7 +24,7 @@
 		</el-table>
 		<div class="title">得物-店铺发货情况<span>&nbsp&nbsp&nbsp每小时(整点)更新一次</span></div>
 		<el-table size="small" :data="shop_data" tooltip-effect="dark" border style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="800" @header-dragend="shopChange" v-loading="loading">
-			<el-table-column :index="index" :prop="item.prop" sortable="custom" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in shopDataColumnObj">
+			<el-table-column :index="index" :prop="item.prop" :width="item.width" align="center" show-overflow-tooltip v-for="(item,index) in shopDataColumnObj">
 				<template slot="header">
 					<el-tooltip effect="dark" :content="item.label" placement="top-start">
 						<span>{{item.label}}</span>
@@ -227,6 +227,17 @@
 					}
 				})
 			},
+			//事业部发货情况排序
+			deptSortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'asc':'desc';
+					this.order_total_sort = column.prop + '-' + order;
+				}else{
+					this.order_total_sort = '';
+				}
+        		//采购总数
+        		this.twoOrderTotalNum();
+        	},
 			//获取列表
 			getData(){
 				let arg = {

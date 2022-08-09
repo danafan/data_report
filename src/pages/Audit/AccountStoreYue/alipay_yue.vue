@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="公司主体：">
+				<el-input style="width:200px" clearable v-model="company_body" placeholder="请输入公司主体"></el-input>
+			</el-form-item>
+			<el-form-item label="店铺：">
+				<el-input style="width:200px" clearable v-model="shop" placeholder="请输入店铺"></el-input>
+			</el-form-item>
 			<el-form-item label="支付宝账号：">
 				<el-select v-model="select_zfb_ids" clearable multiple filterable reserve-keyword placeholder="请选择支付宝账号" collapse-tags>
 					<el-option v-for="item in zfb_list" :key="item.id" :label="item.alipay_name" :value="item.id">
@@ -22,15 +28,15 @@
 			<div class="title">支付宝余额：<span>（每日更新一次）（账号总数：{{dataObj.total_num}}；今日更新：{{dataObj.today_num}}）</span></div>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange'>
 			<el-table-column prop="company_body" show-overflow-tooltip label="公司主体" align="center"></el-table-column>
 			<el-table-column prop="shop" show-overflow-tooltip label="店铺" align="center"></el-table-column>
 			<el-table-column prop="bill_date" show-overflow-tooltip label="日期" align="center"></el-table-column>
 			<el-table-column prop="bill_account" show-overflow-tooltip label="支付宝账号" align="center"></el-table-column>
-			<el-table-column prop="init_amount" show-overflow-tooltip label="初始余额" align="center"></el-table-column>
-			<el-table-column prop="income_amount" show-overflow-tooltip label="收入" align="center"></el-table-column>
-			<el-table-column prop="disburse_amount" label="支出" align="center"></el-table-column>
-			<el-table-column prop="final_amount" label="最终余额" align="center"></el-table-column>
+			<el-table-column prop="init_amount" show-overflow-tooltip label="初始余额" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="income_amount" show-overflow-tooltip label="收入" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="disburse_amount" label="支出" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="final_amount" label="最终余额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="account_remark" show-overflow-tooltip label="备注" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
@@ -74,6 +80,10 @@
 					}]
 				},	 						//时间区间
 				date:[],					//日期
+				company_body:"",
+				shop:"",
+				sort:"",
+				sort_type:"",
 				page:1,
 				pagesize:10,				
 				dataObj:{
@@ -104,12 +114,27 @@
 				//支付宝账单
 				this.alipayBill();
 			},
+			//排序
+			sortChange(column){
+				if(column.order){
+					this.sort_type = column.order == 'ascending'?'0':'1';
+					this.sort = column.prop;
+				}else{
+					this.sort_type = '';
+					this.sort = '';
+				}
+				this.alipayBill();
+			},
 			//支付宝账单
 			alipayBill(){
 				let arg = {
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
 					alipay_account_id:this.select_zfb_ids.join(','),
+					company_body:this.company_body,
+					shop:this.shop,
+					sort_type:this.sort_type,
+					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -121,7 +146,6 @@
 					}
 				})
 			},
-			
 			//款式销量排行分页
 			handleSizeChange(val) {
 				this.pagesize = val;
@@ -143,7 +167,11 @@
 					let arg = {
 						start_date:this.date && this.date.length> 0?this.date[0]:"",
 						end_date:this.date && this.date.length> 0?this.date[1]:"",
-						alipay_account_id:this.select_zfb_ids.join(',')
+						alipay_account_id:this.select_zfb_ids.join(','),
+						company_body:this.company_body,
+						shop:this.shop,
+						sort_type:this.sort_type,
+						sort:this.sort,
 					}
 					resource.alipayBillExport(arg).then(res => {
 						if(res){

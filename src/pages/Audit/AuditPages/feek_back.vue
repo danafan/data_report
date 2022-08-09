@@ -26,6 +26,7 @@
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}">
 			<el-table-column prop="ksbm" label="新编码" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="supplier_ksbm" label="供应商款号" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="成本价" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="edit_cb_price" label="反馈成本价" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="billing_time" label="开单时间" show-overflow-tooltip align="center"></el-table-column>
