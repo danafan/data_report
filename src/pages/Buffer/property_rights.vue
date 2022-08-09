@@ -29,7 +29,7 @@
 			<el-button type="primary" size="mini" @click="getList('1')">搜索</el-button>
 		</el-form-item>
 	</el-form>
-	<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+	<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 		<el-table-column align="center" :width="160" property="ksbm" label="款式"></el-table-column>
 		<el-table-column align="center" :width="160" property="gyshh" label="供应商货号"></el-table-column>
 		<el-table-column align="center" property="mc" label="品类"></el-table-column>
@@ -111,7 +111,8 @@
 					name:'清'
 				}],			//货品性质
 				dataObj:{},								//列表数据
-				button_list:{}
+				button_list:{},
+				loading:false
 			}
 		},
 		created(){
@@ -145,8 +146,10 @@
 					pagesize:this.pagesize,
 					page:this.page
 				}
+				this.loading = true;
 				resource.hpxzList(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
 						this.button_list = this.dataObj.button_list;

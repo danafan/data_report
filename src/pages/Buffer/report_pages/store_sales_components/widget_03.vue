@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<div class="charts_box">
-			<div class="charts_item" id="shop_promotion"></div>
-			<div class="charts_item" id="catepromotion"></div>
+			<div class="charts_item" id="shop_promotion" v-loading="shop_promotion_loading"></div>
+			<div class="charts_item" id="catepromotion" v-loading="catepromotion_loading"></div>
 		</div>
 		<div class="charts_box">
-			<div class="charts_item" id="kspromotion"></div>
+			<div class="charts_item" id="kspromotion" v-loading="kspromotion_loading"></div>
 		</div>
 	</div>
 </template>
@@ -29,7 +29,10 @@
 			return {
 				shop_promotionChart:null,
 				catepromotionChart:null,
-				kspromotionChart:null
+				kspromotionChart:null,
+				shop_promotion_loading:false,
+				catepromotion_loading:false,
+				kspromotion_loading:false,
 			}
 		},
 		methods:{
@@ -44,8 +47,10 @@
 			},
 			//店铺推广费用
 			shopPromotion(req){
+				this.shop_promotion_loading = true;
 				resource.shopPromotion(req).then(res => {
 					if(res.data.code == 1){
+						this.shop_promotion_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;
@@ -132,8 +137,10 @@
 			},
 			//直通车推广费用
 			shopCatePromotion(req){
+				this.catepromotion_loading = true;
 				resource.catePromotion(req).then(res => {
 					if(res.data.code == 1){
+						this.catepromotion_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;
@@ -223,8 +230,10 @@
 			},
 			//款式推广费用
 			shopksPromotion(req){
+				this.kspromotion_loading = true;
 				resource.ksPromotion(req).then(res => {
 					if(res.data.code == 1){
+						this.kspromotion_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;

@@ -12,8 +12,8 @@
 			</el-form-item>
 		</el-form>
 		<div class="charts_box">
-			<div class="charts_item" id="shop_hpxz"></div>
-			<div class="charts_item" id="shop_hpxzks"></div>
+			<div class="charts_item" id="shop_hpxz" v-loading="shop_hpxz_loading"></div>
+			<div class="charts_item" id="shop_hpxzks" v-loading="shop_hpxzks_loading"></div>
 		</div>
 	</div>
 </template>
@@ -38,7 +38,9 @@
 				store_list:[],
 				select_store_ids:[],
 				shop_hpxzChart:null,
-				shop_hpxzksChart:null
+				shop_hpxzksChart:null,
+				shop_hpxz_loading:false,
+				shop_hpxzks_loading:false
 			}
 		},
 		mounted(){
@@ -62,8 +64,10 @@
 			},
 			//货品性质占比
 			shopHpxz(){
+				this.shop_hpxz_loading = true;
 				resource.hpxz({shop_id:this.select_store_ids.join(','),}).then(res => {
 					if(res.data.code == 1){
+						this.shop_hpxz_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;
@@ -127,8 +131,10 @@
 			},
 			//款式数量
 			shopHpxzks(req){
+				this.shop_hpxzks_loading = true;
 				resource.hpxzks(req).then(res => {
 					if(res.data.code == 1){
+						this.shop_hpxzks_loading = false;
 						var echarts = require("echarts");
 						let name_list = res.data.data.name_list;
 						let list = res.data.data.list;

@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<div class="charts_box">
-			<div class="charts_item" id="shop_zxk"></div>
+			<div class="charts_item" id="shop_zxk" v-loading="shop_zxk_loading"></div>
 		</div>
 		<div class="charts_box">
-			<div class="charts_item" id="shop_zxkc"></div>
-			<div class="charts_item" id="shop_zxje"></div>
+			<div class="charts_item" id="shop_zxkc" v-loading="shop_zxkc_loading"></div>
+			<div class="charts_item" id="shop_zxje" v-loading="shop_zxje_loading"></div>
 		</div>
 	</div>
 </template>
@@ -29,7 +29,10 @@
 			return{
 				shop_zxkChart:null,
 				shop_zxkcChart:null,
-				shop_zxjeChart:null
+				shop_zxjeChart:null,
+				shop_zxk_loading:false,
+				shop_zxkc_loading:false,
+				shop_zxje_loading:false,
 			}
 		},
 		mounted(){
@@ -43,8 +46,10 @@
 		methods:{
 			//款式库存及到货情况
 			shopUnsaLable(){
+				this.shop_zxk_loading = true;
 				resource.shopUnsaLable().then(res => {
 					if(res.data.code == 1){
+						this.shop_zxk_loading = false;
 						var echarts = require("echarts");
 						let name_list = res.data.data.name_list;
 						let list = res.data.data.list;
@@ -116,8 +121,10 @@
 			},
 			//滞销款式库存
 			plkcunSalable(){
+				this.shop_zxkc_loading = true;
 				resource.plkcunSalable().then(res => {
 					if(res.data.code == 1){
+						this.shop_zxkc_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;
@@ -187,8 +194,10 @@
 			},
 			//滞销款式金额
 			plunsaLableMoney(req){
+				this.shop_zxje_loading = true;
 				resource.plunsaLableMoney(req).then(res => {
 					if(res.data.code == 1){
+						this.shop_zxje_loading = false;
 						var echarts = require("echarts");
 						let name_list = res.data.data.name_list;
 						let list = res.data.data.list;

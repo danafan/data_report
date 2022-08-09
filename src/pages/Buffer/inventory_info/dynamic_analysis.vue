@@ -97,7 +97,7 @@
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="table_list">
+		<div class="table_list" v-loading="top_loading">
 			<div class="table_item" v-for="(item,index) in table_list">
 				<div class="first_table" v-if="index == 0">
 					<el-card>
@@ -105,7 +105,6 @@
 							<div class="card_lable">款数</div>
 							<div class="card_value">{{table_list[0].list.ks_count}}</div>
 						</div>
-
 					</el-card>
 					<el-card>
 						<div class="card_row">
@@ -136,7 +135,7 @@
 				</div>
 			</div>
 		</div>
-		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="table_loading">
 			<el-table-column prop="supplier_ksbm" label="款式图片" width="120" align="center">
 				<template slot-scope="scope">
 					<img style="width: 30px;height: 30px" :src="scope.row.tp" @click="bigImg(scope.row.tp)">
@@ -270,7 +269,9 @@
 				page:1,
 				pagesize:10,
 				imageDialog:false,
-				big_img_url:""
+				big_img_url:"",
+				top_loading:false,
+				table_loading:false,
 			}
 		},
 		created(){
@@ -346,8 +347,10 @@
 					mlv_7d_classify:this.mlv_7d_classify,
 					Turnover_days_classify:this.Turnover_days_classify
 				}
+				this.top_loading = true;
 				resource.dynamicAnalysisIndex(arg).then(res => {
 					if(res.data.code == 1){
+						this.top_loading = false;
 						this.table_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -373,8 +376,10 @@
 					pagesize:this.pagesize,
 					sort:this.sort
 				}
+				this.table_loading = true;
 				resource.dynamicAnalysisList(arg).then(res => {
 					if(res.data.code == 1){
+						this.table_loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

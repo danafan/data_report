@@ -24,7 +24,7 @@
 			<el-button type="primary" plain size="mini" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 	</div>
-	<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%":header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%":header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="item.row_field_name == 'bd' || item.row_field_name == 'sjxjrq'?260:120" :sortable="item.row_field_name == 'qtxl' || item.row_field_name == 'stxl' || item.row_field_name == 'replenish_num' || item.row_field_name == 'zskykc' || item.row_field_name == 'fskykc' || item.row_field_name == 'zts' || item.row_field_name == 'swtxl'?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 			<template slot-scope="scope">
 				<!-- 下钻 -->
@@ -249,7 +249,8 @@
 				file:null,
 				isMac:true,									//判断系统
 				all_search:false,							//是否是批量查询
-				button_list:{}
+				button_list:{},
+				loading:false,
 			}
 		},
 		created(){
@@ -346,8 +347,10 @@
 				this.req.page = this.page;
 				this.req.sort = this.sort;
 				this.req.sort_type = this.sort_type;
+				this.loading = true;
 				resource.stopList(this.req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
 						this.button_list = this.dataObj.button_list;

@@ -59,44 +59,46 @@
 			</el-form-item>
 		</el-form>
 		<!-- 页面左侧 -->
-		<div class="analysis_row" v-for="(item,index) in tableData">
-			<div class="analysis_left">
-				<div class="title">{{item.name}}库存分析</div>
-				<el-table :data="item.list" size="mini" max-height="300">
-					<el-table-column prop="name" :label="item.name" fixed show-overflow-tooltip align="center">
-						<template slot-scope="scope">
-							<div>{{scope.row.name == null?'-':scope.row.name}}</div>
-						</template>
-					</el-table-column>
-					<el-table-column :label="i" v-for="i in date_list" align="center">
-						<el-table-column :prop="`sl_total_${i}`" label="数量" align="center">
-						</el-table-column>
-						<el-table-column :prop="`cbj_total_${i}`" label="总成本额" align="center">
+		<div v-loading="analysis_row_loading">
+			<div class="analysis_row" v-for="(item,index) in tableData">
+				<div class="analysis_left">
+					<div class="title">{{item.name}}库存分析</div>
+					<el-table :data="item.list" size="mini" max-height="300">
+						<el-table-column prop="name" :label="item.name" fixed show-overflow-tooltip align="center">
 							<template slot-scope="scope">
-								<div>{{scope.row[`cbj_total_${i}`]}}万</div>
+								<div>{{scope.row.name == null?'-':scope.row.name}}</div>
 							</template>
 						</el-table-column>
-						<el-table-column :prop="`cb_rate_${i}`" label="成本占比" align="center">
-							<template slot-scope="scope">
-								<div>{{scope.row[`cb_rate_${i}`]}}%</div>
-							</template>
+						<el-table-column :label="i" v-for="i in date_list" align="center">
+							<el-table-column :prop="`sl_total_${i}`" label="数量" align="center">
+							</el-table-column>
+							<el-table-column :prop="`cbj_total_${i}`" label="总成本额" align="center">
+								<template slot-scope="scope">
+									<div>{{scope.row[`cbj_total_${i}`]}}万</div>
+								</template>
+							</el-table-column>
+							<el-table-column :prop="`cb_rate_${i}`" label="成本占比" align="center">
+								<template slot-scope="scope">
+									<div>{{scope.row[`cb_rate_${i}`]}}%</div>
+								</template>
+							</el-table-column>
+							<el-table-column :prop="`year_rate_${i}`" label="年同比(成本)" align="center">
+								<template slot-scope="scope">
+									<div v-if="scope.row[`year_rate_${i}`] == '-'">{{scope.row[`year_rate_${i}`]}}</div>
+									<div style="color:red" v-if="scope.row[`year_rate_${i}`] >= 0">{{scope.row[`year_rate_${i}`]}}%</div>
+									<div style="color:green" v-if="scope.row[`year_rate_${i}`] < 0">{{scope.row[`year_rate_${i}`]}}%</div>
+								</template>
+							</el-table-column>
 						</el-table-column>
-						<el-table-column :prop="`year_rate_${i}`" label="年同比(成本)" align="center">
-							<template slot-scope="scope">
-								<div v-if="scope.row[`year_rate_${i}`] == '-'">{{scope.row[`year_rate_${i}`]}}</div>
-								<div style="color:red" v-if="scope.row[`year_rate_${i}`] >= 0">{{scope.row[`year_rate_${i}`]}}%</div>
-								<div style="color:green" v-if="scope.row[`year_rate_${i}`] < 0">{{scope.row[`year_rate_${i}`]}}%</div>
-							</template>
-						</el-table-column>
-					</el-table-column>
-				</el-table>
+					</el-table>
+				</div>
+				<div :id="`analysis_${index}_eee`" class="analysis_right"></div>
 			</div>
-			<div :id="`analysis_${index}_eee`" class="analysis_right"></div>
 		</div>
 		<!-- 右上（近一年库存/成本趋势图） -->
 		<div class="kc_cb">
-			<div id="kc_cb_chart" class="kc_cb_chart"></div>
-			<div class="number_box">
+			<div id="kc_cb_chart" class="kc_cb_chart" v-loading="kc_cb_chart_loading"></div>
+			<div class="number_box" v-loading="kc_cb_chart_loading">
 				<div class="number_row">
 					<div class="label">款数</div>
 					<div class="right">
@@ -135,7 +137,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 			<el-table-column prop="sjxrrq" label="日期" sortable width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="图片" width="120" align="center">
 				<template slot-scope="scope">
@@ -209,6 +211,10 @@
 				big_img_url:"",			//图片地址
 				dpChart:null,
 				cbj_total:0,			//总成本
+				analysis_row_loading:false,
+				kc_cb_chart_loading:false,
+				loading:false
+
 			}
 		},
 		created(){
@@ -293,8 +299,10 @@
 					xb:this.select_xb_id,
 					cpfl:this.select_pl_ids.join(','),
 				}
+				this.analysis_row_loading = true;
 				resource.stockAnalysis(arg).then(res => {
 					if(res.data.code == 1){
+						this.analysis_row_loading = false;
 						var echarts = require("echarts");
 						this.tableData = res.data.data;
 						var gg = [];
@@ -373,8 +381,10 @@
 			},
 			//款式分析（页面右上部分）
 			stockAnalysisKs(){
+				this.kc_cb_chart_loading = true;
 				resource.stockAnalysisKs().then(res => {
 					if(res.data.code == 1){
+						this.kc_cb_chart_loading = false;
 						var echarts = require("echarts");
 						//图表数据
 						var chart_data = res.data.data.list;
@@ -492,8 +502,10 @@
         		if(this.sort != ''){
         			arg.sort = this.sort;
         		}
+        		this.loading = true;
         		resource.stockAnalysisKsList(arg).then(res => {
         			if(res.data.code == 1){
+        				this.loading = false;
         				this.dataObj = res.data.data.list;
         				this.cbj_total = res.data.data.cbj_total;
         			}else{

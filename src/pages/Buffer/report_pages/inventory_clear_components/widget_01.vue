@@ -32,8 +32,8 @@
 			</div>
 		</div>
 		<div class="charts_box">
-			<div class="charts_item" id="shop_plkc"></div>
-			<div class="charts_item" id="shop_kskc"></div>
+			<div class="charts_item" id="shop_plkc" v-loading="shop_plkc_loading"></div>
+			<div class="charts_item" id="shop_kskc" v-loading="shop_kskc_loading"></div>
 		</div>
 	</div>
 </template>
@@ -88,7 +88,9 @@
 		data(){
 			return{
 				shop_plkcChart:null,
-				clearObj:{}
+				clearObj:{},
+				shop_plkc_loading:false,
+				shop_kskc_loading:false
 			}
 		},
 		created(){
@@ -112,8 +114,10 @@
 			},
 			//品类库存列表
 			shopPlkc(){
+				this.shop_plkc_loading = true;
 				resource.plkc().then(res => {
 					if(res.data.code == 1){
+						this.shop_plkc_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name;
@@ -181,8 +185,10 @@
 			},
 			//款式库存及到货情况
 			shopKskc(req){
+				this.shop_kskc_loading = true;
 				resource.kskc(req).then(res => {
 					if(res.data.code == 1){
+						this.shop_kskc_loading = false;
 						var echarts = require("echarts");
 						let name_list = res.data.data.name_list;
 						let kc_list = res.data.data.kc_list;

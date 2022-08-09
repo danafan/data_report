@@ -17,7 +17,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="charts_box">
-			<div class="charts_item" id="shop_rks"></div>
+			<div class="charts_item" id="shop_rks" v-loading="shop_rks_loading"></div>
 		</div>
 	</div>
 </template>
@@ -40,7 +40,8 @@
 			return{
 				ks_list:[],				//款式列表
 				shop_plkcChart:null,
-				ks:[]
+				ks:[],
+				shop_rks_loading:false
 			}
 		},
 		mounted(){
@@ -65,8 +66,10 @@
 				let ks = {
 					ks:this.ks.join(',')
 				}
+				this.shop_rks_loading = true;
 				resource.rks(ks).then(res => {
 					if(res.data.code == 1){
+						this.shop_rks_loading = false;
 						var echarts = require("echarts");
 						let name_list = res.data.data.name_list;
 						let list = res.data.data.list;

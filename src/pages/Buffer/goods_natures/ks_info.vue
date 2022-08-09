@@ -28,7 +28,7 @@
 			<el-button type="primary" plain size="mini" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 	</div>
-	<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+	<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 		<el-table-column :prop="item.row_field_name" :label="item.row_name" :width="maxWidth(item.row_field_name)" :sortable="isSort(item.row_field_name)?'custom':false" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="item.is_fixed == 1">
 			<template slot="header" slot-scope="scope">
 				<span>{{item.row_name}}</span>
@@ -403,7 +403,8 @@
 				showQcbm:false,
 				filename_qcbm:"",
 				file_upload:null,
-				button_list:{}
+				button_list:{},
+				loading:false
 			}
 		},
 		created(){
@@ -607,8 +608,10 @@
 				this.req.page = this.page;
 				this.req.sort = this.sort;
 				this.req.sort_type = this.sort_type;
+				this.loading = true;
 				resource.ksInfoList(this.req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 						this.dataObj.data.map(item => {
 							this.$nextTick(() => {

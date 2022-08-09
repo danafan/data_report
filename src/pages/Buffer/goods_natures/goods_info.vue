@@ -11,7 +11,7 @@
 				<el-button type="primary" plain size="mini" @click="decisionAdd" v-if="button_list.add_decision == 1">导入决策管理<i class="el-icon-download"></i></el-button>
 			</div>
 		</div>
-		<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table ref="multipleTable" max-height="800" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" :sortable="item.is_sort == 1" :width="maxWidth(item.row_field_name,item.is_edit)" align="center" v-for="item in dataObj.title_list" show-overflow-tooltip :fixed="isFixed(item.row_field_name)">
 				<template slot-scope="scope">
 					<!-- 编辑框 -->
@@ -250,7 +250,8 @@ center>
 				all_search:false,							//是否是批量查询
 				imageDialog:false,							//是否显示放大图片弹框
 				big_img_url:"",								//放大的图片地址
-				button_list:{}
+				button_list:{},
+				loading:false
 			}
 		},
 		created(){
@@ -355,8 +356,10 @@ center>
 				this.req.page = this.page;
 				this.req.sort = this.sort;
 				this.req.sort_type = this.sort_type;
+				this.loading = true;
 				resource.decisionSku(this.req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 						this.row_ids = this.dataObj.selected_ids;
 						this.button_list = this.dataObj.button_list;

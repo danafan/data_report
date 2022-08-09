@@ -37,7 +37,7 @@
 	<el-button type="primary" size="mini" @click="getList()">搜索</el-button>
 </el-form-item>
 </el-form>
-<el-table size="mini" max-height="800" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+<el-table size="mini" max-height="800" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 	<el-table-column prop="ksbm" label="款式" align="center"></el-table-column>
 	<el-table-column label="图片" align="center">
 		<template slot-scope="scope">
@@ -94,6 +94,7 @@
 				dataObj:{},
 				imageDialog:false,							//是否显示放大图片弹框
 				big_img_url:"",								//放大的图片地址
+				loading:false
 			}
 		},
 		created(){
@@ -151,8 +152,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.reportList(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

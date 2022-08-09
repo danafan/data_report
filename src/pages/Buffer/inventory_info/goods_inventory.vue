@@ -55,11 +55,11 @@
 					</el-card>
 				</div>
 				<el-card>
-					<div class="left_bottom" id="qczj"></div>
+					<div class="left_bottom" id="qczj" v-loading="qczj_loading"></div>
 				</el-card>
 			</div>
 			<el-card class="center_content">
-				<div class="qcjd" id="qcjd"></div>
+				<div class="qcjd" id="qcjd" v-loading="qcjd_qcjdzhb_loading"></div>
 			</el-card>
 			<el-card class="right_content">
 				<div class="bfb_column" v-if="series_data_funnel.length > 0">
@@ -69,13 +69,13 @@
 					<div class="bfb_item">{{series_data_funnel[4].conversion}}%</div>
 					<div class="bfb_item">{{series_data_funnel[5].conversion}}%</div>
 				</div>
-				<div class="qcjdzhb" id="qcjdzhb"></div>
+				<div class="qcjdzhb" id="qcjdzhb" v-loading="qcjd_qcjdzhb_loading"></div>
 			</el-card>
 		</div>
 		<div class="table_charts_row" v-for="(item,index) in clear_list">
 			<div class="analysis_left">
 				<div class="title">{{item.name}}</div>
-				<el-table :data="item.list" size="mini" max-height="300" style="width: 100%" :cell-style="itemStyle">
+				<el-table :data="item.list" size="mini" max-height="300" style="width: 100%" :cell-style="itemStyle" v-loading="list_loading">
 					<el-table-column prop="name" :label="item.name.split('清仓进度')[0]" fixed show-overflow-tooltip align="center">
 					</el-table-column>
 					<el-table-column label="起始库存" align="center">
@@ -146,7 +146,7 @@
 					</el-table-column>
 				</el-table>
 			</div>
-			<div :id="`analysis_${index}_sss`" class="analysis_right"></div>
+			<div :id="`analysis_${index}_sss`" class="analysis_right" v-loading="list_loading"></div>
 		</div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="批次：">
@@ -169,7 +169,7 @@
 			<div class="title">清仓进度明细表</div>
 			<el-button type="primary" style="margin-bottom: 15px" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table :data="dataObj.data" size="mini" max-height="600" :row-class-name="tableRowClassName">
+		<el-table :data="dataObj.data" size="mini" max-height="600" :row-class-name="tableRowClassName" v-loading="table_loading">
 			<el-table-column prop="ksbm" label="款式编码" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="gyshh" label="供应商款号" width="120" show-overflow-tooltip align="center">
@@ -217,7 +217,7 @@
 			<div class="title">清仓款近两个月销售明细</div>
 			<el-button type="primary" style="margin-bottom: 15px" plain size="mini" @click="exportJlyFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table :data="jlyDataObj.data" size="mini" max-height="600" @sort-change="jlySortChange">
+		<el-table :data="jlyDataObj.data" size="mini" max-height="600" @sort-change="jlySortChange" v-loading="record_loading">
 			<el-table-column prop="dept_name" label="事业部" width="120" show-overflow-tooltip align="center">
 			</el-table-column>
 			<el-table-column prop="dept_2" label="项目部" width="120" show-overflow-tooltip align="center">
@@ -257,11 +257,11 @@
 				<div class="charts_row">
 					<div class="title">异常采购趋势图（总数：<span>{{total_num}}</span>）</div>
 				</div>
-				<div class="charts_box" id="charts_box"></div>
+				<div class="charts_box" id="charts_box" v-loading="charts_box_loading"></div>
 			</div>
 			<div class="bottom_right_table">
 				<div class="title">异常采购单</div>
-				<el-table :data="tableObj.data" size="mini" max-height="420" @sort-change="sortChange">
+				<el-table :data="tableObj.data" size="mini" max-height="420" @sort-change="sortChange" v-loading="right_table_loading">
 					<el-table-column prop="ksbm" sortable label="款式编码" show-overflow-tooltip align="center">
 					</el-table-column>
 					<el-table-column prop="rq" sortable label="日期" show-overflow-tooltip align="center">
@@ -326,6 +326,13 @@
 				jly_page:1,
 				jly_pagesize:10,
 				jly_sort:"",
+				qczj_loading:false,
+				qcjd_qcjdzhb_loading:false,
+				list_loading:false,
+				table_loading:false,
+				record_loading:false,
+				charts_box_loading:false,
+				right_table_loading:false
 			}
 		},
 		created(){
@@ -413,8 +420,10 @@
 					cpfl:this.select_pl_ids.join(','),
 					dept:this.select_dept_ids.join(',')
 				}
+				this.qczj_loading = true;
 				resource.clearChart(arg).then(res => {
 					if(res.data.code == 1){
+						this.qczj_loading = false;
 						var echarts = require("echarts");
 						let data_list = res.data.data;
 						var sjxrrq_list = [];
@@ -506,8 +515,10 @@
 					cpfl:this.select_pl_ids.join(','),
 					dept:this.select_dept_ids.join(',')
 				}
+				this.qcjd_qcjdzhb_loading = true;
 				resource.dynamicAnalysisClear(arg).then(res => {
 					if(res.data.code == 1){
+						this.qcjd_qcjdzhb_loading = false;
 						var echarts = require("echarts");
 						let data = res.data.data;
 						//当前款式、库存数量
@@ -683,8 +694,10 @@
 					cpfl:this.select_pl_ids.join(','),
 					dept:this.select_dept_ids.join(',')
 				}
+				this.list_loading = true;
 				resource.dynamicAnalysisclearList(arg).then(res => {
 					if(res.data.code == 1){
+						this.list_loading = false;
 						this.clear_list = res.data.data;		//表格数据
 						var pie_list = [];
 						this.clear_list.map((item,index) => {
@@ -860,8 +873,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.table_loading = true;
 				resource.clearProgress(arg).then(res => {
 					if(res.data.code == 1){
+						this.table_loading = false;
 						this.dataObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -977,8 +992,10 @@
 					page:this.jly_page,
 					pagesize:this.jly_pagesize
 				}
+				this.record_loading = true;
 				resource.nearTwoMonthClear(arg).then(res => {
 					if(res.data.code == 1){
+						this.record_loading = false;
 						this.jlyDataObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -999,8 +1016,10 @@
 				let arg = {
 					ksbm:this.table_ks_ids.join(',')
 				}
+				this.charts_box_loading = true;
 				resource.clearAbnormalChart(arg).then(res => {
 					if(res.data.code == 1){
+						this.charts_box_loading = false;
 						let x_data = [];
 						let series_data = [];
 						let chartList = res.data.data.chartList;
@@ -1032,8 +1051,10 @@
 					page:this.yc_page,
 					pagesize:this.yc_pagesize
 				}
+				this.right_table_loading = true;
 				resource.clearAbnormal(arg).then(res => {
 					if(res.data.code == 1){
+						this.right_table_loading = false;
 						this.tableObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);

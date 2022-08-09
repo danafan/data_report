@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<div class="charts_box">
-			<div class="charts_item" id="shopcb"></div>
-			<div class="charts_item" id="shopplcb"></div>
+			<div class="charts_item" id="shopcb" v-loading="shopcb_loading"></div>
+			<div class="charts_item" id="shopplcb" v-loading="shopplcb_loading"></div>
 		</div>
 		<div class="charts_box">
-			<div class="charts_item" id="shopkscb"></div>
+			<div class="charts_item" id="shopkscb" v-loading="shopkscb_loading"></div>
 		</div>
 	</div>
 </template>
@@ -29,7 +29,10 @@
 			return {
 				shopcbChart:null,
 				shopplcbChart:null,
-				shopkscbChart:null
+				shopkscbChart:null,
+				shopcb_loading:false,
+				shopplcb_loading:false,
+				shopkscb_loading:false,
 			}
 		},
 		methods:{
@@ -44,8 +47,10 @@
 			},
 			//店铺销售成本图表
 			shopCb(req){
+				this.shopcb_loading = true;
 				resource.shopcb(req).then(res => {
 					if(res.data.code == 1){
+						this.shopcb_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;
@@ -132,8 +137,10 @@
 			},
 			//品类销售成本图表
 			shopPlcb(req){
+				this.shopplcb_loading = true;
 				resource.shopplcb(req).then(res => {
 					if(res.data.code == 1){
+						this.shopplcb_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;
@@ -223,8 +230,10 @@
 			},
 			//款式销售成本图表
 			shopKscb(req){
+				this.shopkscb_loading = true;
 				resource.shopkscb(req).then(res => {
 					if(res.data.code == 1){
+						this.shopkscb_loading = false;
 						var echarts = require("echarts");
 						let list = res.data.data.list;
 						let name_list = res.data.data.name_list;

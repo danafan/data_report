@@ -1,12 +1,12 @@
 <template>
 	<div>
 		<div class="charts_box">
-			<div class="charts_item" id="shop_sale"></div>
-			<div class="charts_item" id="plsale"></div>
+			<div class="charts_item" id="shop_sale" v-loading="shop_sale_loading"></div>
+			<div class="charts_item" id="plsale" v-loading="plsale_loading"></div>
 		</div>
 		<div class="charts_box">
-			<div class="charts_item" id="kssale"></div>
-			<div class="charts_item" id="day_sale"></div>
+			<div class="charts_item" id="kssale" v-loading="kssale_loading"></div>
+			<div class="charts_item" id="day_sale" v-loading="day_sale_loading"></div>
 		</div>
 	</div>
 </template>
@@ -31,7 +31,11 @@
 				shop_saleChart:null,
 				plsaleChart:null,
 				kssaleChart:null,
-				day_saleChart:null
+				day_saleChart:null,
+				shop_sale_loading:false,
+				plsale_loading:false,
+				kssale_loading:false,
+				day_sale_loading:false
 			}
 		},
 		methods:{
@@ -48,8 +52,10 @@
             },
 			//店铺销量图表
 			shopSale(req){
+				this.shop_sale_loading = true;
 				resource.shopSale(req).then(res => {
 					if(res.data.code == 1){
+						this.shop_sale_loading = false;
 						var echarts = require("echarts");
 						let money_list = res.data.data.money_list;
 						let num_list = res.data.data.num_list;
@@ -155,8 +161,10 @@
 			},
 			//店铺品类销售数据图表
 			shopPlsale(req){
+				this.plsale_loading = true;
 				resource.plsale(req).then(res => {
 					if(res.data.code == 1){
+						this.plsale_loading = false;
 						var echarts = require("echarts");
 						let money_list = res.data.data.money_list;
 						let num_list = res.data.data.num_list;
@@ -265,8 +273,10 @@
 			},
 			//款式销量图表
 			shopKssale(req){
+				this.kssale_loading = true;
 				resource.kssale(req).then(res => {
 					if(res.data.code == 1){
+						this.kssale_loading = false;
 						var echarts = require("echarts");
 						let money_list = res.data.data.money_list;
 						let num_list = res.data.data.num_list;
@@ -362,8 +372,10 @@
 			},
 			//每日销量图表
 			shopDaySale(req){
+				this.day_sale_loading = true;
 				resource.daySale(req).then(res => {
 					if(res.data.code == 1){
+						this.day_sale_loading = false;
 						var echarts = require("echarts");
 						let num_list = res.data.data.num_list;
 						let name_list = res.data.data.name_list;

@@ -145,16 +145,16 @@
 				</div>
 			</div>
 			<div class="content_item">
-				<div class="trend" id="xs"></div>
-				<div class="trend" id="kc"></div>
-				<div class="trend" id="zzts"></div>
+				<div class="trend" id="xs" v-loading="content_item_loading"></div>
+				<div class="trend" id="kc" v-loading="content_item_loading"></div>
+				<div class="trend" id="zzts" v-loading="content_item_loading"></div>
 			</div>
 		</div>
 		<div class="buts">
 			<div class="title">款式销售数据</div>
 			<el-button type="primary" size="mini" @click="customFun">自定义列表</el-button>
 		</div>
-		<el-table ref="multipleTable" max-height="800" size="mini" :data="tableData" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName">
+		<el-table ref="multipleTable" max-height="800" size="mini" :data="tableData" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" :row-class-name="tableRowClassName" v-loading="table_loading">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" sortable="custom" :width="maxWidth(item.row_field_name)" align="center" v-for="item in title_list" show-overflow-tooltip>
 				<template slot-scope="scope">
 					<!-- 总坑产 -->
@@ -242,6 +242,8 @@
 				row_ids:[],	
 				selected_ids:[],
 				view_row:[],			//
+				content_item_loading:false,
+				table_loading:false
 			}
 		},
 		created(){
@@ -294,8 +296,10 @@
 					end_date:this.date && this.date.length > 0?this.date[1]:"",
 					shop_code:this.select_ks_ids
 				}
+				this.content_item_loading = true;
 				resource.getShopTrend(arg).then(res => {
 					if(res.data.code == 1){
+						this.content_item_loading = false;
 						var echarts = require("echarts");
 						let data = res.data.data;
 						//销售数据
@@ -408,8 +412,10 @@
 					pagesize:this.pagesize,
 					sort:this.sort
 				}
+				this.table_loading = true;
 				resource.shopDetailCard(arg).then(res => {
 					if(res.data.code == 1){
+						this.table_loading = false;
 						this.dataObj = res.data.data.detail;
 						let max_field = res.data.data.max_field;
 						var tableData = this.dataObj.data;
