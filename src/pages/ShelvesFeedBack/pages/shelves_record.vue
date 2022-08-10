@@ -49,7 +49,7 @@
 			</div>
 			
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="120" show-overflow-tooltip prop="zdmc" label="站点名称" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="dept_name" label="事业部" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="shop_code" label="店铺ID" align="center"></el-table-column>
@@ -209,6 +209,7 @@
 				ks_id:"",				//点击标记的款式id
 				tag_zxjg:"",			//标记弹窗执行结果
 				tag_qksm:"",			//标记弹窗情况说明
+				loading:false
 			}
 		},
 		created(){
@@ -351,8 +352,10 @@
 					page:this.page,
 					pagesize:this.pagesize,
 				}
+				this.loading = true;
 				resource.offshelfAll(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

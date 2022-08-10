@@ -31,7 +31,7 @@
 	</el-form>
 	<!-- 数据模块 -->
 	<div class="data_module">
-		<el-card class="module_item" v-if="xssryg">
+		<el-card class="module_item" v-loading="loading">
 			<div class="title">销售收入预估
 				<el-tooltip class="item" effect="dark" :content="xssryg.remark" placement="top-start">
 					<i class="el-icon-warning" style="color: #FFE58F"></i>
@@ -55,7 +55,7 @@
 				<div class="content_val">{{xssryg.zqnwcl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item" v-if="yxfyyg">
+		<el-card class="module_item" v-loading="loading">
 			<div class="title">营销费用预估
 				<el-tooltip class="item" effect="dark" :content="yxfyyg.remark" placement="top-start">
 					<i class="el-icon-warning" style="color: #FFE58F"></i>
@@ -79,7 +79,7 @@
 				<div class="content_val">{{yxfyyg.zqnsyl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item" v-if="ygz_gxmy">
+		<el-card class="module_item" v-loading="loading">
 			<div class="title">预估值-贡献毛益</div>
 			<div class="value">{{ygz_gxmy.ygz_gxmy}}万</div>
 			<div class="content_row">
@@ -99,7 +99,7 @@
 				<div class="content_val">{{ygz_gxmy.zqnwcl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item" v-if="ygz_gxmyl">
+		<el-card class="module_item" v-loading="loading">
 			<div class="title">预估值-贡献毛益率</div>
 			<div class="value">{{ygz_gxmyl.gxmylyg}}%</div>
 			<div class="content_row">
@@ -111,7 +111,7 @@
 				<div class="content_val">{{ygz_gxmyl.rlj_gxmyl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item" v-if="jlryg">
+		<el-card class="module_item" v-loading="loading">
 			<div class="title">净利润预估
 				<el-tooltip class="item" effect="dark" :content="jlryg.remark" placement="top-start">
 					<i class="el-icon-warning" style="color: #FFE58F" v-if="jlryg.remark != ''"></i>
@@ -129,7 +129,7 @@
 		<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<!-- 表格 -->
-	<div class="table_container" v-if="data_list.length > 0">
+	<div class="table_container" v-loading="loading">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in label_list" :key="index" @mouseenter="CheckShow(index)" @mouseleave="CheckShow(index)">
 				<div class="label_title">{{item.row_name}}
@@ -161,7 +161,7 @@
 		</div>
 	</div>
 	<!-- 没有数据 -->
-	<div class="data_null" v-if="data_list.length == 0">暂无数据</div>
+	<div class="data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div>
 	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_ids">
@@ -181,7 +181,7 @@
 		<el-button type="primary" plain size="small" @click="ExportWeek" v-if="button_list.week_export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<!-- 表格 -->
-	<div class="table_container" v-if="week_data_list.length > 0">
+	<div class="table_container" v-loading="loading">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in week_label_list" :key="index" @mouseenter="CheckWeekShow(index)" @mouseleave="CheckWeekShow(index)">
 				<div class="label_title">{{item.row_name}}
@@ -213,7 +213,7 @@
 		</div>
 	</div>
 	<!-- 没有数据 -->
-	<div class="data_null" v-if="week_data_list.length == 0">暂无数据</div>
+	<div class="data_null" v-if="week_data_list.length == 0 && loading == false">暂无数据</div>
 	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_week_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_week_ids">
@@ -422,6 +422,7 @@
 				view_week_row:[],					//自定义列的内容(营销周报)
 				selected_week_ids:[],				//选中的自定义列的id(营销周报)
 				show_week_custom:false,				//营销周报是否显示自定义弹框
+				loading:false
 			}
 		},
 		created(){
@@ -532,8 +533,10 @@
 					audit_flag:this.is_assessment,
 					company:this.company.join(',')
 				}
+				this.loading = true;
 				resource.performanceReport(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.show_null = true;
 						let data = res.data.data;
 						this.button_list = data.button_list;

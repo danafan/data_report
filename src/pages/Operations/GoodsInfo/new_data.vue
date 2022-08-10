@@ -19,7 +19,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" width="60" fixed="left"> </el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="goods_title" label="标题" align="center"></el-table-column>
 			<el-table-column prop="platform" label="平台" align="center"></el-table-column>
@@ -100,7 +100,8 @@
 				page:1,
 				dataObj:{},				//返回数据
 				imageDialog:false,
-				big_img_url:""
+				big_img_url:"",
+				loading:false
 			}
 		},
 		created(){
@@ -142,8 +143,10 @@
 					start_date:this.sx_date && this.sx_date.length> 0?this.sx_date[0]:"",
 					end_date:this.sx_date && this.sx_date.length> 0?this.sx_date[1]:""
 				}
+				this.loading = true;
 				resource.newOnshelfList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

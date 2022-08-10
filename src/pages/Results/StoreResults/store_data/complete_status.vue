@@ -2,7 +2,7 @@
 	<div>
 		<div class="title">当天完成情况：{{view_obj.today.title}}</div>
 		<div class="cate_row">
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="today_xssryg"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -17,7 +17,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="today_gxmyyg"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -32,7 +32,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="today_yxfy"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -50,7 +50,7 @@
 		</div>
 		<div class="title">当周完成情况：{{view_obj.week.title}}</div>
 		<div class="cate_row">
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="week_xssryg"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -65,7 +65,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="week_gxmyyg"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -80,7 +80,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="week_yxfy"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -98,7 +98,7 @@
 		</div>
 		<div class="title">当月完成情况：{{view_obj.month.title}}月</div>
 		<div class="cate_row">
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="month_xssryg"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -113,7 +113,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="month_gxmyyg"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -128,7 +128,7 @@
 					</div>
 				</div>
 			</div>
-			<div class="cate_item">
+			<div class="cate_item" v-loading="loading">
 				<div class="echarts_box" id="month_yxfy"></div>
 				<div class="item_table">
 					<div class="table_header">
@@ -208,7 +208,8 @@
 					today: {},
 					week: {},
 					month: {}
-				}
+				},
+				loading:false
 			}
 		},
 		props:{
@@ -260,8 +261,10 @@
 					tjrq:this.tjrq,
 					platform:this.platform
 				}
+				this.loading = true;
 				resource.targetFinish(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.view_obj = res.data.data;
 						var echarts = require("echarts");
 

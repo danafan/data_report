@@ -19,7 +19,7 @@
 			<div class="title">海外店铺日数据</div>
 			<el-button type="primary" plain size="small" @click="commitExport('daydata')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="daydataData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="daydataData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="day_loading">
 			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
 			<el-table-column prop="rq" label="日期" width="120" align="center"></el-table-column>
 			<el-table-column prop="xq" label="星期" align="center"></el-table-column>
@@ -71,7 +71,7 @@
 			<div class="title">海外店铺销售数据</div>
 			<el-button type="primary" plain size="small" @click="commitExport('giftcard')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="giftcardData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="giftcardData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="gift_loading">
 			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
 			<el-table-column prop="rq" label="日期" align="center"></el-table-column>
 			<el-table-column prop="zfkry" label="总付款(日元)" align="center"></el-table-column>
@@ -95,7 +95,7 @@
 			<div class="title">海外店铺广告数据</div>
 			<el-button type="primary" plain size="small" @click="commitExport('adv')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="advData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="advData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="adv_loading">
 			<el-table-column prop="dpmc" width="120" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
 			<el-table-column prop="rq" width="120" label="日期" align="center"></el-table-column>
 			<el-table-column prop="hbdhmy" width="100" label="货币兑换(美元)" align="center"></el-table-column>
@@ -215,6 +215,10 @@
 				daydata_page:1,			//海外店铺日数据分页
 				daydata_pagesize:10,
 				daydataData:{},			//海外店铺日数据
+				day_loading:false,
+				gift_loading:false,
+				adv_loading:false
+
 			}
 		},
 		created(){
@@ -259,8 +263,10 @@
 					page:this.adv_page,
 					pagesize:this.adv_pagesize
 				}
+				this.adv_loading = true;
 				resource.overseasAdv(arg).then(res => {
 					if(res.data.code == 1){
+						this.adv_loading = false;
 						this.advData = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -287,8 +293,10 @@
 					page:this.giftcard_page,
 					pagesize:this.giftcard_pagesize
 				}
+				this.gift_loading = true;
 				resource.overseasGiftcard(arg).then(res => {
 					if(res.data.code == 1){
+						this.gift_loading = false;
 						this.giftcardData = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -315,8 +323,10 @@
 					page:this.daydata_page,
 					pagesize:this.daydata_pagesize
 				}
+				this.day_loading = true;
 				resource.overseasDaydata(arg).then(res => {
 					if(res.data.code == 1){
+						this.day_loading = false;
 						this.daydataData = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

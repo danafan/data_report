@@ -18,7 +18,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="dept_name" label="项目部" align="center"></el-table-column>
 			<el-table-column prop="dept_2" label="二级部门" align="center"></el-table-column>
 			<el-table-column prop="dept_3" label="三级部门" align="center"></el-table-column>
@@ -93,8 +93,10 @@
 					page:this.page,
 					pagesize:this.pagesize,
 				}
+				this.loading = true;
 				resource.storeList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

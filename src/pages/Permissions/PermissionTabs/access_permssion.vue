@@ -11,7 +11,7 @@
 		<div class="buts">
 			<el-button type="primary" size="small" @click="addRole" v-if="dataObj.button_list.add == '1'">添加</el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%;margin-top: 15px" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%;margin-top: 15px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="menu_role_id" label="编号" width="120" align="center"></el-table-column>
 			<el-table-column prop="menu_role_name" label="角色名称" align="center"></el-table-column>
 			<el-table-column label="角色人员" align="center">
@@ -157,6 +157,7 @@
 				role_id:"",							//选中的角色id
 				show_detail:false,					//角色详情弹框
 				menu_role_detail:{},				//角色详情
+				loading:false
 			}
 		},
 		created(){
@@ -172,8 +173,10 @@
 			},
 			//获取列表
 			getData(){
+				this.loading = true;
 				resource.menuRoleList(this.req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

@@ -34,7 +34,7 @@
 		<el-button type="primary" size="small" @click="show_custom = true" style="margin-bottom: 5px">自定义列表</el-button>
 	</div>
 	<!-- 表格 -->
-	<div class="table_container" v-if="data_list.length > 0">
+	<div class="table_container" v-loading="loading">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in label_list" :key="index" @mouseenter="CheckShow(index)" @mouseleave="CheckShow(index)">
 				<div class="label_title">{{item.row_name}}
@@ -66,15 +66,7 @@
 		</div>
 	</div>
 	<!-- 没有数据 -->
-	<div class="data_null" v-if="data_list.length == 0">暂无数据</div>
-	<!-- <el-table :data="data_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary>
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
-			<template slot-scope="scope">
-				<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:`${item.color}`}" v-if="item.type == 1 && scope.$index != 0">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
-				<div class="text_content" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
-			</template>
-		</el-table-column>
-	</el-table> -->
+	<div class="data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div>
 	<!-- 仪表 -->
 	<div id="cate_row" class="cate_row"></div>
 	<!-- 各店销售收入完成情况 -->
@@ -256,14 +248,6 @@
 				company:[],					//选中的公司
 				is_assessment:'0',					//是否考核店铺
 				dashboard_data:[],					//仪表盘列表
-				// data_list:[],						//列表数据
-				// title_list:[],						//列
-				// selected_ids:[],					//自定义已选中的id
-				// row_ids:[],							//可提交的自定义ids
-				// view_row:[],						//自定义
-				// total:[],							//总计
-				// total_list:[],						//总计（用于导出）
-				// show_custom:false,					//自定义列表
 				label_list:[],						//表格数据（左侧表头）
 				shop_table_list_data:[],			//表格数据（原始）
 				total_shop_data:[],					//总计
@@ -276,6 +260,7 @@
 				show_axis_01:true,
 				show_axis_02:true,
 				show_axis_03:true,
+				loading:false
 			}
 		},
 		created(){
@@ -358,16 +343,10 @@
 					audit_flag:this.is_assessment,
 					company:this.company.join(',')
 				}
+				this.loading = true;
 				resource.targetTable(req).then(res => {
 					if(res.data.code == 1){
-						// let table_list_data = res.data.data;
-						// this.title_list = table_list_data.title_list;
-						// this.data_list = table_list_data.data;
-						// this.total = table_list_data.total;
-						// this.total_list[0] = table_list_data.total_list;
-						// this.view_row = table_list_data.view_row;
-						// this.selected_ids = table_list_data.selected_ids;
-
+						this.loading = false;
 						let data = res.data.data;
 						//左侧表头
 						data.title_list.map(item => {

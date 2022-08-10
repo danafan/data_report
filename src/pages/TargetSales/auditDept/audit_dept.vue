@@ -35,7 +35,7 @@
 		<div class="total_data">
 			销售收入：{{total.xssr}}万，毛利率：{{total.mll}}%，营销费用率：{{total.yxfy}}%，净利润：{{total.jlr}}万，净利润率：{{total.jlrl}}%
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
 			<el-table-column prop="dept_2_name" show-overflow-tooltip label="二级部门" align="center"></el-table-column>
 			<el-table-column prop="shop_name" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
@@ -137,6 +137,7 @@
 				showMerge:false,			//合并提交弹窗
 				id:"",						//查看详情的ID
 				remark:"",					//合并备注
+				loading:false
 			}
 		},
 		beforeRouteLeave(to,from,next){
@@ -212,8 +213,10 @@
 					page:this.page,
 					limit:this.pagesize
 				}
+				this.loading = true;
 				resource.shopTargetList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data.list;
 						this.total = res.data.data.total;
 					}else{

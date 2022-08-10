@@ -25,17 +25,17 @@
 			</el-form-item>
 		</el-form>
 		<div class="top_table">
-			<el-table size="small" :data="dept_list" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" style="flex:1">
+			<el-table size="small" :data="dept_list" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" style="flex:1" v-loading="loading">
 				<el-table-column width="100" prop="dept_name" label="事业部" align="center"></el-table-column>
 				<el-table-column width="120" prop="ksbm_num" label="未执行款式数量" align="center"></el-table-column>
 				<el-table-column width="120" prop="spbm_num" label="未执行链接数量" align="center"></el-table-column>
 			</el-table>
-			<div class="chart_box" id="chart_box"></div>
+			<div class="chart_box" id="chart_box" v-loading="loading"></div>
 		</div>
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column show-overflow-tooltip prop="dept_name" label="事业部" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip prop="dpmc" label="店铺名称" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip prop="shopowner_name" label="店长" align="center"></el-table-column>
@@ -104,7 +104,8 @@
 				},	 										//时间区间
 				dataObj:{},				//返回数据
 				dept_list:[],
-				chartBoxChart:null
+				chartBoxChart:null,
+				loading:false
 			}
 		},
 		created(){
@@ -163,8 +164,10 @@
 					page:this.page,
 					pagesize:this.pagesize,
 				}
+				this.loading = true;
 				resource.offshelfTj(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data.shop_list;
 						this.dept_list = res.data.data.dept_list;
 						var echarts = require("echarts");

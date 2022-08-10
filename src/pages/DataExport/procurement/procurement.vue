@@ -32,7 +32,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="120" show-overflow-tooltip prop="io_id" label="入仓单号" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="name" label="操作仓储方" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="warehouse" label="仓库" align="center"></el-table-column>
@@ -119,7 +119,8 @@
 				}],						//主仓列表
 				pagesize:10,
 				page:1,
-				dataObj:{}
+				dataObj:{},
+				loading:false
 			}
 		},
 		created(){
@@ -156,8 +157,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.purinList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

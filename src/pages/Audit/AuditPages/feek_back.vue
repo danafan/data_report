@@ -109,6 +109,9 @@
 		<el-form-item label="编码：">
 			<div class="value">{{itemInfo.ksbm}}</div>
 		</el-form-item>
+		<el-form-item label="供应商款号：">
+			<div class="value">{{itemInfo.supplier_ksbm}}</div>
+		</el-form-item>
 		<el-form-item label="成本价：">
 			<div class="value">{{itemInfo.cb_price}}</div>
 		</el-form-item>

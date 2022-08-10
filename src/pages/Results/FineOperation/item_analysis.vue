@@ -124,7 +124,7 @@
 	<el-button type="primary" size="small" @click="customFun('zbhz_data')" style="margin-bottom: 5px">自定义列表</el-button>
 	<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 </div>
-<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange">
+<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange" v-loading="table_list_loading">
 	<el-table-column :prop="item.row_field_name" :width="item.type == 3 || zbhzFixed(item.row_field_name)?110:widthColumn(item.row_field_name)?90:70" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 		<template slot="header" slot-scope="scope">
 			<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
@@ -375,6 +375,7 @@
 				page_type:"",								//弹框的类型
 				req:{},										//请求参数
 				button_list:{},								//权限
+				table_list_loading:false
 			}
 		},
 		created(){
@@ -418,12 +419,6 @@
 					}
 				})
 			},
-			// //模糊查询店铺
-			// checkStore(e){
-			// 	this.store_name = e;
-			// 	//店铺列表
-			// 	this.getStore();
-			// },
 			//店铺列表
 			getStore(){
 				resource.ajaxViewStore({name:this.store_name,platform:this.select_plat_ids.join(','),}).then(res => {
@@ -609,8 +604,10 @@
 					sort:this.sort,
 					sort_type:this.sort_type
 				};
+				this.table_list_loading = true;
 				resource.dpAnalysis({...req,...dpAnalysis}).then(res => {
 					if(res.data.code == 1){
+						this.table_list_loading = false;
 						this.button_list = res.data.data.button_list;	//导出按钮是否显示
 						this.table_list = res.data.data.table_list;		//列表行数据
 						this.title_list = res.data.data.title_list;		//列表列数据

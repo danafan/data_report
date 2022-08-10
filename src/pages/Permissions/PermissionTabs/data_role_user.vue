@@ -4,7 +4,7 @@
 			<el-button type="primary" size="small" icon="el-icon-arrow-left" @click="$router.push('/permssions_index')">返回</el-button>
 			<div class="breadcrumb_name">数据权限 / 权限人员列表</div>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" width="120" align="center"></el-table-column>
 			<el-table-column prop="job_no" label="工号" width="120" align="center"></el-table-column>
 			<el-table-column prop="dept_name" show-overflow-tooltip label="所属部门" align="center"></el-table-column>
@@ -125,6 +125,7 @@
 				over_time:"",			//截止日期
 				show_detail:false,		//用户详情弹框
 				user_detail:{},			//用户详情
+				loading:false
 			}
 		},
 		created(){
@@ -135,8 +136,10 @@
 		methods:{
 			//获取列表
 			userList(){
+				this.loading = true;
 				resource.dataRoleUser(this.req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

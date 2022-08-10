@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<el-button type="primary" size="small" @click="addAccess" v-if="dataObj.button_list.add == '1'">添加</el-button>
-		<el-table :data="dataObj.data" size="small" border style="width: 100%;margin-top: 15px" align="center" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table :data="dataObj.data" size="small" border style="width: 100%;margin-top: 15px" align="center" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="150" prop="access_name" label="名称" align="center">
 			</el-table-column>
 			<el-table-column width="150" prop="menu_name" label="所属分组" align="center">
@@ -124,6 +124,7 @@
 				selMethod:"",			//当前选择的方法名称
 				accessCodes:[],			//选中的所有权限吗列表
 				id:"",
+				loading:false
 			}
 		},
 		created(){
@@ -142,8 +143,10 @@
 		methods:{
 			//获取列表
 			getList(){
+				this.loading = true;
 				resource.accessList(this.req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

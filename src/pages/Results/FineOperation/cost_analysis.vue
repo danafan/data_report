@@ -44,7 +44,7 @@
 			<div class="title">各店目标达成情况</div>
 			<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getSummaries" show-summary>
+		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getSummaries" show-summary v-loading="loading">
 			<el-table-column label="制单日期" prop="month" width="160" sortable>
 			</el-table-column>
 			<el-table-column label="店铺ID" prop="dpid" width="160" show-overflow-tooltip sortable>
@@ -259,6 +259,7 @@
 				company_list:[],
 				mx_xmmc_list:[],							//明细-所有项目名称
 				selected_mx_xmmc_list:[],					//明细-选中的项目名称
+				loading:false
 			}
 		},
 		created(){
@@ -413,8 +414,10 @@
 				// //处理底部项目名称
 				this.mx_xmmc_list = this.select_xmmc_list.length == 0?this.xmmc_list:this.select_xmmc_list;
 				this.selected_mx_xmmc_list = this.mx_xmmc_list.length == this.xmmc_list.length?[]:this.mx_xmmc_list;
+				this.loading = true;
 				resource.yxfyList(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var data = res.data.data;
 						var echarts = require("echarts");
 						//各店目标达成情况

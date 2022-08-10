@@ -27,7 +27,7 @@
 				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="dept_name" label="事业部" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="shop" label="店铺ID" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="num" label="违规总数量" show-overflow-tooltip align="center"></el-table-column>
@@ -87,6 +87,7 @@
 				page:1,
 				pagesize:10,
 				dataObj:{},
+				loading:false
 			}
 		},
 		created(){
@@ -133,8 +134,10 @@
 					shop_name:this.shop_name_ids.join(','),
 					shop_code:this.shop_code_ids.join(',')	
 				}
+				this.loading = true;
 				shelvesResource.violationAnalysis(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);

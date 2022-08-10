@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-table :data="tableObj.data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" style="width: 100%" size="small">
+		<el-table :data="tableObj.data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" style="width: 100%" size="small" v-loading="loading">
 			<el-table-column prop="form_name" label="表单名" align="center"></el-table-column>
 			<el-table-column sortable prop="add_time" label="最近提交时间" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="表单创建者" align="center"></el-table-column>
@@ -27,6 +27,7 @@
 				page:1,
 				page_size:10,
 				tableObj:{},
+				loading:false
 			}
 		},
 		created(){
@@ -64,8 +65,10 @@
 					page:this.page,
 					pagesize:this.page_size
 				}
+				this.loading = true;
 				resource.submitLog(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.tableObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

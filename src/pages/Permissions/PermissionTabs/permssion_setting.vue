@@ -11,7 +11,7 @@
 			</el-form>
 			<el-button type="primary" size="small" @click="settingFun('1')" v-if="dataObj.button_list.setting == '1'">批量设置角色</el-button>
 		</div>
-		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table ref="multipleTable" size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" @selection-change="handleSelectionChange" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="selection" width="55" :selectable='selectEnable'></el-table-column>
 			<el-table-column prop="job_no" label="工号" width="120" align="center"></el-table-column>
 			<el-table-column prop="dept_name" show-overflow-tooltip label="所属部门" align="center"></el-table-column>
@@ -151,6 +151,7 @@
 				},						//设置数据
 				show_detail:false,		//成员详情
 				user_detail:{},			//用户详情
+				loading:false
 			}
 		},
 		created(){
@@ -174,8 +175,10 @@
 			},	
 			//获取列表
 			userList(){
+				this.loading = true;
 				resource.userList(this.req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

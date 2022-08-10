@@ -59,7 +59,7 @@
 		<div class="table_top">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" max-height="560px" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.list.data" tooltip-effect="dark" style="width: 100%" max-height="560px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="brand" label="品牌" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_code" label="供应商货号" show-overflow-tooltip width="120" align="center"></el-table-column>
@@ -70,8 +70,6 @@
 					style="width: 160px; height: 80px"
 					fit="cover"
 					:src="scope.row.image_url" v-if="scope.row.image_url != ''" @click="bigImg(scope.row.image_url)"></el-image>
-					<!-- <el-image fit="cover" style="width: 160px; height: 80px" :src="scope.row.image_url" :preview-src-list="scope.row.image_url.split(',')" v-if="scope.row.image_url != ''">
-					</el-image> -->
 					<div v-else>暂无图片</div>
 				</template>
 			</el-table-column>
@@ -163,7 +161,8 @@
 					list:{}
 				},
 				imageDialog:false,
-				big_img_url:""
+				big_img_url:"",
+				loading:false
 			}
 		},
 		created(){
@@ -222,8 +221,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.operateIndex(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

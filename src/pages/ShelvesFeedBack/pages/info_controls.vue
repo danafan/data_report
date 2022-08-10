@@ -54,7 +54,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="shop_name" label="店铺名称" width="120" show-overflow-tooltip align="center" fixed="left"></el-table-column>
 			<el-table-column prop="shop" show-overflow-tooltip label="店铺ID"  width="120" align="center"></el-table-column>
 			<el-table-column prop="violations_time" show-overflow-tooltip label="违规时间" width="120" align="center"></el-table-column>
@@ -266,6 +266,7 @@
 				},				//点击的详情
 				audit_status:'5',			//选中的审核状态
 				note:"",					//备注
+				loading:false,				
 			}
 		},
 		created(){
@@ -353,8 +354,10 @@
 					shop_name:this.shop_name_ids.join(','),
 					shop_code:this.shop_code_ids.join(',')	
 				}
+				this.loading = true;
 				shelvesResource.violationList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data.list;
 						this.button_list = res.data.data.button_list;
 					}else{

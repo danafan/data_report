@@ -7,7 +7,7 @@
 			<el-checkbox true-label="1" false-label="0" v-model="is_self" @change="searchData">仅查看我创建的</el-checkbox>
 			<el-button type="primary" icon="el-icon-plus" size="small" @click="createFormFun" v-if="dataObj.button_list.add_form == 1">创建表单</el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="form_name" label="表单名" align="center"></el-table-column>
 			<el-table-column label="发布状态" align="center">
 				<template slot-scope="scope">
@@ -206,6 +206,7 @@
 					type:'text'
 				}],						//结构列表
 				form_id:"",				//点击的表单id
+				loading:false
 			}
 		},
 		created(){
@@ -227,8 +228,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.formList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

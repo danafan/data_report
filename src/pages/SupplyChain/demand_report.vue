@@ -39,7 +39,7 @@
 				<el-button type="primary" plain size="small" @click="$router.push('/created_demand')" v-if="button_list.add == 1">新建<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange">
+		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange" v-loading="loading">
 			<el-table-column type="selection" width="55" fixed="left" :selectable="selectFn" v-if="button_list.handle == 1"></el-table-column>
 			<el-table-column label="操作" align="center" width="320" fixed="left">
 				<template slot-scope="scope">
@@ -284,6 +284,7 @@
 				delay_remark:"",	//延期备注
 				is_accept:5,		//完成状态
 				confirm_image:[],	//确认凭证
+				loading:false
 			}
 		},
 		beforeRouteLeave(to,from,next){
@@ -348,8 +349,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				demandResource.demandList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 						this.button_list = res.data.data.button_list;
 					}else{

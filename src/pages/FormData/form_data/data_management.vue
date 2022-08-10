@@ -94,7 +94,7 @@
 			</div>
 		</div>
 		<!-- 表格 -->
-		<el-table ref="multipleTable" :data="tableObj.data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" style="width: 100%" @selection-change="handleSelectionChange" size="small">
+		<el-table ref="multipleTable" :data="tableObj.data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" style="width: 100%" @selection-change="handleSelectionChange" size="small" v-loading="loading">
 			<el-table-column type="selection" width="55" fixed="left"></el-table-column>
 			<el-table-column :prop="item.column_name" align="center" show-overflow-tooltip  :label="item.title" v-for="item in tableObj.title_list"></el-table-column>
 			<el-table-column label="操作" align="center" width="120" fixed="right">
@@ -349,7 +349,8 @@
 				id:"",						//点击的数据id
 				all_dialog:false,			//批量添加
 				files:null,					//上传的文件
-				is:false
+				is:false,
+				loading:false,	
 			}
 		},
 		created(){
@@ -515,8 +516,10 @@
 						arg[item.select_column_name] = item.value[0] + '_' + item.value[1];
 					}
 				})
+				this.loading = true;
 				resource.formTableList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.tableObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

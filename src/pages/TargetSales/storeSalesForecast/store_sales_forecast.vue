@@ -24,7 +24,7 @@
 		<div style="display:flex;justify-content: end;margin-bottom: 15px">
 			<el-button type="primary" size="small" @click="$router.push('/create_target')">店铺填报</el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
 			<el-table-column prop="dept_2_name" show-overflow-tooltip label="二级部门" align="center"></el-table-column>
 			<el-table-column prop="shop_name" show-overflow-tooltip label="店铺名称" align="center"></el-table-column>
@@ -142,6 +142,7 @@
 				dialog_title:"",			//详情标题
 				showStep:false,				//审批流程弹窗
 				step_list:[],				//审批流程列表
+				loading:false
 			}
 		},
 		beforeRouteLeave(to,from,next){
@@ -200,8 +201,10 @@
 					page:this.page,
 					limit:this.pagesize
 				}
+				this.loading = true;
 				resource.shopTargetList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);

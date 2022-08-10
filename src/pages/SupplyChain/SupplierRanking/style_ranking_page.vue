@@ -39,7 +39,7 @@
 					<div class="title">款式销量排名</div>
 					<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
-				<el-table size="small" :data="xlDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+				<el-table size="small" :data="xlDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="xl_loading">
 					<el-table-column prop="ksbm" show-overflow-tooltip label="款式编码" align="center"></el-table-column>
 					<el-table-column prop="xl" sortable='custom' label="销量" align="center"></el-table-column>
 					<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center"></el-table-column>
@@ -58,7 +58,7 @@
 					<div class="title">款式缺货排名</div>
 					<el-button type="primary" plain size="small" @click="qhCommitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
-				<el-table size="small" :data="qhDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="qhSortChange">
+				<el-table size="small" :data="qhDataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="qhSortChange" v-loading="qh_loading">
 					<el-table-column prop="ksbm" label="款式编码" show-overflow-tooltip align="center"></el-table-column>
 					<el-table-column prop="kc" sortable='custom' label="库存" align="center"></el-table-column>
 					<el-table-column prop="kys" sortable='custom' label="缺货数" align="center"></el-table-column>
@@ -98,6 +98,8 @@
 				qh_sort_field:"",
 				qh_sort_type:"",					//缺货排序
 				qhDataObj:{},						//缺货数据
+				xl_loading:false,
+				qh_loading:false
 			}
 		},
 		created(){
@@ -165,8 +167,10 @@
 					page:this.xl_page,
 					pagesize:this.xl_pagesize
 				}
+				this.xl_loading = true;
 				operResource.getKsSalenum(arg).then(res => {
 					if(res.data.code == 1){
+						this.xl_loading = false;
 						this.xlDataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -231,8 +235,10 @@
 					page:this.qh_page,
 					pagesize:this.qh_pagesize
 				}
+				this.qh_loading = true;
 				operResource.getKsOutstock(arg).then(res => {
 					if(res.data.code == 1){
+						this.qh_loading = false;
 						this.qhDataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

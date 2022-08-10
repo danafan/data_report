@@ -44,7 +44,7 @@
 				<el-button type="primary" plain size="small" @click="exportTable">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="120" show-overflow-tooltip prop="shop_code" label="主卖店铺" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="gys" label="供应商" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="ksbm" label="款式编码" align="center"></el-table-column>
@@ -141,6 +141,7 @@
 				dataObj:{},				//返回数据
 				ks_shortage_day_list:[],	//款式缺货情况对应日期数组
 				feedback_day_list:[],			//缺货跟踪反馈对应日期数组
+				loading:false
 			}
 		},
 		created(){
@@ -175,8 +176,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.stockList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 						this.ks_shortage_day_list = this.dataObj.ks_shortage_day_list;
 						this.feedback_day_list = this.dataObj.feedback_day_list;

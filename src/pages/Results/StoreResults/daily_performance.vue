@@ -34,7 +34,7 @@
 		<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<!-- 表格 -->
-	<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary>
+	<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary v-loading="loading">
 		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
 			<template slot-scope="scope">
 				<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
@@ -156,6 +156,7 @@
 				button_list:{},
 				company:[],					//选中的公司
 				show_box:false,						//默认放大折线图不显示
+				loading:false
 			}
 		},
 		mounted(){
@@ -254,8 +255,10 @@
 					audit_flag:this.is_assessment,
 					company:this.company.join(',')
 				}
+				this.loading = true;
 				resource.dayAnalysis(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.button_list = res.data.data.button_list;
 						let table_list = res.data.data.table_list;
 						this.table_list = table_list.list;				//列表行数据
