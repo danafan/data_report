@@ -17,7 +17,7 @@
 			</el-form-item>
 		</el-form>
 		<!-- 表格数据 -->
-		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries">
+		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries" v-loading="loading">
 			<el-table-column prop="shop_name" width="160" label="店铺" show-overflow-tooltip></el-table-column>
 			<el-table-column prop="fhdl" width="100" label="发货单数" align="center" sortable></el-table-column>
 			<el-table-column prop="fhje" label="发货金额" width="100" align="center" sortable>
@@ -63,11 +63,11 @@
 			</el-table-column>
 		</el-table>
 		<!-- 毛利率分析 -->
-		<div class="content_text mllfx" id="mllfx"></div>
+		<div class="content_text mllfx" id="mllfx" v-loading="loading"></div>
 		<!-- 销售成本/销售收入 -->
 		<div class="bottom_row">
-			<div class="content_text bottom_item" id="xscb">{{!show_xscb_chart?'暂无数据':''}}</div>
-			<div class="content_text bottom_item" id="xssr">{{!show_xssr_chart?'暂无数据':''}}</div>
+			<div class="content_text bottom_item" id="xscb" v-loading="loading">{{!show_xscb_chart?'暂无数据':''}}</div>
+			<div class="content_text bottom_item" id="xssr" v-loading="loading">{{!show_xssr_chart?'暂无数据':''}}</div>
 		</div>
 	</div>
 </template>
@@ -130,9 +130,9 @@
 					}]
 				},	 								//时间区间
 				tableData:[],						//表格数据
-				// show_mllfx_chart:true,
 				show_xscb_chart:true,
-				show_xssr_chart:true
+				show_xssr_chart:true,
+				loading:false
 			}
 		},
 		created(){
@@ -201,8 +201,10 @@
 					start_date:this.date[0],
 					end_date:this.date[1],
 				}
+				this.loading = true;
 				operationResource.incomeAnalysisDelivery(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						//表格数据
 						this.tableData = res.data.data.table;
 						//毛利率分析

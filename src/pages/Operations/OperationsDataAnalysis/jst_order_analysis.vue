@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="title">月度日均单数</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="160" show-overflow-tooltip prop="dates" label="付款日期" align="center"></el-table-column>
 			<el-table-column prop="ztdl" label="整体单量" align="center"></el-table-column>
 			<el-table-column prop="ztrj" label="整体日均" align="center"></el-table-column>
@@ -39,13 +39,13 @@
 			</el-pagination>
 		</div>
 		<!-- 日订单数 -->
-		<div class="chart_style" id="day_orders"></div>
+		<div class="chart_style" id="day_orders" v-loading="order_loading"></div>
 		<!-- 付款金额 -->
-		<div class="chart_style" id="payment_amount"></div>
+		<div class="chart_style" id="payment_amount" v-loading="order_loading"></div>
 		<!-- 渠道订单占比 -->
-		<div class="chart_style" id="proportion_orders"></div>
+		<div class="chart_style" id="proportion_orders" v-loading="order_loading"></div>
 		<!-- 渠道销售金额占比 -->
-		<div class="chart_style" id="proportion_amount"></div>
+		<div class="chart_style" id="proportion_amount" v-loading="order_loading"></div>
 		<!-- 店铺昨日订单数 -->
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="销量范围:">
@@ -57,7 +57,7 @@
 			</el-form-item>
 		</el-form>
 		<!-- 店铺昨日订单数 -->
-		<div class="chart_style" id="order_yesterday"></div>
+		<div class="chart_style" id="order_yesterday" v-loading="yesterday_loading"></div>
 	</div>
 </template>
 <script>
@@ -69,6 +69,9 @@
 				pagesize:10,
 				dataObj:{},		//月度日均单数
 				range_sec:'3',	//选中的销量范围
+				loading:false,
+				order_loading:false,
+				yesterday_loading:false
 			}
 		},
 		created(){
@@ -86,8 +89,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				operationResource.monthlyDailyNumber(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -107,8 +112,10 @@
 			},
 			//订单分析-图表
 			jstOrderAnalyse(){
+				this.order_loading = true;
 				operationResource.jstOrderAnalyse().then(res => {
 					if(res.data.code == 1){
+						this.order_loading = true;
 						var echarts = require("echarts");
 						//日订单数
 						let day_orders = res.data.data.day_orders;	
@@ -482,8 +489,10 @@
 			},
 			//店铺昨日订单数
 			orderYesterday(){
+				this.yesterday_loading = true;
 				operationResource.orderYesterday({range_sec:this.range_sec}).then(res => {
 					if(res.data.code == 1){
+						this.yesterday_loading = false;
 						var echarts = require("echarts");
 						let order_yesterday = res.data.data;	
 						let order_yesterday_legend = {

@@ -17,7 +17,7 @@
 			</el-form-item>
 		</el-form>
 		<!-- 表格数据 -->
-		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries">
+		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries" v-loading="loading">
 			<el-table-column prop="shop_name" width="160" label="店铺" show-overflow-tooltip></el-table-column>
 			<el-table-column prop="xsds" label="支付单数" align="center" sortable></el-table-column>
 			<el-table-column prop="xsje" label="支付金额" width="120" align="center" sortable>
@@ -49,12 +49,12 @@
 		</el-table>
 		<el-tabs v-model="tab_index" type="card">
 			<el-tab-pane label="支付数据" name="1">
-				<div id="saleToastContainer" class="toastContainer"></div>
-				<div id="saleContainer"></div>
+				<div id="saleToastContainer" class="toastContainer" v-loading="chart_loading"></div>
+				<div id="saleContainer" v-loading="chart_loading"></div>
 			</el-tab-pane>
 			<el-tab-pane label="鱼塘数据" name="2">
-				<div id="ytToastContainer" class="toastContainer"></div>
-				<div id="ytContainer"></div>
+				<div id="ytToastContainer" class="toastContainer" v-loading="chart_loading"></div>
+				<div id="ytContainer" v-loading="chart_loading"></div>
 			</el-tab-pane>
 		</el-tabs>
 		<div class="scroll_top" @click="scrollTop">
@@ -111,6 +111,8 @@
 				yt_min:0,							//鱼塘数据比例最小值（用于折线图显示）
 				total_sale_min:0,					//销售数据总计最小值
 				total_yt_min:0,						//鱼塘数据总计最小值
+				loading:false,
+				chart_loading:false
 			}
 		},
 		created(){
@@ -167,8 +169,10 @@
 					start_date:this.date[0],
 					end_date:this.date[1],
 				}
+				this.loading = true;
 				operationResource.saleAnalysisTable(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.tableData = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -218,8 +222,10 @@
 					start_date:this.date[0],
 					end_date:this.date[1],
 				}
+				this.chart_loading = true;
 				operationResource.saleAnalysisChart(arg).then(res => {
 					if(res.data.code == 1){
+						this.chart_loading = false;
 						let saleToastEle = document.getElementById('saleToastContainer');
 						let saleToastChart = echarts.getInstanceByDom(saleToastEle);
 						if (saleToastChart != null) { 

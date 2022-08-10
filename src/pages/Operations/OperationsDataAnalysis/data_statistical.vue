@@ -35,15 +35,15 @@
 			</div>
 			<el-card class="axis_list margin_bottom">
 				<div class="sss">
-					<div class="axis_item" id="today"></div>
-					<div class="axis_item" id="yesterday"></div>
-					<div class="axis_item" id="month"></div>
-					<div class="axis_item" id="rlj"></div>
+					<div class="axis_item" id="today" v-loading="loading"></div>
+					<div class="axis_item" id="yesterday" v-loading="loading"></div>
+					<div class="axis_item" id="month" v-loading="loading"></div>
+					<div class="axis_item" id="rlj" v-loading="loading"></div>
 				</div>
 			</el-card>
 			<el-card class="margin_bottom">
 				<div class="table_title">店铺销售汇总</div>
-				<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500">
+				<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" v-loading="loading">
 					<el-table-column prop="shop_name" show-overflow-tooltip label="店铺名" width="160"></el-table-column>
 					<el-table-column prop="today_income" label="今日收入" width="100" align="center" sortable>
 						<template slot-scope="scope">
@@ -208,7 +208,7 @@
 				</el-table>
 			</el-card>
 			<el-card>
-				<div class="sale_chart" id="sale_chart"></div>
+				<div class="sale_chart" id="sale_chart" v-loading="loading"></div>
 			</el-card>
 		</div>
 	</div>
@@ -217,8 +217,6 @@
 .container{
 	padding: 20px;
 	background: #ECEFF8;
-	// display:flex;
-	// justify-content: center;
 	position: relative;
 	.reload{
 		position: absolute;
@@ -226,7 +224,6 @@
 		right: 15px;
 	}
 	.content{
-		// width: 920px;
 		.top_cards{
 			width: 100%;
 			display: flex;
@@ -322,6 +319,7 @@
 				top_square:{},
 				square:[],		//顶部数据
 				tableData:[],	//店铺销售汇总
+				loading:false
 			}
 		},
 		created(){
@@ -331,8 +329,10 @@
 		methods:{
 			//获取数据
 			getDataStatistics(){
+				this.loading = true;
 				operationResource.dataStatistics().then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var echarts = require("echarts");
 						this.top_square = res.data.data.square.top;
 						this.square = res.data.data.square.list;	//顶部数据

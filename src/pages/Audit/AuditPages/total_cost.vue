@@ -43,7 +43,7 @@
 			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="user_type != '1' && user_type != '4'">一键替换</el-button>
 			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center" fixed="left">
 			</el-table-column>
 			<el-table-column prop="launch_day" label="上新时间" width="120" align="center"></el-table-column>
@@ -258,6 +258,7 @@
 				new_cb_price:"",		//点击反馈的新成本价
 				feek_back_remark:"",	//点击反馈的原因
 				innerDialog:false,		//内部提示
+				loading:false
 			}
 		},
 		created(){
@@ -324,8 +325,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.totalAudit(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

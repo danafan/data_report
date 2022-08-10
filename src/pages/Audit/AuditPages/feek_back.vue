@@ -24,7 +24,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="ksbm" label="新编码" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="cb_price" label="成本价" show-overflow-tooltip align="center"></el-table-column>
@@ -279,7 +279,8 @@
 							return false;
 						};
 					}
-				}
+				},
+				loading:false
 
 			}
 		},
@@ -317,8 +318,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.feedbackList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

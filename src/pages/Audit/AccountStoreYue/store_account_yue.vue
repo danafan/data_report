@@ -16,7 +16,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="title">平台汇总<span>（每日更新一次）</span></div>
-		<el-table ref="multipleTable" size="small" :data="platform_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
+		<el-table ref="multipleTable" size="small" :data="platform_total.list" tooltip-effect="dark" style="width: 100%" v-loading="loading">
 			<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in platform_total.title" show-overflow-tooltip>
 				<template slot-scope="scope">
 					<div >{{scope.row[item.field]}}</div>
@@ -24,7 +24,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="title">各平台汇总<span>（每日更新一次）</span></div>
-		<el-table ref="multipleTable" size="small" :data="dept_total.list" tooltip-effect="dark" style="width: 100%" v-if="show_table">
+		<el-table ref="multipleTable" size="small" :data="dept_total.list" tooltip-effect="dark" style="width: 100%" v-loading="loading">
 			<el-table-column :prop="item.field" :label="item.name" align="center" v-for="item in dept_total.title" show-overflow-tooltip>
 				<template slot-scope="scope">
 					<div >{{scope.row[item.field]}}</div>
@@ -35,7 +35,7 @@
 			<div class="title">店铺明细<span>（每日更新一次）</span><span>（店铺总数：{{total_shop_num}}；今日更新：{{today_shop_num}}）</span></div>
 			<el-button type="primary" plain size="small" @click="exportFile" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table ref="multipleTable" size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" @sort-change="sortChange" v-if="show_table">
+		<el-table ref="multipleTable" size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" @sort-change="sortChange" v-loading="loading">
 			<el-table-column :prop="item.field" :label="item.name" :sortable="item.is_sort == 1?'custom':false" align="center" v-for="item in title_list" show-overflow-tooltip>
 				<template slot-scope="scope">
 					<div >{{scope.row[item.field]}}</div>
@@ -88,8 +88,8 @@
 				sort_field:"",
 				sort_type:"",
 				date:getNowDate(),
-				show_table:false,
 				button_list:{},			//导出按钮
+				loading:false
 			}
 		},
 		created(){
@@ -113,7 +113,6 @@
 			//搜索
 			getList(){
 				this.page = 1;
-				this.show_table = false;
 				this.sort_field = "";
 				this.sort_type = "";
 				//获取列表
@@ -129,8 +128,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.platformBalanceData(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						let data = res.data.data;
 						this.table_data = data.list;
 						this.title_list = data.title;
@@ -139,7 +140,6 @@
 						this.total_shop_num = data.total_shop_num;//店铺总数
 						this.today_shop_num	= data.today_shop_num;//今日更新店铺数
 						this.button_list = data.button_list;
-						this.show_table = true;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

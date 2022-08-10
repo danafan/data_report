@@ -29,7 +29,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="exportTable">全部导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" align="center"></el-table-column>
@@ -213,7 +213,8 @@
 				remark:"",				//备注
 				show_img:[],			//显示的图片
 				domain:"",				//文件前缀
-				url:""					//csv后缀
+				url:"",					//csv后缀
+				loading:false,
 			}
 		},
 		created(){
@@ -277,8 +278,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.zeroCost(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

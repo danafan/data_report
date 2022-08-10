@@ -23,7 +23,7 @@
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
@@ -246,7 +246,8 @@
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
 				big_img_list:[],
-				dialog_title:""
+				dialog_title:"",
+				loading:false
 			}
 		},
 		created(){
@@ -293,8 +294,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.auidtLog(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

@@ -28,7 +28,7 @@
 			<div class="title">支付宝余额：<span>（每日更新一次）（账号总数：{{dataObj.total_num}}；今日更新：{{dataObj.today_num}}）</span></div>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange'>
+		<el-table size="small" :data="dataObj.data.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange' v-loading="loading">
 			<el-table-column prop="company_body" show-overflow-tooltip label="公司主体" align="center"></el-table-column>
 			<el-table-column prop="shop" show-overflow-tooltip label="店铺" align="center"></el-table-column>
 			<el-table-column prop="bill_date" show-overflow-tooltip label="日期" align="center"></el-table-column>
@@ -89,6 +89,7 @@
 				dataObj:{
 					data:{}
 				},					
+				loading:false
 			}
 		},
 		created(){
@@ -138,8 +139,10 @@
 					page:this.page,
 					pagesize:this.pagesize
 				}
+				this.loading = true;
 				resource.alipayBill(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);

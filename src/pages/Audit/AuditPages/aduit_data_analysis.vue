@@ -22,9 +22,9 @@
 			</div>
 		</div>
 		<!-- 调价 -->
-		<div id="tj_axis" class="axis_box"></div>
+		<div id="tj_axis" class="axis_box" v-loading="loading"></div>
 		<!-- 零成本 -->
-		<div id="lcb_axis" class="axis_box"></div>
+		<div id="lcb_axis" class="axis_box" v-loading="loading"></div>
 	</div>
 </template>
 <style scoped lang="less">
@@ -95,6 +95,7 @@
 				date:[getCurrentDate(),getCurrentDate()],									//选中的时间
 				table_list:[],								//表格数据
 				tj_axisChart:null,							//调价
+				loading:false,
 			}
 		},
 		created(){
@@ -108,8 +109,10 @@
 					start_time:this.date[0],
 					end_time:this.date[1]
 				}
+				this.loading = true;
 				resource.auditChart(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var dept_list = [];
 						// 表格
 						this.table_list = res.data.data.table;
