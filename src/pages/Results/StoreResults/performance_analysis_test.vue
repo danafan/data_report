@@ -471,6 +471,8 @@
 					data_obj.table_title_list.push(item.row_name);
 					data_obj.field_name_list.push(item.row_field_name);
 				})
+				console.log(data_obj)
+				return;
 				exportExcel(data_obj);
 			},
 			//营销周报导出

@@ -40,7 +40,10 @@
 			<el-table-column width="200" show-overflow-tooltip prop="advice" label="备注" align="center">
 			</el-table-column>
 		</el-table>
-		<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+		<div class="table_row">
+			<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
 			<el-table-column width="75" prop="day" label="日期" align="center"></el-table-column>
 			<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
@@ -306,11 +309,17 @@
 		}
 	}
 }
-.red_toast{
+.table_row{
 	margin-top: 15px;
-	color: red;
-	font-size: 12px;
+	display: flex;
+	justify-content: space-between;
+	align-items: center;
+	.red_toast{
+		color: red;
+		font-size: 12px;
+	}
 }
+
 .text_content{
 	overflow: hidden;/*超出部分隐藏*/
 	white-space: nowrap;/*不换行*/
@@ -327,6 +336,7 @@
 }
 </style>
 <script>
+	import {exportExcel} from '../../../../api/export.js'
 	import resource from '../../../../api/targetSales.js'
 	export default{
 		data(){
@@ -678,6 +688,24 @@
 			auditFn(type){
 				this.refuse_type = type;
 				this.showRefuse = true;
+			},
+			exportFile(){
+				var data_obj = {
+					table_title:"店铺日目标",
+					table_title_list:['日期','星期','日GMV(百)','日销量收入(百)','销售输入占比','毛利率','产品成本(百)','营销费用率','营销费用(百)','销售ROI目标','店铺团队费用(百)','店铺其他费用(百)','项目部分摊费用(百)','事业部分摊费用(百)','领标费用(百)','贡献毛益(百)','物流类费用(百)','客服类费用(百)','公摊费(百)','净利润额(百)','净利润率'],
+					field_name_list:['day','week','gmv','xssr','xssrzb','mll','cpcb','yxfyl','yxfy','roi','dptdfy','dpqtfy','xmbftfy','sybftfy','lbfy','gxmy','wlfy','kffy','gtfy','jlr','jlrl'],
+					data_list:[]
+				};
+				let dd = JSON.parse(JSON.stringify(this.day_table_data));
+				dd.map(item => {
+					for(let k in item){
+						if(k == 'xssrzb' || k == 'mll' || k == 'yxfyl' || k == 'roi' || k == 'jlrl'){
+							item[k] = item[k] + '%';
+						}
+					}
+				})
+				data_obj.data_list = dd; 
+				exportExcel(data_obj);
 			},
 			//审核弹窗确认
 			refuseCheck(){
