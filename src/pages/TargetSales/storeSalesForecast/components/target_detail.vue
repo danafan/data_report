@@ -1,4 +1,3 @@
-
 <template>
 	<div>
 		<el-table size="small" :data="info_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
