@@ -539,6 +539,7 @@
 				showRefuse:false,		//拒绝弹窗（项目部）
 				refuse_type:'1',		//弹窗类型（1:拒绝；2:同意）
 				reason:"",				//原因(1:拒绝；2:同意)
+				row:{}
 			}
 		},
 		props:{
@@ -682,6 +683,7 @@
 						sums[index] = jlrl + '%';
 					}
 				});
+				this.row = sums;
 				return sums;
 			},
 			//点击审核
@@ -691,7 +693,7 @@
 			},
 			exportFile(){
 				var data_obj = {
-					table_title:"店铺日目标",
+					table_title:`(${this.bottom_info.shop_name})店铺日目标`,
 					table_title_list:['日期','星期','日GMV(百)','日销量收入(百)','销售输入占比','毛利率','产品成本(百)','营销费用率','营销费用(百)','销售ROI目标','店铺团队费用(百)','店铺其他费用(百)','项目部分摊费用(百)','事业部分摊费用(百)','领标费用(百)','贡献毛益(百)','物流类费用(百)','客服类费用(百)','公摊费(百)','净利润额(百)','净利润率'],
 					field_name_list:['day','week','gmv','xssr','xssrzb','mll','cpcb','yxfyl','yxfy','roi','dptdfy','dpqtfy','xmbftfy','sybftfy','lbfy','gxmy','wlfy','kffy','gtfy','jlr','jlrl'],
 					data_list:[]
@@ -705,6 +707,11 @@
 					}
 				})
 				data_obj.data_list = dd; 
+				let obj = {};
+				data_obj.field_name_list.map((item,index) => {
+					obj[item] = this.row[index];
+				})
+				data_obj.data_list.push(obj)
 				exportExcel(data_obj);
 			},
 			//审核弹窗确认
