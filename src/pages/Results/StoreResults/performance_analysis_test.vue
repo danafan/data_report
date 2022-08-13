@@ -111,7 +111,7 @@
 				<div class="content_val">{{ygz_gxmyl.rlj_gxmyl}}%</div>
 			</div>
 		</el-card>
-		<el-card class="module_item" v-loading="loading">
+		<el-card class="module_item" v-if="jlryg">
 			<div class="title">净利润预估
 				<el-tooltip class="item" effect="dark" :content="jlryg.remark" placement="top-start">
 					<i class="el-icon-warning" style="color: #FFE58F" v-if="jlryg.remark != ''"></i>
@@ -402,7 +402,7 @@
 				yxfyyg:{},							//营销费用预估
 				ygz_gxmy:{},						//预估值-贡献毛益
 				ygz_gxmyl:{},						//预估值-贡献毛益率
-				jlryg:{},							//净利润预估
+				jlryg:null,							//净利润预估
 				label_list:[],						//表格数据（左侧表头）
 				shop_table_list_data:[],			//表格数据（原始）
 				total_shop_data:[],					//总计
