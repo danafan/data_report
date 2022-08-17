@@ -19,8 +19,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item v-if="user_type != '4' && user_type != '1'">
+			<el-form-item v-if="user_type != '1'">
 				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
+			</el-form-item>
+			<el-form-item label="批发价：">
+				<el-input type="number" size="small" v-model="batch_price_min" placeholder="最低" style="width: 100px"></el-input> ~
+				<el-input type="number" size="small" v-model="batch_price_max" placeholder="最高" style="width: 100px"></el-input>
 			</el-form-item>
 			<el-form-item v-if="user_type != '1'">
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
@@ -43,7 +47,7 @@
 			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="user_type != '1' && user_type != '4'">一键替换</el-button>
 			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading" @sort-change="sortChange">
 			<el-table-column type="index" label="序号" align="center" fixed="left">
 			</el-table-column>
 			<el-table-column prop="launch_day" label="上新时间" width="120" align="center"></el-table-column>
@@ -59,8 +63,8 @@
 					<el-input size="small" @mousewheel.native.prevent type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="user_type == '1' || user_type == '4'"></el-input>
 				</template>
 			</el-table-column>
-			<el-table-column prop="cb_price" label="成本价" width="120" align="center"></el-table-column>
-			<el-table-column prop="difference" label="差值" width="120" align="center"></el-table-column>
+			<el-table-column prop="cb_price" label="成本价" sortable='custom' width="120" align="center"></el-table-column>
+			<el-table-column prop="difference" label="差值" sortable='custom' width="120" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="是否特批" width="120" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':''}}</div>
@@ -208,6 +212,8 @@
 				select_gyshh_ids:[],	//选中的供应商款号
 				gys_list:[],			//所有供应商列表
 				select_gys_ids:[],		//选中的供应商列表
+				batch_price_min:"",		//批发价最低
+				batch_price_max:"",		//批发价最高
 				from_list:[{
 					id:'1',
 					name:'德儿'
@@ -217,6 +223,8 @@
 				}],						//所有的平台
 				from:'1',				//选中的平台
 				is_zero_batch:false,	//是否零批发价
+				sort_field:"",
+				sort_type:"",
 				dataObj:{},				//返回数据
 				replaceDialog:false,	//替换供应商弹框
 				old_gys:"",				//原供应商
@@ -314,14 +322,28 @@
 				//获取列表
 				this.getData()
 			},
+			//排序
+			sortChange(column){
+				this.sort_field = column.prop;
+				this.sort_type = !column.order?'':column.order == 'ascending'?'0':'1';
+				this.getData();
+			},
 			//获取列表
 			getData(){
+				if(parseFloat(this.batch_price_min) > parseFloat(this.batch_price_max)){
+					this.$message.warning('最低批发价不能高于最高批发价');
+					return;
+				}
 				let arg = {
 					ksbm:this.select_ksbm_ids.join(','),
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					supplier:this.select_gys_ids.join(','),
 					is_zero_batch:!this.is_zero_batch?0:1,
 					from:this.from,
+					min_batch_price:this.batch_price_min,
+					max_batch_price:this.batch_price_max,
+					sort_field:this.sort_field,
+					sort_type:this.sort_type,
 					page:this.page,
 					pagesize:this.pagesize
 				}

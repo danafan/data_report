@@ -6,7 +6,7 @@ module.exports = {
 	devServer: {
 		proxy: {
 			'/api': {
-				target: 'http://csidc.gxk8090.com',
+				target: 'http://csidc.92nu.com',
 				// target: 'http://bi_new.92nu.com',
 				ws: true,
 				changOlrigin: true,		
