@@ -58,6 +58,7 @@
 			<el-table-column prop="shop_name" label="店铺名称" width="120" show-overflow-tooltip align="center" fixed="left"></el-table-column>
 			<el-table-column prop="shop" show-overflow-tooltip label="店铺ID"  width="120" align="center"></el-table-column>
 			<el-table-column prop="violations_time" show-overflow-tooltip label="违规时间" width="120" align="center"></el-table-column>
+			<el-table-column prop="violations_num" show-overflow-tooltip label="违规编号" width="120" align="center"></el-table-column>
 			<el-table-column prop="violations_type" label="违规类型" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="violations_why" show-overflow-tooltip width="120" label="违规原因" align="center"></el-table-column>
 			<el-table-column prop="violations_impact" show-overflow-tooltip width="120" label="违规影响" align="center"></el-table-column>
