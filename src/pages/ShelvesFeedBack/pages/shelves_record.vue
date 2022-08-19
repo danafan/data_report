@@ -53,6 +53,7 @@
 			<el-table-column width="120" show-overflow-tooltip prop="zdmc" label="站点名称" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="dept_name" label="事业部" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="shop_code" label="店铺ID" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="dpbh" label="聚水潭编号" align="center"></el-table-column>
 			<el-table-column width="160" show-overflow-tooltip prop="dpmc" label="店铺名称" align="center"></el-table-column>
 			<el-table-column width="160" show-overflow-tooltip prop="ksbm" label="线上款式编码" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip label="款式链接" align="center">
@@ -242,9 +243,9 @@
 			//下载模版
 			downTemplate(){
 				if(this.dialog_type == '1'){	//批量上传执行结果
-					window.open('https://img.gxk8090.com/批量执行上传结果模板.xlsx');
+					window.open('http://img.92nu.com/批量上传执行结果模板.xlsx');
 				}else{	//供应商
-					window.open('https://img.gxk8090.com/%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF.xlsx');
+					window.open('http://img.92nu.com/%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF.xlsx');
 				}
 			},
 			//导入

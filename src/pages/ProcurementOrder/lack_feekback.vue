@@ -13,6 +13,12 @@
 					<el-option label="事业四部" value="事业四部"></el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="店铺：">
+				<el-select v-model="zmdp" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入店铺" :remote-method="storeList">
+					<el-option v-for="item in store_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="供应商：">
 				<el-select v-model="gysmc" clearable :popper-append-to-body="false" filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys">
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
@@ -84,6 +90,8 @@
 				gysmc:"",				//选中的供应商
 				ksbm_list:[],			//白坯款式编码列表
 				select_ksbm_list:[],	//选中的白坯款式编码
+				store_list:[],			//店铺列表
+				zmdp:[],				//选中的店铺列表
 				page:1,
 				pagesize:10,
 				sort:"",
@@ -235,6 +243,10 @@
 			ksbmList(e){
 				this.searchShortage('bpkh',e)
 			},
+			//店铺
+			storeList(e){
+				this.searchShortage('zmdp',e)
+			},
 			//获取查询条件
 			searchShortage(field,field_value){
 				let arg = {
@@ -245,6 +257,9 @@
 					if(res.data.code == 1){
 						if(field == 'bpkh'){
 							this.ksbm_list = res.data.data;
+						}
+						if(field == 'zmdp'){
+							this.store_list = res.data.data;
 						}
 					}else{
 						this.$message.warning(res.data.msg);
@@ -270,6 +285,7 @@
 					ksbm:this.ksbm,
 					bpkh:this.select_ksbm_list.join(','),
 					dept_name:this.dept_name,
+					zmdp:this.zmdp.join(','),
 					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
@@ -344,6 +360,7 @@
 						ksbm:this.ksbm,
 						bpkh:this.select_ksbm_list.join(','),
 						dept_name:this.dept_name,
+						zmdp:this.zmdp.join(','),
 						sort:this.sort,
 					}
 					proResource.shortageFeedbackExport(arg).then(res => {

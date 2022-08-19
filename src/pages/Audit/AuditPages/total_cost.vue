@@ -19,10 +19,10 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item v-if="user_type != '1'">
+			<el-form-item v-if="user_type != '4' && user_type != '1'">
 				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
 			</el-form-item>
-			<el-form-item label="批发价：">
+			<el-form-item label="批发价：" v-if="user_type != '1'">
 				<el-input type="number" size="small" v-model="batch_price_min" placeholder="最低" style="width: 100px"></el-input> ~
 				<el-input type="number" size="small" v-model="batch_price_max" placeholder="最高" style="width: 100px"></el-input>
 			</el-form-item>
@@ -70,6 +70,7 @@
 					<div>{{scope.row.is_special == '0'?'否':scope.row.is_special == '1'?'是':''}}</div>
 				</template>
 			</el-table-column>
+			<el-table-column prop="xssl" label="销量" sortable='custom' width="120" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="是否福袋款" width="120" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':''}}</div>
