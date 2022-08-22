@@ -28,28 +28,6 @@
 			<el-tab-pane label="数据分析表" lazy name="/aduit_data_analysis" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
 				<AduitDataAnalysis v-if="activeTab == '/aduit_data_analysis'"/>
 			</el-tab-pane>
-
-			<!-- <el-tab-pane label="总成本表" lazy name="/total_cost" class="tab_pane_box">
-				<ToastCost v-if="activeTab == '/total_cost'"/>
-			</el-tab-pane>
-			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box">
-				<EditRecord v-if="activeTab == '/edit_record'"/>
-			</el-tab-pane>
-			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box">
-				<ReviewTable v-if="activeTab == '/review_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box">
-				<BargainingTable v-if="activeTab == '/bargaining_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="调价表" lazy name="/pricing_table" class="tab_pane_box">
-				<PricingTable v-if="activeTab == '/pricing_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box">
-				<OperationalTable v-if="activeTab == '/operational_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="超时表" lazy name="/timeout" class="tab_pane_box">
-				<Timeout v-if="activeTab == '/timeout'"/>
-			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>

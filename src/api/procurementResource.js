@@ -47,6 +47,7 @@ let path = {
 	shortageRecordList:'purchase_order/shortage_record_list',					//记录详情
 	shortageRecordSave:'purchase_order/shortage_record_save',					//修改
 	searchShortage:'purchase_order/search_shortage',							//查询条件
+	shortageFeedbackImport:'purchase_order/shortage_feedback_import',			//缺货反馈导入
 			
 }						
 export default{
@@ -238,6 +239,10 @@ export default{
 	//查询列表
 	searchShortage(params){
 		return http.get(path.searchShortage, params)
+	},
+	//缺货反馈导入
+	shortageFeedbackImport(params){
+		return http.post(path.shortageFeedbackImport, params)
 	},
 }
 

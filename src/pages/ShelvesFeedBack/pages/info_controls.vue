@@ -71,117 +71,125 @@
 			</el-table-column>
 			<el-table-column label="违规截图" width="120" align="center">
 				<template slot-scope="scope">
-					<img style="width: 30px;height: 30px" :src="scope.row.violations_img" @click="bigImg(scope.row.violations_img)">
-				</template>
-			</el-table-column>
-			<el-table-column label="处理结果" width="120" align="center">
-				<template slot-scope="scope">
-					<img style="width: 30px;height: 30px" :src="scope.row.result" @click="bigImg(scope.row.result)">
-				</template>
-			</el-table-column>
-			<el-table-column prop="deal" label="是否需要处理" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="state" label="平台处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="status_string" label="店长处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column prop="note" label="审核备注" show-overflow-tooltip width="120" align="center"></el-table-column>
-			<el-table-column label="操作" width="190" align="center">
-				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="uploadImg('1',scope.row)" v-if="scope.row.status == '1' || scope.row.status == '4'">上传违规截图</el-button>
-					<el-button type="text" size="small" @click="uploadImg('2',scope.row)" v-if="scope.row.status == '2'">上传处理结果</el-button>
-					<el-button type="text" size="small" v-if="scope.row.status == '1' || scope.row.status == '2' || scope.row.status == '4'" @click="bigImg('1')">示例</el-button>
-					<el-button type="text" size="small" v-if="scope.row.status == '3' && button_list.check == 1" @click="openDetail('1',scope.row)">审核</el-button>
-					<el-button type="text" size="small" v-if="scope.row.status == '4' || scope.row.status == '5'" @click="openDetail('2',scope.row)">查看</el-button>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" :page-size="15" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
-			</el-pagination>
-		</div>
-		<!-- 图片放大 -->
-		<el-dialog title="图片" :visible.sync="imageDialog" width="50%" center>
-			<img class="big_img" :src="big_img_url">
-			<span slot="footer" class="dialog-footer">
-				<el-button type="primary" @click="imageDialog = false">关闭</el-button>
-			</span>
-		</el-dialog>
-		<!-- 上传违规截图或处理结果 -->
-		<el-dialog :title="upload_type == '1'?'违规截图':'处理结果'" center @close="closeDialog" width="45%" :visible.sync="imgDialog">
-			<el-form size="small">
-				<el-form-item label="违规截图：" v-if="upload_type == '1'">
-					<div class="img_list">
-						<div class="dialog_img" v-for="(item,index) in violations_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
-							<img class="img" :src="item.domain + item.urls">
-							<div class="modal" v-if="item.is_del == true">
-								<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index)">
-							</div>
-						</div>
-						<UploadFile @callbackFn="uploadFile" :current_num="violations_img.length" :max_num="1" v-if="violations_img.length == 0"/>
+					<el-image 
+					style="width: 30px; height: 30px"
+					:src="scope.row.violations_img[0]" 
+					:preview-src-list="scope.row.violations_img">
+				</el-image>
+			</template>
+		</el-table-column>
+		<el-table-column label="处理结果" width="120" align="center">
+			<template slot-scope="scope">
+				<el-image 
+				style="width: 30px; height: 30px"
+				:src="scope.row.result[0]" 
+				:preview-src-list="scope.row.result">
+			</el-image>
+		</template>
+	</el-table-column>
+	<el-table-column prop="deal" label="是否需要处理" show-overflow-tooltip width="120" align="center"></el-table-column>
+	<el-table-column prop="state" label="平台处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
+	<el-table-column prop="status_string" label="店长处理状态" show-overflow-tooltip width="120" align="center"></el-table-column>
+	<el-table-column prop="note" label="审核备注" show-overflow-tooltip width="120" align="center"></el-table-column>
+	<el-table-column label="操作" width="190" align="center">
+		<template slot-scope="scope">
+			<el-button type="text" size="small" @click="uploadImg('1',scope.row)" v-if="scope.row.status == '1' || scope.row.status == '4'">上传违规截图</el-button>
+			<el-button type="text" size="small" @click="uploadImg('2',scope.row)" v-if="scope.row.status == '2'">上传处理结果</el-button>
+			<el-button type="text" size="small" v-if="scope.row.status == '1' || scope.row.status == '2' || scope.row.status == '4'" @click="bigImg('1')">示例</el-button>
+			<el-button type="text" size="small" v-if="scope.row.status == '3' && button_list.check == 1" @click="openDetail('1',scope.row)">审核</el-button>
+			<el-button type="text" size="small" v-if="scope.row.status == '4' || scope.row.status == '5'" @click="openDetail('2',scope.row)">查看</el-button>
+		</template>
+	</el-table-column>
+</el-table>
+<div class="page">
+	<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" :page-size="15" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+	</el-pagination>
+</div>
+<!-- 图片放大 -->
+<el-dialog title="图片" :visible.sync="imageDialog" width="50%" center>
+	<img class="big_img" :src="big_img_url">
+	<span slot="footer" class="dialog-footer">
+		<el-button type="primary" @click="imageDialog = false">关闭</el-button>
+	</span>
+</el-dialog>
+<!-- 上传违规截图或处理结果 -->
+<el-dialog :title="upload_type == '1'?'违规截图':'处理结果'" center @close="closeDialog" width="45%" :visible.sync="imgDialog">
+	<el-form size="small">
+		<el-form-item label="违规截图：" v-if="upload_type == '1'">
+			<div class="img_list">
+				<div class="dialog_img" v-for="(item,index) in violations_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
+					<img class="img" :src="item.domain + item.urls">
+					<div class="modal" v-if="item.is_del == true">
+						<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index)">
 					</div>
-				</el-form-item>
-				<el-form-item label="违规是否需要处理：" v-if="upload_type == '1'">
-					<el-radio-group v-model="deal">
-						<el-radio label="是">是</el-radio>
-						<el-radio label="否">否</el-radio>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="处理结果：" v-if="upload_type == '2'">
-					<div class="img_list">
-						<div class="dialog_img" v-for="(item,index) in result_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
-							<img class="img" :src="item.domain + item.urls">
-							<div class="modal" v-if="item.is_del == true">
-								<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index)">
-							</div>
-						</div>
-						<UploadFile @callbackFn="uploadFile" :current_num="result_img.length" :max_num="1" v-if="result_img.length == 0"/>
-					</div>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" size="small" @click="imgDialog = false">取消</el-button>
-				<el-button type="primary" size="small" @click="commitFn">提交</el-button>
+				</div>
+				<UploadFile @callbackFn="uploadFile" :current_num="violations_img.length" :max_num="1" v-if="violations_img.length == 0"/>
 			</div>
-		</el-dialog>
-		<!-- 审核或者查看详情 -->
-		<el-dialog :title="detail_type == '1'?'审核':'详情'" center @close="closeDetail" width="45%" :visible.sync="detailDialog">
-			<el-form size="small">
-				<el-form-item label="违规截图：">
-					<div class="img_list">
-						<div class="dialog_img">
-							<img class="img" :src="detail_info.violations_img[0]">
-						</div>
+		</el-form-item>
+		<el-form-item label="违规是否需要处理：" v-if="upload_type == '1'">
+			<el-radio-group v-model="deal">
+				<el-radio label="是">是</el-radio>
+				<el-radio label="否">否</el-radio>
+			</el-radio-group>
+		</el-form-item>
+		<el-form-item label="处理结果：" v-if="upload_type == '2'">
+			<div class="img_list">
+				<div class="dialog_img" v-for="(item,index) in result_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
+					<img class="img" :src="item.domain + item.urls">
+					<div class="modal" v-if="item.is_del == true">
+						<img src="../../../static/deleteImg.png" @click="deteleFile(item.urls,index)">
 					</div>
-				</el-form-item>
-				<el-form-item label="违规是否需要处理：">
-					{{detail_info.deal}}
-				</el-form-item>
-				<el-form-item label="处理结果：">
-					<div class="img_list">
-						<div class="dialog_img">
-							<img class="img" :src="detail_info.result[0]">
-						</div>
-					</div>
-				</el-form-item>
-				<el-divider></el-divider>
-				<el-form-item label="审核状态：" v-if="detail_type == '1'">
-					<el-radio-group v-model="audit_status">
-						<el-radio label="5">同意</el-radio>
-						<el-radio label="4">拒绝</el-radio>
-					</el-radio-group>
-				</el-form-item>
-				<el-form-item label="审核状态：" v-if="detail_type == '2'">
-					{{detail_info.status_string}}
-				</el-form-item>
-				<el-form-item label="备注：">
-					<el-input type="textarea" :rows="3" :disabled="detail_type == '2'" placeholder="请输入备注" v-model="note">
-					</el-input>
-				</el-form-item>
-			</el-form>
-			<div slot="footer" class="dialog-footer">
-				<el-button type="primary" size="small" @click="commitAudit" v-if="detail_type == '1'">提交</el-button>
-				<el-button type="primary" size="small" @click="detailDialog = false" v-if="detail_type == '2'">关闭</el-button>
+				</div>
+				<UploadFile @callbackFn="uploadFile" :current_num="result_img.length" :max_num="1" v-if="result_img.length == 0"/>
 			</div>
-		</el-dialog>
+		</el-form-item>
+	</el-form>
+	<div slot="footer" class="dialog-footer">
+		<el-button type="primary" size="small" @click="imgDialog = false">取消</el-button>
+		<el-button type="primary" size="small" @click="commitFn">提交</el-button>
 	</div>
+</el-dialog>
+<!-- 审核或者查看详情 -->
+<el-dialog :title="detail_type == '1'?'审核':'详情'" center @close="closeDetail" width="45%" :visible.sync="detailDialog">
+	<el-form size="small">
+		<el-form-item label="违规截图：">
+			<div class="img_list">
+				<div class="dialog_img">
+					<img class="img" :src="detail_info.violations_img[0]">
+				</div>
+			</div>
+		</el-form-item>
+		<el-form-item label="违规是否需要处理：">
+			{{detail_info.deal}}
+		</el-form-item>
+		<el-form-item label="处理结果：">
+			<div class="img_list">
+				<div class="dialog_img">
+					<img class="img" :src="detail_info.result[0]">
+				</div>
+			</div>
+		</el-form-item>
+		<el-divider></el-divider>
+		<el-form-item label="审核状态：" v-if="detail_type == '1'">
+			<el-radio-group v-model="audit_status">
+				<el-radio label="5">同意</el-radio>
+				<el-radio label="4">拒绝</el-radio>
+			</el-radio-group>
+		</el-form-item>
+		<el-form-item label="审核状态：" v-if="detail_type == '2'">
+			{{detail_info.status_string}}
+		</el-form-item>
+		<el-form-item label="备注：">
+			<el-input type="textarea" :rows="3" :disabled="detail_type == '2'" placeholder="请输入备注" v-model="note">
+			</el-input>
+		</el-form-item>
+	</el-form>
+	<div slot="footer" class="dialog-footer">
+		<el-button type="primary" size="small" @click="commitAudit" v-if="detail_type == '1'">提交</el-button>
+		<el-button type="primary" size="small" @click="detailDialog = false" v-if="detail_type == '2'">关闭</el-button>
+	</div>
+</el-dialog>
+</div>
 </template>
 <script>
 	import auditResource from '../../../api/auditResource.js'

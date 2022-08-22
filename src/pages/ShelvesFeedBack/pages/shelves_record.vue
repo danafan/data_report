@@ -47,7 +47,6 @@
 					<i class="el-icon-upload el-icon--right"></i>
 				</el-button>
 			</div>
-			
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="120" show-overflow-tooltip prop="zdmc" label="站点名称" align="center"></el-table-column>
@@ -243,9 +242,9 @@
 			//下载模版
 			downTemplate(){
 				if(this.dialog_type == '1'){	//批量上传执行结果
-					window.open('http://img.92nu.com/批量上传执行结果模板.xlsx');
+					window.open(`${this.downLoadUrl}/批量上传执行结果模板.xlsx`);
 				}else{	//供应商
-					window.open('http://img.92nu.com/%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF.xlsx');
+					window.open(`${this.downLoadUrl}/%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF.xlsx`);
 				}
 			},
 			//导入

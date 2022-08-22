@@ -26,6 +26,16 @@
 				<el-input type="number" size="small" v-model="batch_price_min" placeholder="最低" style="width: 100px"></el-input> ~
 				<el-input type="number" size="small" v-model="batch_price_max" placeholder="最高" style="width: 100px"></el-input>
 			</el-form-item>
+			<el-form-item label="销量：" v-if="user_type != '1'">
+				<el-input type="number" size="small" v-model="min_xssl" placeholder="最低" style="width: 100px"></el-input> ~
+				<el-input type="number" size="small" v-model="max_xssl" placeholder="最高" style="width: 100px"></el-input>
+			</el-form-item>
+			<el-form-item label="折扣率：" v-if="user_type != '1'">
+				<el-input type="number" size="small" v-model="min_zkl" placeholder="最低" style="width: 120px"><template slot="append">%</template></el-input> ~
+				<el-input type="number" size="small" v-model="max_zkl" placeholder="最高" style="width: 120px">
+					<template slot="append">%</template>
+				</el-input>
+			</el-form-item>
 			<el-form-item v-if="user_type != '1'">
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
@@ -71,6 +81,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="xssl" label="销量" sortable='custom' width="120" align="center"></el-table-column>
+			<el-table-column prop="zkl" label="折扣率" sortable='custom' width="120" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="是否福袋款" width="120" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.is_blessingbag == '0'?'否':scope.row.is_blessingbag == '1'?'是':''}}</div>
@@ -215,6 +226,10 @@
 				select_gys_ids:[],		//选中的供应商列表
 				batch_price_min:"",		//批发价最低
 				batch_price_max:"",		//批发价最高
+				min_xssl:"",			//销售数量最低
+				max_xssl:"",			//销售数量最高
+				min_zkl:"",				//折扣率最小值
+				max_zkl:"",				//折扣率最大值
 				from_list:[{
 					id:'1',
 					name:'德儿'
@@ -335,6 +350,14 @@
 					this.$message.warning('最低批发价不能高于最高批发价');
 					return;
 				}
+				if(parseFloat(this.min_xssl) > parseFloat(this.max_xssl)){
+					this.$message.warning('最低销量不能高于最高销量');
+					return;
+				}
+				if(parseFloat(this.min_zkl) > parseFloat(this.max_zkl)){
+					this.$message.warning('最低折扣率不能高于最高折扣率');
+					return;
+				}
 				let arg = {
 					ksbm:this.select_ksbm_ids.join(','),
 					supplier_ksbm:this.select_gyshh_ids.join(','),
@@ -343,6 +366,10 @@
 					from:this.from,
 					min_batch_price:this.batch_price_min,
 					max_batch_price:this.batch_price_max,
+					min_xssl:this.min_xssl,
+					max_xssl:this.max_xssl,
+					min_zkl:this.min_zkl,
+					max_zkl:this.max_zkl,
 					sort_field:this.sort_field,
 					sort_type:this.sort_type,
 					page:this.page,

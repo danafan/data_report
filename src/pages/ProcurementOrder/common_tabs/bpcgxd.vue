@@ -510,6 +510,7 @@
 					label:'白坯合格率',
 					prop:'bp_hgl',
 					width:90,
+					unit:'%'
 				}]
 			}
 		},

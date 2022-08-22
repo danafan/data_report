@@ -36,6 +36,10 @@
 			</el-form-item>
 		</el-form>
 		<div class="table_top">
+			<el-button type="primary" size="small" @click="show_dialog = true">
+				导入
+				<i class="el-icon-upload el-icon--right"></i>
+			</el-button>
 			<el-button type="primary" plain size="mini" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" border tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change='sortChange' @header-dragend="deptChange" v-loading="loading">
@@ -72,6 +76,22 @@
 				<el-button size="small" type="primary" @click="show_table = false">关闭</el-button>
 			</div>
 		</el-dialog>
+		<!-- 导入 -->
+		<el-dialog title="导入" :visible.sync="show_dialog" width="30%">
+			<div class="down_box">
+				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="show_dialog = false">取 消</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -99,6 +119,7 @@
 				show_table:false,		//详情弹窗
 				table_page:1,
 				table_pagesize:10,
+				detail_ksbm:"",
 				tableObj:{},
 				table_setting:{},
 				loading:false,
@@ -207,7 +228,8 @@
 					width:160,
 					sort:false,
 
-				}]
+				}],
+				show_dialog:false
 			}
 		},
 		created(){
@@ -230,7 +252,7 @@
 			//供应商列表
 			getGys(e){
 				if(e != ''){
-					resource.ajaxGys({name:e,from:this.page_type}).then(res => {
+					resource.ajaxGys({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.gys_list = res.data.data;
 						}else{
@@ -278,6 +300,29 @@
         		//采购总数
         		this.getData();
         	},
+        	//下载模版
+        	downTemplate(){
+				window.open(`${this.downLoadUrl}/缺货跟踪导入模板.xlsx`);
+			},
+			//导入
+			uploadCsv(){
+				if (this.$refs.csvUpload.files.length > 0) {
+					let files = this.$refs.csvUpload.files;
+					proResource.shortageFeedbackImport({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.show_dialog = false;
+							this.page = 1;
+							this.column_list.splice(6,3);
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
 			//获取列表
 			getData(){
 				let arg = {
@@ -390,14 +435,16 @@
 			},
 			//点击查看
 			getRecord(ksbm){
+				this.table_page = 1;
+				this.detail_ksbm = ksbm;
 				this.show_table = true;
 				//获取详情
-				this.getTableData(ksbm);
+				this.getTableData();
 			},
 			//获取详情
-			getTableData(ksbm){
+			getTableData(){
 				let arg = {
-					ksbm:ksbm,
+					ksbm:this.detail_ksbm,
 					page:this.table_page,
 					pagesize:this.table_pagesize
 				}
@@ -411,6 +458,7 @@
 			},
 			//详情分页
 			handlePageSize(val) {
+				this.table_page = 1;
 				this.table_pagesize = val;
 				//获取列表
 				this.getTableData();
@@ -445,6 +493,21 @@
 	display: flex;
 	justify-content: flex-end;
 }
-
-
+.down_box{
+	display:flex;
+	.upload_box{
+		margin-left: 10px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+	}
+}
 </style>
