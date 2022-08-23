@@ -92,7 +92,7 @@
 					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20" placeholder="备注（最多20字）" :disabled="button_list.edit_remark != 1"></el-input>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" v-if="user_type == '4'">
+			<el-table-column label="操作" align="center" fixed="right">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="feedBack(scope.row)" v-if="(scope.row.feedback_status == 1 || scope.row.feedback_status == 2) && button_list.add_feedback == 1">反馈</el-button>
 					<div v-else>已反馈</div>
