@@ -1,32 +1,15 @@
 <template>
 	<div>
-		<el-tabs v-model="activeTab" @tab-click="handleClick">
-			<el-tab-pane label="成本表" lazy name="/total_cost" class="tab_pane_box">
-				<ToastCost v-if="activeTab == '/total_cost'"/>
-			</el-tab-pane>
-			<el-tab-pane label="反馈表" lazy name="/feek_back" class="tab_pane_box" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
-				<FeekBack v-if="activeTab == '/feek_back'"/>
-			</el-tab-pane>
-			<el-tab-pane label="修改记录表" lazy name="/edit_record" class="tab_pane_box" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
-				<EditRecord v-if="activeTab == '/edit_record'"/>
-			</el-tab-pane>
-			<el-tab-pane label="审核表" lazy name="/review_table" class="tab_pane_box" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
-				<ReviewTable v-if="activeTab == '/review_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="超时表" lazy name="/timeout" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
-				<Timeout v-if="activeTab == '/timeout'"/>
-			</el-tab-pane>
-			<el-tab-pane label="首次议价表" lazy name="/bargaining_table" class="tab_pane_box" v-if="user_type != '4'">
-				<BargainingTable v-if="activeTab == '/bargaining_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="调价表" lazy name="/pricing_table" class="tab_pane_box" v-if="user_type != '4'">
-				<PricingTable v-if="activeTab == '/pricing_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="运营审核表" lazy name="/operational_table" class="tab_pane_box" v-if="user_type == '1'">
-				<OperationalTable v-if="activeTab == '/operational_table'"/>
-			</el-tab-pane>
-			<el-tab-pane label="数据分析表" lazy name="/aduit_data_analysis" class="tab_pane_box" v-if="user_type == '2' || user_type == '3'">
-				<AduitDataAnalysis v-if="activeTab == '/aduit_data_analysis'"/>
+		<el-tabs v-model="activeTab" @tab-click="checkTab">
+			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
+				<ToastCost v-if="item.web_url == 'total_cost'"/>
+				<FeekBack v-if="item.web_url == 'feek_back'"/>
+				<EditRecord v-if="item.web_url == 'edit_record'"/>
+				<ReviewTable v-if="item.web_url == 'review_table'"/>
+				<Timeout v-if="item.web_url == 'timeout'"/>
+				<BargainingTable v-if="item.web_url == 'bargaining_table'"/>
+				<PricingTable v-if="item.web_url == 'pricing_table'"/>
+				<AduitDataAnalysis v-if="item.web_url == 'aduit_data_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -43,30 +26,56 @@
 	import ReviewTable from './AuditPages/review_table.vue'
 	import PricingTable from './AuditPages/pricing_table.vue'
 	import BargainingTable from './AuditPages/bargaining_table.vue'
-	import OperationalTable from './AuditPages/operational_table.vue'
 	import Timeout from './AuditPages/timeout.vue'
 	import AduitDataAnalysis from './AuditPages/aduit_data_analysis.vue'
 	export default{
 		data(){
 			return{
 				activeTab:"",
+				menu_list:[],
+				ss:[],
 				user_type:''
 			}
 		},
 		created(){
-			var current_tab = this.$store.state.current_tab;
-			this.user_type = localStorage.getItem('user_type');
-			if(this.user_type == '1'){
-				this.activeTab = current_tab == ''?'/bargaining_table':current_tab;
-			}else if(this.user_type == '2' || this.user_type == '3' || this.user_type == '4'){
-				this.activeTab = current_tab == ''?'/total_cost':current_tab;
-			}
+			let menu_list = this.$store.state.menu_list;
+			this.forMenuList(menu_list);
+			this.getIndex();
+			// var current_tab = this.$store.state.current_tab;
+			// this.user_type = localStorage.getItem('user_type');
+			// if(this.user_type == '1'){
+			// 	this.activeTab = current_tab == ''?'/bargaining_table':current_tab;
+			// }else if(this.user_type == '2' || this.user_type == '3' || this.user_type == '4'){
+			// 	this.activeTab = current_tab == ''?'/total_cost':current_tab;
+			// }
 		},
 		methods:{
-			handleClick(e){
+			forMenuList(arr) {
+				arr.map(item => {
+					if('list' in item){
+						this.ss.push(item);
+						this.forMenuList(item.list)
+					}
+				})
+			},
+			getIndex(){
+				this.ss.map(item => {
+					if (item.web_url == 'audit_index') {
+						this.menu_list = item.list;
+						let current_tab = this.$store.state.current_tab;
+						this.activeTab = current_tab == ''?this.menu_list[0].web_url:current_tab;
+					}
+				})
+			},
+			//切换tab
+			checkTab(e){
 				this.activeTab = e.name;
 				this.$store.commit('currentTab',e.name);
 			}
+			// handleClick(e){
+			// 	this.activeTab = e.name;
+			// 	this.$store.commit('currentTab',e.name);
+			// }
 		},
 		components:{
 			ToastCost,
@@ -75,7 +84,6 @@
 			ReviewTable,
 			PricingTable,
 			BargainingTable,
-			OperationalTable,
 			Timeout,
 			AduitDataAnalysis
 		}

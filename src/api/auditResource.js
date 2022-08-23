@@ -8,7 +8,7 @@ let path = {
 	editBatch:'audit/edit_batch',									//修改批发价
 	editSupplier:'audit/edit_supplier',								//修改供应商
 	auditLogs:'audit/logs',											//修改记录列表
-	logDetail:'audit/log_detail',									//修改记录详情
+	logDetail:'audit/audit_detail',									//修改记录详情
 	auidtLog:'audit/auidt_log',										//审核表列表
 	auidtItem:'audit/auidt',										//审核
 	noZeroCost:'audit/no_zero_cost',								//调价表列表

@@ -13,7 +13,7 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="状态：" v-if="user_type != '4'">
+			<el-form-item label="状态：">
 				<el-select v-model="status" :popper-append-to-body="false" placeholder="全部">
 					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
@@ -24,11 +24,11 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" size="small" @click="allAudit" v-if="user_type != '4'">一键审批</el-button>
-			<el-button type="primary" plain size="small" @click="exportExcel">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" size="small" @click="allAudit" v-if="button_list.audit == 1">一键审批</el-button>
+			<el-button type="primary" plain size="small" @click="exportDialog = true" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @selection-change="handleSelectionChange" :row-class-name="tableRowClassName" v-loading="loading">
-			<el-table-column type="selection" width="55" fixed="left" :selectable="selectableFun"></el-table-column>
+			<el-table-column type="selection" width="55" fixed="left" :selectable="selectableFun" v-if="button_list.audit == 1"></el-table-column>
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
@@ -73,9 +73,10 @@
 			</el-table-column>
 			<el-table-column prop="approver" label="审核人" width="120" align="center">
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right" v-if="user_type != '4'">
+			<el-table-column label="操作" width="120" align="center" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status == '1'">审核</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id,true)" v-if="scope.row.status == '1' && button_list.audit == 1">审核</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id,false)" v-if="button_list.detail == 1">查看</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -196,9 +197,16 @@
 				<div class="label">备注：</div>
 				<div>{{detailObj.remark}}</div>
 			</div>
-			<div slot="footer" class="dialog-footer">
+			<div class="content_row" v-if="detailObj.status == '3'">
+				<div class="label">拒绝原因：</div>
+				<div>{{detailObj.refuse_reason}}</div>
+			</div>
+			<div slot="footer" class="dialog-footer" v-if="is_aduit">
 				<el-button type="primary" size="small" @click="aduitFun('0')">拒绝</el-button>
 				<el-button type="primary" size="small" @click="thougnFun">通过</el-button>
+			</div>
+			<div slot="footer" class="dialog-footer" v-else>
+				<el-button type="primary" size="small" @click="detailDialog = false">关闭</el-button>
 			</div>
 		</el-dialog>
 		<!-- 一键审核 -->
@@ -299,6 +307,7 @@
 					name:'审核拒绝'
 				},],					//状态列表
 				dataObj:{},				//返回数据
+				button_list:{},
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
 				select_id:"",			//单个审核选中的id
@@ -337,7 +346,8 @@
 				innerVisible:false,
 				innerValue:'确认通过？',
 				user_type:"",
-				loading:false
+				loading:false,
+				is_aduit:false,			//是否是审核
 			}
 		},
 		created(){
@@ -384,14 +394,6 @@
 				//获取列表
 				this.getData();
 			},
-			//导出
-			exportExcel(){
-				if(this.user_type != '4'){
-					this.exportDialog = true;
-				}else{
-					exportUp(`audit/auidt_log_export`);
-				}
-			},
 			//获取列表
 			getData(){
 				let arg = {
@@ -406,6 +408,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -440,7 +443,8 @@
 				this.getData();
 			},
 			//点击审核
-			getDetail(id){
+			getDetail(id,type){
+				this.is_aduit = type;
 				this.select_id = id;
 				resource.logDetail({id:this.select_id}).then(res => {
 					if(res.data.code == 1){
