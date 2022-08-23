@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="buts">
-			<el-button type="primary" plain size="small" @click="exportTable">全部导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="exportTable" v-if="button_list.export == 1">全部导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
@@ -42,6 +42,7 @@
 				page:1,
 				pagesize:10,
 				dataObj:{},
+				button_list:{},
 				loading:false
 			}
 		},
@@ -65,6 +66,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

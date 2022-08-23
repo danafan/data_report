@@ -72,6 +72,7 @@
 			<el-table-column label="违规截图" width="120" align="center">
 				<template slot-scope="scope">
 					<el-image 
+					v-if="scope.row.violations_img"
 					style="width: 30px; height: 30px"
 					:src="scope.row.violations_img[0]" 
 					:preview-src-list="scope.row.violations_img">
@@ -81,6 +82,7 @@
 		<el-table-column label="处理结果" width="120" align="center">
 			<template slot-scope="scope">
 				<el-image 
+				v-if="scope.row.result"
 				style="width: 30px; height: 30px"
 				:src="scope.row.result[0]" 
 				:preview-src-list="scope.row.result">

@@ -27,7 +27,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" plain size="small" @click="exportTable">全部导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="exportTable" v-if="button_list.export == 1">全部导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
@@ -47,10 +47,10 @@
 			<el-table-column label="操作" align="center" width="120">
 				<template slot-scope="scope">
 					<div v-if='scope.row.is_off_shelf == 0'>
-						<el-button type="text" size="small" @click="getDetail(scope.row.id)">调价</el-button>
-						<el-button type="text" size="small" @click="shelveFun(scope.row.id)">下架</el-button>
+						<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="button_list.apply == 1">调价</el-button>
+						<el-button type="text" size="small" @click="shelveFun(scope.row.id)" v-if="button_list.offshelf == 1">下架</el-button>
 					</div>
-					<el-button type="text" size="small" @click="upCliFun(scope.row.id)" v-else>上架</el-button>
+					<el-button type="text" size="small" @click="upCliFun(scope.row.id)"  v-if='scope.row.is_off_shelf != 0 && button_list.onshelf == 1'>上架</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -206,6 +206,7 @@
 				from:'1',				//选中的平台
 				is_off_shelf:false,		//是否已下架
 				dataObj:{},				//返回数据
+				button_list:{},
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},
 				is_special:0,			//是否特批
@@ -283,6 +284,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

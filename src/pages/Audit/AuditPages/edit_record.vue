@@ -23,9 +23,6 @@
 				</el-select>
 			</el-form-item>
 		</el-form>
-		<!-- <div class="buts">
-			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
-		</div> -->
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="新编码" align="center"></el-table-column>
@@ -45,7 +42,7 @@
 			</el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)">查看</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="button_list.detail == 1">查看</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -270,6 +267,7 @@
 				}],						//所有的平台
 				from:'1',				//选中的平台
 				dataObj:{},				//返回数据
+				button_list:{},
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},			//详情列表
 				dialog_title:"",		//详情弹窗标题
@@ -347,6 +345,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -405,7 +404,7 @@
 			},
 			//获取详情
 			getDetail(id){
-				resource.logDetail({id:id}).then(res => {
+				resource.editLogDetail({id:id}).then(res => {
 					if(res.data.code == 1){
 						this.detailObj = res.data.data;
 						if(this.detailObj.type == 0){

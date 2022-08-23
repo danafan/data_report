@@ -47,15 +47,15 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<div class="upload_box" v-if="user_type != '1' && user_type != '4'">
+			<div class="upload_box" v-if="button_list.import == 1">
 				<el-button type="primary" size="small">
 					导入
 					<i class="el-icon-upload el-icon--right"></i>
 				</el-button>
 				<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
 			</div>
-			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="user_type != '1' && user_type != '4'">一键替换</el-button>
-			<el-button type="primary" plain size="small" @click="exportDialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" size="small" @click="replaceDialog = true" v-if="button_list.edit_supplier == 1">一键替换</el-button>
+			<el-button type="primary" plain size="small" @click="exportDialog = true"  v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading" @sort-change="sortChange">
 			<el-table-column type="index" label="序号" align="center" fixed="left">
@@ -63,14 +63,14 @@
 			<el-table-column prop="launch_day" label="上新时间" width="120" align="center"></el-table-column>
 			<el-table-column label="供应商" width="120" align="center">
 				<template slot-scope="scope">
-					<el-input size="small" v-model="scope.row.supplier" @focus="onFocus(scope.row.supplier)" @change="editSupplier($event,scope.row)" placeholder="输入供应商" :disabled="user_type == '1' || user_type == '4'"></el-input>
+					<el-input size="small" v-model="scope.row.supplier" @focus="onFocus(scope.row.supplier)" @change="editSupplier($event,scope.row)" placeholder="输入供应商" :disabled="button_list.edit_one_supplier != 1"></el-input>
 				</template>
 			</el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column label="批发价" width="120" align="center">
 				<template slot-scope="scope">
-					<el-input size="small" @mousewheel.native.prevent type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="user_type == '1' || user_type == '4'"></el-input>
+					<el-input size="small" @mousewheel.native.prevent type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="button_list.edit_batch_price != 1"></el-input>
 				</template>
 			</el-table-column>
 			<el-table-column prop="cb_price" label="成本价" sortable='custom' width="120" align="center"></el-table-column>
@@ -89,12 +89,12 @@
 			</el-table-column>
 			<el-table-column label="备注" align="center" v-if="user_type != '1'">
 				<template slot-scope="scope">
-					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20" placeholder="备注（最多20字）" :disabled="user_type == '4'"></el-input>
+					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20" placeholder="备注（最多20字）" :disabled="button_list.edit_remark != 1"></el-input>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" align="center" fixed="right" v-if="user_type == '4'">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="feedBack(scope.row)" v-if="scope.row.feedback_status == 1 || scope.row.feedback_status == 2">反馈</el-button>
+					<el-button type="text" size="small" @click="feedBack(scope.row)" v-if="(scope.row.feedback_status == 1 || scope.row.feedback_status == 2) && button_list.add_feedback == 1">反馈</el-button>
 					<div v-else>已反馈</div>
 				</template>
 			</el-table-column>
@@ -242,6 +242,7 @@
 				sort_field:"",
 				sort_type:"",
 				dataObj:{},				//返回数据
+				button_list:{},			
 				replaceDialog:false,	//替换供应商弹框
 				old_gys:"",				//原供应商
 				new_gys:"",				//新供应商
@@ -380,6 +381,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

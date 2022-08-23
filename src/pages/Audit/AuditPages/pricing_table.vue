@@ -37,7 +37,7 @@
 			<el-table-column label="操作" align="center" width="120">
 				<template slot-scope="scope">
 					<div v-if="scope.row.status == '1'">审批中</div>
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status == '0'">调价</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status == '0' && button_list.apply == 1">调价</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -164,6 +164,7 @@
 				}],						//所有的平台
 				from:'1',				//选中的平台
 				dataObj:{},				//返回数据
+				button_list:{},
 				detailDialog:false,		//基本信息弹框
 				detailObj:{},
 				is_blessingbag:0,		//是否福袋款
@@ -242,6 +243,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

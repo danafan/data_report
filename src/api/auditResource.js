@@ -8,7 +8,8 @@ let path = {
 	editBatch:'audit/edit_batch',									//修改批发价
 	editSupplier:'audit/edit_supplier',								//修改供应商
 	auditLogs:'audit/logs',											//修改记录列表
-	logDetail:'audit/audit_detail',									//修改记录详情
+	logDetail:'audit/audit_detail',									//审核表详情
+	editLogDetail:'audit/edit_log_detail',							//修改记录表详情
 	auidtLog:'audit/auidt_log',										//审核表列表
 	auidtItem:'audit/auidt',										//审核
 	noZeroCost:'audit/no_zero_cost',								//调价表列表
@@ -35,6 +36,7 @@ let path = {
 	platformBalanceExport:'audit/platform_balance_export',			//店铺账户余额导出
 	importYkb:'audit/import_ykb',									//易快报导入
 	feedbackList:'audit/feedback_list',								//反馈表
+	feedbackDetail:'audit/feedback_detail',
 	feedbackExport:'audit/feedback_export',							//反馈表导出
 	auditFeedback:'audit/audit_feedback',							//审核反馈
 	addFeedback:'audit/add_feedback',								//申请反馈
@@ -75,9 +77,13 @@ export default{
 	auditLogs(params){
 		return http.get(path.auditLogs, params)
 	},
-	//修改记录详情
+	//审核表详情
 	logDetail(params){
 		return http.get(path.logDetail, params)
+	},
+	//修改记录表详情
+	editLogDetail(params){
+		return http.get(path.editLogDetail, params)
 	},
 	//审核表列表
 	auidtLog(params){
@@ -186,6 +192,10 @@ export default{
 	//反馈表
 	feedbackList(params){
 		return http.get(path.feedbackList, params)
+	},
+	//反馈表详情
+	feedbackDetail(params){
+		return http.get(path.feedbackDetail, params)
 	},
 	//反馈表导出
 	feedbackExport(params){

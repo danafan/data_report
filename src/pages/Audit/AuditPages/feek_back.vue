@@ -22,7 +22,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="ksbm" label="新编码" show-overflow-tooltip align="center"></el-table-column>
@@ -40,11 +40,11 @@
 					<div v-if="scope.row.status == 3">审批拒绝</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="处理" align="center" v-if="user_type == '2' || user_type == '3' || user_type == '4'">
+			<el-table-column label="处理" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="scope.row.status != 1">详情</el-button>
-					<el-button type="text" size="small" @click="checkStatus('0',scope.row.id)" v-if="scope.row.status == 1 && (user_type == '2' || user_type == '3')">拒绝</el-button>
-					<el-button type="text" size="small" @click="checkStatus('1',scope.row.id)" v-if="scope.row.status == 1 && (user_type == '2' || user_type == '3')">同意</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id)" v-if="button_list.detail == 1">详情</el-button>
+					<el-button type="text" size="small" @click="checkStatus('0',scope.row.id)" v-if="scope.row.status == 1 && button_list.audit == 1">拒绝</el-button>
+					<el-button type="text" size="small" @click="checkStatus('1',scope.row.id)" v-if="scope.row.status == 1 && button_list.audit == 1">同意</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -257,6 +257,7 @@
 				},	 					//时间区间
 				date:[],				//日期区间
 				dataObj:{},				//返回数据
+				button_list:{},
 				refusedDialog:false,	//拒绝弹窗
 				refused_text:"",		//拒绝原因
 				detailDialog:false,		//详情弹窗
@@ -326,6 +327,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -413,7 +415,7 @@
 			},
 			//点击查看详情
 			getDetail(id){
-				resource.logDetail({id:id}).then(res => {
+				resource.feedbackDetail({id:id}).then(res => {
 					if(res.data.code == 1){
 						this.detailDialog = true;
 						let itemInfo = res.data.data;
