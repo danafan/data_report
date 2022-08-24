@@ -2,25 +2,25 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="新编码：" v-if="user_type != '1'">
-				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
+				<el-select v-model="select_ksbm_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商款号：" v-if="user_type != '1'">
-				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
+				<el-select v-model="select_gyshh_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商：" v-if="user_type != '1'">
-				<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
+				<el-select v-model="select_gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="上新时间："  v-if="user_type != '1'">
-				<el-date-picker size="small" v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				<el-date-picker size="small" v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item v-if="user_type != '4' && user_type != '1'">
@@ -44,7 +44,7 @@
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
 			<el-form-item label="">
-				<el-select v-model="from" :popper-append-to-body="false" @change="changeFrom" placeholder="全部">
+				<el-select v-model="from" @change="changeFrom" placeholder="全部">
 					<el-option v-for="item in from_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
@@ -96,10 +96,10 @@
 					<el-input size="small" v-model="scope.row.remark" @change="editFun('remark',scope.row.id,scope.row.remark)" maxlength="20" placeholder="备注（最多20字）" :disabled="button_list.edit_remark != 1"></el-input>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作" align="center" fixed="right">
+			<el-table-column label="操作" align="center" fixed="right" v-if="button_list.add_feedback == 1">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="feedBack(scope.row)" v-if="(scope.row.feedback_status == 1 || scope.row.feedback_status == 2) && button_list.add_feedback == 1">反馈</el-button>
-					<div v-else>已反馈</div>
+					<div v-if="scope.row.feedback_status == 0">已反馈</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -369,8 +369,8 @@
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					supplier:this.select_gys_ids.join(','),
 					is_zero_batch:!this.is_zero_batch?0:1,
-					start_date:this.date && this.date.length > 0?this.date[0]:"",
-					end_date:this.date && this.date.length > 0?this.date[1]:"",
+					start_launch_day:this.date && this.date.length > 0?this.date[0]:"",
+					end_launch_day:this.date && this.date.length > 0?this.date[1]:"",
 					from:this.from,
 					min_batch_price:this.batch_price_min,
 					max_batch_price:this.batch_price_max,
