@@ -76,7 +76,7 @@
 			<el-table-column label="操作" width="120" align="center" fixed="right">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="getDetail(scope.row.id,true)" v-if="scope.row.status == '1' && button_list.audit == 1">审核</el-button>
-					<el-button type="text" size="small" @click="getDetail(scope.row.id,false)" v-if="scope.row.status != '1' && button_list.detail == 1">查看</el-button>
+					<el-button type="text" size="small" @click="getDetail(scope.row.id,false)" v-if="button_list.detail == 1">查看</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
