@@ -19,6 +19,10 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="上新时间："  v-if="user_type != '1'">
+				<el-date-picker size="small" v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				</el-date-picker>
+			</el-form-item>
 			<el-form-item v-if="user_type != '4' && user_type != '1'">
 				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
 			</el-form-item>
@@ -272,6 +276,7 @@
 						}
 					}]
 				},	 					//时间区间
+				date:[],				//上新时间
 				export_date:[],			//导出日期区间
 				user_type:"",
 				current_supplier:"",	//当前点击的供应商
@@ -364,6 +369,8 @@
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					supplier:this.select_gys_ids.join(','),
 					is_zero_batch:!this.is_zero_batch?0:1,
+					start_date:this.date && this.date.length > 0?this.date[0]:"",
+					end_date:this.date && this.date.length > 0?this.date[1]:"",
 					from:this.from,
 					min_batch_price:this.batch_price_min,
 					max_batch_price:this.batch_price_max,
