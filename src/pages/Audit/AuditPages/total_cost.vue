@@ -228,6 +228,7 @@
 				select_gyshh_ids:[],	//选中的供应商款号
 				gys_list:[],			//所有供应商列表
 				select_gys_ids:[],		//选中的供应商列表
+				date:[],
 				batch_price_min:"",		//批发价最低
 				batch_price_max:"",		//批发价最高
 				min_xssl:"",			//销售数量最低

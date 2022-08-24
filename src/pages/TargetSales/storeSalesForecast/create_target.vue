@@ -19,8 +19,8 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="店铺名称：" required>
-						<el-select v-model="shop_name" :popper-append-to-body="false" filterable placeholder="请选择店铺" @change="changeStore" :disabled="closeStep1">
-							<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
+						<el-select v-model="new_code" :popper-append-to-body="false" filterable placeholder="请选择店铺" @change="changeStore" :disabled="closeStep1">
+							<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_code">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -381,6 +381,7 @@
 				jst_code:"",			//店铺jst_code
 				reference_jst_code:"",	//参考店铺jst_code
 				shop_name:"",			//店铺名称
+				new_code:"",			//没用的店铺ID
 				shop_id:"",				//主账号ID
 				platform:"",			//平台名称
 				shop_type:"",			//店铺类别
@@ -647,10 +648,11 @@
 			},
 			//切换店铺获取店铺详情和获取参考店铺列表
 			changeStore(v){
-				resource.getShopInfo({shop_name:v}).then(res => {
+				resource.getShopInfo({shop_code:v}).then(res => {
 					if(res.data.code == 1){
 						let data = res.data.data;
-						this.shop_id = data.shop_code;			
+						this.shop_id = data.shop_code;
+						this.shop_name = data.shop_name;	
 						this.platform = data.platform;			
 						this.shop_type = data.shop_type?data.shop_type:'';	
 						this.jst_code = data.jst_code;	
