@@ -166,8 +166,8 @@
 						<div class="label">审核状态：</div>
 						<div v-if="detailObj.status == '0'">默认状态</div>
 						<div v-if="detailObj.status == '1'">待审批</div>
-						<div v-if="detailObj.status == '2'">审批拒绝</div>
-						<div v-if="detailObj.status == '3'">审批通过</div>
+						<div v-if="detailObj.status == '2'">审批通过</div>
+						<div v-if="detailObj.status == '3'">审批拒绝</div>
 					</div>
 					<div class="content_row">
 						<div class="label">审核时间：</div>
