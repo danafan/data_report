@@ -881,7 +881,8 @@
     					mll:this.table_data[5].new_value,
     					yxfyl:this.table_data[6].new_value,
     					qntqsrzb:this.day_percent[i-1],
-    					xssrzb:this.day_percent[i-1]
+    					xssrzb:1/30
+    					// xssrzb:this.day_percent[i-1]
     				}
     				menu.push(this.setInfo(info));
     			}
