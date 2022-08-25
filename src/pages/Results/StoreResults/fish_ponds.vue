@@ -40,30 +40,30 @@
 <!-- 每日鱼塘单量/每日鱼塘金额 -->
 <div class="single_box">
 	<!-- 每日鱼塘单量 -->
-	<div id="single_date" class="single_date" v-show="tab_index == '1'"></div>
-	<div id="single_total" class="single_total" v-show="tab_index == '1'"></div>
+	<div id="single_date" class="single_date" v-show="tab_index == '1'" v-loading="loading"></div>
+	<div id="single_total" class="single_total" v-show="tab_index == '1'" v-loading="loading"></div>
 	<!-- 每日鱼塘金额 -->
-	<div id="money_date" class="single_date" v-show="tab_index == '2'"></div>
-	<div id="money_total" class="single_total" v-show="tab_index == '2'"></div>
+	<div id="money_date" class="single_date" v-show="tab_index == '2'" v-loading="loading"></div>
+	<div id="money_total" class="single_total" v-show="tab_index == '2'" v-loading="loading"></div>
 </div>
 <!-- 各店铺鱼塘单量占比 -->
-<div id="accounted" class="accounted" v-show="tab_index == '1'"></div>
+<div id="accounted" class="accounted" v-show="tab_index == '1'" v-loading="loading"></div>
 <!-- 各店铺鱼塘金额占比 -->
-<div id="amount" class="accounted" v-show="tab_index == '2'"></div>
+<div id="amount" class="accounted" v-show="tab_index == '2'" v-loading="loading"></div>
 <!-- 鱼塘目标完成情况 -->
-<div id="over_state" class="over_state" v-show="tab_index == '1'"></div>
+<div id="over_state" class="over_state" v-show="tab_index == '1'" v-loading="loading"></div>
 <!-- 频次统计 -->
 <div v-show="tab_index == '3'">
 	<!-- 近一年鱼塘频次分析 -->
-	<div class="pc_chart" id="pc_chart"></div>
+	<div class="pc_chart" id="pc_chart" v-loading="pc_chart_loading"></div>
 	<!-- 拉新分析 -->
-	<div class="pc_chart" id="lx_chart"></div>
+	<div class="pc_chart" id="lx_chart" v-loading="pc_chart_loading"></div>
 	<div style="display:flex">
 		<div style="margin-right: 100px">
 			<div class="table_title">
 				<div>鱼塘频次分析</div>
 			</div>
-			<el-table size="small" :data="pin_ci" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table size="small" :data="pin_ci" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
 				<el-table-column prop="pc" width="80" label="做单频次" show-overflow-tooltip align="center">
 				</el-table-column>
 				<el-table-column prop="account_num" width="100" label="买家账号统计" show-overflow-tooltip align="center">
@@ -81,7 +81,7 @@
 				<div>五单以上的鱼塘账号</div>
 				<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
-			<el-table size="small" :data="fiv_up" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table size="small" :data="fiv_up" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
 				<el-table-column prop="buyer_account" width="120" label="买家账号" show-overflow-tooltip align="center">
 				</el-table-column>
 				<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
@@ -96,7 +96,7 @@
 			<div class="table_title">
 				<div>店铺鱼塘统计</div>
 			</div>
-			<el-table size="small" :data="dp_yt" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+			<el-table size="small" :data="dp_yt" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
 				<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
 				</el-table-column>
 				<el-table-column prop="buyer_num" width="120" label="买家SD账号" show-overflow-tooltip align="center">
@@ -217,6 +217,9 @@
 				pin_ci:[],									//鱼塘频次分析
 				fiv_up:[],									//五单以上的鱼塘账号
 				dp_yt:[],									//店铺鱼塘统计
+				loading:false,
+				pc_chart_loading:false,
+				pc_table_loading:false
 			}
 		},
 		mounted(){
@@ -271,8 +274,10 @@
         	},
         	//频次图表
         	pcChartData(){
+        		this.pc_chart_loading = true;
         		resource.pcChartData().then(res => {
         			if(res.data.code == 1){
+        				this.pc_chart_loading = false;
         				var echarts = require("echarts");
         				let data = res.data.data.tu_biao;
         				var month = data.month;
@@ -415,8 +420,10 @@
         			start_date:this.searchDate && this.searchDate.length> 0?this.searchDate[0]:"",
         			end_date:this.searchDate && this.searchDate.length> 0?this.searchDate[1]:""
         		}
+        		this.pc_table_loading = true;
         		resource.fishStatistics(arg).then(res => {
         			if(res.data.code == 1){
+        				this.pc_table_loading = false;
         				let pin_ci = res.data.data.pin_ci;
         				pin_ci.map((item,index) => {
         					item.pc = index + 1;
@@ -452,8 +459,10 @@
 					start_time:this.start_time,
 					end_time:this.end_time
 				}
+				this.loading = true;
 				resource.fishList(req).then(res => {
 					if(res.data.code == '1'){
+						this.loading = false;
 						var echarts = require("echarts");
 						var day_ytdl_obj = {
 							fkrq:[],

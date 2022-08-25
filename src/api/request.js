@@ -62,7 +62,7 @@ export function middleWare(params,type) {
   var token = Base64.encode(JSON.stringify(token_obj));
   
   //组织参数
-  var req = {...params,...{sign:sign,token:token}};
+  // var req = {...params,...{sign:sign,token:token}};
   // var req = {...params,...{sign:sign,admin_id:'16242415743283525',token:token}};   //裘知恩
   // var req = {...params,...{sign:sign,admin_id:'014017496357903146',token:token}};   //测试
   // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}}; //陈鑫杰
@@ -70,7 +70,7 @@ export function middleWare(params,type) {
   // var req = {...params,...{sign:sign,admin_id:'016050173120277413',token:token}};  //老板
   // var req = {...params,...{sign:sign,admin_id:'2217',token:token}};                //超级店长
   // var req = {...params,...{sign:sign,admin_id:'16145614211961146',token:token}};   //总经理
-  // var req = {...params,...{sign:sign,admin_id:'16206259129094905',token:token}};   //超级管理员
+  var req = {...params,...{sign:sign,admin_id:'16206259129094905',token:token}};   //超级管理员
 
   var get_arr = [];
   //post请求参数

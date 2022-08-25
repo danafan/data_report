@@ -163,39 +163,39 @@
 <div class="title">每日分析</div>
 <el-tabs v-model="activeItemTab" @tab-click="checkItemTab">
 	<el-tab-pane label="整体数据" name="overall_data" class="tab_pane_box">
-		<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" :is_export="button_list.zt_export" @customBack="customFun"/>
+		<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" :is_export="button_list.zt_export" @customBack="customFun" v-loading="overall_loading"/>
 	</el-tab-pane>
 	<el-tab-pane label="搜索系列" name="search_data" class="tab_pane_box">
-		<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" :is_export="button_list.search_export" @customBack="customFun"/>
+		<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" :is_export="button_list.search_export" @customBack="customFun" v-loading="search_loading"/>
 	</el-tab-pane>
 	<el-tab-pane label="直通车系列" name="ztc_data" class="tab_pane_box">
-		<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" :is_export="button_list.ztc_export" @customBack="customFun"/>
+		<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" :is_export="button_list.ztc_export" @customBack="customFun" v-loading="ztc_loading"/>
 	</el-tab-pane>
 	<el-tab-pane label="超级推荐系列" name="cjtj_data" class="tab_pane_box">
-		<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" :is_export="button_list.cjtj_export" @customBack="customFun"/>
+		<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" :is_export="button_list.cjtj_export" @customBack="customFun" v-loading="cjtj_loading"/>
 	</el-tab-pane>
 </el-tabs>
 <!-- 折线图 -->
 <el-tabs v-model="activeLineTab" @tab-click="checkLineTab" style="margin-top: 30px">
 	<el-tab-pane label="访客分析" name="visitors_analysis" class="tab_pane_box">
-		<div id="visitors_analysis" class="complete_line"></div>
+		<div id="visitors_analysis" class="complete_line" v-loading="zxt_loading"></div>
 	</el-tab-pane>
 	<el-tab-pane label="买家坑产分析" name="production_analysis" class="tab_pane_box">
 		<div class="flex_box">
-			<div id="production_analysis_left" class="half_line"></div>
-			<div id="production_analysis_right" class="half_line"></div>
+			<div id="production_analysis_left" class="half_line" v-loading="zxt_loading"></div>
+			<div id="production_analysis_right" class="half_line" v-loading="zxt_loading"></div>
 		</div>
 	</el-tab-pane>
 	<el-tab-pane label="花费分析" name="cost_analysis" class="tab_pane_box">
-		<div id="cost_analysis" class="complete_line"></div>
+		<div id="cost_analysis" class="complete_line" v-loading="zxt_loading"></div>
 	</el-tab-pane>
 	<el-tab-pane label="转化率对比" name="ratio_comparison" class="tab_pane_box">
-		<div id="ratio_comparison" class="complete_line"></div>
+		<div id="ratio_comparison" class="complete_line" v-loading="zxt_loading"></div>
 	</el-tab-pane>
 	<el-tab-pane label="收藏加购率分析" name="collection_analysis" class="tab_pane_box">
 		<div class="flex_box">
-			<div id="collection_analysis_left" class="half_line"></div>
-			<div id="collection_analysis_right" class="half_line"></div>
+			<div id="collection_analysis_left" class="half_line" v-loading="zxt_loading"></div>
+			<div id="collection_analysis_right" class="half_line" v-loading="zxt_loading"></div>
 		</div>
 	</el-tab-pane>
 </el-tabs>
@@ -375,7 +375,13 @@
 				page_type:"",								//弹框的类型
 				req:{},										//请求参数
 				button_list:{},								//权限
-				table_list_loading:false
+				table_list_loading:false,
+				overall_loading:false,
+				search_loading:false,
+				ztc_loading:false,
+				cjtj_loading:false,
+				zxt_loading:false
+
 			}
 		},
 		created(){
@@ -676,8 +682,10 @@
 			},
 			//每日分析-整体数据
 			annualDpzt(){
+				this.overall_loading = true;
 				resource.annualDpzt(this.req).then(res => {
 					if(res.data.code == 1){
+						this.overall_loading = false;
 						this.table_data_overall = res.data.data.data;
 						this.selected_ids_overall = res.data.data.selected_ids;
 						this.title_list_overall = res.data.data.title_list;
@@ -690,8 +698,10 @@
 			},
 			//每日分析-搜索系列
 			annualDpSearch(){
+				this.search_loading = true;
 				resource.annualDpSearch(this.req).then(res => {
 					if(res.data.code == 1){
+						this.search_loading = false;
 						this.table_data_search = res.data.data.data;
 						this.selected_ids_search = res.data.data.selected_ids;
 						this.title_list_search = res.data.data.title_list;
@@ -704,8 +714,10 @@
 			},
 			//每日分析-直通车系列
 			annualDpZtc(){
+				this.ztc_loading = true;
 				resource.annualDpZtc(this.req).then(res => {
 					if(res.data.code == 1){
+						this.ztc_loading = false;
 						this.table_data_ztc = res.data.data.data;
 						this.selected_ids_ztc = res.data.data.selected_ids;
 						this.title_list_ztc = res.data.data.title_list;
@@ -718,8 +730,10 @@
 			},
 			//每日分析-超级推荐系列
 			annualDpCjtj(){
+				this.cjtj_loading = true;
 				resource.annualDpCjtj(this.req).then(res => {
 					if(res.data.code == 1){
+						this.cjtj_loading = false;
 						this.table_data_cjtj = res.data.data.data;
 						this.selected_ids_cjtj = res.data.data.selected_ids;
 						this.title_list_cjtj = res.data.data.title_list;
@@ -781,8 +795,10 @@
 			},
 			//每日分析下面的折线图
 			dayDpAnalysis(){
+				this.zxt_loading = true;
 				resource.dayDpAnalysis(this.req).then(res => {
 					if(res.data.code == 1){
+						this.zxt_loading = false;
 						var echarts = require("echarts");
 						let max_min = {
 							data: [

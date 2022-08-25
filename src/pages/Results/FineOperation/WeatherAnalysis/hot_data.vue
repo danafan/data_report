@@ -23,7 +23,7 @@
 			</el-tooltip>
 			<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table :data="table_content" style="width: 100%" height="600" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" :cell-style="columnStyle">
+		<el-table :data="table_content" style="width: 100%" height="600" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" :cell-style="columnStyle" v-loading="loading">
 			<el-table-column :prop="'value_' + item" :label="item" :fixed="index == 0" width="120" show-overflow-tooltip align="center" v-for="(item,index) in day_list">
 				<template slot-scope="scope">
 					<!-- 最高温 -->
@@ -104,6 +104,7 @@
 				table_content:[],
 				day_list:[],
 				field_name_list:[],
+				loading:false
 			}
 		},
 		methods:{
@@ -112,8 +113,10 @@
 			},
 			//获取列表
 			getData(){
+				this.loading = true;
 				resource.weatherTableList({from:'3'}).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var dataObj = res.data.data;
 						dataObj.day_list.unshift('分类');
 						this.day_list = dataObj.day_list;

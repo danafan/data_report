@@ -1,6 +1,6 @@
 <template>
 	<div class="content_box">
-		<div class="bar_box" id="bar_01"></div>
+		<div class="bar_box" id="bar_01" v-loading="loading"></div>
 		<div class="center_box">
 			<div class="tab_container">
 				<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">销售金额</div>
@@ -13,10 +13,10 @@
 				<i class="el-icon-caret-top green" v-if="total_obj.tb < 0"></i>
 				<div class="top" :class="{'green':total_obj.tb < 0}">{{total_obj.tb}}%</div>
 			</div>
-			<div class='china_box' id="china_box"></div>
-			<div class="line_box" id="line_box"></div>
+			<div class='china_box' id="china_box" v-loading="loading"></div>
+			<div class="line_box" id="line_box" v-loading="loading"></div>
 		</div>
-		<div class="bar_box" id="bar_02"></div>
+		<div class="bar_box" id="bar_02" v-loading="loading"></div>
 	</div>
 </template>
 <style lang="less" scoped>
@@ -95,6 +95,7 @@
 				map_list:[],			//缓存的地图数据
 				max_value:0,			//缓存的地图最大值
 				min_value:0,			//缓存的地图最小值
+				loading:false
 			}
 		},
 		watch:{
@@ -110,8 +111,10 @@
 			},
 			getList(){
 				let req_obj = {...this.req,...{type:this.tab_index}};
+				this.loading = true;
 				resource.areaSale(req_obj).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var data = res.data.data;
 						var echarts = require("echarts");
 						//总计

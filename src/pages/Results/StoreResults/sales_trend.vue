@@ -13,7 +13,7 @@
 		<div class="row_box">
 			<div class="left_box">
 				<div class="title">各店目标达成情况</div>
-				<el-table :data="total_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" width="50%" :row-class-name="tableRowClassName" :cell-style="columnStyle" @sort-change="sortChange" v-if="total_data.length > 0">
+				<el-table :data="total_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" width="50%" :row-class-name="tableRowClassName" :cell-style="columnStyle" @sort-change="sortChange" v-if="total_data.length > 0" v-loading="loading">
 					<el-table-column label="序号" width="60">
 						<template>
 							<div>总计</div>
@@ -41,7 +41,7 @@
 						</template>
 					</el-table-column>
 				</el-table>
-				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :cell-style="columnStyle" @sort-change="sortChange" :show-header="total_data.length == 0">
+				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :cell-style="columnStyle" @sort-change="sortChange" :show-header="total_data.length == 0" v-loading="loading">
 					<el-table-column label="序号" width="60">
 						<template slot-scope="scope">
 							<div>{{scope.$index}}</div>
@@ -72,7 +72,7 @@
 					</el-table-column>
 				</el-table>
 			</div>
-			<div class="right_box">
+			<div class="right_box" v-loading="loading">
 				<div class="title">近期趋势变化</div>
 				<div class="list_box">
 					<div class="row_right" v-for="(item,index) in right_list" :key="index">
@@ -165,7 +165,8 @@
 				total_data:[],								//总计行
 				day_list:[],								//所有日期列表
 				right_list:[],	
-				date:{}
+				date:{},
+				loading:false
 			}
 		},
 		created(){	
@@ -219,8 +220,10 @@
 					sort_field:this.sort_field,
 					sort_type:this.sort_type,
 				}
+				this.loading = true;
 				resource.recentSales(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						let data = res.data.data;
 						this.date = data.date;
 						this.total_data = [];

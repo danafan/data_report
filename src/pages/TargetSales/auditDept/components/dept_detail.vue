@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
 			<el-table-column width="180" label="去年同期上月" align="center">
 				<template slot-scope="scope">
@@ -29,7 +29,7 @@
 			</el-table-column>
 		</el-table>
 		<!-- 店长本人 -->
-		<div class="bottom_table">
+		<div class="bottom_table" v-loading="loading">
 			<div class="row">
 				<div class="lable">提交时间：</div>
 				<div class="value">{{bottom_info.add_time}}</div>
@@ -293,8 +293,10 @@
 		methods:{
 			//查看详情
 			getDetail(){
+				this.loading = true;
 				resource.projectTargetInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						let data = res.data.data;
 						//顶部店铺详情
 						this.bottom_info = data.data;		//底部信息

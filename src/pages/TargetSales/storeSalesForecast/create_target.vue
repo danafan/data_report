@@ -70,7 +70,7 @@
 		<el-button type="primary" size="small" @click="resetFun" v-else>重置</el-button>
 	</div>
 	<div class="table_box" v-if="closeStep1 == true">
-		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
 			<el-table-column width="180" label="去年同期" align="center">
 				<template slot-scope="scope">
@@ -571,6 +571,7 @@
 				}],						//右侧表格数据
 				closeStep2:false,		//第二级是否禁用
 				day_table_data:[],		//日数据表格
+				loading:false
 			}
 		},
 		created(){
@@ -729,8 +730,10 @@
 					shop_code:this.reference_jst_code,
 					date:this.date
 				}
+				this.loading = true;
 				resource.lastYearData(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.day_percent = res.data.data.day_percent;	//去年同期收入占比
 						this.lastYearData = res.data.data.last_year_info;
 						for(var k in this.lastYearData){

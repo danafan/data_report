@@ -25,7 +25,7 @@
 				<el-button type="primary" size="small" @click="getData('1')">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="dept_1_name" show-overflow-tooltip label="一级部门" align="center"></el-table-column>
 			<el-table-column prop="year" label="年份" align="center"></el-table-column>
 			<el-table-column prop="month" label="月份" align="center"></el-table-column>
@@ -95,6 +95,7 @@
 				showDetail:false,			//详情弹窗
 				dialog_title:"",
 				id:"",						//详情ID
+				loading:false
 			}
 		},
 		beforeRouteLeave(to,from,next){
@@ -152,8 +153,10 @@
 					page:this.page,
 					limit:this.pagesize
 				}
+				this.loading = true;
 				resource.businessTargetList(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.dataObj = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);

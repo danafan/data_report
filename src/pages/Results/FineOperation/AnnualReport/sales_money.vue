@@ -2,7 +2,7 @@
 	<div>
 		<!-- 品类销售金额汇总 -->
 		<div class="title_text">品类销售金额汇总</div>
-		<el-table v-if="show_table" :data="pl_list" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle">
+		<el-table v-if="show_table" :data="pl_list" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle" v-loading="loading">
 			<el-table-column fixed prop="cpfl" align="center" label="品类" width="150"></el-table-column>
 			<el-table-column :label="item" align="center" v-for="item in year_list">
 				<el-table-column :prop="`value_${item}`" align="center" label="销售金额" width="120">
@@ -14,11 +14,11 @@
 			</el-table-column>
 		</el-table>
 		<!-- 每日销售金额年同比 -->
-		<div id="axis_01" class="axis_01"></div>
+		<div id="axis_01" class="axis_01" v-loading="loading"></div>
 		<!-- 销售金额年同比 -->
 		<div class="third_row">
-			<div id="axis_02" class="axis_02"></div>
-			<div class="tb_box">
+			<div id="axis_02" class="axis_02" v-loading="loading"></div>
+			<div class="tb_box" v-loading="loading">
 				<div class="title">销售金额年同比</div>
 				<div class="xsje_vlaue">{{xsje_year_ntb.amount}}万</div>
 				<div class="xsje_toast">
@@ -35,13 +35,13 @@
 			<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">按占比</div>
 		</div>
 		<!-- 每日鱼塘金额年同比（按金额） -->
-		<div id="axis_03" class="axis_01" v-show="tab_index == '1'"></div>
+		<div id="axis_03" class="axis_01" v-show="tab_index == '1'" v-loading="loading"></div>
 		<!-- 每日鱼塘金额年同比（按占比） -->
-		<div id="axis_05" class="axis_01" v-show="tab_index == '2'"></div>
+		<div id="axis_05" class="axis_01" v-show="tab_index == '2'" v-loading="loading"></div>
 		<!-- 鱼塘金额年同比 -->
 		<div class="third_row">
-			<div id="axis_04" class="axis_02"></div>
-			<div class="tb_box">
+			<div id="axis_04" class="axis_02" v-loading="loading"></div>
+			<div class="tb_box" v-loading="loading">
 				<div class="title">鱼塘金额年同比</div>
 				<div class="xsje_vlaue">{{yt_year_ntb.amount}}万</div>
 				<div class="xsje_toast">
@@ -54,8 +54,8 @@
 		</div>
 		<!-- 鱼塘金额占比年同比 -->
 		<div class="third_row">
-			<div id="axis_06" class="axis_02"></div>
-			<div class="tb_box">
+			<div id="axis_06" class="axis_02" v-loading="loading"></div>
+			<div class="tb_box" v-loading="loading">
 				<div class="title">鱼塘金额占比年同比</div>
 				<div class="xsje_vlaue">{{yt_percent_year_ntb.amount}}%</div>
 				<div class="xsje_toast">
@@ -164,7 +164,8 @@
 				yt_month_ntb:[],		//每月鱼塘金额年同比
 				yt_year_ntb:{},			
 				yt_percent_month_ntb:[],//每月鱼塘金额占比年同比
-				yt_percent_year_ntb:{}
+				yt_percent_year_ntb:{},
+				loading:false
 			}
 		},
 		watch:{
@@ -195,8 +196,10 @@
 				})
 			},
 			getList(req){
+				this.loading = true;
 				resource.annualAmount(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var echarts = require("echarts");
 						//销毁已经创建的
 						if(this.axis_01Chart){

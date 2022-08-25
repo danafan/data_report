@@ -35,7 +35,9 @@
 				<el-input type="number" size="small" v-model="max_xssl" placeholder="最高" style="width: 100px"></el-input>
 			</el-form-item>
 			<el-form-item label="折扣率：" v-if="user_type != '1'">
-				<el-input type="number" size="small" v-model="min_zkl" placeholder="最低" style="width: 120px"><template slot="append">%</template></el-input> ~
+				<el-input type="number" size="small" v-model="min_zkl" placeholder="最低" style="width: 120px">
+					<template slot="append">%</template>
+				</el-input> ~
 				<el-input type="number" size="small" v-model="max_zkl" placeholder="最高" style="width: 120px">
 					<template slot="append">%</template>
 				</el-input>

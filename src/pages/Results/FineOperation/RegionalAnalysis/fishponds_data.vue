@@ -1,6 +1,6 @@
 <template>
 	<div class="content_box">
-		<div class="bar_box" id="bar_05"></div>
+		<div class="bar_box" id="bar_05" v-loading="loading"></div>
 		<div class="center_box">
 			<div class="tab_container">
 				<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">鱼塘金额</div>
@@ -17,10 +17,10 @@
 				<div>鱼塘占比</div>
 				<div class="top">{{total_obj.zb}}%</div>
 			</div>
-			<div class='china_box' id="china_box_yt"></div>
-			<div class="line_box" id="line_box_yt"></div>
+			<div class='china_box' id="china_box_yt" v-loading="loading"></div>
+			<div class="line_box" id="line_box_yt" v-loading="loading"></div>
 		</div>
-		<div class="bar_box" id="bar_06"></div>
+		<div class="bar_box" id="bar_06" v-loading="loading"></div>
 	</div>
 </template>
 <style lang="less" scoped>
@@ -99,6 +99,7 @@
 				map_list:[],			//缓存的地图数据
 				max_value:0,			//缓存的地图最大值
 				min_value:0,			//缓存的地图最小值
+				loading:false
 			}
 		},
 		watch:{
@@ -114,8 +115,10 @@
 			},
 			getList(){
 				let req_obj = {...this.req,...{type:this.tab_index}};
+				this.loading = true;
 				resource.areasaleYt(req_obj).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var data = res.data.data;
 						var echarts = require("echarts");
 						//总计

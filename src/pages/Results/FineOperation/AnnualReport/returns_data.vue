@@ -2,7 +2,7 @@
 	<div>
 		<!-- 品类退货金额汇总 -->
 		<div class="title_text">品类退货金额汇总</div>
-		<el-table v-if="show_table" :data="pl_list" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle">
+		<el-table v-if="show_table" :data="pl_list" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle" v-loading="loading">
 			<el-table-column fixed prop="cpfl" align="center" label="品类" width="150"></el-table-column>
 			<el-table-column :label="item" align="center" v-for="item in year_list">
 				<el-table-column :prop="`value_${item}`" align="center" label="退货金额" width="120">
@@ -25,15 +25,15 @@
 			<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">按占比</div>
 		</div>
 		<!-- axis_13 -->
-		<div id="axis_13" class="axis_01" v-show="tab_index == '1'"></div>
+		<div id="axis_13" class="axis_01" v-show="tab_index == '1'" v-loading="loading"></div>
 		<!-- axis_14 -->
-		<div id="axis_14" class="axis_01" v-show="tab_index == '2'"></div>
+		<div id="axis_14" class="axis_01" v-show="tab_index == '2'" v-loading="loading"></div>
 		<!-- 每月退货金额同比 -->
 		<div class="third_row">
 			<!-- axis_15 -->
-			<div id="axis_15" class="axis_02"></div>
+			<div id="axis_15" class="axis_02" v-loading="loading"></div>
 			<div class="tb_box">
-				<div class="tab_box_item">
+				<div class="tab_box_item" v-loading="loading">
 					<div class="title">退货金额年同比</div>
 					<div class="xsje_vlaue">{{thje_year_ntb.amount}}万</div>
 					<div class="xsje_toast">
@@ -43,7 +43,7 @@
 						<div class="bai" :class="{'green_color':thje_year_ntb.ntb < 0}">{{thje_year_ntb.ntb}}%</div>
 					</div>
 				</div>
-				<div class="tab_box_item">
+				<div class="tab_box_item" v-loading="loading">
 					<div class="title">金额退货率年同比</div>
 					<div class="xsje_vlaue">{{thje_percent_year_ntb.amount}}%</div>
 					<div class="xsje_toast">
@@ -61,15 +61,15 @@
 			<div class="tab_item" :class="{'active_tab_item':tab_indexs == '2'}" @click="tab_indexs = '2'">按占比</div>
 		</div>
 		<!-- axis_16 -->
-		<div id="axis_16" class="axis_01" v-show="tab_indexs == '1'"></div>
+		<div id="axis_16" class="axis_01" v-show="tab_indexs == '1'" v-loading="loading"></div>
 		<!-- axis_17 -->
-		<div id="axis_17" class="axis_01" v-show="tab_indexs == '2'"></div>
+		<div id="axis_17" class="axis_01" v-show="tab_indexs == '2'" v-loading="loading"></div>
 		<!-- 每月退货数量年同比 -->
 		<div class="third_row">
 			<!-- axis_18 -->
-			<div id="axis_18" class="axis_02"></div>
+			<div id="axis_18" class="axis_02" v-loading="loading"></div>
 			<div class="tb_box">
-				<div class="tab_box_item">
+				<div class="tab_box_item" v-loading="loading">
 					<div class="title">退货数量年同比</div>
 					<div class="xsje_vlaue">{{thsl_year_ntb.amount}}万</div>
 					<div class="xsje_toast">
@@ -79,7 +79,7 @@
 						<div class="bai" :class="{'green_color':thsl_year_ntb.ntb < 0}">{{thsl_year_ntb.ntb}}%</div>
 					</div>
 				</div>
-				<div class="tab_box_item">
+				<div class="tab_box_item" v-loading="loading">
 					<div class="title">数量退货率年同比</div>
 					<div class="xsje_vlaue">{{thsl_percent_year_ntb.amount}}%</div>
 					<div class="xsje_toast">
@@ -194,7 +194,8 @@
 				thsl_year_ntb:{},			//退货数量年同比
 				thsl_percent_year_ntb:{},	//数量退货率年同比
 				tab_index:'1',
-				tab_indexs:'1'
+				tab_indexs:'1',
+				loading:false
 			}
 		},
 		watch:{
@@ -231,8 +232,10 @@
 				})
 			},
 			getList(req){
+				this.loading = true;
 				resource.annualReturn(req).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						var echarts = require("echarts");
 						//销毁已经创建的
 						if(this.axis_13Chart){

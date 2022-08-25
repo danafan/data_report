@@ -1,11 +1,11 @@
 <template>
 	<div>
 		<div class="time_toast">有效日期：{{effective_date.start_date}} 至 {{effective_date.end_date}}，共计15天</div>
-		<div id="temperature" class="line_box"></div>
-		<div id="wind_speed" class="line_box"></div>
+		<div id="temperature" class="line_box" v-loading="chart_loading"></div>
+		<div id="wind_speed" class="line_box" v-loading="chart_loading"></div>
 		<div class="clothes_box">
-			<div id="bar_content" class="bar_content"></div>
-			<div id="pie_content" class="pie_content"></div>
+			<div id="bar_content" class="bar_content" v-loading="chart_loading"></div>
+			<div id="pie_content" class="pie_content" v-loading="chart_loading"></div>
 		</div>
 		<div class="parsing">
 			<div class="row_item">
@@ -31,7 +31,7 @@
 			</div>
 		</div>
 		<div class="table_title">未来15天天气预报</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange">
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="table_loading">
 			<el-table-column prop="lvl1" label="省份" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="qx" label="市区" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="rq" label="日期" sortable show-overflow-tooltip align="center"></el-table-column>
@@ -157,6 +157,8 @@
 				bar_contentChart:null,
 				dataObj:{},			//底部表格数据
 				effective_date:{},		//有效日期
+				chart_loading:false,
+				table_loading:false
 			}
 		},
 		methods:{
@@ -178,8 +180,10 @@
 				this.weatherTableList();
 			},
 			getData(){
+				this.chart_loading = true;
 				resource.weatherData(this.req).then(res => {
 					if(res.data.code == 1){
+						this.chart_loading = false;
 						var echarts = require("echarts");
 						var data = res.data.data;
 						this.day_list = data.day;				//日期
@@ -258,8 +262,10 @@
 			},
 			//底部天气数据表格
 			weatherTableList(){
+				this.table_loading = true;
 				resource.weatherTableList(this.req).then(res => {
 					if(res.data.code == 1){
+						this.table_loading = false;
 						this.dataObj = res.data.data;
 						var zgw_max = Math.max.apply(Math, this.dataObj.data.map((item) => {return item.zgw}));
 						var zdw_max = Math.min.apply(Math, this.dataObj.data.map((item) => {return item.zdw}));

@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
 			<el-table-column width="180" label="去年同期上月" align="center">
 				<template slot-scope="scope">
@@ -28,7 +28,7 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		<div class="bottom_table">
+		<div class="bottom_table" v-loading="loading">
 			<div class="row">
 				<div class="lable">提交时间：</div>
 				<div class="value">{{bottom_info.add_time}}</div>
@@ -316,6 +316,7 @@
 				showRefuse:false,		//审核弹窗（项目部）
 				refuse_type:'1',		//弹窗类型（1:拒绝；2:同意）
 				reason:"",				//原因(1:拒绝；2:同意)
+				loading:false
 			}
 		},
 		props:{
@@ -331,8 +332,10 @@
 		methods:{
 			//查看详情
 			getDetail(){
+				this.loading = true;
 				resource.businessTargetInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						let data = res.data.data;
 						this.user_type = data.user_type;//1:全部权限；2:查看权限
 						//底部详情

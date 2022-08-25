@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-table size="small" :data="info_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="info_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="150" show-overflow-tooltip prop="dept_1_name" label="一级部门" align="center"></el-table-column>
 			<el-table-column width="150" show-overflow-tooltip prop="dept_2_name" label="二级部门" align="center"></el-table-column>
 			<el-table-column width="100" show-overflow-tooltip prop="shop_id" label="主账号ID" align="center"></el-table-column>
@@ -9,7 +9,7 @@
 			<el-table-column width="150" show-overflow-tooltip prop="shopowner_name" label="店长" align="center"></el-table-column>
 			<el-table-column width="150" show-overflow-tooltip prop="reference_shop_id" label="参考店铺" align="center"></el-table-column>
 		</el-table>
-		<el-table size="small" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}">
+		<el-table size="small" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
 			<el-table-column width="180" label="去年同期上月" align="center">
 				<template slot-scope="scope">
@@ -43,7 +43,7 @@
 			<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
 			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries">
+		<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" v-loading="loading">
 			<el-table-column width="75" prop="day" label="日期" align="center"></el-table-column>
 			<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
 			<el-table-column width="100" prop="gmv" show-overflow-tooltip align="center">
@@ -218,7 +218,7 @@
 			</el-table-column>
 		</el-table>
 		<!-- 底部信息 -->
-		<div class="bottom_table">
+		<div class="bottom_table" v-loading="loading">
 			<div class="row">
 				<div class="lable">提交时间：</div>
 				<div class="value">{{bottom_info.add_time}}</div>
@@ -538,7 +538,8 @@
 				showRefuse:false,		//拒绝弹窗（项目部）
 				refuse_type:'1',		//弹窗类型（1:拒绝；2:同意）
 				reason:"",				//原因(1:拒绝；2:同意)
-				row:{}
+				row:{},
+				loading:false
 			}
 		},
 		props:{
@@ -558,8 +559,10 @@
 		methods:{
 			//查看详情
 			getDetail(){
+				this.loading = true;
 				resource.shopTargetInfo({id:this.id}).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						let data = res.data.data;
 						//顶部店铺详情
 						let infoData = data.data;
