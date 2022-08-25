@@ -745,7 +745,6 @@
 									}else{
 										this.table_data[i].new_value = 0;
 									}
-									
 								}
 							}
 						}

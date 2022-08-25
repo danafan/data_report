@@ -174,12 +174,6 @@
 					width:65,
 					sort:'custom'
 				},{
-					label:'到货率',
-					prop:'dhl',
-					width:65,
-					sort:'custom',
-					unit:'%'
-				},{
 					label:'白坯款号',
 					prop:'bpkh',
 					width:65,
@@ -195,7 +189,13 @@
 					width:65,
 					sort:false
 				},{
-					label:'合格率',
+					label:'到货率(白坯)',
+					prop:'dhl',
+					width:65,
+					sort:'custom',
+					unit:'%'
+				},{
+					label:'合格率(白坯)',
 					prop:'hgl',
 					width:65,
 					sort:false,
