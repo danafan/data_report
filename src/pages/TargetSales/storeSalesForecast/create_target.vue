@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-loading="loading">
 		<div style="display:flex;align-items: center;margin-bottom: 20px">
 			<el-button type="primary" plain size='mini' icon="el-icon-arrow-left" @click="$router.push('/store_sales_forecast')">返回</el-button>
 		</div>
@@ -571,6 +571,7 @@
 				}],						//右侧表格数据
 				closeStep2:false,		//第二级是否禁用
 				day_table_data:[],		//日数据表格
+				loading:false
 			}
 		},
 		created(){
@@ -729,8 +730,10 @@
 					shop_code:this.reference_jst_code,
 					date:this.date
 				}
+				this.loading = true;
 				resource.lastYearData(arg).then(res => {
 					if(res.data.code == 1){
+						this.loading = false;
 						this.day_percent = res.data.data.day_percent;	//去年同期收入占比
 						this.lastYearData = res.data.data.last_year_info;
 						for(var k in this.lastYearData){
@@ -794,10 +797,10 @@
 					if(this.table_data[4].new_value !== ''||this.table_data[12].new_value  !== ''){
 						this.table_data[13].new_value = (this.table_data[4].new_value*(this.table_data[12].new_value)/100).toFixed(2);
 					}
+					// 净利润率
+					this.table_data[18].new_value = (this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[14].new_value - this.table_data[15].new_value - this.table_data[16].new_value).toFixed(2);
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
-					this.table_data[17].new_value = this.table_data[4].new_value === ''||this.table_data[12].new_value  === ''||this.table_data[14].new_value === ''||this.table_data[14].new_value === ''||this.table_data[16].new_value === ''?'':(this.table_data[4].new_value*((this.table_data[12].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100 - (this.table_data[16].new_value)/100)).toFixed(2);
-					//净利润率（日净利润额/日销售收入）
-					this.table_data[18].new_value = ((this.table_data[17].new_value/this.table_data[4].new_value)*100).toFixed(2);
+					this.table_data[17].new_value = (this.table_data[4].new_value*(this.table_data[18].new_value/100)).toFixed(2);
 				}
 			},
 			//点击第二个查询
@@ -872,6 +875,14 @@
 			getMonthList(){
     			//当前月信息
     			let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
+    			//销售收入占比平均数
+      			var average = parseInt(100/monthInfo.monthDayNum);
+      			//销售收入占比最后一个
+      			var last_average = 100 - average*(monthInfo.monthDayNum - 1)
+      			
+      			let is_arr = this.day_percent.filter(item => {
+      				return item == 0;
+      			})
     			var menu = [];
     			for(var i=1;i<=monthInfo.monthDayNum;i++){
     				var d = i < 10?'0'+i:i;
@@ -881,8 +892,7 @@
     					mll:this.table_data[5].new_value,
     					yxfyl:this.table_data[6].new_value,
     					qntqsrzb:this.day_percent[i-1],
-    					xssrzb:1/30
-    					// xssrzb:this.day_percent[i-1]
+    					xssrzb:is_arr.length >10?(i < monthInfo.monthDayNum?average:last_average):this.day_percent[i-1]
     				}
     				menu.push(this.setInfo(info));
     			}

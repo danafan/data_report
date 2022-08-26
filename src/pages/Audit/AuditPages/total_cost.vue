@@ -1,49 +1,49 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="新编码：" v-if="user_type != '1'">
+			<el-form-item label="新编码：">
 				<el-select v-model="select_ksbm_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商款号：" v-if="user_type != '1'">
+			<el-form-item label="供应商款号：">
 				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
 					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商：" v-if="user_type != '1'">
+			<el-form-item label="供应商：">
 				<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="上新时间：" v-if="user_type != '1'">
+			<el-form-item label="上新时间：">
 				<el-date-picker size="small" v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item v-if="user_type != '4' && user_type != '1'">
+			<el-form-item>
 				<el-checkbox v-model="is_zero_batch">零批发价</el-checkbox>
 			</el-form-item>
-			<el-form-item label="批发价：" v-if="user_type != '1'">
+			<el-form-item label="批发价：">
 				<el-input type="number" size="small" v-model="batch_price_min" placeholder="最低" style="width: 100px"></el-input> ~
 				<el-input type="number" size="small" v-model="batch_price_max" placeholder="最高" style="width: 100px"></el-input>
 			</el-form-item>
-			<el-form-item label="销量：" v-if="user_type != '1'">
+			<el-form-item label="销量：">
 				<el-input type="number" size="small" v-model="min_xssl" placeholder="最低" style="width: 100px"></el-input> ~
 				<el-input type="number" size="small" v-model="max_xssl" placeholder="最高" style="width: 100px"></el-input>
 			</el-form-item>
-			<el-form-item label="折扣率：" v-if="user_type != '1'">
+			<el-form-item label="折扣率：">
 				<el-input type="number" size="small" v-model="min_zkl" placeholder="最低" style="width: 120px"><template slot="append">%</template></el-input> ~
 				<el-input type="number" size="small" v-model="max_zkl" placeholder="最高" style="width: 120px">
 					<template slot="append">%</template>
 				</el-input>
 			</el-form-item>
-			<el-form-item v-if="user_type != '1'">
+			<el-form-item>
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
-			<el-form-item label="">
+			<el-form-item>
 				<el-select v-model="from" :popper-append-to-body="false" @change="changeFrom" placeholder="全部">
 					<el-option v-for="item in from_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>

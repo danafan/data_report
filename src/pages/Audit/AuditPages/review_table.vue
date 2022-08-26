@@ -13,7 +13,7 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="状态：" v-if="user_type != '4'">
+			<el-form-item label="状态：">
 				<el-select v-model="status" :popper-append-to-body="false" placeholder="全部">
 					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
