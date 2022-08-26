@@ -754,10 +754,14 @@
 					if(this.table_data[4].new_value !== ''||this.table_data[12].new_value  !== ''){
 						this.table_data[13].new_value = (this.table_data[4].new_value*(this.table_data[12].new_value)/100).toFixed(2);
 					}
+					// 净利润率
+					this.table_data[18].new_value = (this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[14].new_value - this.table_data[15].new_value - this.table_data[16].new_value).toFixed(2);
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
-					this.table_data[17].new_value = this.table_data[4].new_value === ''||this.table_data[12].new_value  === ''||this.table_data[14].new_value === ''||this.table_data[14].new_value === ''||this.table_data[16].new_value === ''?'':(this.table_data[4].new_value*((this.table_data[12].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100 - (this.table_data[16].new_value)/100)).toFixed(2);
-					//净利润率（日净利润额/日销售收入）
-					this.table_data[18].new_value = ((this.table_data[17].new_value/this.table_data[4].new_value)*100).toFixed(2);
+					this.table_data[17].new_value = (this.table_data[4].new_value*(this.table_data[18].new_value/100)).toFixed(2);
+					// //净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
+					// this.table_data[17].new_value = this.table_data[4].new_value === ''||this.table_data[12].new_value  === ''||this.table_data[14].new_value === ''||this.table_data[14].new_value === ''||this.table_data[16].new_value === ''?'':(this.table_data[4].new_value*((this.table_data[12].new_value)/100 - (this.table_data[14].new_value)/100 - (this.table_data[15].new_value)/100 - (this.table_data[16].new_value)/100)).toFixed(2);
+					// //净利润率（日净利润额/日销售收入）
+					// this.table_data[18].new_value = ((this.table_data[17].new_value/this.table_data[4].new_value)*100).toFixed(2);
 				}
 			},
 			//点击第二个查询
@@ -780,18 +784,26 @@
 				if(type == '1'){			//点击第二个查询按钮
 					//当前月信息
 					let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
-					for(var i=1;i<=monthInfo.monthDayNum;i++){
-						var d = i < 10?'0'+i:i;
-						let info = {
-							day:monthInfo.month+'月'+d+'日',
-							week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-							mll:this.table_data[5].new_value,
-							yxfyl:this.table_data[6].new_value,
-							qntqsrzb:this.day_percent[i-1],
-							xssrzb:this.day_percent[i-1]
-						}
-						menu.push(this.setInfo(info));
-					}
+					//销售收入占比平均数
+					var average = parseInt(100/monthInfo.monthDayNum);
+      				//销售收入占比最后一个
+      				var last_average = 100 - average*(monthInfo.monthDayNum - 1)
+
+      				let is_arr = this.day_percent.filter(item => {
+      					return item == 0;
+      				})
+      				for(var i=1;i<=monthInfo.monthDayNum;i++){
+      					var d = i < 10?'0'+i:i;
+      					let info = {
+      						day:monthInfo.month+'月'+d+'日',
+      						week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+      						mll:this.table_data[5].new_value,
+      						yxfyl:this.table_data[6].new_value,
+      						qntqsrzb:this.day_percent[i-1],
+      						xssrzb:is_arr.length >10?(i < monthInfo.monthDayNum?average:last_average):this.day_percent[i-1]
+      					}
+      					menu.push(this.setInfo(info));
+      				}
       			}else{	//获取详情
       				type.map((item,index) => {
       					item.qntqsrzb = this.day_percent[index];
@@ -807,61 +819,61 @@
       			this.day_table_data[i] = this.setInfo(this.day_table_data[i])
       		},
       		// 粘贴日销售收入占比
-			uploadCsv(e){
-				const files = e.target.files;
-				let file=files[0];
-				const fileExt = file.name.split('.').pop().toLocaleLowerCase()
-				if (fileExt === 'xlsx' || fileExt === 'xls') {
-					const reader = new FileReader();
-					reader.readAsArrayBuffer(file);
-					reader.onerror = (e) => {
-						this.$message.warning("文件读取出错");
-						this.$refs.csvUpload.value = ''
-					};
-					reader.onload = (e) => {
-						const data = e.target.result;
-						const { header, results } = excel.read(data, "array");
-						var new_xssrzb = [];
-						var isx = true;
-						results.map((item,index) => {
-							if(!isx){
-								return;
-							}
-							for(var k in item){
-								if(k == '销售收入占比'){
-									if(!this.isNumber.test(item[k])){
-										this.$message.warning("销售收入占比必须是数字类型并且大于等于0！");
-										isx = false;
-										return;
-									}else{
-										new_xssrzb.push((item[k]*100).toFixed(2));
-										break;
-									}
-								}
-							}
-						});
-						this.$refs.csvUpload.value = ''
-						if(!isx){
-							return;
-						}
-						if(new_xssrzb.length == 0){
-							this.$message.warning("表格内没有“销售收入占比”的列名!");
-							return;
-						}else if(new_xssrzb.length != this.day_table_data.length){
-							this.$message.warning("表格数据行数不等于日目标行数!");
-							return;
-						}
-						new_xssrzb.map((item,index) => {
-							this.day_table_data[index].xssrzb = item;
-							this.day_table_data[index] = this.setInfo(this.day_table_data[index])
-						})
-						this.$message.success("上传成功!");
-					};
-				} else {
-					this.$refs.csvUpload.value = ''
-					this.$message.warning("文件类型错误,请选择后缀为.xlsx或者.xls的EXCEL文件");
-				}
-			},
+      		uploadCsv(e){
+      			const files = e.target.files;
+      			let file=files[0];
+      			const fileExt = file.name.split('.').pop().toLocaleLowerCase()
+      			if (fileExt === 'xlsx' || fileExt === 'xls') {
+      				const reader = new FileReader();
+      				reader.readAsArrayBuffer(file);
+      				reader.onerror = (e) => {
+      					this.$message.warning("文件读取出错");
+      					this.$refs.csvUpload.value = ''
+      				};
+      				reader.onload = (e) => {
+      					const data = e.target.result;
+      					const { header, results } = excel.read(data, "array");
+      					var new_xssrzb = [];
+      					var isx = true;
+      					results.map((item,index) => {
+      						if(!isx){
+      							return;
+      						}
+      						for(var k in item){
+      							if(k == '销售收入占比'){
+      								if(!this.isNumber.test(item[k])){
+      									this.$message.warning("销售收入占比必须是数字类型并且大于等于0！");
+      									isx = false;
+      									return;
+      								}else{
+      									new_xssrzb.push((item[k]*100).toFixed(2));
+      									break;
+      								}
+      							}
+      						}
+      					});
+      					this.$refs.csvUpload.value = ''
+      					if(!isx){
+      						return;
+      					}
+      					if(new_xssrzb.length == 0){
+      						this.$message.warning("表格内没有“销售收入占比”的列名!");
+      						return;
+      					}else if(new_xssrzb.length != this.day_table_data.length){
+      						this.$message.warning("表格数据行数不等于日目标行数!");
+      						return;
+      					}
+      					new_xssrzb.map((item,index) => {
+      						this.day_table_data[index].xssrzb = item;
+      						this.day_table_data[index] = this.setInfo(this.day_table_data[index])
+      					})
+      					this.$message.success("上传成功!");
+      				};
+      			} else {
+      				this.$refs.csvUpload.value = ''
+      				this.$message.warning("文件类型错误,请选择后缀为.xlsx或者.xls的EXCEL文件");
+      			}
+      		},
       		//计算每一行
       		setInfo(info){
       			// 日销售收入（日销售收入占比*本月销售收入）

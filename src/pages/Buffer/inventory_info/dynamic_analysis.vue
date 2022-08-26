@@ -325,7 +325,6 @@
 			//获取列表
 			searchFn(){
 				this.page = 1;
-				this.sort = '';
 				//顶部表格列表
 				this.dynamicAnalysisIndex();
 				//底部表格列表
