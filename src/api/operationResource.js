@@ -13,8 +13,6 @@ let path = {
 	incomeAnalysisDelivery:'operate/income_analysis_delivery',	//收入分析
 	getGysSalenum:'operate/get_gys_salenum',		//供应商销量排行
 	gysSalenumExport:'operate/gys_salenum_export',	//供应商销量排行导出
-	getGysOutStock:'operate/get_gys_outStock',		//供应商缺货排行
-	gysOutstockExport:'operate/gys_outstock_export',//供应商缺货排行导出
 	getKsSalenum:'operate/get_ks_salenum',			//款式销量排行
 	ksSalenumExport:'operate/ks_salenum_export',	//款式销量排行导出
 	getKsOutstock:'operate/get_ks_outstock',		//款式缺货排行
@@ -79,14 +77,6 @@ export default{
 	//供应商销量排行导出
 	gysSalenumExport(params){
 		return http.post(path.gysSalenumExport, params)
-	},
-	//供应商缺货排行
-	getGysOutStock(params){
-		return http.get(path.getGysOutStock, params)
-	},
-	//供应商缺货排行导出
-	gysOutstockExport(params){
-		return http.post(path.gysOutstockExport, params)
 	},
 	//款式销量排行
 	getKsSalenum(params){
