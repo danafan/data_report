@@ -7,6 +7,14 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="供应商等级：">
+				<el-select v-model="gys_level" clearable placeholder="请选择供应商等级">
+					<el-option label="A" value="A"></el-option>
+					<el-option label="B" value="B"></el-option>
+					<el-option label="C" value="C"></el-option>
+					<el-option label="D" value="D"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="日期：">
 				<el-date-picker v-model="date" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
 				</el-date-picker>
@@ -49,6 +57,7 @@
 			return{
 				gys_list:[],						//供应商
 				gysmc:"",							//选中的供应商
+				gys_level:"",						//选中的供应商等级
 				date:"",							//日期
 				page:1,
 				pagesize:10,						//销量页码
@@ -98,6 +107,7 @@
 				let arg = {
 					date:this.date?this.date:'',
 					gys:this.gysmc,
+					gys_level:this.gys_level,
 					sort_field:this.sort_field,
 					sort_type:this.sort_type,
 					page:this.page,
@@ -140,6 +150,7 @@
 					let arg = {
 						date:this.date?this.date:'',
 						gys:this.gysmc,
+						gys_level:this.gys_level,
 						sort_field:this.sort_field,
 						sort_type:this.sort_type,
 					}
