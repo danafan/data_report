@@ -206,7 +206,7 @@
 					width:65,
 					sort:false
 				},{
-					label:'当日供应链反馈结果',
+					label:'当日供应商反馈结果',
 					prop:'fkjg',
 					ele_type:'input',
 					type:'0',

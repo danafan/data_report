@@ -62,7 +62,9 @@
 			<el-table-column prop="violations_type" label="违规类型" show-overflow-tooltip width="120" align="center"></el-table-column>
 			<el-table-column prop="violations_why" show-overflow-tooltip width="120" label="违规原因" align="center"></el-table-column>
 			<el-table-column prop="violations_impact" show-overflow-tooltip width="120" label="违规影响" align="center"></el-table-column>
+			<el-table-column prop="violations_risk" show-overflow-tooltip width="120" label="违规风险" align="center"></el-table-column>
 			<el-table-column prop="severity" show-overflow-tooltip width="120" label="违规情况" align="center"></el-table-column>
+			<el-table-column prop="points" show-overflow-tooltip width="120" label="违规扣分" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip width="120" label="商品链接" align="center">
 				<template slot-scope="scope">
 					<div v-if="!scope.row.goods_link">无</div>
