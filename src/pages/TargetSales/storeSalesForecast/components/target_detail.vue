@@ -11,27 +11,27 @@
 		</el-table>
 		<el-table size="small" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
-			<el-table-column width="180" label="去年同期上月" align="center">
+			<el-table-column width="180" :label="`去年同期上月（${getLastyearLastMonth}）`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.last_month_value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="180" label="去年同期" align="center">
+			<el-table-column width="180" :label="`去年同期（${getLastyearCurrentMonth}）`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="180" label="上月目标值" align="center">
+			<el-table-column width="180" :label="`上月目标值（${getLastMonth}）`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.target_data}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="180" label="上月实际值" align="center">
+			<el-table-column width="180" :label="`上月实际值（${getLastMonth}）`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.actual_data}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="180" label="本月目标参数" align="center">
+			<el-table-column width="180" :label="`本月目标参数（${getCurrentMonth}）`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.new_value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
@@ -340,6 +340,10 @@
 	export default{
 		data(){
 			return{
+				getLastMonth:"",
+				getCurrentMonth:"",
+				getLastyearLastMonth:"",
+				getLastyearCurrentMonth:"",
 				dataObj:{},
 				info_data:[],			//顶部详情信息
 				table_data:[{
@@ -566,6 +570,12 @@
 						let data = res.data.data;
 						//顶部店铺详情
 						let infoData = data.data;
+
+						this.getLastMonth = (infoData.month == 1?infoData.year-1:infoData.year) + '-' + (infoData.month == 1?12:infoData.month-1);
+						this.getCurrentMonth = infoData.year + '-' + infoData.month;
+						this.getLastyearLastMonth = (infoData.month == 1?infoData.year-2:infoData.year-1) + '-' + (infoData.month == 1?12:infoData.month-1);
+						this.getLastyearCurrentMonth = (infoData.year-1) + '-' + infoData.month;
+
 						this.bottom_info = infoData;		//底部信息
 						let info_item = {
 							dept_1_name:"",			//选中的一级部门名称
