@@ -24,11 +24,12 @@
 	display:flex;
 	justify-content: space-between;
 	.bar_box{
-		width: 30%;
+		border:1px solid red;
+		width: 400px;
 		height: 700px;
 	}
 	.center_box{
-		width: 36%;
+		flex: 1;
 		display:flex;
 		flex-direction: column;
 		align-items: center;

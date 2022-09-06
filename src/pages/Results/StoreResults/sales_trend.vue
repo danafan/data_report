@@ -97,7 +97,6 @@
 </style>
 <style lang="less" scoped>
 .title{
-	// margin-top: 30px;
 	margin-bottom: 20px;
 	font-size: 18px;
 	font-weight: bold;
@@ -144,7 +143,6 @@
 			}
 		}
 	}
-	
 }
 </style>
 <script>
