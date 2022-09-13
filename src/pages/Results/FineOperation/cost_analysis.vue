@@ -83,9 +83,7 @@
 		<el-tabs v-model="activeLineTab" @tab-click="checkLineTab">
 			<el-tab-pane label="按项目大类" name="xmdl" class="tab_pane_box">
 				<div class="flex_box">
-					<el-table :data="citemcname_table_data" size="small" style="width: 480px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="xmdlSummary" show-summary>
-						<el-table-column label="制单日期" prop="month" width="160">
-						</el-table-column>
+					<el-table :data="citemcname_table_data" size="small" style="width: 480px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="xmdlSummary" show-summary v-loading="loading">
 						<el-table-column label="项目大类" prop="name" width="160" show-overflow-tooltip>
 						</el-table-column>
 						<el-table-column label="使用金额" prop="md" width="160" sortable>
@@ -99,9 +97,7 @@
 			</el-tab-pane>
 			<el-tab-pane label="按项目部" name="xmb" class="tab_pane_box">
 				<div class="flex_box">
-					<el-table :data="dept_table_data" size="small" style="width: 480px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="xmbSummary" show-summary>
-						<el-table-column label="制单日期" prop="month" width="160">
-						</el-table-column>
+					<el-table :data="dept_table_data" size="small" style="width: 480px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="xmbSummary" show-summary v-loading="loading">
 						<el-table-column label="项目部" prop="name" width="160" show-overflow-tooltip>
 						</el-table-column>
 						<el-table-column label="使用金额" prop="md" width="160" sortable>
@@ -115,9 +111,7 @@
 			</el-tab-pane>
 			<el-tab-pane label="按店铺" name="dp" class="tab_pane_box">
 				<div class="flex_box">
-					<el-table :data="dp_table_data" size="small" style="width: 480px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="dpSummary" show-summary>
-						<el-table-column label="制单日期" prop="month" width="160">
-						</el-table-column>
+					<el-table :data="dp_table_data" size="small" style="width: 480px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="dpSummary" show-summary v-loading="loading">
 						<el-table-column label="店铺ID" prop="dpid" width="160" show-overflow-tooltip>
 						</el-table-column>
 						<el-table-column label="使用金额" prop="md" width="160" sortable>
@@ -139,8 +133,6 @@
 					</el-form-item>
 				</el-form>
 				<el-table :data="mx_table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="mxSummary" show-summary>
-					<el-table-column label="制单日期" prop="month" width="160">
-					</el-table-column>
 					<el-table-column label="店铺ID" prop="dpid" width="160" show-overflow-tooltip>
 					</el-table-column>
 					<el-table-column label="项目大类" prop="citemcname" width="160" show-overflow-tooltip>
