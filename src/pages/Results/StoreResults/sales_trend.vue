@@ -114,7 +114,8 @@
 }
 
 .right_box{
-	flex: 1;
+	margin-left: 30px;
+	width: 400px;
 	.list_box{
 		height: 1000px;
 		width: 100%;

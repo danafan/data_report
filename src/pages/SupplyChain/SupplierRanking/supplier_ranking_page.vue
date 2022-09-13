@@ -40,6 +40,7 @@
 			<el-table-column prop="dhl" sortable='custom' show-overflow-tooltip label="到货率" align="center"></el-table-column>
 			<el-table-column prop="dhl_rank" sortable='custom' show-overflow-tooltip label="到货率排名" align="center"></el-table-column>
 			<el-table-column prop="gys_level" label="供应商等级" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="settlement_method" show-overflow-tooltip label="结算方式" align="center"></el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
