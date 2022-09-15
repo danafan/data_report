@@ -513,7 +513,7 @@
 			//环形图配置
 			pieOptions(data,title){
 				data.map(item => {
-					item.md = parseFloat(item.value).toFixed(2);
+					item.md = parseFloat(item.md).toFixed(2);
 				});
 				return {
 					tooltip: {
