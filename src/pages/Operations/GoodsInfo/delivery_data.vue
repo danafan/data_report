@@ -16,8 +16,8 @@
 }
 </style>
 <script>
-	import SalesDelivery from './deliveryData/sales_delivery.vue'
-	import SalesPayment from './deliveryData/sales_payment.vue'
+	import SalesDelivery from './DeliveryData/sales_delivery.vue'
+	import SalesPayment from './DeliveryData/sales_payment.vue'
 	export default{
 		data(){
 			return{

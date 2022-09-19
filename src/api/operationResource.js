@@ -24,6 +24,14 @@ let path = {
 	monthlyDailyNumber:'operate/monthly_daily_number',	//月度日均单数
 	jstOrderAnalyse:'operate/jstOrderAnalyse',			//订单分析-图表
 	orderYesterday:'operate/order_yesterday',			//店铺昨日订单数
+	mlAnalysisTop:'ml_analysis/top',				//毛利分析--头部汇总数据列表	
+	mlStore:'ml_analysis/ml_store',					//毛利分析--店铺分组数据列表
+	mlCpfl:'ml_analysis/ml_cpfl',					//毛利分析--品类分组数据列表
+	mlStoreCpfl:'ml_analysis/ml_store_cpfl',		//毛利分析--店铺品类分组数据列表
+	mlKs:'ml_analysis/ml_ks',						//毛利分析--款式分组数据列表
+	mlGys:'ml_analysis/ml_gys',						//毛利分析--供应商分组数据列表
+	mlColor:'ml_analysis/ml_color',					//毛利分析--颜色分组数据列表
+	mlSize:'ml_analysis/ml_size',					//毛利分析--颜色分组数据列表
 }						
 export default{
 	//获取款式编码
@@ -121,6 +129,38 @@ export default{
 	//店铺昨日订单数
 	orderYesterday(params){
 		return http.get(path.orderYesterday, params)
+	},
+	//毛利分析--头部汇总数据列表
+	mlAnalysisTop(params){
+		return http.get(path.mlAnalysisTop, params)
+	},
+	//毛利分析--店铺分组数据列表
+	mlStore(params){
+		return http.get(path.mlStore, params)
+	},
+	//毛利分析--品类分组数据列表
+	mlCpfl(params){
+		return http.get(path.mlCpfl, params)
+	},
+	//毛利分析--店铺品类分组数据列表
+	mlStoreCpfl(params){
+		return http.get(path.mlStoreCpfl, params)
+	},
+	//毛利分析--款式分组数据列表
+	mlKs(params){
+		return http.get(path.mlKs, params)
+	},
+	//毛利分析--供应商分组数据列表
+	mlGys(params){
+		return http.get(path.mlGys, params)
+	},
+	//毛利分析--颜色分组数据列表
+	mlColor(params){
+		return http.get(path.mlColor, params)
+	},
+	//毛利分析--颜色分组数据列表
+	mlSize(params){
+		return http.get(path.mlSize, params)
 	},
 }
 
