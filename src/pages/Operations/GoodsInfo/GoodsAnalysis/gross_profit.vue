@@ -73,8 +73,7 @@
 					<div class="active_line" v-if="active_index == index"></div>
 				</div>
 			</div>
-			<div>
-				<el-table :data="table_list" size="small" style="margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" :max-height='540' :summary-method="getWeekSummaries" show-summary v-loading="loading">
+			<el-table :data="table_list" size="small" style="width:100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" :max-height='540' :summary-method="getWeekSummaries" show-summary v-loading="loading">
 				<el-table-column :label="item.title" :prop="item.field_name" v-for="item in title_list" :render-header="renderHeader" show-overflow-tooltip sortable :fixed="item.is_fixed">
 					<template slot-scope="scope">
 						<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.field_name])}px`,background:scope.row[item.field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1">{{scope.row[item.field_name]}}{{item.unit}}</div>
@@ -82,7 +81,6 @@
 					</template>
 				</el-table-column>
 			</el-table>
-			</div>
 			
 		</div>
 	</div>
@@ -582,6 +580,7 @@
 	margin-top: 25px;
 	width: 100%;
 	display: flex;
+	align-items: flex-start;
 	.left_menu{
 		border-right: 1px solid #333333;
 		width: 120px;

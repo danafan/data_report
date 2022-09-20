@@ -118,8 +118,8 @@
 			</el-menu>
 		</div>
 		<el-main class="main">
-			<img class="welcome_icon" src="../static/welcome_img.png" v-if="show_welcome">
-			<el-card class="el_card" id='scroll_content' v-else>
+			<img class="welcome_icon" :class="{'width_style':is_phone == true}" src="../static/welcome_img.png" v-if="show_welcome">
+			<el-card class="el_card" :class="{'width_style':is_phone == true}" id='scroll_content' v-else>
 				<keep-alive>
 					<router-view v-if="$route.meta.keepAlive"></router-view>
 				</keep-alive>
@@ -239,8 +239,10 @@
 			height: 100%;
 			.el_card{
 				height: 100%;
-				width: 1680px;
 				overflow-y: scroll;
+			}
+			.width_style{
+				width: 1680px;
 			}
 			.el_card::-webkit-scrollbar {
 				display: none; 
@@ -290,10 +292,15 @@
          				btnName: '打开新窗口' 
          			}]
          		},
-         		breadcrumb_list:[]
+         		breadcrumb_list:[],
+         		is_phone:false
          	}
          },
          created(){
+         	//判断是否是移动端
+         	if (/Mobi|Android|iPhone/i.test(navigator.userAgent)) {
+         		this.is_phone = true;
+         	}
 			if(!this.$store.state.is_ding_talk){  //浏览器
         		//获取浏览器用户信息()
         		this.GetUserInfo();
@@ -309,15 +316,15 @@
          },
          watch:{
          	$route(n){
-            	if(n.path != '/'){
-            		this.show_welcome = false;
-            		if(n.path == '/data_management' || n.path == '/commit_data'){
-            			this.activeIndex = '/data_fill';
-            		}
-            	};
-            }
-        },
-        methods:{
+         		if(n.path != '/'){
+         			this.show_welcome = false;
+         			if(n.path == '/data_management' || n.path == '/commit_data'){
+         				this.activeIndex = '/data_fill';
+         			}
+         		};
+         	}
+         },
+         methods:{
 			//获取code
 			GetCode(){
 				dd.ready(() => {
