@@ -4,9 +4,9 @@
 			<el-tab-pane label="商品毛利分析" lazy name="gross_profit" class="tab_pane_box">
 				<GrossProfit/>
 			</el-tab-pane>
-			<el-tab-pane label="商品价格变动" lazy name="price_change" class="tab_pane_box">
+			<!-- <el-tab-pane label="商品价格变动" lazy name="price_change" class="tab_pane_box">
 				<PriceChange/>
-			</el-tab-pane>
+			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>

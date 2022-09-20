@@ -239,6 +239,7 @@
 			height: 100%;
 			.el_card{
 				height: 100%;
+				width: 1680px;
 				overflow-y: scroll;
 			}
 			.el_card::-webkit-scrollbar {
