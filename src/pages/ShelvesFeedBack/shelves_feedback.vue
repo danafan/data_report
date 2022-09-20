@@ -3,7 +3,8 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<ShelvesRecord v-if="item.web_url == 'shelves_record'"/>
-				<shelvesStatistics v-if="item.web_url == 'shelves_statistics'"/>
+				<ShelvesStatistics v-if="item.web_url == 'shelves_statistics'"/>
+				<FailedTable v-if="item.web_url == 'failed_table'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -15,7 +16,8 @@
 </style>
 <script>
 	import ShelvesRecord from './pages/shelves_record.vue'
-	import shelvesStatistics from './pages/shelves_statistics.vue'
+	import ShelvesStatistics from './pages/shelves_statistics.vue'
+	import FailedTable from './pages/failed_table.vue'
 	export default{
 		data(){
 			return{
@@ -54,8 +56,9 @@
 			}
 		},
 		components:{
-			shelvesStatistics,
-			ShelvesRecord
+			ShelvesStatistics,
+			ShelvesRecord,
+			FailedTable
 		}
 	}
 </script>
