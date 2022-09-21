@@ -269,7 +269,7 @@
 						supplier:this.supplier,
 						supplier_code:this.supplier_code,
 						k_code:this.code,
-						brand:this.brand_list.join(','),
+						brand:this.brand_ids.join(','),
 						popularize_type:this.popularize_type_ids.join(','),
 						product_line:this.product_line_ids.join(','),
 						season:this.season_ids.join(','),
