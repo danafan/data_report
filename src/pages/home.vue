@@ -95,9 +95,9 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/supply_chain">
+				<!-- <el-menu-item index="/supplier_management">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">供应链中心</span>
+					<span slot="title">供应商管理</span>
 				</el-menu-item> -->
 				<!-- <el-menu-item index="/supplier_ranking">
 					<i class="el-icon-s-finance"></i>

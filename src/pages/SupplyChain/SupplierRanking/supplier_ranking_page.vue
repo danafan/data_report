@@ -31,8 +31,8 @@
 			<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center"></el-table-column>
 			<el-table-column prop="kssl" sortable='custom' label="款式数量" align="center"></el-table-column>
 			<el-table-column prop="xssl" sortable='custom' label="15天销量" align="center"></el-table-column>
-			<el-table-column prop="cgcb" sortable='custom' show-overflow-tooltip label="采购金额" align="center"></el-table-column>
-			<el-table-column prop="cgcb_rank" sortable='custom' show-overflow-tooltip label="采购金额排行" align="center"></el-table-column>
+			<el-table-column prop="cgcb" sortable='custom' show-overflow-tooltip label="销售成本" align="center"></el-table-column>
+			<el-table-column prop="cgcb_rank" sortable='custom' show-overflow-tooltip label="销售成本排行" align="center"></el-table-column>
 			<el-table-column prop="mlv" sortable='custom' show-overflow-tooltip label="毛利率" align="center"></el-table-column>
 			<el-table-column prop="mlv_rank" sortable='custom' show-overflow-tooltip label="毛利率排名" align="center"></el-table-column>
 			<el-table-column prop="stl" sortable='custom' show-overflow-tooltip label="实退率" align="center"></el-table-column>

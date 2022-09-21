@@ -43,6 +43,9 @@ let path = {
 	alipayAccounts:'audit/alipay_accounts',							//获取所有支付宝账号列表
 	alipayBill:'audit/alipay_bill',									//支付宝账单
 	alipayBillExport:'audit/alipay_bill_export',					//支付宝账单导出
+	supplierIndex:'supplier/index',									//供应商列表
+	supplierExport:'supplier/export',								//供应商列表导出
+	supplierDel:'supplier/delete',									//删除供应商
 }						
 export default{
 	//款式编码列表
@@ -220,6 +223,18 @@ export default{
 	//支付宝账单导出
 	alipayBillExport(params){
 		return http.post(path.alipayBillExport, params)
+	},
+	//供应商列表
+	supplierIndex(params){
+		return http.get(path.supplierIndex, params)
+	},
+	//供应商列表导出
+	supplierExport(params){
+		return http.get(path.supplierExport, params)
+	},
+	//删除供应商
+	supplierDel(params){
+		return http.post(path.supplierDel, params)
 	},
 }
 
