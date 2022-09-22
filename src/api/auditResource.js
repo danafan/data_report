@@ -46,6 +46,12 @@ let path = {
 	supplierIndex:'supplier/index',									//供应商列表
 	supplierExport:'supplier/export',								//供应商列表导出
 	supplierDel:'supplier/delete',									//删除供应商
+	supplierEdit:'supplier/edit',									//编辑供应商
+	supplierAdd:'supplier/add',										//添加供应商
+	supplierImport:'supplier/import',								//导入供应商
+	editFlagList:'supplier/edit_flag_list',							//修改内容列表
+	editIndex:'supplier/edit_index',								//修改记录表 
+	supplierCheck:'supplier/check',									//审核
 }						
 export default{
 	//款式编码列表
@@ -234,7 +240,31 @@ export default{
 	},
 	//删除供应商
 	supplierDel(params){
-		return http.post(path.supplierDel, params)
+		return http.get(path.supplierDel, params)
+	},
+	//编辑供应商
+	supplierEdit(params){
+		return http.post(path.supplierEdit, params)
+	},
+	//添加供应商
+	supplierAdd(params){
+		return http.post(path.supplierAdd, params)
+	},
+	//导入供应商
+	supplierImport(params){
+		return http.post(path.supplierImport, params)
+	},
+	//修改内容列表
+	editFlagList(params){
+		return http.get(path.editFlagList, params)
+	},
+	//修改记录表
+	editIndex(params){
+		return http.get(path.editIndex, params)
+	},
+	//审核
+	supplierCheck(params){
+		return http.post(path.supplierCheck, params)
 	},
 }
 

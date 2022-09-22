@@ -2,8 +2,8 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<SupplierList v-if="item.web_url == 'supplier_list'"/>
-				<EditSupplier v-if="item.web_url == 'edit_supplier'"/>
+				<SupplierList v-if="item.web_url == 'supplier_list' && activeTab == 'supplier_list'"/>
+				<EditSupplier v-if="item.web_url == 'edit_supplier' && activeTab == 'edit_supplier'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
