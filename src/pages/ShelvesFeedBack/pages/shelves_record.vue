@@ -41,7 +41,7 @@
 				</el-button>
 			</div>
 			<div style="display:flex">
-				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="commitExport"  v-if="dataObj.button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">

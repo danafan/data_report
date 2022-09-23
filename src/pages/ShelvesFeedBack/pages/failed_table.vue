@@ -13,8 +13,8 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
-			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
-			<el-button type="primary" size="small" @click="show_dialog = true" v-if="dataObj.button_list.export == 1">
+			<el-button type="primary" plain size="small" @click="commitExport" v-if="dataObj.button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" size="small" @click="show_dialog = true" v-if="dataObj.button_list.import == 1">
 				导入
 				<i class="el-icon-upload el-icon--right"></i>
 			</el-button>

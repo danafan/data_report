@@ -10,6 +10,8 @@
 				<BargainingTable v-if="item.web_url == 'bargaining_table'"/>
 				<PricingTable v-if="item.web_url == 'pricing_table'"/>
 				<AduitDataAnalysis v-if="item.web_url == 'aduit_data_analysis'"/>
+				<SupplierList v-if="item.web_url == 'supplier_list'"/>
+				<EditSupplier v-if="item.web_url == 'edit_supplier'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -28,6 +30,8 @@
 	import BargainingTable from './AuditPages/bargaining_table.vue'
 	import Timeout from './AuditPages/timeout.vue'
 	import AduitDataAnalysis from './AuditPages/aduit_data_analysis.vue'
+	import SupplierList from './AuditPages/supplier_list.vue'
+	import EditSupplier from './AuditPages/edit_supplier.vue'
 	export default{
 		data(){
 			return{
@@ -74,7 +78,9 @@
 			PricingTable,
 			BargainingTable,
 			Timeout,
-			AduitDataAnalysis
+			AduitDataAnalysis,
+			SupplierList,
+			EditSupplier
 		}
 	}
 </script>

@@ -2,9 +2,9 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item>
-				<el-input style="width: 200px" v-model="keyword" placeholder="档口号/结算档口号/收款账号"></el-input>
+				<el-input style="width: 200px" v-model="keyword" clearable placeholder="档口号/结算档口号/收款账号"></el-input>
 			</el-form-item>
-			<el-form-item label="发货日期:">
+			<el-form-item label="引入时间:">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
@@ -88,7 +88,6 @@
 				</el-form-item>
 				<el-form-item label="是否在合作">
 					<el-radio-group v-model="info.is_cooperation">
-						<el-radio :label="0">未知</el-radio>
 						<el-radio :label="1">是</el-radio>
 						<el-radio :label="2">否</el-radio>
 					</el-radio-group>
@@ -97,7 +96,7 @@
 					<el-date-picker v-model="info.in_time" type="date" value-format="yyyy-MM-dd" placeholder="引入时间">
 					</el-date-picker>
 				</el-form-item>
-				<el-form-item label="供应商内部编号">
+				<el-form-item label="供应商内部编号" required>
 					<el-input style="width:200px" type="text" placeholder="请输入供应商内部编号" v-model="info.gys_num">
 					</el-input>
 				</el-form-item>
@@ -320,7 +319,7 @@
 			addFn(type,info){
 				this.type = type;
 				if(this.type == '2'){
-					this.info = info;
+					this.info = JSON.parse(JSON.stringify(info));
 				}
 				this.show_dialog = true;
 			},
@@ -353,6 +352,8 @@
 					this.$message.warning('请输入结算方式!');
 				}else if(this.info.gys == ''){
 					this.$message.warning('请输入供应商!');
+				}else if(this.info.gys_num == ''){
+					this.$message.warning('请输入供应商内部编号!');
 				}else{
 					if(this.type == '1'){		//添加
 						resource.supplierAdd(this.info).then(res => {

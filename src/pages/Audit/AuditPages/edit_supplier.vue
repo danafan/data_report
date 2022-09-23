@@ -2,13 +2,13 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item>
-				<el-input style="width: 200px" v-model="keyword" placeholder="档口号/结算档口号/收款账号"></el-input>
+				<el-input style="width: 200px" v-model="keyword" clearable placeholder="档口号/结算档口号/收款账号"></el-input>
 			</el-form-item>
 			<el-form-item label="审核状态：">
 				<el-select v-model="status" clearable placeholder="全部">
-					<el-option label="待审核" value="1"></el-option>
-					<el-option label="同意" value="2"></el-option>
-					<el-option label="拒绝" value="3"></el-option>
+					<el-option label="待审核" :value="1"></el-option>
+					<el-option label="同意" :value="2"></el-option>
+					<el-option label="拒绝" :value="3"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="修改内容：">
@@ -25,15 +25,15 @@
 			<el-table-column :label="item.title" :prop="item.field_name" v-for="item in title_list" show-overflow-tooltip :render-header="renderHeader">
 				<template slot-scope="scope">
 					<div v-if="scope.row[item.field_name].constructor === Array">
-						<div v-for="item in scope.row[item.field_name]">{{item}}</div>
+						<div :class="{'old_color':index == 1}" v-for="(item,index) in scope.row[item.field_name]">{{item}}</div>
 					</div>
 					<div v-else>{{scope.row[item.field_name]}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="140" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" v-if="scope.row.status == 1" @click="auditFn(2,scope.row.id)">同意</el-button>
-					<el-button type="text" size="small" v-if="scope.row.status == 1" @click="auditFn(3,scope.row.id)">拒绝</el-button>
+					<el-button type="text" size="small" v-if="scope.row.status_sign == 1" @click="auditFn(2,scope.row.id)">同意</el-button>
+					<el-button type="text" size="small" v-if="scope.row.status_sign == 1" @click="auditFn(3,scope.row.id)">拒绝</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -49,7 +49,7 @@
 		data(){
 			return{
 				keyword:"",						//搜索关键字
-				status:"",						//状态
+				status:1,						//状态
 				flag_list:[],					//修改列表
 				edit_flag:[],					//选中的修改列表
 				page:1,
@@ -110,7 +110,9 @@
 				let arg = {
 					keyword:this.keyword,
 					status:this.status,
-					edit_flag:this.edit_flag.join(','),
+					edit_flag:this.edit_flag.reduce( (sum,current,index)=>{
+						return sum + current
+					} , 0),
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -165,5 +167,8 @@
 	display: flex;
 	align-items: center;
 	justify-content: flex-end;
+}
+.old_color{
+	color:red;
 }
 </style>
