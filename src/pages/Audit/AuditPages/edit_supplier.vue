@@ -12,7 +12,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="修改内容：">
-				<el-select v-model="edit_flag" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="edit_flag" clearable multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in flag_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
