@@ -64,8 +64,16 @@
 				</el-input>
 			</el-form-item>
 			<el-form-item label="结算方式" required>
-				<el-input style="width:200px" type="text" placeholder="请输入结算方式" v-model="info.settlement_method">
-				</el-input>
+				<el-select v-model="info.settlement_method" clearable placeholder="全部">
+					<el-option label="日结" value="日结"></el-option>
+					<el-option label="周结" value="周结"></el-option>
+					<el-option label="半月结" value="半月结"></el-option>
+					<el-option label="月结" value="月结"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="生效日期" v-if="type == '2'">
+				<el-date-picker v-model="info.next_settlement_method_change_date" value-format="yyyy-MM-dd" type="date" placeholder="生效日期">
+				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="供应商">
 				<el-input style="width:200px" type="text" placeholder="请输入供应商简称" v-model="info.gys">
@@ -186,6 +194,7 @@
 					settlement_supplier_name: "",
 					settlement_supplier_inside_code: "",
 					settlement_method: "",
+					next_settlement_method_change_date:"",
 					gys: "",
 					corporate_name: "",
 					corporate_address: "",
@@ -346,6 +355,7 @@
 					settlement_supplier_name: "",
 					settlement_supplier_inside_code: "",
 					settlement_method: "",
+					next_settlement_method_change_date:"",
 					gys: "",
 					corporate_name: "",
 					corporate_address: "",
@@ -385,6 +395,7 @@
 					settlement_supplier_name: "",
 					settlement_supplier_inside_code: "",
 					settlement_method: "",
+					next_settlement_method_change_date:"",
 					gys: "",
 					corporate_name: "",
 					corporate_address: "",
@@ -407,7 +418,7 @@
 				}else if(this.info.settlement_supplier_inside_code == ''){
 					this.$message.warning('请输入结算档口内部编号!');
 				}else if(this.info.settlement_method == ''){
-					this.$message.warning('请输入结算方式!');
+					this.$message.warning('请选择结算方式!');
 				}else{
 					if(this.type == '1'){		//添加
 						resource.supplierAdd(this.info).then(res => {

@@ -35,17 +35,13 @@
 		</el-form>
 		<div class="buts">
 			<div>
-				<el-button type="primary" size="small" @click="showDialog('1')" v-if="dataObj.button_list.import_result == 1">
+				<el-button type="primary" size="small" @click="show_dialog = true" v-if="dataObj.button_list.import_result == 1">
 					批量上传执行结果
 					<i class="el-icon-upload el-icon--right"></i>
 				</el-button>
 			</div>
 			<div style="display:flex">
-				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
-				<el-button type="primary" size="small" @click="showDialog('2')" v-if="dataObj.button_list.export == 1">
-					导入
-					<i class="el-icon-upload el-icon--right"></i>
-				</el-button>
+				<el-button type="primary" plain size="small" @click="commitExport" v-if="dataObj.button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
@@ -93,7 +89,7 @@
 		</div>
 		<!-- 导入 -->
 		<el-dialog title="导入" :visible.sync="show_dialog" width="30%">
-			<div class="import_toast" v-if="dialog_type == '1'">批量导入只会处理之前未处理的款式链接</div>
+			<div class="import_toast">批量导入只会处理之前未处理的款式链接</div>
 			<div class="down_box">
 				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
 				<div class="upload_box">
@@ -203,7 +199,6 @@
 				dataObj:{
 					button_list:{}
 				},		//返回数据
-				dialog_type:'1',		//弹窗类型（1:批量上传执行结果；2:供应链导入）
 				show_dialog:false,		//导入弹窗
 				show_row_dialog:false,	//标记弹窗
 				ks_id:"",				//点击标记的款式id
@@ -225,11 +220,6 @@
 				//获取列表
 				this.getList();
 			},
-			//点击两种导入
-			showDialog(type){
-				this.dialog_type = type;
-				this.show_dialog = true;
-			},
 			//标记
 			setTag(id){
 				this.ks_id = id;
@@ -241,43 +231,24 @@
 			},
 			//下载模版
 			downTemplate(){
-				if(this.dialog_type == '1'){	//批量上传执行结果
-					window.open(`${this.downLoadUrl}/批量上传执行结果模板.xlsx`);
-				}else{	//供应商
-					window.open(`${this.downLoadUrl}/%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF.xlsx`);
-				}
+				window.open(`${this.downLoadUrl}/批量上传执行结果模板.xlsx`);
 			},
 			//导入
 			uploadCsv(){
 				if (this.$refs.csvUpload.files.length > 0) {
 					let files = this.$refs.csvUpload.files;
-					if(this.dialog_type == '1'){	//批量上传执行结果
-						resource.uploadResult({file:files[0]}).then(res => {
-							this.$refs.csvUpload.value = null;
-							this.show_dialog = false;
-							if(res.data.code == 1){
-								this.$message.success(res.data.msg);
-								this.page = 1;
-								//获取列表
-								this.getList();
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
-					}else{	//供应商
-						resource.offShelfExport({file:files[0]}).then(res => {
-							this.$refs.csvUpload.value = null;
-							this.show_dialog = false;
-							if(res.data.code == 1){
-								this.$message.success(res.data.msg);
-								this.page = 1;
-								//获取列表
-								this.getList();
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
-					}
+					resource.uploadResult({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						this.show_dialog = false;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.page = 1;
+							//获取列表
+							this.getList();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 				}
 			},
 			//确认标记
