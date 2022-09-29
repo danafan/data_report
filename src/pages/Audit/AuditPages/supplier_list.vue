@@ -8,6 +8,12 @@
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
+			<el-form-item label="供应商等级">
+				<el-select v-model="level" clearable placeholder="请选择">
+					<el-option label="S" value="S"></el-option>
+					<el-option label="A" value="A"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
@@ -69,6 +75,7 @@
 					<el-option label="周结" value="周结"></el-option>
 					<el-option label="半月结" value="半月结"></el-option>
 					<el-option label="月结" value="月结"></el-option>
+					<el-option label="待维护" value="待维护"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="生效日期" v-if="type == '2'">
@@ -91,10 +98,12 @@
 				<el-input style="width:200px" type="text" placeholder="请输入联系电话" v-model="info.contacts_number">
 				</el-input>
 			</el-form-item>
-			<el-form-item label="邮箱地址">
-				<el-input style="width:200px" type="text" placeholder="请输入邮箱地址" v-model="info.email">
-				</el-input>
-			</el-form-item>
+			<!-- <el-form-item label="供应商等级">
+				<el-select v-model="info.level" clearable placeholder="请选择">
+					<el-option label="S" value="S"></el-option>
+					<el-option label="A" value="A"></el-option>
+				</el-select>
+			</el-form-item> -->
 			<el-form-item label="开户行">
 				<el-input style="width:200px" type="text" placeholder="请输入开户行" v-model="info.bank">
 				</el-input>
@@ -179,6 +188,7 @@
 					}]
 				},	 							
 				date:[],						//引入时间
+				level:"",						//档口等级
 				page:1,
 				pagesize:10,
 				title_list:[],					//表头数据
@@ -199,7 +209,7 @@
 					corporate_name: "",
 					corporate_address: "",
 					contacts_number: "",
-					email: "",
+					// level: "",
 					bank: "",
 					payee: "",
 					collection_account_number:"",
@@ -260,6 +270,7 @@
 					keyword:this.keyword,
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					// level:this.level,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -326,7 +337,7 @@
 			},
 			//下载模版
 			downTemplate(){
-				window.open(`${this.downLoadUrl}/供应商管理导入模板.xlsx`);
+				window.open(`${this.downLoadUrl}/供应商管理导入模板-新.xlsx`);
 			},
 			//导入
 			uploadCsv(){
@@ -360,7 +371,7 @@
 					corporate_name: "",
 					corporate_address: "",
 					contacts_number: "",
-					email: "",
+					// level: "",
 					bank: "",
 					payee: "",
 					collection_account_number:"",
@@ -400,7 +411,7 @@
 					corporate_name: "",
 					corporate_address: "",
 					contacts_number: "",
-					email: "",
+					// level: "",
 					bank: "",
 					payee: "",
 					collection_account_number:"",

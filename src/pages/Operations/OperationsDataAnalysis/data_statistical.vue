@@ -233,7 +233,8 @@
 
 		.card_item{
 			margin-bottom: 10px;
-			width: 280px;
+			// width: 280px;
+			width: 18%;
 			height: 150px;
 			.card_top{
 				display:flex;

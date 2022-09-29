@@ -52,7 +52,7 @@
 				<template slot-scope="scope">
 					<el-input size="small" :placeholder="item.label" v-model="scope.row[item.prop]" @change="changeResult($event,scope.row.ksbm,item.type)" v-if="item.ele_type =='input'">
 					</el-input>
-					<el-button type="text" size="small" @click="getRecord(scope.row.ksbm)" v-else-if="item.ele_type =='button'">查看</el-button>
+					<el-button type="text" size="small" @click="getRecord(scope.row.ksbm,item.detail_type)" v-else-if="item.ele_type =='button'">查看</el-button>
 					<div class="prop_text" v-else>{{scope.row[item.prop]}}{{item.unit && scope.row[item.prop]?item.unit:''}}</div>
 				</template>
 			</el-table-column>
@@ -62,10 +62,10 @@
 			</el-pagination>
 		</div>
 		<!-- 历史供应链反馈结果弹窗 -->
-		<el-dialog title="历史供应链反馈结果" center :visible.sync="show_table">
+		<el-dialog :title="detail_type == '0'?'历史供应商反馈结果':'历史供应链建议'" center :visible.sync="show_table">
 			<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
 				<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
-				<el-table-column prop="record" label="供应反馈结果" show-overflow-tooltip align="center"></el-table-column>
+				<el-table-column prop="record" :label="detail_type == '0'?'供应商反馈结果':'供应链建议'" show-overflow-tooltip align="center"></el-table-column>
 				<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
 			</el-table>
 			<div class="page">
@@ -120,6 +120,7 @@
 				table_page:1,
 				table_pagesize:10,
 				detail_ksbm:"",
+				detail_type:"",
 				tableObj:{},
 				table_setting:{},
 				loading:false,
@@ -214,8 +215,9 @@
 					sort:false,
 
 				},{
-					label:'历史供应链反馈结果',
+					label:'历史供应商反馈结果',
 					ele_type:'button',
+					detail_type:'0',
 					prop:'history',
 					width:80,
 					sort:false,
@@ -226,6 +228,14 @@
 					ele_type:'input',
 					type:'1',
 					width:160,
+					sort:false,
+
+				},{
+					label:'历史供应链建议',
+					ele_type:'button',
+					detail_type:'1',
+					prop:'history',
+					width:80,
 					sort:false,
 
 				}],
@@ -434,9 +444,10 @@
 				this.getData();
 			},
 			//点击查看
-			getRecord(ksbm){
+			getRecord(ksbm,type){
 				this.table_page = 1;
 				this.detail_ksbm = ksbm;
+				this.detail_type = type;
 				this.show_table = true;
 				//获取详情
 				this.getTableData();
@@ -445,6 +456,7 @@
 			getTableData(){
 				let arg = {
 					ksbm:this.detail_ksbm,
+					type:this.detail_type,
 					page:this.table_page,
 					pagesize:this.table_pagesize
 				}
