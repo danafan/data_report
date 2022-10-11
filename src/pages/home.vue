@@ -99,6 +99,10 @@
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">公共款店铺上新情况</span>
 				</el-menu-item>
+				<el-menu-item index="/refund_status">
+					<i class="el-icon-s-finance"></i>
+					<span slot="title">退款情况看板</span>
+				</el-menu-item>
 				<!-- <el-menu-item index="/supplier_ranking">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">供应商排行</span>

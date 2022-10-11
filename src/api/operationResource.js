@@ -32,6 +32,7 @@ let path = {
 	mlGys:'ml_analysis/ml_gys',						//毛利分析--供应商分组数据列表
 	mlColor:'ml_analysis/ml_color',					//毛利分析--颜色分组数据列表
 	mlSize:'ml_analysis/ml_size',					//毛利分析--颜色分组数据列表
+	deptGmvList:'supplier/dept_gmv_list',			//部门GMV详情
 }						
 export default{
 	//获取款式编码
@@ -161,6 +162,10 @@ export default{
 	//毛利分析--颜色分组数据列表
 	mlSize(params){
 		return http.get(path.mlSize, params)
+	},
+	//部门GMV详情
+	deptGmvList(params){
+		return http.get(path.deptGmvList, params)
 	},
 }
 
