@@ -12,6 +12,9 @@ let path = {
 	delayDeal:'supply_chain/delay_deal',		//延期解决
 	confirmStatus:'supply_chain/confirm_status',//确认状态
 	turnReply:'supply_chain/turn_reply',		//负责人回复
+	onDeptIndex:'supplier/on_dept_index',		//事业部上架统计
+	onStoreIndex:'supplier/on_store_index',		//店铺上架统计
+	newIndex:'supplier/on_index',				//公用款上新情况
 	
 }						
 export default{
@@ -62,6 +65,18 @@ export default{
 	//负责人回复
 	turnReply(params){
 		return http.post(path.turnReply, params)
+	},
+	//事业部上架统计
+	onDeptIndex(params){
+		return http.get(path.onDeptIndex, params)
+	},
+	//店铺上架统计
+	onStoreIndex(params){
+		return http.get(path.onStoreIndex, params)
+	},
+	//公用款上新情况
+	newIndex(params){
+		return http.get(path.newIndex, params)
 	},
 	
 }

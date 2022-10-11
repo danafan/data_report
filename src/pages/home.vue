@@ -95,10 +95,10 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/supplier_management">
+				<el-menu-item index="/no_the_new">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">供应商管理</span>
-				</el-menu-item> -->
+					<span slot="title">公共款店铺上新情况</span>
+				</el-menu-item>
 				<!-- <el-menu-item index="/supplier_ranking">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">供应商排行</span>

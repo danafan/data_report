@@ -19,8 +19,6 @@ const inventory_info = resolve=>require(['@/pages/Buffer/inventory_info'],resolv
 const audit_index = resolve=>require(['@/pages/Audit/audit_index'],resolve)
 const report_management = resolve=>require(['@/pages/Audit/report_management'],resolve)
 const account_store = resolve=>require(['@/pages/Audit/account_store'],resolve)
-//库存情况汇总
-const inventory_summary = resolve=>require(['@/pages/Inventory/inventory_summary'],resolve)
 //权限
 const permssions_index = resolve=>require(['@/pages/Permissions/permissions_index'],resolve)
 const role_user = resolve=>require(['@/pages/Permissions/PermissionTabs/role_user'],resolve)
@@ -64,6 +62,8 @@ const demand_report = resolve=>require(['@/pages/SupplyChain/demand_report'],res
 const created_demand = resolve=>require(['@/pages/SupplyChain/DemandReport/created_demand'],resolve)
 const procurement_info = resolve=>require(['@/pages/SupplyChain/DemandReport/procurement_info'],resolve)
 const supplier_ranking = resolve=>require(['@/pages/SupplyChain/supplier_ranking'],resolve)    //供应商排行
+const inventory_summary = resolve=>require(['@/pages/SupplyChain/inventory_summary'],resolve)
+const no_the_new = resolve=>require(['@/pages/SupplyChain/no_the_new'],resolve)
 
 Vue.use(Router)
 
@@ -88,7 +88,6 @@ const router = new Router({
     { path: '/audit_index',name:"成本管理", component: audit_index},
     { path: '/report_management',name:"报表管理", component: report_management},
     { path: '/account_store',name:"账号店铺余额", component: account_store},
-    { path: '/inventory_summary',name:"商品库存信息", component: inventory_summary},
     { path: '/permssions_index',name:"权限管理", component: permssions_index},
     { path: '/role_user',name:"角色人员", component: role_user},
     { path: '/data_role_user',name:"数据权限人员", component: data_role_user},
@@ -104,6 +103,8 @@ const router = new Router({
     { path: '/goods_cate',name:"商品分类", component: goods_cate},
     { path: '/goods_analysis',name:"商品分析", component: goods_analysis},
     { path: '/supplier_ranking',name:"供应商排行", component: supplier_ranking},
+    { path: '/inventory_summary',name:"商品库存信息", component: inventory_summary},
+    { path: '/no_the_new',name:"公共款店铺上新情况", component: no_the_new},
     { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
         isUseCache:false,
         keepAlive:true

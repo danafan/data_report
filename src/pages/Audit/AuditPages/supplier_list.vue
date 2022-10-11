@@ -270,7 +270,7 @@
 					keyword:this.keyword,
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
-					// level:this.level,
+					level:this.level,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -323,7 +323,8 @@
 					let arg = {
 						keyword:this.keyword,
 						start_time:this.date && this.date.length> 0?this.date[0]:"",
-						end_time:this.date && this.date.length> 0?this.date[1]:""
+						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						level:this.level,
 					}
 					resource.supplierExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'供应商列表');
@@ -337,7 +338,7 @@
 			},
 			//下载模版
 			downTemplate(){
-				window.open(`${this.downLoadUrl}/供应商管理导入模板-新.xlsx`);
+				window.open(`${this.downLoadUrl}/新-供应商管理导入模板.xlsx`);
 			},
 			//导入
 			uploadCsv(){
