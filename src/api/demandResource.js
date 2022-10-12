@@ -15,6 +15,8 @@ let path = {
 	onDeptIndex:'supplier/on_dept_index',		//事业部上架统计
 	onStoreIndex:'supplier/on_store_index',		//店铺上架统计
 	newIndex:'supplier/on_index',				//公用款上新情况
+	grabGoods:'supply_chain/grab_goods',		//抢货报表
+	grabGoodsSku:'supply_chain/grab_goods_sku',	//抢货报表下钻
 	
 }						
 export default{
@@ -77,6 +79,14 @@ export default{
 	//公用款上新情况
 	newIndex(params){
 		return http.get(path.newIndex, params)
+	},
+	//抢货报表
+	grabGoods(params){
+		return http.get(path.grabGoods, params)
+	},
+	//抢货报表下钻
+	grabGoodsSku(params){
+		return http.get(path.grabGoodsSku, params)
 	},
 	
 }

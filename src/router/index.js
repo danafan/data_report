@@ -65,6 +65,7 @@ const procurement_info = resolve=>require(['@/pages/SupplyChain/DemandReport/pro
 const supplier_ranking = resolve=>require(['@/pages/SupplyChain/supplier_ranking'],resolve)    //供应商排行
 const inventory_summary = resolve=>require(['@/pages/SupplyChain/inventory_summary'],resolve)
 const no_the_new = resolve=>require(['@/pages/SupplyChain/no_the_new'],resolve)
+const rob_goods = resolve=>require(['@/pages/SupplyChain/rob_goods'],resolve)
 
 Vue.use(Router)
 
@@ -107,6 +108,7 @@ const router = new Router({
     { path: '/supplier_ranking',name:"供应商排行", component: supplier_ranking},
     { path: '/inventory_summary',name:"商品库存信息", component: inventory_summary},
     { path: '/no_the_new',name:"公共款店铺上新情况", component: no_the_new},
+    { path: '/rob_goods',name:"公共款店铺上新情况", component: rob_goods},
     { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
         isUseCache:false,
         keepAlive:true
