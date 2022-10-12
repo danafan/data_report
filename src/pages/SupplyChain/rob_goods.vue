@@ -24,6 +24,8 @@
 			</el-form-item>
 		</el-form>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
+			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip>
+			</el-table-column>
 			<el-table-column label="款式编码" align="center">
 				<template slot-scope="scope">
 					<!-- 下钻 -->
@@ -39,6 +41,8 @@
 			</el-table-column>
 			<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip>
 			</el-table-column>
+			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip>
+			</el-table-column>
 			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
@@ -52,15 +56,26 @@
 		</div>
 		<!-- 下钻 -->
 		<el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-			<el-table :data="detailData.data" size="mini">
+			<el-table :data="data" size="mini">
 				<el-table-column align="center" prop="ksbm" label="款号"></el-table-column>
 				<el-table-column align="center" prop="color" label="图片">
 					<template slot-scope="scope">
-						<img style="width: 100px;height: 50px" :src="scope.row.tp_url">
+						<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
+						<div v-else></div>
 					</template>
 				</el-table-column>
 				<el-table-column align="center" prop="color" label="颜色"></el-table-column>
 				<el-table-column align="center" prop="size" label="尺码"></el-table-column>
+				<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip>
+				</el-table-column>
+				<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip>
+				</el-table-column>
+				<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
+				</el-table-column>
+				<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
+				</el-table-column>
+				<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip>
+				</el-table-column>
 			</el-table>
 			<div class="page">
 				<el-pagination
@@ -70,7 +85,7 @@
 				:pager-count="11"
 				:page-sizes="[5, 10, 15, 20]"
 				layout="total, sizes, prev, pager, next, jumper"
-				:total="detailData.total"
+				:total="total"
 				>
 			</el-pagination>
 		</div>
@@ -103,7 +118,8 @@
 				detail_page:1,
 				detail_page_size:10,
 				ksbm:"",
-				detailData:{},
+				data:[],
+				total:0
 			}
 		},
 		created(){
@@ -187,7 +203,18 @@
 				}
 				demandResource.grabGoodsSku(arg).then(res => {
 					if(res.data.code == 1){
-						this.detailData = res.data.data;
+						let data = res.data.data.data;
+						data.map(item => {
+							let images = [];
+							if(item.tp_url != ''){
+								images.push(item.tp_url);
+								item.images = images;
+							}else{
+								item.images = null;
+							}
+						})
+						this.data = data;
+						this.total = res.data.data.total
 						this.detailDialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -196,7 +223,6 @@
 			},
 			//关闭
 			closeDetail(){
-				this.detail_page_size = 10;
 				this.detail_page = 1;
 			},
 			//分页
