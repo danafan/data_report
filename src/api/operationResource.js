@@ -33,6 +33,9 @@ let path = {
 	mlColor:'ml_analysis/ml_color',					//毛利分析--颜色分组数据列表
 	mlSize:'ml_analysis/ml_size',					//毛利分析--颜色分组数据列表
 	deptGmvList:'supplier/dept_gmv_list',			//部门GMV详情
+	platformGmvList:'supplier/platform_gmv_list',	//平台GMV详情
+	cpflGmvList:'supplier/cpfl_gmv_list',			//品类GMV详情
+	goodsDetails:'supplier/goods_details',			//店铺商品明细
 }						
 export default{
 	//获取款式编码
@@ -166,6 +169,18 @@ export default{
 	//部门GMV详情
 	deptGmvList(params){
 		return http.get(path.deptGmvList, params)
+	},
+	//平台GMV详情
+	platformGmvList(params){
+		return http.get(path.platformGmvList, params)
+	},
+	//品类GMV详情
+	cpflGmvList(params){
+		return http.get(path.cpflGmvList, params)
+	},
+	//店铺商品明细
+	goodsDetails(params){
+		return http.get(path.goodsDetails, params)
 	},
 }
 

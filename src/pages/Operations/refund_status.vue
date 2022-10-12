@@ -49,13 +49,73 @@
 				</el-table-column>
 			</el-table-column>
 		</el-table>
+		<!-- 平台GMV详情 -->
+		<div class="table_title">平台GMV详情</div>
+		<el-table :data="platform_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="platform_loading">
+			<el-table-column :label="item.row_name" v-for="item in platform_title_list">
+				<template slot-scope="scope">
+					<div :class="{'bold_style':scope.$index == 0}">{{scope.row[item.row_field_name]}}</div>
+				</template>
+				<el-table-column :label="i.row_name" :prop="i.row_field_name" v-for="i in item.list">
+					<template slot-scope="scope">
+						<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="i.type == 1 && scope.$index > 0">{{scope.row[i.row_field_name]}}{{i.unit}}</div>
+						<div class="text_content" :class="{'bold_style':scope.$index == 0}" v-else>{{i.num_type == 1?getQianNumber(scope.row[i.row_field_name]):scope.row[i.row_field_name]}}{{i.unit}}</div>
+					</template>
+				</el-table-column>
+			</el-table-column>
+		</el-table>
+		<!-- 品类GMV详情 -->
+		<div class="table_title">品类GMV详情</div>
+		<el-table :data="cpfl_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="cpfl_loading">
+			<el-table-column :label="item.row_name" v-for="item in cpfl_title_list">
+				<template slot-scope="scope">
+					<div :class="{'bold_style':scope.$index == 0}">{{scope.row[item.row_field_name]}}</div>
+				</template>
+				<el-table-column :label="i.row_name" :prop="i.row_field_name" v-for="i in item.list">
+					<template slot-scope="scope">
+						<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="i.type == 1 && scope.$index > 0">{{scope.row[i.row_field_name]}}{{i.unit}}</div>
+						<div class="text_content" :class="{'bold_style':scope.$index == 0}" v-else>{{i.num_type == 1?getQianNumber(scope.row[i.row_field_name]):scope.row[i.row_field_name]}}{{i.unit}}</div>
+					</template>
+				</el-table-column>
+			</el-table-column>
+		</el-table>
+		<!-- 店铺商品明细 -->
+		<div class="table_setting">
+			<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
+		</div>
+		<!-- 表格 -->
+		<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' v-loading="goods_loading">
+			<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
+				<template slot-scope="scope">
+					<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1 && scope.$index > 0">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}&nbsp&nbsp&nbsp&nbsp&nbsp</div>
+					<div class="text_content" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
+				</template>
+			</el-table-column>
+		</el-table>
+		<div class="page">
+			<el-pagination @size-change="storeSizeChange" @current-change="storePageChange" :current-page="page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="total">
+			</el-pagination>
+		</div>
+		<!-- 自定义列表 -->
+		<el-dialog title="自定义列表" :visible.sync="show_custom">
+			<div class="select_box">
+				<el-checkbox-group v-model="selected_ids">
+					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+				</el-checkbox-group>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="Restore">恢复默认</el-button>
+				<el-button size="small" @click="Restore('is_close')">取消</el-button>
+				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
 	import dps from '../../components/results_components/dps.vue'
 	import resource from '../../api/resource.js'
 	import operationResource from '../../api/operationResource.js'
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
@@ -92,12 +152,33 @@
 							const end = getLastMonthEndDate(1);
 							picker.$emit('pick', [start, end]);
 						}
-					}]
+					}],
+					disabledDate(date) {
+						return (
+							date.getTime() < new Date(new Date().getFullYear(),0,1).getTime() ||
+							date.getTime() > new Date(new Date().getFullYear(),11,31).getTime()
+							);
+					}
 				},	 										//时间区间
-				date:[getMonthStartDate(),getCurrentDate()],//付款日期				
+				date:[getMonthStartDate(),getNowDate()],//付款日期				
 				dept_title_list:[],							//部门表头信息
 				dept_gmv_data:[],							//部门gmv数据
 				dept_loading:false,
+				platform_title_list:[],						//平台表头信息
+				platform_gmv_data:[],						//平台gmv数据
+				platform_loading:false,
+				cpfl_title_list:[],							//品类表头信息
+				cpfl_gmv_data:[],							//品类gmv数据
+				cpfl_loading:false,
+				table_list:[],						//列表数据
+				total:0,
+				title_list:[],						//列
+				selected_ids:[],					//自定义已选中的id
+				view_row:[],						//自定义
+				goods_loading:false,
+				show_custom:false,
+				page:1,
+				pagesize:10,
 			}
 		},
 		created(){
@@ -107,34 +188,211 @@
 			this.searchFn();
 		},
 		methods:{
+			//顶部悬浮
+			renderHeader(h, data) {
+				return h("span", [
+					h(
+						"el-tooltip",
+						{
+							attrs: {
+								class: "item",
+								effect: "dark",
+								content: data.column.label,
+								placement: "top",
+							},
+						},
+						[h("span", data.column.label)]
+						),
+					]);
+			},
 			//搜索
-			searchFn(){
+			async searchFn(){
 				let arg = {
-					dept_name:this.dept_name.join(','),
-					pl:this.pl.join(','),
-					shop_code:this.shop_code.join(','),
+					dept_id:this.dept_name.join(','),
+					platform:this.pl.join(','),
+					shop_id:this.shop_code.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
-					gyshh:this.select_gys_ids.join(','),
+					gyskh:this.select_gys_ids.join(','),
 					spid:this.select_spid_list.join(','),
-					start_time:this.date && this.date.length > 0?this.date[0]:"",
-					end_time:this.date && this.date.length > 0?this.date[1]:""
+					tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
+					tjrq_end:this.date && this.date.length > 0?this.date[1]:""
 				}
 				//获取部门GMV详情
-				this.deptGmvList(arg);
+				await this.deptGmvList(arg);
+				//获取平台GMV详情
+				await this.platformGmvList(arg);
+				//获取品类GMV详情
+				await this.cpflGmvList(arg);
+				//店铺商品明细
+				await this.goodsDetails();
 			},
 			//获取部门GMV详情
 			deptGmvList(arg){
 				this.dept_loading = true;
-				operationResource.deptGmvList(arg).then(res => {
+				return new Promise((resolve)=>{
+					operationResource.deptGmvList(arg).then(res => {
+						if(res.data.code == 1){
+							this.dept_loading = false;
+							this.dept_gmv_data = res.data.data.data;
+							this.dept_title_list = res.data.data.title_list;
+							resolve();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				})
+				
+				// operationResource.deptGmvList(arg).then(res => {
+				// 	if(res.data.code == 1){
+				// 		this.dept_loading = false;
+				// 		this.dept_gmv_data = res.data.data.data;
+				// 		this.dept_title_list = res.data.data.title_list;
+				// 	}else{
+				// 		this.$message.warning(res.data.msg);
+				// 	}
+				// })
+			},
+			//获取部门GMV详情
+			platformGmvList(arg){
+				this.platform_loading = true;
+				return new Promise((resolve)=>{
+					operationResource.platformGmvList(arg).then(res => {
+						if(res.data.code == 1){
+							this.platform_loading = false;
+							this.platform_gmv_data = res.data.data.data;
+							this.platform_title_list = res.data.data.title_list;
+							resolve();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				})
+				// operationResource.deptGmvList(arg).then(res => {
+					// 	if(res.data.code == 1){
+					// 		this.dept_loading = false;
+					// 		this.dept_gmv_data = res.data.data.data;
+					// 		this.dept_title_list = res.data.data.title_list;
+					// 		resolve();
+					// 	}else{
+					// 		this.$message.warning(res.data.msg);
+					// 	}
+					// })
+				},
+			//获取品类GMV详情
+			cpflGmvList(arg){
+				this.cpfl_loading = true;
+				return new Promise((resolve)=>{
+					operationResource.cpflGmvList(arg).then(res => {
+						if(res.data.code == 1){
+							this.cpfl_loading = false;
+							this.cpfl_gmv_data = res.data.data.data;
+							this.cpfl_title_list = res.data.data.title_list;
+							resolve();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				})
+				// operationResource.cpflGmvList(arg).then(res => {
+				// 	if(res.data.code == 1){
+				// 		this.cpfl_loading = false;
+				// 		this.cpfl_gmv_data = res.data.data.data;
+				// 		this.cpfl_title_list = res.data.data.title_list;
+				// 	}else{
+				// 		this.$message.warning(res.data.msg);
+				// 	}
+				// })
+			},
+			//店铺商品明细
+			goodsDetails(){
+				let arg = {
+					dept_id:this.dept_name.join(','),
+					platform:this.pl.join(','),
+					shop_id:this.shop_code.join(','),
+					cpfl:this.select_pl_ids.join(','),
+					ksbm:this.select_ks_ids.join(','),
+					gyskh:this.select_gys_ids.join(','),
+					spid:this.select_spid_list.join(','),
+					tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
+					tjrq_end:this.date && this.date.length > 0?this.date[1]:"",
+					page:this.page,
+					pagesize:this.pagesize
+				}
+				this.goods_loading = true;
+				return new Promise((resolve)=>{
+					operationResource.goodsDetails(arg).then(res => {
+						if(res.data.code == 1){
+							this.goods_loading = false;
+							let data = res.data.data;
+							this.table_list = data.table_list.data;			//列表行数据
+							this.total = data.table_list.total;			//列表行数据
+							this.title_list = data.title_list;		//列表列数据
+							this.selected_ids = data.selected_ids;	//自定义已选中的id
+							this.view_row = res.data.data.view_row;			//自定义
+							resolve();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				})
+				// operationResource.goodsDetails(arg).then(res => {
+				// 	if(res.data.code == 1){
+				// 		this.goods_loading = false;
+				// 		let data = res.data.data;
+				// 		this.table_list = data.table_list.data;			//列表行数据
+				// 		this.total = data.table_list.total;			//列表行数据
+				// 		this.title_list = data.title_list;		//列表列数据
+				// 		this.selected_ids = data.selected_ids;	//自定义已选中的id
+				// 		this.view_row = res.data.data.view_row;			//自定义
+				// 	}else{
+				// 		this.$message.warning(res.data.msg);
+				// 	}
+				// })
+			},
+			//分页
+			storeSizeChange(val) {
+				this.pagesize = val;
+				//获取列表
+				this.goodsDetails();
+			},
+			storePageChange(val) {
+				this.page = val;
+				//获取列表
+				this.goodsDetails();
+			},
+			//恢复默认
+			Restore(type){
+				this.selected_ids = [];
+				this.view_row.map(item => {
+					this.selected_ids.push(item.row_id)
+				})
+				if(type == 'is_close'){
+					this.show_custom = false;
+				}
+			},
+			//自定义列
+			setColumns(){
+				var row_ids = this.selected_ids.join(',');
+				resource.setColumns({menu_id:'132',row_ids:row_ids}).then(res => {
 					if(res.data.code == 1){
-						this.dept_loading = false;
-						this.dept_gmv_data = res.data.data.data;
-						this.dept_title_list = res.data.data.title_list;
+						this.$message.success(res.data.msg);
+						this.show_custom = false;
+						//获取列表
+						this.goodsDetails();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
+				});
+			},
+			//千分位展示
+			getQianNumber(number) {
+				const num = String(number)
+				const reg = /\d{1,3}(?=(\d{3})+$)/g
+				const res = num.replace(/^(-?)(\d+)((\.\d+)?)$/, function(match, s1, s2, s3){
+					return s1 + s2.replace(reg, '$&,') + s3
 				})
+				return res
 			},
 			//品类列表
 			getPl(){
