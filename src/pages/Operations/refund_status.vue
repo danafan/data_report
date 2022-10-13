@@ -79,16 +79,77 @@
 				</el-table-column>
 			</el-table-column>
 		</el-table>
+		<div class="toast_box">
+			<div class="table_title">店铺商品明细</div>
+			<div class="toast_title">关键指标含义</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>xxUV：对应销售额/对应访客数</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>实退率：发货后退货数量/发货数量</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>退款率：退款数量/剔除鱼塘订单总坑产数量</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>发货前退款率：发货前退款数量/剔除鱼塘订单总坑产数量</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>毛利额：剔除鱼塘及售前退款订单，按款式每月销售成本计算</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>直接花费：鱼塘佣金 + 淘客佣金 + 直通车花费 + 超级推荐花费 + 极速推花费</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>盈亏：毛利额 -直接花费</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>利润率：盈亏 / 剔除鱼塘销售额</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>营销费用率：直接花费 / 剔除鱼塘销售额</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>营销贡献毛益率：盈亏 / 剔除鱼塘及售前退款销售额</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>整体ROI：总坑产 /直接花费</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>真实ROI：剔除鱼塘销售额 /直接花费</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>ROI平衡点：1 / 营销贡献毛益率</div>
+			</div>
+			<div class="item_row">
+				<div class="dian"></div>
+				<div>排序从左到右存在优先级，最左边排序等级为1级，若要排序其他列，需先取消前面的排序，点击两下至箭头消失</div>
+			</div>
+		</div>
 		<!-- 店铺商品明细 -->
 		<div class="table_setting">
 			<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
 		</div>
 		<!-- 表格 -->
 		<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' v-loading="goods_loading">
-			<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
+			<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
 				<template slot-scope="scope">
-					<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1 && scope.$index > 0">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}&nbsp&nbsp&nbsp&nbsp&nbsp</div>
-					<div class="text_content" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</div>
+					<el-image :z-index="2008" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == 3 && scope.$index > 0"></el-image>
+					<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1 && scope.$index > 0">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
+					<div class="text_content" :class="{'bold_style':scope.$index == 0}"  v-if="item.type == 0 || item.type == 4">{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -242,16 +303,6 @@
 						}
 					})
 				})
-				
-				// operationResource.deptGmvList(arg).then(res => {
-				// 	if(res.data.code == 1){
-				// 		this.dept_loading = false;
-				// 		this.dept_gmv_data = res.data.data.data;
-				// 		this.dept_title_list = res.data.data.title_list;
-				// 	}else{
-				// 		this.$message.warning(res.data.msg);
-				// 	}
-				// })
 			},
 			//获取部门GMV详情
 			platformGmvList(arg){
@@ -268,17 +319,7 @@
 						}
 					})
 				})
-				// operationResource.deptGmvList(arg).then(res => {
-					// 	if(res.data.code == 1){
-					// 		this.dept_loading = false;
-					// 		this.dept_gmv_data = res.data.data.data;
-					// 		this.dept_title_list = res.data.data.title_list;
-					// 		resolve();
-					// 	}else{
-					// 		this.$message.warning(res.data.msg);
-					// 	}
-					// })
-				},
+			},
 			//获取品类GMV详情
 			cpflGmvList(arg){
 				this.cpfl_loading = true;
@@ -294,15 +335,6 @@
 						}
 					})
 				})
-				// operationResource.cpflGmvList(arg).then(res => {
-				// 	if(res.data.code == 1){
-				// 		this.cpfl_loading = false;
-				// 		this.cpfl_gmv_data = res.data.data.data;
-				// 		this.cpfl_title_list = res.data.data.title_list;
-				// 	}else{
-				// 		this.$message.warning(res.data.msg);
-				// 	}
-				// })
 			},
 			//店铺商品明细
 			goodsDetails(){
@@ -325,7 +357,15 @@
 						if(res.data.code == 1){
 							this.goods_loading = false;
 							let data = res.data.data;
-							this.table_list = data.table_list.data;			//列表行数据
+							//列表行数据
+							let data_list = data.table_list.data;
+							data_list.map(item => {
+								let images = [];
+								images.push(item.pic);
+								item.images = images;
+							})
+							this.table_list = data_list;
+
 							this.total = data.table_list.total;			//列表行数据
 							this.title_list = data.title_list;		//列表列数据
 							this.selected_ids = data.selected_ids;	//自定义已选中的id
@@ -336,19 +376,6 @@
 						}
 					})
 				})
-				// operationResource.goodsDetails(arg).then(res => {
-				// 	if(res.data.code == 1){
-				// 		this.goods_loading = false;
-				// 		let data = res.data.data;
-				// 		this.table_list = data.table_list.data;			//列表行数据
-				// 		this.total = data.table_list.total;			//列表行数据
-				// 		this.title_list = data.title_list;		//列表列数据
-				// 		this.selected_ids = data.selected_ids;	//自定义已选中的id
-				// 		this.view_row = res.data.data.view_row;			//自定义
-				// 	}else{
-				// 		this.$message.warning(res.data.msg);
-				// 	}
-				// })
 			},
 			//分页
 			storeSizeChange(val) {
@@ -464,9 +491,45 @@
 	font-weight: bold;
 	color: #333333;
 }
+.table_setting{
+	margin-bottom:15px;
+	display: flex;
+	justify-content: flex-end;
+}
 .bold_style{
 	font-size: 14px;
 	color: #333333;
 	font-weight: bold;
+}
+.toast_box{
+	margin-top: 15px;
+	padding: 10px;
+	border-radius: 10px;
+	border:1px solid #8D5714;
+	width: 50%;
+}
+.form_box{
+	width: 50%;
+	display:flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.toast_title{
+	font-weight: bold;
+	font-size: 16px;
+	color: #8D5714;
+}
+.dian{
+	margin-right: 8px;
+	border-radius: 3px;
+	background:#8D5714; 
+	width: 6px;
+	height: 6px;
+}
+.item_row{
+	display:flex;
+	align-items: center;
+	font-size: 14px;
+	color: #8D5714;
 }
 </style>

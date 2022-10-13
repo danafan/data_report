@@ -95,10 +95,6 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/rob_goods">
-					<i class="el-icon-s-finance"></i>
-					<span slot="title">抢货列表</span>
-				</el-menu-item> -->
 				<!-- <el-menu-item index="/no_the_new">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">公共款店铺上新情况</span>
