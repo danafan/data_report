@@ -37,8 +37,7 @@
 			return{
 				activeTab:"",
 				menu_list:[],
-				ss:[],
-				user_type:''
+				ss:[]
 			}
 		},
 		created(){

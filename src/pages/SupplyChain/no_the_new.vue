@@ -25,7 +25,7 @@
 				<div class="table_title">店铺上架统计</div>
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="事业部：">
-						<el-select size="mini" v-model="dept_name" multiple filterable collapse-tags clearable placeholder="全部" @change="onStoreIndex">
+						<el-select size="mini" v-model="dept_name" multiple filterable collapse-tags clearable placeholder="全部" @change="storePageChange(1)">
 							<el-option v-for="item in dept_list" :key="item.dept_name" :label="item.dept_name" :value="item.dept_name">
 							</el-option>
 						</el-select>
@@ -50,7 +50,7 @@
 				<div class="table_title">共用款上新情况</div>
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="款式编码：">
-						<el-select size="mini" v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags @change="newIndex">
+						<el-select size="mini" v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags @change="newPageChange(1)">
 							<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
 							</el-option>
 						</el-select>
@@ -202,7 +202,14 @@
 			},
 			// 点击搜索
 			searchFn(){
-
+				this.store_page = 1;
+				this.new_page = 1;
+				//事业部上架统计
+				this.onDeptIndex();
+				//店铺上架统计
+				this.onStoreIndex();
+				//公用款上新情况
+				this.newIndex();
 			},
 			//事业部上架统计
 			onDeptIndex(){

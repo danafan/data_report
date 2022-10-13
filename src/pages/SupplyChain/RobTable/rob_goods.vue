@@ -23,6 +23,7 @@
 				<el-button type="primary" size="mini" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="update_time">更新时间：{{dataObj.update_time}}</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip>
 			</el-table-column>
@@ -44,6 +45,10 @@
 			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
 			</el-table-column>
@@ -72,10 +77,15 @@
 				</el-table-column>
 				<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
 				</el-table-column>
+				<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip>
+				</el-table-column>
+				<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip>
+				</el-table-column>
 				<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
 				</el-table-column>
 				<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip>
 				</el-table-column>
+				
 			</el-table>
 			<div class="page">
 				<el-pagination
@@ -96,11 +106,15 @@
 </div>
 </template>
 <style lang="less" scoped>
-
+.update_time{
+	margin-bottom:5px;
+	color: red;
+	font-size: 14px; 
+}
 </style>
 <script>
-	import resource from '../../api/resource.js'
-	import demandResource from '../../api/demandResource.js'
+	import resource from '../../../api/resource.js'
+	import demandResource from '../../../api/demandResource.js'
 	export default{
 		data(){
 			return{

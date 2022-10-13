@@ -17,6 +17,7 @@ let path = {
 	newIndex:'supplier/on_index',				//公用款上新情况
 	grabGoods:'supply_chain/grab_goods',		//抢货报表
 	grabGoodsSku:'supply_chain/grab_goods_sku',	//抢货报表下钻
+	supplierShortageRanking:'supply_chain/supplier_shortage_ranking',	//供应商缺货排行
 	
 }						
 export default{
@@ -87,6 +88,10 @@ export default{
 	//抢货报表下钻
 	grabGoodsSku(params){
 		return http.get(path.grabGoodsSku, params)
+	},
+	//供应商缺货排行
+	supplierShortageRanking(params){
+		return http.get(path.supplierShortageRanking, params)
 	},
 	
 }
