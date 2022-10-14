@@ -19,6 +19,18 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="是否前200款：">
+				<el-select v-model="sfqlb" clearable :popper-append-to-body="false" placeholder="是否前200款">
+					<el-option label="是" value="是"></el-option>
+					<el-option label="否" value="否"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="是否持续缺货：">
+				<el-select v-model="sfcxqh" clearable :popper-append-to-body="false" placeholder="是否持续缺货">
+					<el-option label="是" value="是"></el-option>
+					<el-option label="否" value="否"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
@@ -27,7 +39,7 @@
 			<div class="update_time">更新时间：{{dataObj.update_time}}</div>
 			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
+		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" v-loading="loading">
 			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column label="款式编码" align="center">
@@ -53,10 +65,7 @@
 			</el-table-column>
 			<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column label="是否前200款" align="center" show-overflow-tooltip>
-				<template slot-scope="scope">
-						<div :class="{'red_color':scope.row.sfq200 == '是'}">{{scope.row.sfq200}}</div>
-					</template>
+			<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip>
 			</el-table-column>
@@ -111,6 +120,11 @@
 	</el-dialog>
 </div>
 </template>
+<style type="text/css">
+.red_color{
+	background: #F6BD16!important;
+}
+</style>
 <style lang="less" scoped>
 .export_row{
 	margin-bottom:5px;
@@ -121,9 +135,6 @@
 		color: red;
 		font-size: 14px; 
 	}
-}
-.red_color{
-	color: red;
 }
 </style>
 <script>
@@ -140,6 +151,8 @@
 				select_gyshh_ids:[],						//选中的供应商货号
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
+				sfqlb:"",
+				sfcxqh:"",
 				pagesize:10,
 				page:1,
 				dataObj:{},
@@ -157,6 +170,12 @@
 			this.getList();
 		},
 		methods:{
+			//指定行颜色
+			tableRowClassName(row, rowIndex) {
+				if (row.row.sfq200 == '是') {
+					return 'red_color';
+				}
+			},
 			//供应商列表
 			getGys(e){
 				if(e != ''){
@@ -199,6 +218,8 @@
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					gysbm:this.select_gyshh_ids.join(','),
+					sfcxqh:this.sfcxqh,
+					sfqlb:this.sfqlb,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -223,6 +244,8 @@
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
 						gysbm:this.select_gyshh_ids.join(','),
+						sfcxqh:this.sfcxqh,
+						sfqlb:this.sfqlb,
 					}
 					demandResource.grabGoodsExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'抢货报表');
