@@ -16,8 +16,14 @@ let path = {
 	onStoreIndex:'supplier/on_store_index',		//店铺上架统计
 	newIndex:'supplier/on_index',				//公用款上新情况
 	grabGoods:'supply_chain/grab_goods',		//抢货报表
+	grabGoodsExport:'supply_chain/grab_goods_export',	//抢货报表导出
 	grabGoodsSku:'supply_chain/grab_goods_sku',	//抢货报表下钻
 	supplierShortageRanking:'supply_chain/supplier_shortage_ranking',	//供应商缺货排行
+	supplierShortageRankingExport:'supply_chain/supplier_shortage_ranking_export',	//供应商缺货排行导出
+	deforeLbList:'supplier/top_200_list',			//款式Top200列表
+	deforeLbExport:'supplier/top_200_list_export',	//款式Top200列表导出
+	deforeWsList:'supplier/top_50_list',			//3店铺Top50列表
+	deforeWsExport:'supplier/top_50_list_export',	//3店铺Top50列表导出
 	
 }						
 export default{
@@ -85,6 +91,10 @@ export default{
 	grabGoods(params){
 		return http.get(path.grabGoods, params)
 	},
+	//抢货报表导出
+	grabGoodsExport(params){
+		return http.post(path.grabGoodsExport, params)
+	},
 	//抢货报表下钻
 	grabGoodsSku(params){
 		return http.get(path.grabGoodsSku, params)
@@ -92,6 +102,26 @@ export default{
 	//供应商缺货排行
 	supplierShortageRanking(params){
 		return http.get(path.supplierShortageRanking, params)
+	},
+	//供应商缺货排行导出
+	supplierShortageRankingExport(params){
+		return http.post(path.supplierShortageRankingExport, params)
+	},
+	//款式Top200列表
+	deforeLbList(params){
+		return http.get(path.deforeLbList, params)
+	},
+	//款式Top200列表导出
+	deforeLbExport(params){
+		return http.get(path.deforeLbExport, params)
+	},
+	//3店铺Top50列表
+	deforeWsList(params){
+		return http.get(path.deforeWsList, params)
+	},
+	//3店铺Top50列表导出
+	deforeWsExport(params){
+		return http.get(path.deforeWsExport, params)
 	},
 	
 }

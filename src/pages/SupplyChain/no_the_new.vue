@@ -62,8 +62,8 @@
 					<el-table-column label="图片" align="center" width="180">
 						<template slot-scope="scope">
 							<el-image
-							style="width: 160px; height: 80px"
-							fit="cover"
+							style="height: 80px"
+							fit="scale-down"
 							:src="scope.row.tp" v-if="scope.row.tp != ''" @click="bigImg(scope.row.tp)"></el-image>
 							<div v-else>暂无图片</div>
 						</template>

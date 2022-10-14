@@ -27,7 +27,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="付款日期：">
-				<el-date-picker v-model="date":clearable="false" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				<el-date-picker v-model="date" :clearable="false" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -144,8 +144,8 @@
 			<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
 		</div>
 		<!-- 表格 -->
-		<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' v-loading="goods_loading">
-			<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
+		<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' @sort-change="sortChange" v-loading="goods_loading">
+			<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
 				<template slot-scope="scope">
 					<el-image :z-index="2008" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == 3 && scope.$index > 0"></el-image>
 					<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1 && scope.$index > 0">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>
@@ -224,22 +224,24 @@
 				date:[getMonthStartDate(),getNowDate()],//付款日期				
 				dept_title_list:[],							//部门表头信息
 				dept_gmv_data:[],							//部门gmv数据
-				dept_loading:false,
+				dept_loading:true,
 				platform_title_list:[],						//平台表头信息
 				platform_gmv_data:[],						//平台gmv数据
-				platform_loading:false,
+				platform_loading:true,
 				cpfl_title_list:[],							//品类表头信息
 				cpfl_gmv_data:[],							//品类gmv数据
-				cpfl_loading:false,
+				cpfl_loading:true,
 				table_list:[],						//列表数据
 				total:0,
 				title_list:[],						//列
 				selected_ids:[],					//自定义已选中的id
 				view_row:[],						//自定义
-				goods_loading:false,
+				goods_loading:true,
 				show_custom:false,
 				page:1,
 				pagesize:10,
+				sort:"",
+				sort_type:"",
 			}
 		},
 		created(){
@@ -268,6 +270,7 @@
 			},
 			//搜索
 			async searchFn(){
+				this.page = 1;
 				let arg = {
 					dept_id:this.dept_name.join(','),
 					platform:this.pl.join(','),
@@ -336,6 +339,12 @@
 					})
 				})
 			},
+			//排序
+			sortChange(column){
+				this.sort = column.prop;
+				this.sort_type = column.order == 'ascending'?'0':'1';
+				this.goodsDetails();
+			},
 			//店铺商品明细
 			goodsDetails(){
 				let arg = {
@@ -349,7 +358,9 @@
 					tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length > 0?this.date[1]:"",
 					page:this.page,
-					pagesize:this.pagesize
+					pagesize:this.pagesize,
+					sort:this.sort,
+					sort_type:this.sort_type
 				}
 				this.goods_loading = true;
 				return new Promise((resolve)=>{

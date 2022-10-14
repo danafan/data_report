@@ -11,7 +11,10 @@
 				<el-button type="primary" size="mini" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="update_time">更新时间：{{dataObj.update_time}}</div>
+		<div class="export_row">
+			<div class="update_time">更新时间：{{dataObj.update_time}}</div>
+			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip>
 			</el-table-column>
@@ -29,15 +32,22 @@
 	</div>
 </template>
 <style lang="less" scoped>
-.update_time{
+.export_row{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 	margin-bottom:5px;
-	color: red;
-	font-size: 14px; 
+	.update_time{
+		color: red;
+		font-size: 14px; 
+	}
 }
 </style>
 <script>
 	import resource from '../../../api/resource.js'
 	import demandResource from '../../../api/demandResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -81,6 +91,26 @@
 					}else{
 						this.$message.warning(res.data.msg);
 					}
+				});
+			},
+			//导出
+			exportFile(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						gys:this.select_gys_ids.join(','),
+					}
+					demandResource.supplierShortageRankingExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'供应商缺货排行');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
 				});
 			},
 			//分页
