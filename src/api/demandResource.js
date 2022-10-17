@@ -27,6 +27,7 @@ let path = {
 	shopNoDeliverList:'supply_chain/shop_no_deliver_list',	//店铺待发货列表
 	shopNoDeliverExport:'supply_chain/shop_no_deliver_export',	//店铺待发货列表导出
 	supplierSend:'supplier/send',					//店铺发货情况
+	sendChart:'supplier/send_chart',				//店铺发货情况图表
 	
 }						
 export default{
@@ -137,6 +138,10 @@ export default{
 	//店铺发货情况
 	supplierSend(params){
 		return http.get(path.supplierSend, params)
+	},
+	//店铺发货情况图表
+	sendChart(params){
+		return http.get(path.sendChart, params)
 	},
 	
 }

@@ -347,6 +347,7 @@
 			},
 			//环形图配置
 			pieOptions(data){
+				console.log(data)
 				return {
 					tooltip: {
 						trigger: 'item',

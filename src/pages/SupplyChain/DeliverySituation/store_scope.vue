@@ -12,7 +12,7 @@
 				<el-form :inline="true" size="mini" class="demo-form-inline">
 					<dps @callBack="checkReq"></dps>
 					<el-form-item label="付款日期:">
-						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 						</el-date-picker>
 					</el-form-item>
 					<el-form-item>
@@ -23,7 +23,7 @@
 		</div>
 		<div class="table_title">店铺发货情况</div>
 		<el-table size="small" :data="store_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="storeSortChange" :header-cell-class-name="storeHeaderHandler">
-			<el-table-column prop="shop_name" label="店铺名称" width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="name" label="店铺名称" width="120" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="fh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="dd_0" label="今日订单总数" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_0" label="今日发货率" align="center"></el-table-column>
@@ -38,6 +38,10 @@
 		<div class="page">
 			<el-pagination @size-change="sizeChange($event,'store')" @current-change="pageChange($event,'store')" :current-page="store_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="store_total">
 			</el-pagination>
+		</div>
+		<div class="chart_row">
+			<div class="djddbl" id="djddbl"></div>
+			<div class="jqtfhl" id="jqtfhl"></div>
 		</div>
 		<div class="table_chart">
 			<div class="table_box">
@@ -83,7 +87,7 @@
 					</el-pagination>
 				</div>
 			</div>
-			<div class="zb_chart" id='dept_zb'></div>
+			<div class="zb_chart" id='platform_zb'></div>
 		</div>
 	</div>
 </template>
@@ -155,6 +159,9 @@
 				platform_data:[],			//平台数据
 				platform_total:0,			//平台发货情况总计
 				platform_sort_field:{},		//平台排序字段处理
+				deptZbChart:null,	
+				platformZbChart:null,
+				djddblChart:null
 			}
 		},
 		created(){
@@ -182,6 +189,8 @@
 				this.platform_page = 1;
 				this.platform_size = 10;
 				this.getTableList('platform');
+				//仓库发货图表
+				this.sendChart();
 			},
 			//店铺表头
 			storeHeaderHandler({ row, column, rowIndex, columnIndex }) {  
@@ -216,13 +225,13 @@
 				this.getTableList('dept');
 			},
 			//平台表头
-			deptHeaderHandler({ row, column, rowIndex, columnIndex }) {  
+			platformHeaderHandler({ row, column, rowIndex, columnIndex }) {  
 				if(this.platform_sort_field[column.property]){
 					column.order = this.platform_sort_field[column.property];
 				}    
 			},  
 			//平台排序    
-			deptSortChange({ column, prop, order }) {      
+			platformSortChange({ column, prop, order }) {      
 				if(!order || this.platform_sort_field[prop] === order){
 					this.platform_sort_field[prop] = null;
 				}else{
@@ -274,6 +283,256 @@
 				this[`${type}_page`] = v;
 				this.getTableList(type);
 			},
+			//仓库发货图表
+			sendChart(){
+				let arg = {
+					start_time:this.date && this.date.length> 0?this.date[0]:"",
+					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					platform:this.pl.join(','),
+					dept_id:this.dept_name.join(','),
+					shop_name:this.shop_code.join(','),
+				}
+				demandResource.sendChart(arg).then(res => {
+					if(res.data.code == 1){
+						var echarts = require("echarts");
+						//部门饼状图
+						var dept_data = res.data.data.deptChart;
+						//平台饼状图
+						var platform_data = res.data.data.platformChart;
+						//多件订单比例
+						var order_data = res.data.data.orderChart;
+						//近七天发货率
+						var seven_send_data = res.data.data.sevenSendChart;
+
+						this.$nextTick(() => {
+							//部门饼状图
+							var dept_zb_chart = document.getElementById('dept_zb');
+							this.deptZbChart = echarts.getInstanceByDom(dept_zb_chart)
+							if (this.deptZbChart == null) { 
+								this.deptZbChart = echarts.init(dept_zb_chart);
+							}
+							this.deptZbChart.setOption(this.pieOptions('部门',dept_data));
+							//平台饼状图
+							var platform_zb_chart = document.getElementById('platform_zb');
+							this.platformZbChart = echarts.getInstanceByDom(platform_zb_chart)
+							if (this.platformZbChart == null) { 
+								this.platformZbChart = echarts.init(platform_zb_chart);
+							}
+							this.platformZbChart.setOption(this.pieOptions('平台',platform_data));
+							//多条件订单比例
+							let series_data = [];
+							let x_data = [];
+							order_data.map(item => {
+								series_data.push(item.rate);
+								x_data.push(item.shop_name);
+							})
+							var djddbl_chart = document.getElementById('djddbl');
+							this.djddblChart = echarts.getInstanceByDom(djddbl_chart)
+							if (this.djddblChart == null) { 
+								this.djddblChart = echarts.init(djddbl_chart);
+							}
+							this.djddblChart.setOption(this.categoryOptions(series_data,x_data));
+							//近七天发货率
+							var jr_data = [];
+							var lr_data = [];
+							var sr_data = [];
+							var si_data = [];
+							var ax_data = [];
+							seven_send_data.map(item => {
+								jr_data.push(item.fhl_0);
+								lr_data.push(item.fhl_1);
+								sr_data.push(item.fhl_2);
+								si_data.push(item.fhl_3);
+								ax_data.push(item.sjxrrq);
+							})
+							var jqtfhl_chart = document.getElementById('jqtfhl');
+							this.jqtfhlChart = echarts.getInstanceByDom(jqtfhl_chart)
+							if (this.jqtfhlChart == null) { 
+								this.jqtfhlChart = echarts.init(jqtfhl_chart);
+							}
+							this.jqtfhlChart.setOption(this.axisOption(jr_data,lr_data,sr_data,si_data,ax_data));
+						})
+						window.addEventListener('resize',() => {
+							this.deptZbChart.resize();
+							this.platformZbChart.resize();
+							this.djddblChart.resize();
+							this.jqtfhlChart.resize();
+						});
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//柱状图配置
+			categoryOptions(series_data,x_data){
+				return {
+					title: {
+						text: '多件订单比例',
+						left:'center'
+					},
+					tooltip: {
+						trigger: 'axis',
+						formatter (params) {
+							var relVal = params[0];
+							return '店铺名称：' + relVal.axisValue + '</br>' 
+							+ "多件订单比例：" + relVal.value + '%';
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+						axisPointer: {            
+							type: 'shadow'        
+						}
+					},
+					grid:{
+						y2:100,
+						top:'15%',
+						left: '80',
+						right: '80',
+					},
+					xAxis: [{
+						type: 'category',
+						data: x_data,
+						axisLabel: {
+							color: '#333',
+							rotate:70
+						}
+					}],
+					yAxis:{
+						type: 'value',
+						axisLabel: {
+							formatter: '{value}%'
+						}
+					},
+					series: [
+					{
+						data: series_data,
+						type: 'bar'
+					}
+					]
+				}
+			},
+			//折线图配置
+			axisOption(jr_data,lr_data,sr_data,si_data,ax_data){
+				return {
+					title: {
+						text: '近七天发货率',
+						left:'center'
+					},
+					tooltip: {
+						trigger: 'axis',
+						formatter (params) {
+							var date = params[0].axisValue;
+							return '付款日期：' + date + '</br>' 
+							+ "今日发货率：" + params[0].value + '%</br>'
+							+ "两日发货率：" + params[1].value + '%</br>'
+							+ "三日发货率：" + params[2].value + '%</br>'
+							+ "四日发货率：" + params[3].value + '%</br>';
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+						axisPointer: {            
+							type: 'shadow'        
+						}
+					},
+					grid:{
+						y2:100,
+						top:'15%',
+						left: '80',
+						right: '80',
+					},
+					legend: {
+						top:'30',
+						data: ['今日发货率','两日发货率','三日发货率','四日发货率',]
+					},
+					xAxis: {
+						type: 'category',
+						name:"付款日期",
+						data: ax_data,
+						axisLabel: {
+							color: '#333',
+							rotate:70
+						}
+					},
+					yAxis:{
+						type: 'value',
+						name:'度量值',
+						axisLabel: {
+							formatter: '{value}%'
+						}
+					},
+					series: [{
+						name:'今日发货率',
+						type: 'line',
+						lineStyle:{
+							width:3.6
+						},
+						data: jr_data
+					},{
+						name:'两日发货率',
+						type: 'line',
+						lineStyle:{
+							width:3.6
+						},
+						data: lr_data
+					},{
+						name:'三日发货率',
+						type: 'line',
+						lineStyle:{
+							width:3.6
+						},
+						data: sr_data
+					},{
+						name:'四日发货率',
+						type: 'line',
+						lineStyle:{
+							width:3.6
+						},
+						data: si_data
+					}]
+				}
+			},
+			//饼状图图配置
+			pieOptions(params_name,data){
+				return {
+					title: {
+						text: `系统剩余订单数${params_name}占比`,
+						left:'center'
+					},
+					tooltip: {
+						trigger: 'item',
+						formatter: (params) => {
+							return params_name + '：' + params.data.name + '</br>' 
+							+ "系统剩余未发订单数：" + params.data.xtsy + '</br>'
+							+ "系统剩余未发总额百分比：" + params.data.value + '%';
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+						axisPointer: {            
+							type: 'shadow'        
+						}
+					},
+					legend: {
+						bottom: 'bottom',
+						left: 'center'
+					},
+					series: [
+					{
+						type: 'pie',
+						radius: '50%',
+						data: data
+					}
+					]
+				}
+			},
 		},
 		components:{
 			dps
@@ -284,6 +543,7 @@
 .page_top{
 	display: flex;
 	.toast_box{
+		margin-right: 15px;
 		margin-top: 15px;
 		padding: 10px;
 		border-radius: 10px;
@@ -320,6 +580,18 @@
 	color: #333333;
 	font-weight: bold;
 }
+.chart_row{
+	margin-top: 30px;
+	display: flex;
+	.djddbl{
+		width: 500px;
+		height: 380px;
+	}
+	.jqtfhl{
+		flex:1;
+		height: 380px;
+	}
+}
 .table_chart{
 	margin-top: 15px;
 	display: flex;
@@ -334,7 +606,6 @@
 		}
 	}
 	.zb_chart{
-		border:1px solid red;
 		width: 380px;
 		height: 380px;
 	}
