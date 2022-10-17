@@ -12,19 +12,19 @@
 				clearable></el-cascader>
 			</el-form-item>
 			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStoreList" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_plat_ids" clearable @change="getStoreList" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-select v-model="select_store_key" class="input_key" :popper-append-to-body="false">
+				<el-select v-model="select_store_key" class="input_key">
 					<el-option label="店铺名称" :value="1">
 					</el-option>
 					<el-option label="店铺ID" :value="2">
 					</el-option>
 				</el-select>：
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
 				<el-option v-for="item in store_list" :key="item.dept_id" :label="select_store_key == 1?item.shop_name:item.dept_name" :value="item.dept_id">
 				</el-option>
 			</el-select>

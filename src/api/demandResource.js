@@ -24,6 +24,8 @@ let path = {
 	deforeLbExport:'supplier/top_200_list_export',	//款式Top200列表导出
 	deforeWsList:'supplier/top_50_list',			//3店铺Top50列表
 	deforeWsExport:'supplier/top_50_list_export',	//3店铺Top50列表导出
+	shopNoDeliverList:'supply_chain/shop_no_deliver_list',	//店铺待发货列表
+	shopNoDeliverExport:'supply_chain/shop_no_deliver_export',	//店铺待发货列表导出
 	
 }						
 export default{
@@ -122,6 +124,14 @@ export default{
 	//3店铺Top50列表导出
 	deforeWsExport(params){
 		return http.get(path.deforeWsExport, params)
+	},
+	//店铺待发货列表
+	shopNoDeliverList(params){
+		return http.get(path.shopNoDeliverList, params)
+	},
+	//店铺待发货列表导出
+	shopNoDeliverExport(params){
+		return http.post(path.shopNoDeliverExport, params)
 	},
 	
 }
