@@ -26,6 +26,7 @@ let path = {
 	deforeWsExport:'supplier/top_50_list_export',	//3店铺Top50列表导出
 	shopNoDeliverList:'supply_chain/shop_no_deliver_list',	//店铺待发货列表
 	shopNoDeliverExport:'supply_chain/shop_no_deliver_export',	//店铺待发货列表导出
+	supplierSend:'supplier/send',					//店铺发货情况
 	
 }						
 export default{
@@ -132,6 +133,10 @@ export default{
 	//店铺待发货列表导出
 	shopNoDeliverExport(params){
 		return http.post(path.shopNoDeliverExport, params)
+	},
+	//店铺发货情况
+	supplierSend(params){
+		return http.get(path.supplierSend, params)
 	},
 	
 }

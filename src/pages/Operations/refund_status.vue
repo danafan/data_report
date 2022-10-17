@@ -51,7 +51,7 @@
 		</el-table>
 		<!-- 平台GMV详情 -->
 		<div class="table_title">平台GMV详情</div>
-		<el-table :data="platform_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="platform_loading">
+		<el-table :data="platform_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
 			<el-table-column :label="item.row_name" v-for="item in platform_title_list">
 				<template slot-scope="scope">
 					<div :class="{'bold_style':scope.$index == 0}">{{scope.row[item.row_field_name]}}</div>
@@ -227,7 +227,6 @@
 				dept_loading:true,
 				platform_title_list:[],						//平台表头信息
 				platform_gmv_data:[],						//平台gmv数据
-				platform_loading:true,
 				cpfl_title_list:[],							//品类表头信息
 				cpfl_gmv_data:[],							//品类gmv数据
 				cpfl_loading:true,
@@ -282,40 +281,27 @@
 					tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length > 0?this.date[1]:""
 				}
-				//获取部门GMV详情
-				await this.deptGmvList(arg);
-				//获取平台GMV详情
-				await this.platformGmvList(arg);
+				//获取部门、平台GMV详情
+				await this.deptPlatformGmvList(arg);
 				//获取品类GMV详情
 				await this.cpflGmvList(arg);
 				//店铺商品明细
 				await this.goodsDetails();
 			},
 			//获取部门GMV详情
-			deptGmvList(arg){
+			deptPlatformGmvList(arg){
 				this.dept_loading = true;
 				return new Promise((resolve)=>{
-					operationResource.deptGmvList(arg).then(res => {
+					operationResource.deptPlatformGmvList(arg).then(res => {
 						if(res.data.code == 1){
 							this.dept_loading = false;
-							this.dept_gmv_data = res.data.data.data;
-							this.dept_title_list = res.data.data.title_list;
-							resolve();
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				})
-			},
-			//获取部门GMV详情
-			platformGmvList(arg){
-				this.platform_loading = true;
-				return new Promise((resolve)=>{
-					operationResource.platformGmvList(arg).then(res => {
-						if(res.data.code == 1){
-							this.platform_loading = false;
-							this.platform_gmv_data = res.data.data.data;
-							this.platform_title_list = res.data.data.title_list;
+							let dept_data = res.data.data.dept_data;
+							this.dept_gmv_data = dept_data.data;
+							this.dept_title_list = dept_data.title_list;
+
+							let platform_data = res.data.data.platform_data;
+							this.platform_gmv_data = platform_data.data;
+							this.platform_title_list = platform_data.title_list;
 							resolve();
 						}else{
 							this.$message.warning(res.data.msg);

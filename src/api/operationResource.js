@@ -32,8 +32,7 @@ let path = {
 	mlGys:'ml_analysis/ml_gys',						//毛利分析--供应商分组数据列表
 	mlColor:'ml_analysis/ml_color',					//毛利分析--颜色分组数据列表
 	mlSize:'ml_analysis/ml_size',					//毛利分析--颜色分组数据列表
-	deptGmvList:'supplier/dept_gmv_list',			//部门GMV详情
-	platformGmvList:'supplier/platform_gmv_list',	//平台GMV详情
+	deptPlatformGmvList:'supplier/dept_platform_gmv_list',	//部门、平台GMV详情
 	cpflGmvList:'supplier/cpfl_gmv_list',			//品类GMV详情
 	goodsDetails:'supplier/goods_details',			//店铺商品明细
 }						
@@ -166,13 +165,9 @@ export default{
 	mlSize(params){
 		return http.get(path.mlSize, params)
 	},
-	//部门GMV详情
-	deptGmvList(params){
-		return http.get(path.deptGmvList, params)
-	},
-	//平台GMV详情
-	platformGmvList(params){
-		return http.get(path.platformGmvList, params)
+	// 部门、平台GMV详情
+	deptPlatformGmvList(params){
+		return http.get(path.deptPlatformGmvList, params)
 	},
 	//品类GMV详情
 	cpflGmvList(params){
