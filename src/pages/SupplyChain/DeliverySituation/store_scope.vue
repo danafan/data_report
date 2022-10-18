@@ -22,17 +22,17 @@
 			</div>
 		</div>
 		<div class="table_title">店铺发货情况</div>
-		<el-table size="small" :data="store_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="storeSortChange" :header-cell-class-name="storeHeaderHandler">
-			<el-table-column prop="name" label="店铺名称" width="120" show-overflow-tooltip align="center"></el-table-column>
+		<el-table size="small" :data="store_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="storeSortChange" v-loading="store_loading">
+			<el-table-column prop="name" label="店铺名称" width="120" show-overflow-tooltip align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="dd_0" label="今日订单总数" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="fhl_0" label="今日发货率" align="center"></el-table-column>
-			<el-table-column prop="fhl_1" label="两日发货率" align="center"></el-table-column>
-			<el-table-column prop="fhl_2" label="三日发货率" align="center"></el-table-column>
-			<el-table-column prop="fhl_3" label="四日发货率" align="center"></el-table-column>
-			<el-table-column prop="xtsy" label="系统剩余订单数" align="center"></el-table-column>
-			<el-table-column prop="yc_dp" label="系统异常订单" align="center"></el-table-column>
-			<el-table-column prop="rate" label="多件订单比例" align="center">
+			<el-table-column prop="fhl_0" label="今日发货率" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fhl_1" label="两日发货率" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fhl_2" label="三日发货率" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fhl_3" label="四日发货率" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="xtsy" label="系统剩余订单数" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="yc_dp" label="系统异常订单" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="rate" label="多件订单比例" align="center" sortable="custom">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -40,23 +40,23 @@
 			</el-pagination>
 		</div>
 		<div class="chart_row">
-			<div class="djddbl" id="djddbl"></div>
-			<div class="jqtfhl" id="jqtfhl"></div>
+			<div class="djddbl" id="djddbl" v-loading="chart_loading"></div>
+			<div class="jqtfhl" id="jqtfhl" v-loading="chart_loading"></div>
 		</div>
 		<div class="table_chart">
 			<div class="table_box">
 				<div class="table_title">部门发货情况</div>
-				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="deptSortChange" :header-cell-class-name="deptHeaderHandler">
-					<el-table-column prop="name" label="部门" width="120" show-overflow-tooltip align="center" fixed></el-table-column>
+				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="deptSortChange" v-loading="dept_loading">
+					<el-table-column prop="name" label="部门" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
 					<el-table-column prop="fh_0" label="今日已发货" width="110" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="dd_0" label="今日订单总数" width="120" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="fhl_0" label="今日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="fhl_1" label="两日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="fhl_2" label="三日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="fhl_3" label="四日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="xtsy" label="系统剩余订单数" width="110" align="center"></el-table-column>
-					<el-table-column prop="yc_dp" label="系统异常订单" width="100" align="center"></el-table-column>
-					<el-table-column prop="rate" label="多件订单比例" width="100" align="center">
+					<el-table-column prop="fhl_0" label="今日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_1" label="两日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_2" label="三日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_3" label="四日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="xtsy" label="系统剩余订单数" width="130" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="yc_dp" label="系统异常订单" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="rate" label="多件订单比例" width="120" align="center" sortable="custom">
 					</el-table-column>
 				</el-table>
 				<div class="page bottom">
@@ -64,22 +64,22 @@
 					</el-pagination>
 				</div>
 			</div>
-			<div class="zb_chart" id='dept_zb'></div>
+			<div class="zb_chart" id='dept_zb' v-loading="chart_loading"></div>
 		</div>
 		<div class="table_chart">
 			<div class="table_box">
 				<div class="table_title">平台发货情况</div>
-				<el-table size="small" :data="platform_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="platformSortChange" :header-cell-class-name="platformHeaderHandler">
-					<el-table-column prop="name" label="平台" width="120" show-overflow-tooltip align="center" fixed></el-table-column>
+				<el-table size="small" :data="platform_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="platformSortChange" v-loading="platform_loading">
+					<el-table-column prop="name" label="平台" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
 					<el-table-column prop="fh_0" label="今日已发货" width="110" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="dd_0" label="今日订单总数" width="120" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="fhl_0" label="今日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="fhl_1" label="两日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="fhl_2" label="三日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="fhl_3" label="四日发货率" width="80" align="center"></el-table-column>
-					<el-table-column prop="xtsy" label="系统剩余订单数" width="110" align="center"></el-table-column>
-					<el-table-column prop="yc_dp" label="系统异常订单" width="100" align="center"></el-table-column>
-					<el-table-column prop="rate" label="多件订单比例" width="100" align="center">
+					<el-table-column prop="fhl_0" label="今日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_1" label="两日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_2" label="三日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_3" label="四日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="xtsy" label="系统剩余订单数" width="130" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="yc_dp" label="系统异常订单" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="rate" label="多件订单比例" width="120" align="center" sortable="custom">
 					</el-table-column>
 				</el-table>
 				<div class="page bottom">
@@ -87,7 +87,7 @@
 					</el-pagination>
 				</div>
 			</div>
-			<div class="zb_chart" id='platform_zb'></div>
+			<div class="zb_chart" id='platform_zb' v-loading="chart_loading"></div>
 		</div>
 	</div>
 </template>
@@ -148,20 +148,22 @@
 				store_size:10,			//店铺分页
 				store_data:[],			//店铺数据
 				store_total:0,			//店铺发货情况总计
-				store_sort_field:{},	//店铺排序字段处理
+				store_loading:false,
 				dept_page:1,			//部门分页
 				dept_size:10,			//部门分页
 				dept_data:[],			//部门数据
 				dept_total:0,			//部门发货情况总计
-				dept_sort_field:{},		//部门排序字段处理
+				dept_loading:false,
 				platform_page:1,			//平台分页
 				platform_size:10,			//平台分页
 				platform_data:[],			//平台数据
 				platform_total:0,			//平台发货情况总计
-				platform_sort_field:{},		//平台排序字段处理
+				platform_loading:false,
 				deptZbChart:null,	
 				platformZbChart:null,
-				djddblChart:null
+				djddblChart:null,
+				jqtfhlChart:null,
+				chart_loading:false
 			}
 		},
 		created(){
@@ -180,68 +182,47 @@
 				//获取店铺发货情况
 				this.store_page = 1;
 				this.store_size = 10;
-				this.getTableList('store');
+				this.getTableList('store','');
 				//获取部门发货情况
 				this.dept_page = 1;
 				this.dept_size = 10;
-				this.getTableList('dept');
+				this.getTableList('dept','');
 				//获取平台发货情况
 				this.platform_page = 1;
 				this.platform_size = 10;
-				this.getTableList('platform');
+				this.getTableList('platform','');
 				//仓库发货图表
 				this.sendChart();
-			},
-			//店铺表头
-			storeHeaderHandler({ row, column, rowIndex, columnIndex }) {  
-				if(this.store_sort_field[column.property]){
-					column.order = this.store_sort_field[column.property];
-				}    
-			},  
+			}, 
 			//店铺排序    
-			storeSortChange({ column, prop, order }) {      
-				if(!order || this.store_sort_field[prop] === order){
-					this.store_sort_field[prop] = null;
-				}else{
-					this.store_sort_field[prop] = order;
-				}
-				//获取店铺发货情况
-				this.getTableList('store');
-			},
-			//部门表头
-			deptHeaderHandler({ row, column, rowIndex, columnIndex }) {  
-				if(this.dept_sort_field[column.property]){
-					column.order = this.dept_sort_field[column.property];
+			storeSortChange({ column, prop, order }) {  
+				var sort = "";   
+				if(order){
+					sort = prop + '-' + (order == 'ascending'?'asc':'desc');
 				}    
+				//获取店铺发货情况
+				this.getTableList('store',sort);
 			},  
 			//部门排序    
 			deptSortChange({ column, prop, order }) {      
-				if(!order || this.dept_sort_field[prop] === order){
-					this.dept_sort_field[prop] = null;
-				}else{
-					this.dept_sort_field[prop] = order;
-				}
+				var sort = "";   
+				if(order){
+					sort = prop + '-' + (order == 'ascending'?'asc':'desc');
+				}   
 				//获取店铺发货情况
-				this.getTableList('dept');
-			},
-			//平台表头
-			platformHeaderHandler({ row, column, rowIndex, columnIndex }) {  
-				if(this.platform_sort_field[column.property]){
-					column.order = this.platform_sort_field[column.property];
-				}    
-			},  
+				this.getTableList('dept',sort);
+			}, 
 			//平台排序    
 			platformSortChange({ column, prop, order }) {      
-				if(!order || this.platform_sort_field[prop] === order){
-					this.platform_sort_field[prop] = null;
-				}else{
-					this.platform_sort_field[prop] = order;
-				}
+				var sort = "";   
+				if(order){
+					sort = prop + '-' + (order == 'ascending'?'asc':'desc');
+				} 
 				//获取平台发货情况
-				this.getTableList('platform');
+				this.getTableList('platform',sort);
 			},
-			//获取店铺发货情况
-			getTableList(type){
+			//获取三个表格数据
+			getTableList(type,sort){
 				let arg = {
 					type:`${type}_name`,
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
@@ -251,10 +232,12 @@
 					shop_name:this.shop_code.join(','),
 					page:this[`${type}_page`],
 					pagesize:this[`${type}_size`],
-					sort:this.sortFn(this[`${type}_sort_field`])
+					sort:sort
 				}
+				this[`${type}_loading`] = true;
 				demandResource.supplierSend(arg).then(res => {
 					if(res.data.code == 1){
+						this[`${type}_loading`] = false;
 						let data = res.data.data;
 						this[`${type}_data`] = data.data;
 						this[`${type}_total`] = data.total;
@@ -262,17 +245,6 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			//处理排序字段
-			sortFn(sort_field){
-				let sort = [];
-				for(let k in sort_field){
-					if(sort_field[k]){
-						let str = k + '-' + (sort_field[k] == 'descending'?'desc':'asc');
-						sort.push(str);
-					}
-				}
-				return sort.join('-');
 			},
 			//分页
 			sizeChange(v,type) {
@@ -292,8 +264,10 @@
 					dept_id:this.dept_name.join(','),
 					shop_name:this.shop_code.join(','),
 				}
+				this.chart_loading = true;
 				demandResource.sendChart(arg).then(res => {
 					if(res.data.code == 1){
+						this.chart_loading = false;
 						var echarts = require("echarts");
 						//部门饼状图
 						var dept_data = res.data.data.deptChart;
