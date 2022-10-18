@@ -146,16 +146,19 @@
 				date:[getNowDate(),getNowDate()],			//时间区间
 				store_page:1,			//店铺分页
 				store_size:10,			//店铺分页
+				store_sort:"",
 				store_data:[],			//店铺数据
 				store_total:0,			//店铺发货情况总计
 				store_loading:false,
 				dept_page:1,			//部门分页
 				dept_size:10,			//部门分页
+				dept_sort:"",
 				dept_data:[],			//部门数据
 				dept_total:0,			//部门发货情况总计
 				dept_loading:false,
 				platform_page:1,			//平台分页
 				platform_size:10,			//平台分页
+				platform_sort:"",
 				platform_data:[],			//平台数据
 				platform_total:0,			//平台发货情况总计
 				platform_loading:false,
@@ -182,57 +185,54 @@
 				//获取店铺发货情况
 				this.store_page = 1;
 				this.store_size = 10;
-				this.getTableList('store','');
+				this.getTableList('store');
 				//获取部门发货情况
 				this.dept_page = 1;
 				this.dept_size = 10;
-				this.getTableList('dept','');
+				this.getTableList('dept');
 				//获取平台发货情况
 				this.platform_page = 1;
 				this.platform_size = 10;
-				this.getTableList('platform','');
+				this.getTableList('platform');
 				//仓库发货图表
 				this.sendChart();
 			}, 
 			//店铺排序    
 			storeSortChange({ column, prop, order }) {  
-				var sort = "";   
 				if(order){
-					sort = prop + '-' + (order == 'ascending'?'asc':'desc');
+					this.store_sort = prop + '-' + (order == 'ascending'?'asc':'desc');
 				}    
 				//获取店铺发货情况
-				this.getTableList('store',sort);
+				this.getTableList('store');
 			},  
 			//部门排序    
 			deptSortChange({ column, prop, order }) {      
-				var sort = "";   
 				if(order){
-					sort = prop + '-' + (order == 'ascending'?'asc':'desc');
+					this.dept_sort = prop + '-' + (order == 'ascending'?'asc':'desc');
 				}   
 				//获取店铺发货情况
-				this.getTableList('dept',sort);
+				this.getTableList('dept');
 			}, 
 			//平台排序    
-			platformSortChange({ column, prop, order }) {      
-				var sort = "";   
+			platformSortChange({ column, prop, order }) {       
 				if(order){
-					sort = prop + '-' + (order == 'ascending'?'asc':'desc');
+					this.platform_sort = prop + '-' + (order == 'ascending'?'asc':'desc');
 				} 
 				//获取平台发货情况
-				this.getTableList('platform',sort);
+				this.getTableList('platform');
 			},
 			//获取三个表格数据
-			getTableList(type,sort){
+			getTableList(type){
 				let arg = {
 					type:`${type}_name`,
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
-					shop_name:this.shop_code.join(','),
+					shop_id:this.shop_code.join(','),
 					page:this[`${type}_page`],
 					pagesize:this[`${type}_size`],
-					sort:sort
+					sort:this[`${type}_sort`]
 				}
 				this[`${type}_loading`] = true;
 				demandResource.supplierSend(arg).then(res => {
@@ -262,7 +262,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
-					shop_name:this.shop_code.join(','),
+					shop_id:this.shop_code.join(','),
 				}
 				this.chart_loading = true;
 				demandResource.sendChart(arg).then(res => {

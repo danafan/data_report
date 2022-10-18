@@ -49,7 +49,10 @@
 			<div class="table_list" v-if="table_data.length > 0">
 				<div class="column_item" :class="{'column_item_green':index%2 == 0}" v-for="(item,index) in table_data" :key="index">
 					<div class="column_item_text" v-for="i in label_list">
-						{{item[i.prop]}}
+						<el-tooltip effect="dark" :content="item[i.prop]" placement="top" v-if="i.prop == 'ckmc'">
+							<el-button type="text" class="tooltip_but">{{item[i.prop]}}</el-button>
+						</el-tooltip>
+						<div v-else>{{item[i.prop]}}</div>
 					</div>
 				</div>
 			</div>
@@ -238,6 +241,9 @@
 						if(data.length > 0){
 							this.total_data = data.splice(0,1)[0];
 							this.table_data = data;
+						}else{
+							this.total_data = {};
+							this.table_data = [];
 						}
 					}else{
 						this.$message.warning(res.data.msg);
@@ -340,32 +346,46 @@
 		flex:1;
 		display: flex;
 		overflow-x: scroll;
-		.column_item{
-			border-top:1px solid #333333;
-			.column_item_text{
-				border-bottom:1px solid #ccc;
-				width:130px;
-				text-align: center;
-				height: 37px;
-				line-height: 37px;
-				font-size:14px;
-				color: #333333;
-			}
-		}
-		.column_item_green{
-			background: rgba(100,209,96,.5);
-		}
-	}
-	.empty{
-		flex:1;
-		height: 814px;
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		font-size:14px;
-		color: #cccccc;
-	}
-	
+		&::-webkit-scrollbar {
+    		display: none;//取消滚动条
+    	}
+    	.column_item{
+    		border-top:1px solid #333333;
+    		.column_item_text{
+    			border-bottom:1px solid #ccc;
+    			width:130px;
+    			text-align: center;
+    			height: 37px;
+    			line-height: 37px;
+    			font-size:14px;
+    			color: #333333;
+    			.tooltip_but{
+    				width:130px;
+    				text-align: center;
+    				font-size:14px;
+    				color: #333333;
+    				overflow: hidden !important;
+    				text-overflow: ellipsis !important;
+    				display: -webkit-box !important;
+    				-webkit-line-clamp: 1 !important;
+    				-webkit-box-orient: vertical !important;
+    			}
+    		}
+    	}
+    	.column_item_green{
+    		background: rgba(100,209,96,.5);
+    	}
+    }
+    .empty{
+    	flex:1;
+    	height: 814px;
+    	display: flex;
+    	align-items: center;
+    	justify-content: center;
+    	font-size:14px;
+    	color: #cccccc;
+    }
+
 }
 </style>
 

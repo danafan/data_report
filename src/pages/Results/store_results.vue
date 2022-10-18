@@ -11,6 +11,9 @@
 				<IntervalData v-if="item.web_url == 'interval_data'"/>
 				<Overseas v-if="item.web_url == 'overseas'"/>
 			</el-tab-pane>
+			<el-tab-pane label="营销费用经营管控" lazy name="cost_control" class="tab_pane_box">
+				<CostControl/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -21,6 +24,7 @@
 </style>
 <script>
 	import PerformanceAnalysis from './StoreResults/performance_analysis_test.vue'
+	import CostControl from './StoreResults/cost_control.vue'
 	import TargetComplete from './StoreResults/target_complete.vue'
 	import DailyPerformance from './StoreResults/daily_performance.vue'
 	import FishPonds from './StoreResults/fish_ponds.vue'
@@ -67,6 +71,7 @@
 		},
 		components:{
 			PerformanceAnalysis,
+			CostControl,
 			TargetComplete,
 			DailyPerformance,
 			FishPonds,

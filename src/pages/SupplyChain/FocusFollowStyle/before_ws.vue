@@ -164,7 +164,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						dept_id:this.select_store_ids.join(','),
+						shop_id:this.select_store_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
 						sjxrrq:this.sjxrrq?this.sjxrrq:''
@@ -194,7 +194,7 @@
 			},
 			getData(){
 				let arg = {
-					dept_id:this.select_store_ids.join(','),
+					shop_id:this.select_store_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
