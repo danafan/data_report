@@ -60,8 +60,8 @@
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
-					<div class="text_content" :class="{'bold_style':scope.$index == 0}" v-if="scope.$index == 0 || i.type == 0">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
-					<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
+					<div class="text_content" :class="[{'red_style':(i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20) || (i.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[i.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[i.row_field_name] > 20)))},{'bold_style':scope.$index == 0}]" v-if="scope.$index == 0 || i.type == 0">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
+					<div :class="{'red_style':(i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20) || (i.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[i.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[i.row_field_name] > 20)))}" :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -630,11 +630,11 @@
 
 </script>
 <style type="text/css">
-	.el-table th>.cell{
-		display: flex!important;
-		align-items: center!important;
-		justify-content: center!important;
-	}
+.el-table th>.cell{
+	display: flex!important;
+	align-items: center!important;
+	justify-content: center!important;
+}
 </style>
 <style lang="less" scoped>
 .page_top{
