@@ -10,9 +10,7 @@
 				<SalesTrend v-if="item.web_url == 'sales_trend'"/>
 				<IntervalData v-if="item.web_url == 'interval_data'"/>
 				<Overseas v-if="item.web_url == 'overseas'"/>
-			</el-tab-pane>
-			<el-tab-pane label="营销费用经营管控" lazy name="cost_control" class="tab_pane_box">
-				<CostControl/>
+				<CostControl v-if="item.web_url == 'cost_control'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

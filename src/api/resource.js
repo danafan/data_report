@@ -226,6 +226,10 @@ let path = {
 	giftcardExport:'overseas/giftcard_export',						//海外店铺销售数据导出
 	advExport:'overseas/adv_export',								//海外店铺广告数据导出
 	tableSetting:'common/table_setting',							//表格列宽设置
+	businessChart:'supplier/business_chart',						//获取营销费用分析上面三个图标数据
+	deptBusiness:'supplier/dept_business',							//项目部-营销费用投产情况
+	shopBusiness:'supplier/shop_business',							//店铺—营销费用投产情况
+	shopDayBusiness:'supplier/shop_day_business',					//店铺日数据
 		
 
 }					
@@ -1165,6 +1169,22 @@ export default{
 	//列表列宽设置
 	tableSetting(params){
 		return http.post(path.tableSetting, params)
+	},
+	//营销费用分析上面三个图表数据
+	businessChart(params){
+		return http.get(path.businessChart, params)
+	},
+	//项目部-营销费用投产情况
+	deptBusiness(params){
+		return http.get(path.deptBusiness, params)
+	},
+	//店铺—营销费用投产情况
+	shopBusiness(params){
+		return http.get(path.shopBusiness, params)
+	},
+	//店铺日数据
+	shopDayBusiness(params){
+		return http.get(path.shopDayBusiness, params)
 	},
 }
 
