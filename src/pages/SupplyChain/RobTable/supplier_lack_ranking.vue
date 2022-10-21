@@ -15,14 +15,14 @@
 			<div class="update_time">更新时间：{{dataObj.update_time}}</div>
 			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
-			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip>
+		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="tableSortChange" v-loading="loading">
+			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip>
+			<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip>
+			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
+			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -55,6 +55,7 @@
 				select_gys_ids:[],							//选中的供应商
 				pagesize:10,
 				page:1,
+				table_sort:"",
 				dataObj:{},
 				loading:false
 			}
@@ -76,12 +77,22 @@
 					})
 				}
 			},
+			//表格排序    
+			tableSortChange({ column, prop, order }) {  
+				if(order){
+					this.table_sort = prop + '-' + (order == 'ascending'?'1':'0');
+				}else{
+					this.table_sort = "";
+				}
+				this.getList();
+			}, 
 			//获取列表
 			getList(){		
 				let arg = {
 					gys:this.select_gys_ids.join(','),
 					page:this.page,
-					pagesize:this.pagesize
+					pagesize:this.pagesize,
+					sort:this.table_sort
 				}
 				this.loading = true;
 				demandResource.supplierShortageRanking(arg).then(res => {
@@ -102,6 +113,7 @@
 				}).then(() => {
 					let arg = {
 						gys:this.select_gys_ids.join(','),
+						sort:this.table_sort
 					}
 					demandResource.supplierShortageRankingExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'供应商缺货排行');

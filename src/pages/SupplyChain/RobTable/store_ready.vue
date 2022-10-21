@@ -22,25 +22,24 @@
 			<div class="update_time">更新时间：{{dataObj.update_time}}</div>
 			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
-			<el-table-column prop="dpbh" label="店铺" align="center" show-overflow-tooltip>
+		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="tableSortChange" v-loading="loading">
+			<el-table-column prop="dpbh" label="店铺" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="ksbm" label="款式编码" align="center" show-overflow-tooltip>
+			<el-table-column prop="ksbm" label="款式编码" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="gysbm" label="供应商货号" align="center" show-overflow-tooltip>
+			<el-table-column prop="gysbm" label="供应商货号" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip>
+			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="dhs" label="待发货数" align="center" show-overflow-tooltip>
+			<el-table-column prop="dfhs" label="待发货数" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip>
+			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
+			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
-
+			<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip>
+			<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -80,6 +79,7 @@
 				select_gyshh_ids:[],						//选中的供应商货号
 				pagesize:10,
 				page:1,
+				table_sort:"",
 				dataObj:{}
 			}
 		},
@@ -118,6 +118,15 @@
 					})
 				}
 			},
+			//表格排序    
+			tableSortChange({ column, prop, order }) {  
+				if(order){
+					this.table_sort = prop + '-' + (order == 'ascending'?'1':'0');
+				}else{
+					this.table_sort = "";
+				}
+				this.getList();
+			}, 
 			//获取列表
 			getList(){		
 				let arg = {
@@ -127,7 +136,8 @@
 					gys:this.select_gys_ids.join(','),
 					gysbm:this.select_gyshh_ids.join(','),
 					page:this.page,
-					pagesize:this.pagesize
+					pagesize:this.pagesize,
+					sort:this.table_sort
 				}
 				this.loading = true;
 				demandResource.shopNoDeliverList(arg).then(res => {
@@ -152,6 +162,7 @@
 						dept_id:this.dept_name.join(','),
 						platform:this.pl.join(','),
 						shop_id:this.shop_code.join(','),
+						sort:this.table_sort
 					}
 					demandResource.shopNoDeliverExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'店铺待发货列表');

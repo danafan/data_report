@@ -39,10 +39,10 @@
 			<div class="update_time">更新时间：{{dataObj.update_time}}</div>
 			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" v-loading="loading">
-			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip>
+		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" v-loading="loading" @sort-change="tableSortChange">
+			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column label="款式编码" align="center">
+			<el-table-column prop="ksbm" label="款式编码" align="center" sortable="custom">
 				<template slot-scope="scope">
 					<!-- 下钻 -->
 					<el-tooltip placement="top-end">
@@ -53,21 +53,21 @@
 					</el-tooltip>
 				</template>
 			</el-table-column>
-			<el-table-column prop="gysbm" label="供应商货号" align="center" show-overflow-tooltip>
+			<el-table-column prop="gysbm" label="供应商货号" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip>
+			<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip>
+			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
+			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip>
+			<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip>
+			<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
+			<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip>
+			<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
 		</el-table>
 		<div class="page">
@@ -76,29 +76,29 @@
 		</div>
 		<!-- 下钻 -->
 		<el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-			<el-table :data="data" size="mini">
-				<el-table-column align="center" prop="ksbm" label="款号"></el-table-column>
+			<el-table :data="data" size="mini" @sort-change="detailSortChange">
+				<el-table-column align="center" prop="ksbm" label="款号" sortable="custom"></el-table-column>
 				<el-table-column align="center" prop="color" label="图片">
 					<template slot-scope="scope">
 						<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
 						<div v-else></div>
 					</template>
 				</el-table-column>
-				<el-table-column align="center" prop="color" label="颜色"></el-table-column>
-				<el-table-column align="center" prop="size" label="尺码"></el-table-column>
-				<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip>
+				<el-table-column align="center" prop="color" label="颜色" sortable="custom"></el-table-column>
+				<el-table-column align="center" prop="size" label="尺码" sortable="custom"></el-table-column>
+				<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
-				<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip>
+				<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
-				<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip>
+				<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
-				<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip>
+				<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
-				<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip>
+				<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
-				<el-table-column label="sfq200" align="center" show-overflow-tooltip>
+				<el-table-column label="sfq200" align="center" show-overflow-tooltip  sortable="custom">
 				</el-table-column>
-				<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip>
+				<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
 				
 			</el-table>
@@ -156,11 +156,13 @@
 				pagesize:10,
 				page:1,
 				dataObj:{},
+				table_sort:"",
 				loading:false,
 				detailDialog:false,			
 				detail_page:1,
 				detail_page_size:10,
 				ksbm:"",
+				detail_sort:"",
 				data:[],
 				total:0
 			}
@@ -212,6 +214,15 @@
 					})
 				}
 			},
+			//表格排序    
+			tableSortChange({ column, prop, order }) {  
+				if(order){
+					this.table_sort = prop + '-' + (order == 'ascending'?'1':'0');
+				}else{
+					this.table_sort = "";
+				}
+				this.getList();
+			}, 
 			//获取列表
 			getList(){		
 				let arg = {
@@ -221,7 +232,8 @@
 					sfcxqh:this.sfcxqh,
 					sfqlb:this.sfqlb,
 					page:this.page,
-					pagesize:this.pagesize
+					pagesize:this.pagesize,
+					sort:this.table_sort
 				}
 				this.loading = true;
 				demandResource.grabGoods(arg).then(res => {
@@ -246,6 +258,7 @@
 						gysbm:this.select_gyshh_ids.join(','),
 						sfcxqh:this.sfcxqh,
 						sfqlb:this.sfqlb,
+						sort:this.table_sort
 					}
 					demandResource.grabGoodsExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'抢货报表');
@@ -268,13 +281,23 @@
 				//获取列表
 				this.getList();
 			},
+			//详情排序
+			detailSortChange({ column, prop, order }) {  
+				if(order){
+					this.detail_sort = prop + '-' + (order == 'ascending'?'1':'0');
+				}else{
+					this.detail_sort = "";
+				}
+				this.getDetail(this.ksbm);
+			}, 
 			//获取下钻内容
 			getDetail(ksbm){
 				this.ksbm = ksbm;
 				let arg = {
 					page:this.detail_page,
 					pagesize:this.detail_page_size,
-					ksbm:this.ksbm
+					ksbm:this.ksbm,
+					sort:this.detail_sort
 				}
 				demandResource.grabGoodsSku(arg).then(res => {
 					if(res.data.code == 1){

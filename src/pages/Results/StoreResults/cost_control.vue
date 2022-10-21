@@ -144,6 +144,17 @@
 				date:[getMonthStartDate(),getNowDate()],			//时间区间
 				colorList: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
 				blChart:null,				//经营状况趋势图
+				empty_option:{
+					title: {
+						text: '暂无数据~',
+						x: 'center',
+						y: 'center',
+						textStyle: {
+							fontSize: 14,
+							fontWeight: 'normal',
+						}
+					}
+				},
 				dept_custom_data:[],		//项目部销售收入圆形图
 				deptCustomChart:null,
 				store_custom_data:[],		//店铺销售收入圆形图
@@ -255,6 +266,26 @@
 					label:'贡献毛益率',
 					prop:'mlv_gx_rate',
 					width:'120',
+				},{
+					label:'鱼塘订单',
+					prop:'yt_dd',
+					width:'120',
+				},{
+					label:'发货订单',
+					prop:'fh_dd',
+					width:'120',
+				},{
+					label:'未发货订单',
+					prop:'wait_dd',
+					width:'120',
+				},{
+					label:'多件订单占比',
+					prop:'multiple_rate',
+					width:'120',
+				},{
+					label:'拆分订单占比',
+					prop:'split_rate',
+					width:'120',
 				}],
 				day_total:0,
 				day_loading:false,
@@ -345,19 +376,22 @@
 							item['value'] = item.xssr;
 							item['unit'] = '万';
 						})
-						dept_custom_data.unshift({
-							id:'dept',
-							name:'最外层',
-							value:0,
-							unit:'万'
-						})
+						if(dept_custom_data.length > 0){
+							dept_custom_data.unshift({
+								id:'dept',
+								name:'最外层',
+								value:0,
+								unit:'万'
+							})
+							dept_custom_data.sort(this.compare("value"));
+						}
 						this.dept_custom_data = dept_custom_data;
 						var dept_custom = document.getElementById('dept_custom');
 						this.deptCustomChart = echarts.getInstanceByDom(dept_custom)
 						if (this.deptCustomChart == null) { 
 							this.deptCustomChart = echarts.init(dept_custom);
 						}
-						this.deptCustomChart.setOption(this.setChartOptions(this.dept_custom_data));
+						this.deptCustomChart.setOption(this.setChartOptions(dept_custom_data));
 						//店铺圆形图
 						let store_custom_data = data.shop_chart;
 						store_custom_data.map(item => {
@@ -372,13 +406,14 @@
 							value:0,
 							unit:'万'
 						})
+						store_custom_data.sort(this.compare("value"));
 						this.store_custom_data = store_custom_data;
 						var store_custom = document.getElementById('store_custom');
 						this.storeCustomChart = echarts.getInstanceByDom(store_custom)
 						if (this.storeCustomChart == null) { 
 							this.storeCustomChart = echarts.init(store_custom);
 						}
-						this.storeCustomChart.setOption(this.setChartOptions(this.store_custom_data));
+						this.storeCustomChart.setOption(store_custom_data.length == 1?this.empty_option:this.setChartOptions(this.store_custom_data));
 						window.addEventListener('resize',() => {
 							this.blChart.resize();
 						});
@@ -387,77 +422,96 @@
 					}
 				})
 			},
+			//排序
+			compare(property) {
+				return function (a, b) {
+					var value1 = a[property];
+					var value2 = b[property];
+					return value1 - value2;
+				}
+			},
 			//折、柱一体图表
 			setOptions(legend,x_axis,series_data){
-				return {
-					tooltip: {
-						trigger: 'axis',
-						formatter: function (params) {
-							let tip = "";
-							if(params != null && params.length > 0) {
-								tip = params[0].axisValueLabel + "</br>";
-								params.map(item => {
-									tip += item.seriesName + "：" + item.value + (item.seriesType == 'bar'?'万':'%') + "</br>";
-								})
+				if(series_data.length == 0){
+					this.blChart.clear();
+					return this.empty_option;
+				}else{
+					return {
+						tooltip: {
+							trigger: 'axis',
+							formatter: function (params) {
+								let tip = "";
+								if(params != null && params.length > 0) {
+									tip = params[0].axisValueLabel + "</br>";
+									params.map(item => {
+										tip += item.seriesName + "：" + item.value + (item.seriesType == 'bar'?'万':'%') + "</br>";
+									})
+								}
+								return tip;
+							},
+							backgroundColor:"rgba(0,0,0,.8)",
+							textStyle:{
+								color:"#ffffff"
+							},
+							borderColor:"rgba(0,0,0,0.7)",
+							axisPointer: {            
+								type: 'shadow'        
 							}
-							return tip;
 						},
-						backgroundColor:"rgba(0,0,0,.8)",
-						textStyle:{
-							color:"#ffffff"
+						legend: {
+							data: legend
 						},
-						borderColor:"rgba(0,0,0,0.7)",
-						axisPointer: {            
-							type: 'shadow'        
-						}
-					},
-					legend: {
-						data: legend
-					},
-					grid:{
-						y2:80
-					},
-					xAxis: [{
-						type: 'category',
-						data: x_axis,
-						axisLabel: {
-							color: '#333',
-							interval: 2,
-							rotate:70
-						}
-					}],
-					yAxis:[{
-						type: 'value',
-						axisLabel: {
-							formatter: '{value} 万'
-						}
-					},{
-						type: 'value',
-						axisLabel: {
-							formatter: '{value} %'
-						}
-					}],
-					series: series_data
+						grid:{
+							y2:80
+						},
+						xAxis: [{
+							type: 'category',
+							data: x_axis,
+							axisLabel: {
+								color: '#333',
+								interval: 2,
+								rotate:70
+							}
+						}],
+						yAxis:[{
+							type: 'value',
+							axisLabel: {
+								formatter: '{value} 万'
+							}
+						},{
+							type: 'value',
+							axisLabel: {
+								formatter: '{value} %'
+							}
+						}],
+						series: series_data
+					}
 				}
 			},
 			//圆形图表配置
 			setChartOptions(series_data){
-				return {
-					dataset: {
-						source: series_data
-					},
-					tooltip: {
-					},
-					series: [{
-						type: 'custom',
-						colorBy: 'data',
-						renderItem: this.renderItem,
-						coordinateSystem: 'none',
-						encode: {
-							tooltip: ['value','unit'],
-							itemName: 'name'
-						}
-					}]
+				if(series_data.length == 0){
+					this.deptCustomChart.clear();
+					this.storeCustomChart.clear();
+					return this.empty_option;
+				}else{
+					return {
+						dataset: {
+							source: series_data
+						},
+						tooltip: {
+						},
+						series: [{
+							type: 'custom',
+							colorBy: 'data',
+							renderItem: this.renderItem,
+							coordinateSystem: 'none',
+							encode: {
+								tooltip: ['value','unit'],
+								itemName: 'name'
+							}
+						}]
+					}
 				}
 			},
 			renderItem(params, api) {
@@ -487,7 +541,7 @@
 					textContent: {
 						type: 'text',
 						style: {
-							text: value > 100?name + '\n' + `${value}万`:'',
+							text: idx <= 5 || (value >= 100 && idx > 5)?name + '\n' + `${value}万`:'',
 							fill: '#fff',
 							fontFamily: 'Arial',
 							width: node.r * 1.3,
@@ -678,6 +732,9 @@
 .b_l_chart{
 	width: 100%;
 	height: 480px;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .custom_row{
 	width: 100%;
