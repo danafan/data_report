@@ -68,6 +68,7 @@ const no_the_new = resolve=>require(['@/pages/SupplyChain/no_the_new'],resolve)
 const rob_table = resolve=>require(['@/pages/SupplyChain/rob_table'],resolve)
 const focus_follow_style = resolve=>require(['@/pages/SupplyChain/focus_follow_style'],resolve)
 const delivery_situation = resolve=>require(['@/pages/SupplyChain/delivery_situation'],resolve)
+const store_new_style = resolve=>require(['@/pages/SupplyChain/store_new_style'],resolve)
 
 Vue.use(Router)
 
@@ -113,6 +114,7 @@ const router = new Router({
     { path: '/rob_table',name:"抢货报表", component: rob_table},
     { path: '/focus_follow_style',name:"重点跟进款式", component: focus_follow_style},
     { path: '/delivery_situation',name:"仓库发货情况统计", component: delivery_situation},
+    { path: '/store_new_style',name:"店铺款式上新", component: store_new_style},
     { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
         isUseCache:false,
         keepAlive:true

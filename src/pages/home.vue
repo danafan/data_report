@@ -95,10 +95,10 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/delivery_situation">
+				<el-menu-item index="/store_new_style">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">仓库发货情况统计</span>
-				</el-menu-item> -->
+					<span slot="title">店铺款式上新</span>
+				</el-menu-item>
 				<!-- <el-menu-item index="/refund_status">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">退款情况看板</span>

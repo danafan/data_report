@@ -30,6 +30,7 @@ let path = {
 	sendChart:'supplier/send_chart',				//店铺发货情况图表
 	ckSend:'supplier/ck_send',						//仓库发货情况
 	ckList:'supplier/ck',							//仓库列表
+	companyDeptKsList:'supplier/company_dept_ks_list',	//公司,事业部上新
 	
 }						
 export default{
@@ -152,6 +153,10 @@ export default{
 	//仓库列表
 	ckList(params){
 		return http.get(path.ckList, params)
+	},
+	//公司,事业部上新
+	companyDeptKsList(params){
+		return http.get(path.companyDeptKsList, params)
 	},
 	
 }

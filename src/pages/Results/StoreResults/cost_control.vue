@@ -391,7 +391,7 @@
 						if (this.deptCustomChart == null) { 
 							this.deptCustomChart = echarts.init(dept_custom);
 						}
-						this.deptCustomChart.setOption(this.setChartOptions(dept_custom_data));
+						this.deptCustomChart.setOption(this.setChartOptions(dept_custom_data,'dept'));
 						//店铺圆形图
 						let store_custom_data = data.shop_chart;
 						store_custom_data.map(item => {
@@ -413,7 +413,7 @@
 						if (this.storeCustomChart == null) { 
 							this.storeCustomChart = echarts.init(store_custom);
 						}
-						this.storeCustomChart.setOption(store_custom_data.length == 1?this.empty_option:this.setChartOptions(this.store_custom_data));
+						this.storeCustomChart.setOption(store_custom_data.length == 1?this.empty_option:this.setChartOptions(this.store_custom_data,'store'));
 						window.addEventListener('resize',() => {
 							this.blChart.resize();
 						});
@@ -436,6 +436,7 @@
 					this.blChart.clear();
 					return this.empty_option;
 				}else{
+					this.blChart.clear();
 					return {
 						tooltip: {
 							trigger: 'axis',
@@ -489,12 +490,18 @@
 				}
 			},
 			//圆形图表配置
-			setChartOptions(series_data){
+			setChartOptions(series_data,type){
 				if(series_data.length == 0){
 					this.deptCustomChart.clear();
 					this.storeCustomChart.clear();
 					return this.empty_option;
 				}else{
+					if(type == 'dept'){
+						this.deptCustomChart.clear();
+					}
+					if(type == 'store'){
+						this.storeCustomChart.clear();
+					}
 					return {
 						dataset: {
 							source: series_data
