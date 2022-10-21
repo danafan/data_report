@@ -427,7 +427,7 @@
 				return function (a, b) {
 					var value1 = a[property];
 					var value2 = b[property];
-					return value1 - value2;
+					return value2 - value1;
 				}
 			},
 			//折、柱一体图表
@@ -541,7 +541,7 @@
 					textContent: {
 						type: 'text',
 						style: {
-							text: idx <= 5 || (value >= 100 && idx > 5)?name + '\n' + `${value}万`:'',
+							text: idx < 5 || (value >= 100 && idx >= 5)?name + '\n' + `${value}万`:'',
 							fill: '#fff',
 							fontFamily: 'Arial',
 							width: node.r * 1.3,
@@ -664,7 +664,9 @@
 			daySortChange({ column, prop, order }) {  
 				if(order){
 					this.sort = prop + '-' + (order == 'ascending'?'asc':'desc');
-				}    
+				} else{
+					this.sort = "";
+				}   
 				this.shopDayBusiness();
 			}, 
 			//店铺—营销费用投产情况分页
