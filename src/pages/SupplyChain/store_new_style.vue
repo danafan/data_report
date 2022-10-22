@@ -25,7 +25,7 @@
 		<div class="table_row">
 			<div class="item table_box">
 				<div class="table_title">公司</div>
-				<el-table :data="company_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle" v-loading="company_dept_loading">
+				<el-table :data="company_data" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle" v-loading="company_dept_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="index == 0?90:200" align="center" v-for="(item,index) in company_title" :fixed="index == 0">
 						<template slot-scope="scope">
 							<div :class="{'bold_style':scope.$index == 0}">{{scope.row[item.row_field_name]}}</div>
@@ -75,10 +75,6 @@
 						</el-table-column>
 					</el-table-column>
 				</el-table>
-				<div class="page">
-					<el-pagination @size-change="xmbSizeChange" @current-change="xmbPageChange" :current-page="xmb_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="xmb_total">
-					</el-pagination>
-				</div>
 			</div>
 			<div class="item chart_box" id="xmb_data_chart"></div>
 		</div>
@@ -211,11 +207,8 @@
 				dept_data:[],			//事业部表格数据
 				deptDataChart:null,
 				xmb_loading:false,		//项目部
-				xmb_pagesize:10,
-				xmb_page:1,
 				xmb_title:[],			//项目部表头
 				xmb_data:[],			//项目部数据
-				xmb_total:0,
 				xmbDataChart:null,
 				store_loading:false,	//店铺
 				store_pagesize:10,
@@ -239,7 +232,18 @@
 				sa_supplier_page:1,
 				sa_supplier_title:[],		//公司表头
 				sa_supplier_data:[],		//公司表格数据
-				sa_supplier_total:0
+				sa_supplier_total:0,
+				empty_option:{
+					title: {
+						text: '暂无数据~',
+						x: 'center',
+						y: 'center',
+						textStyle: {
+							fontSize: 14,
+							fontWeight: 'normal',
+						}
+					}
+				},
 
 			}
 		},
@@ -374,9 +378,9 @@
 						let dept = res.data.data.dept;
 						this.dept_title = dept.table_list;
 						let dept_data = dept.data;
-						this.dept_data = dept_data.reduce(function (a, b) { 
+						this.dept_data = dept_data.length > 0?dept_data.reduce(function (a, b) { 
 							return a.concat(b)
-						});
+						}):[];
 						// 事业部图表
 						let dept_legend = [];	//图例名称
 						let dept_series_data = [];		//数据
@@ -421,17 +425,6 @@
 					}
 				})
 			},
-			//分页
-			xmbSizeChange(val) {
-				this.xmb_pagesize = val;
-				//项目部数据
-				this.xmbKsList();
-			},
-			xmbPageChange(val) {
-				this.xmb_page = val;
-				//项目部数据
-				this.xmbKsList();
-			},
 			//项目部数据
 			xmbKsList(){
 				let arg = {
@@ -439,8 +432,6 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					type:this.type,
-					page:this.xmb_page,
-					pagesize:this.xmb_pagesize
 				}
 				this.xmb_loading = true;
 				demandResource.xmbKsList(arg).then(res => {
@@ -451,14 +442,13 @@
 						// 项目部数据
 						let data = res.data.data;
 						this.xmb_title = data.table_list;
-						this.xmb_total = data.data.total;
-						let xmb_data = data.data.data;
-						this.xmb_data = xmb_data.reduce(function (a, b) { 
+						let xmb_data = data.data;
+						this.xmb_data = xmb_data.length > 0?xmb_data.reduce(function (a, b) { 
 							return a.concat(b)
-						});
+						}):[];
 						//横坐标
 						this.xmb_title.map((item,index) => {
-							if(index > 1){
+							if(index > 2){
 								x_axis.push(item.row_name);
 							}
 						})
@@ -494,7 +484,7 @@
 						if (this.xmbDataChart == null) { 
 							this.xmbDataChart = echarts.init(xmb_data_chart);
 						}
-						this.xmbDataChart.setOption(this.setBarOption('项目部',xmb_legend,x_axis,xmb_series_data,'dept'));
+						this.xmbDataChart.setOption(this.setBarOption('项目部',xmb_legend,x_axis,xmb_series_data,'xmb'));
 
 
 						window.addEventListener('resize',() => {
@@ -535,9 +525,9 @@
 						this.store_title = data.table_list;
 						this.store_total = data.data.total;
 						let store_data = data.data.data;
-						this.store_data = store_data.reduce(function (a, b) { 
+						this.store_data = store_data.length > 0?store_data.reduce(function (a, b) { 
 							return a.concat(b)
-						});
+						}):[];
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -581,12 +571,12 @@
 			supplierSizeChange(val) {
 				this.supplier_pagesize = val;
 				//供应商
-				this.supplierKsList();
+				this.supplierList();
 			},
 			supplierPageChange(val) {
 				this.supplier_page = val;
 				//供应商
-				this.supplierKsList();
+				this.supplierList();
 			},
 			//供应商
 			supplierList(){
@@ -595,8 +585,8 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					type:this.type,
-					page:this.style_page,
-					pagesize:this.style_pagesize
+					page:this.supplier_page,
+					pagesize:this.supplier_pagesize
 				}
 				this.supplier_loading = true;
 				demandResource.supplierList(arg).then(res => {
@@ -607,9 +597,9 @@
 						this.supplier_title = data.table_list;
 						this.supplier_total = data.data.total;
 						let supplier_data = data.data.data;
-						this.supplier_data = supplier_data.reduce(function (a, b) { 
+						this.supplier_data = supplier_data.length > 0?supplier_data.reduce(function (a, b) { 
 							return a.concat(b)
-						});
+						}):[];
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -633,8 +623,8 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					type:this.type,
-					page:this.style_page,
-					pagesize:this.style_pagesize
+					page:this.sa_supplier_page,
+					pagesize:this.sa_supplier_pagesize
 				}
 				this.sa_supplier_loading = true;
 				demandResource.saSupplierList(arg).then(res => {
@@ -645,9 +635,9 @@
 						this.sa_supplier_title = data.table_list;
 						this.sa_supplier_total = data.data.total;
 						let sa_supplier_data = data.data.data;
-						this.sa_supplier_data = sa_supplier_data.reduce(function (a, b) { 
+						this.sa_supplier_data = sa_supplier_data.length > 0?sa_supplier_data.reduce(function (a, b) { 
 							return a.concat(b)
-						});
+						}):[];
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -655,61 +645,89 @@
 			},
 			//柱状图配置
 			setBarOption(title,legend,x_axis,series_data,type){
-				return {
-					title: {
-						text: title
-					},
-					tooltip: {
-						trigger: 'axis',
-						formatter: function (params) {
-							let tip = "";
-							if(params != null && params.length > 0) {
-								tip = '上架时间：' + params[0].axisValueLabel + "</br>";
-								params.map(item => {
-									if(type == 'store'){
-										tip += item.seriesName + "款数：" + item.data.value + "</br>" + item.seriesName + "占比：" + item.data.rate + "%</br>";
-									}else{
-										tip += item.seriesName + "款数：" + item.value + "</br>";
-									}
-									
-								})
-							}
-							return tip;
-						},
-						backgroundColor:"rgba(0,0,0,.8)",
-						textStyle:{
-							color:"#ffffff"
-						},
-						borderColor:"rgba(0,0,0,0.7)",
-						axisPointer: {
-							type: 'shadow'
-						}
-					},
-					grid:{
-						top:'28%'
-					},
-					legend: {
-						data: legend,
-						top:"8%",
-						left:0
-					},
-					xAxis: [
-					{
-						type: 'category',
-						data: x_axis
+				if(series_data.length == 0){
+					if(type == 'store'){
+						this.storeNewStatusChart.clear();
 					}
-					],
-					yAxis: [{
-						type: 'value',
-						name:'款数',
-					}],
-					series: series_data
-				};
+					if(type == 'dept'){
+						this.deptDataChart.clear();
+					}
+					if(type == 'xmb'){
+						this.xmbDataChart.clear();
+					}
+					return this.empty_option;
+				}else{
+					if(type == 'store'){
+						this.storeNewStatusChart.clear();
+					}
+					if(type == 'dept'){
+						this.deptDataChart.clear();
+					}
+					if(type == 'xmb'){
+						this.xmbDataChart.clear();
+					}
+					
+					return {
+						title: {
+							text: title
+						},
+						tooltip: {
+							trigger: 'axis',
+							formatter: function (params) {
+								let tip = "";
+								if(params != null && params.length > 0) {
+									tip = '上架时间：' + params[0].axisValueLabel + "</br>";
+									params.map(item => {
+										if(type == 'store'){
+											tip += item.seriesName + "款数：" + item.data.value + "</br>" + item.seriesName + "占比：" + item.data.rate + "%</br>";
+										}else{
+											tip += item.seriesName + "款数：" + item.value + "</br>";
+										}
+
+									})
+								}
+								return tip;
+							},
+							backgroundColor:"rgba(0,0,0,.8)",
+							textStyle:{
+								color:"#ffffff"
+							},
+							borderColor:"rgba(0,0,0,0.7)",
+							axisPointer: {
+								type: 'shadow'
+							}
+						},
+						grid:{
+							top:type == 'xmb'?'33%':'22%'
+						},
+						legend: {
+							data: legend,
+							top:"8%",
+							left:0
+						},
+						xAxis: [
+						{
+							type: 'category',
+							data: x_axis
+						}
+						],
+						yAxis: [{
+							type: 'value',
+							name:'款数',
+						}],
+						series: series_data
+					};
+				}
 			}
 		}
 	}
 	
 </script>
+<style type="text/css">
+	.el-table__body-wrapper::-webkit-scrollbar {
+	width: 0;
+}
+</style>
 <style lang="less" scoped>
 .table_row{
 	margin-bottom: 15px;
