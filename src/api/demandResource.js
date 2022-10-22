@@ -31,6 +31,11 @@ let path = {
 	ckSend:'supplier/ck_send',						//仓库发货情况
 	ckList:'supplier/ck',							//仓库列表
 	companyDeptKsList:'supplier/company_dept_ks_list',	//公司,事业部上新
+	xmbKsList:'supplier/dept_ks_list',					//项目部数据
+	storeKsList:'supplier/shop_ks_list',				//店铺数据
+	styleKsList:'supplier/shop_ks_detail',				//店铺款式上新
+	supplierList:'supplier/gys_ks_list',				//供应商
+	saSupplierList:'supplier/sa_ks_list',				//sa供应商
 	
 }						
 export default{
@@ -157,6 +162,26 @@ export default{
 	//公司,事业部上新
 	companyDeptKsList(params){
 		return http.get(path.companyDeptKsList, params)
+	},
+	//项目部数据
+	xmbKsList(params){
+		return http.get(path.xmbKsList, params)
+	},
+	//店铺数据
+	storeKsList(params){
+		return http.get(path.storeKsList, params)
+	},
+	//店铺款式上新
+	styleKsList(params){
+		return http.get(path.styleKsList, params)
+	},
+	//供应商
+	supplierList(params){
+		return http.get(path.supplierList, params)
+	},
+	//sa供应商
+	saSupplierList(params){
+		return http.get(path.saSupplierList, params)
 	},
 	
 }
