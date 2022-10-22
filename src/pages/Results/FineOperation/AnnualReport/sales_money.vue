@@ -229,6 +229,7 @@
 						this.refreshTable();
 						//每日销售金额年同比
 						this.xsje_day_ntb = res.data.data.xsje_day_ntb;
+						console.log(this.xsje_day_ntb)
 						// let markPoint = {
 						// 	data: [
 						// 	{type: 'max', name: '最大值'},
