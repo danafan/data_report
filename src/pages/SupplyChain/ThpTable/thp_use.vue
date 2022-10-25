@@ -1,9 +1,9 @@
 <template>
 	<div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
-			<el-form-item label="直播仓：">
-				<el-select v-model="ckwzpj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in ckwzpj" :key="item" :label="item" :value="item">
+			<el-form-item label="仓库位置：">
+				<el-select v-model="ckwzpj_ids" clearable multiple filterable collapse-tags placeholder="全部" @focus="setOptionWidth">
+					<el-option v-for="item in ckwzpj" :key="item" :label="item" :value="item" :style="{width:selectOptionWidth}">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -135,6 +135,7 @@
 				total:0,
 				daysDialog:false,
 				days:"",
+				selectOptionWidth:null
 			}
 		},
 		created(){
@@ -178,6 +179,11 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			setOptionWidth(event){
+				this.$nextTick(() => {
+					this.selectOptionWidth = event.srcElement.offsetWidth + 120 + "px";
+				}); 
 			},
 			//导出
 			exportFn(){
