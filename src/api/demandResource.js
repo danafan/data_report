@@ -36,6 +36,11 @@ let path = {
 	styleKsList:'supplier/shop_ks_detail',				//店铺款式上新
 	supplierList:'supplier/gys_ks_list',				//供应商
 	saSupplierList:'supplier/sa_ks_list',				//sa供应商
+	statisticalSearch:'supplier/statistical_search',	//烫画片使用情况统计搜索条件
+	statisticalList:'supplier/statistical_list',		//统计列表
+	updateStock:'supplier/update_stock',				//填写安全库存
+	garmentList:'supplier/garment_list',				//成衣列表
+	statisticalListExport:'supplier/statistical_list_export',	//成衣列表导出
 	
 }						
 export default{
@@ -182,6 +187,26 @@ export default{
 	//sa供应商
 	saSupplierList(params){
 		return http.get(path.saSupplierList, params)
+	},
+	//烫画片使用情况统计搜索条件
+	statisticalSearch(params){
+		return http.get(path.statisticalSearch, params)
+	},
+	//统计列表
+	statisticalList(params){
+		return http.get(path.statisticalList, params)
+	},
+	//填写安全库存
+	updateStock(params){
+		return http.post(path.updateStock, params)
+	},
+	//成衣列表
+	garmentList(params){
+		return http.get(path.garmentList, params)
+	},
+	//成衣列表导出
+	statisticalListExport(params){
+		return http.get(path.statisticalListExport, params)
 	},
 	
 }

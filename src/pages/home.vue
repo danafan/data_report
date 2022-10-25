@@ -95,9 +95,9 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/store_new_style">
+				<!-- <el-menu-item index="/thp_table">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">店铺款式上新</span>
+					<span slot="title">烫画片使用报表</span>
 				</el-menu-item> -->
 				<!-- <el-menu-item index="/refund_status">
 					<i class="el-icon-s-finance"></i>

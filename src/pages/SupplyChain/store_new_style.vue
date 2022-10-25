@@ -32,13 +32,16 @@
 						</template>
 						<el-table-column :label="i.row_name" :prop="i.row_field_name" align="center" width="90" v-for="(i,i_index) in item.list">
 							<template slot-scope="scope">
-								<div :class="{'bold_style':scope.$index == 0 || index == 1 || index == 2}">{{scope.row[i.row_field_name]}}{{i_index == 1?'%':''}}</div>
+								<div :class="{'bold_style':scope.$index == 0 || (index == 1 && (scope.$index == 1 || scope.$index == 2))}">{{scope.row[i.row_field_name]}}{{i_index == 1?'%':''}}</div>
 							</template>
 						</el-table-column>
 					</el-table-column>
 				</el-table>
 			</div>
-			<div class="item chart_box" id="store_new_status"></div>
+			<div class="item">
+				<div class="table_title">店铺款式粒度-每日上款情况(供应商等级)</div>
+				<div class="chart_box" id="store_new_status"></div>
+			</div>
 		</div>
 		<!-- 事业部数据 -->
 		<div class="table_row">
@@ -57,7 +60,10 @@
 					</el-table-column>
 				</el-table>
 			</div>
-			<div class="item chart_box" id="dept_data_chart"></div>
+			<div class="item">
+				<div class="table_title">事业部</div>
+				<div class="chart_box" id="dept_data_chart"></div>
+			</div>
 		</div>
 		<!-- 项目部数据 -->
 		<div class="table_row">
@@ -76,7 +82,10 @@
 					</el-table-column>
 				</el-table>
 			</div>
-			<div class="item chart_box" id="xmb_data_chart"></div>
+			<div class="item">
+				<div class="table_title">项目部</div>
+				<div class="chart_box" id="xmb_data_chart"></div>
+			</div>
 		</div>
 		<!-- 店铺数据 -->
 		<div class="table_row">
@@ -373,7 +382,7 @@
 						if (this.storeNewStatusChart == null) { 
 							this.storeNewStatusChart = echarts.init(store_new_status);
 						}
-						this.storeNewStatusChart.setOption(this.setBarOption('店铺款式粒度-每日上款情况(供应商等级)',company_legend,x_axis,company_series_data,'store'));
+						this.storeNewStatusChart.setOption(this.setBarOption(company_legend,x_axis,company_series_data,'store'));
 						//事业部数据
 						let dept = res.data.data.dept;
 						this.dept_title = dept.table_list;
@@ -413,7 +422,7 @@
 						if (this.deptDataChart == null) { 
 							this.deptDataChart = echarts.init(dept_data_chart);
 						}
-						this.deptDataChart.setOption(this.setBarOption('事业部',dept_legend,x_axis,dept_series_data,'dept'));
+						this.deptDataChart.setOption(this.setBarOption(dept_legend,x_axis,dept_series_data,'dept'));
 
 
 						window.addEventListener('resize',() => {
@@ -484,7 +493,7 @@
 						if (this.xmbDataChart == null) { 
 							this.xmbDataChart = echarts.init(xmb_data_chart);
 						}
-						this.xmbDataChart.setOption(this.setBarOption('项目部',xmb_legend,x_axis,xmb_series_data,'xmb'));
+						this.xmbDataChart.setOption(this.setBarOption(xmb_legend,x_axis,xmb_series_data,'xmb'));
 
 
 						window.addEventListener('resize',() => {
@@ -644,7 +653,7 @@
 				})
 			},
 			//柱状图配置
-			setBarOption(title,legend,x_axis,series_data,type){
+			setBarOption(legend,x_axis,series_data,type){
 				if(series_data.length == 0){
 					if(type == 'store'){
 						this.storeNewStatusChart.clear();
@@ -668,9 +677,6 @@
 					}
 					
 					return {
-						title: {
-							text: title
-						},
 						tooltip: {
 							trigger: 'axis',
 							formatter: function (params) {
@@ -698,11 +704,11 @@
 							}
 						},
 						grid:{
-							top:type == 'xmb'?'33%':'22%'
+							top:type == 'xmb'?'25%':'15%'
 						},
 						legend: {
 							data: legend,
-							top:"8%",
+							top:0,
 							left:0
 						},
 						xAxis: [
@@ -723,11 +729,6 @@
 	}
 	
 </script>
-<style type="text/css">
-	.el-table__body-wrapper::-webkit-scrollbar {
-	width: 0;
-}
-</style>
 <style lang="less" scoped>
 .table_row{
 	margin-bottom: 15px;
