@@ -40,7 +40,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="table_row">
-			<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“百”为单位</div>
+			<div class="red_toast">*以下【店铺日目标】表格涉及到金额的都是以“万”为单位</div>
 			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="day_table_data" max-height="650" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" show-summary :summary-method="getSummaries" v-loading="loading">
@@ -48,8 +48,8 @@
 			<el-table-column width="45" prop="week" label="星期" align="center"></el-table-column>
 			<el-table-column width="100" prop="gmv" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="日GMV(百)" placement="top-start">
-						<div class="text_content">日GMV(百)</div>
+					<el-tooltip effect="dark" content="日GMV(万)" placement="top-start">
+						<div class="text_content">日GMV(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -58,8 +58,8 @@
 			</el-table-column>
 			<el-table-column width="80" prop="xssr" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="日销量收入(百)" placement="top-start">
-						<div class="text_content">日销量收入(百)</div>
+					<el-tooltip effect="dark" content="日销量收入(万)" placement="top-start">
+						<div class="text_content">日销量收入(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -78,8 +78,8 @@
 			</el-table-column>
 			<el-table-column width="80" prop="cpcb" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="产品成本(百)" placement="top-start">
-						<div class="text_content">产品成本(百)</div>
+					<el-tooltip effect="dark" content="产品成本(万)" placement="top-start">
+						<div class="text_content">产品成本(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -93,8 +93,8 @@
 			</el-table-column>
 			<el-table-column width="80" prop="yxfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="营销费用(百)" placement="top-start">
-						<div class="text_content">营销费用(百)</div>
+					<el-tooltip effect="dark" content="营销费用(万)" placement="top-start">
+						<div class="text_content">营销费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -113,8 +113,8 @@
 			</el-table-column>
 			<el-table-column width="95" prop="dptdfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="店铺团队费用(百)" placement="top-start">
-						<div class="text_content">店铺团队费用(百)</div>
+					<el-tooltip effect="dark" content="店铺团队费用(万)" placement="top-start">
+						<div class="text_content">店铺团队费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -123,8 +123,8 @@
 			</el-table-column>
 			<el-table-column width="95" prop="dpqtfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="店铺其他费用(百)" placement="top-start">
-						<div class="text_content">店铺其他费用(百)</div>
+					<el-tooltip effect="dark" content="店铺其他费用(万)" placement="top-start">
+						<div class="text_content">店铺其他费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -133,8 +133,8 @@
 			</el-table-column>
 			<el-table-column width="105" prop="xmbftfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="项目部分摊费用(百)" placement="top-start">
-						<div class="text_content">项目部分摊费用(百)</div>
+					<el-tooltip effect="dark" content="项目部分摊费用(万)" placement="top-start">
+						<div class="text_content">项目部分摊费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -143,8 +143,8 @@
 			</el-table-column>
 			<el-table-column width="105" prop="sybftfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="事业部分摊费用(百)" placement="top-start">
-						<div class="text_content">事业部分摊费用(百)</div>
+					<el-tooltip effect="dark" content="事业部分摊费用(万)" placement="top-start">
+						<div class="text_content">事业部分摊费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -153,8 +153,8 @@
 			</el-table-column>
 			<el-table-column width="68" prop="lbfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="领标费用(百)" placement="top-start">
-						<div class="text_content">领标费用(百)</div>
+					<el-tooltip effect="dark" content="领标费用(万)" placement="top-start">
+						<div class="text_content">领标费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -163,8 +163,8 @@
 			</el-table-column>
 			<el-table-column width="80" prop="gxmy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="贡献毛益(百)" placement="top-start">
-						<div class="text_content">贡献毛益(百)</div>
+					<el-tooltip effect="dark" content="贡献毛益(万)" placement="top-start">
+						<div class="text_content">贡献毛益(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -173,8 +173,8 @@
 			</el-table-column>
 			<el-table-column width="80" prop="wlfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="物流类费用(百)" placement="top-start">
-						<div class="text_content">物流类费用(百)</div>
+					<el-tooltip effect="dark" content="物流类费用(万)" placement="top-start">
+						<div class="text_content">物流类费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -183,8 +183,8 @@
 			</el-table-column>
 			<el-table-column width="80" prop="kffy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="客服类费用(百)" placement="top-start">
-						<div class="text_content">客服类费用(百)</div>
+					<el-tooltip effect="dark" content="客服类费用(万)" placement="top-start">
+						<div class="text_content">客服类费用(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -193,8 +193,8 @@
 			</el-table-column>
 			<el-table-column width="60"prop="gtfy" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="公摊费(百)" placement="top-start">
-						<div class="text_content">公摊费(百)</div>
+					<el-tooltip effect="dark" content="公摊费(万)" placement="top-start">
+						<div class="text_content">公摊费(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -203,8 +203,8 @@
 			</el-table-column>
 			<el-table-column width="80" prop="jlr" show-overflow-tooltip align="center">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip effect="dark" content="净利润额(百)" placement="top-start">
-						<div class="text_content">净利润额(百)</div>
+					<el-tooltip effect="dark" content="净利润额(万)" placement="top-start">
+						<div class="text_content">净利润额(万)</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
@@ -706,7 +706,7 @@
 			exportFile(){
 				var data_obj = {
 					table_title:`(${this.bottom_info.shop_name})店铺日目标`,
-					table_title_list:['日期','星期','日GMV(百)','日销量收入(百)','销售收入占比','毛利率','产品成本(百)','营销费用率','营销费用(百)','销售ROI目标','店铺团队费用(百)','店铺其他费用(百)','项目部分摊费用(百)','事业部分摊费用(百)','领标费用(百)','贡献毛益(百)','物流类费用(百)','客服类费用(百)','公摊费(百)','净利润额(百)','净利润率'],
+					table_title_list:['日期','星期','日GMV(万)','日销量收入(万)','销售收入占比','毛利率','产品成本(万)','营销费用率','营销费用(万)','销售ROI目标','店铺团队费用(万)','店铺其他费用(万)','项目部分摊费用(万)','事业部分摊费用(万)','领标费用(万)','贡献毛益(万)','物流类费用(万)','客服类费用(万)','公摊费(万)','净利润额(万)','净利润率'],
 					field_name_list:['day','week','gmv','xssr','xssrzb','mll','cpcb','yxfyl','yxfy','roi','dptdfy','dpqtfy','xmbftfy','sybftfy','lbfy','gxmy','wlfy','kffy','gtfy','jlr','jlrl'],
 					data_list:[]
 				};
