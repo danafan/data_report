@@ -19,10 +19,6 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<!-- <el-form-item label="统计日期：">
-				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
-				</el-date-picker>
-			</el-form-item> -->
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
@@ -51,7 +47,7 @@
 </template>
 <script>
 	import resource from '../../../api/demandResource.js'
-	// import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	
 	export default{
 		data(){
 			return{
@@ -63,31 +59,6 @@
 				cyspbm_ids:[],		//选中的成衣商品编码
 				page:1,
 				pagesize:10,
-				// pickerOptions: {
-				// 	shortcuts: [{
-				// 		text: '当月',
-				// 		onClick(picker) {
-				// 			const start = getMonthStartDate();
-				// 			const end = getCurrentDate();
-				// 			picker.$emit('pick', [start, end]);
-				// 		}
-				// 	},{
-				// 		text: '上个月',
-				// 		onClick(picker) {
-				// 			const start = getLastMonthStartDate(1);
-				// 			const end = getLastMonthEndDate(0);
-				// 			picker.$emit('pick', [start, end]);
-				// 		}
-				// 	}, {
-				// 		text: '上上个月',
-				// 		onClick(picker) {
-				// 			const start = getLastMonthStartDate(2);
-				// 			const end = getLastMonthEndDate(1);
-				// 			picker.$emit('pick', [start, end]);
-				// 		}
-				// 	}]
-				// },	 										//时间区间
-				// date:[],
 				table_sort:"",		//排序
 				loading:false,
 				data:[],
@@ -162,8 +133,6 @@
 					thspbm:this.thspbm_ids.join(','),
 					thksbm:this.thksbm_ids.join(','),
 					cyspbm:this.cyspbm_ids.join(','),
-					// start_time:this.date && this.date.length> 0?this.date[0]:"",
-					// end_time:this.date && this.date.length> 0?this.date[1]:"",
 					sort:this.table_sort,
 					page:this.page,
 					pagesize:this.pagesize

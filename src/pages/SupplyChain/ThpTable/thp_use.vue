@@ -51,7 +51,7 @@
 			<el-table-column label="图片" align="center" width="180">
 				<template slot-scope="scope">
 					<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
-					<div v-else></div>
+					<div v-else>暂无图片</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="thspbm" label="烫画片商品编码" align="center" width="120" show-overflow-tooltip>
@@ -116,7 +116,7 @@
 				ckwzpj:[],			//仓库列表
 				ckwzpj_ids:[],		//选中的仓库列表
 				gs:[],				//部门归属
-				gs_ids:[],			//选中的部门归属
+				gs_ids:['得物'],			//选中的部门归属
 				pp:[],				//品牌
 				pp_ids:[],			//选中的品牌
 				thspbm:[],			//烫画商品编码
@@ -267,7 +267,7 @@
 						let table_data = data.data;
 						table_data.map(item => {
 							let images = [];
-							if(item.tp != ''){
+							if(item.tp){
 								images.push(item.tp);
 								item.images = images;
 							}else{
