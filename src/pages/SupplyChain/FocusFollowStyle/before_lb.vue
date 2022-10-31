@@ -15,13 +15,19 @@
 			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.shop_name" :value="item.dept_id">
+					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="统计日期：">
 				<el-date-picker v-model="sjxrrq" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
 				</el-date-picker>
+			</el-form-item>
+			<el-form-item label="类型：">
+				<el-select v-model="type" clearable placeholder="请选择类型">
+					<el-option label="款式Top200" value="1"></el-option>
+					<el-option label="近三天每天销量大于10" value="2"></el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
@@ -50,6 +56,8 @@
 			<el-table-column prop="stl_15" label="15天实退率" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="dhl_7" label="7天到货率" align="center" width="120" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column prop="pbh_dhl_7" label="7天到货率(排除备货)" align="center" width="130" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="xssl_3" label="前三天销量" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
@@ -107,6 +115,7 @@
 				store_list: [],						//店铺列表	
 				select_store_ids:[],				//选中的店铺id列表
 				sjxrrq:getNowDate(),
+				type:"",
 				page:1,
 				pagesize:10,
 				data:[],
@@ -146,7 +155,7 @@
 			},
 			// 获取所有店铺
 			getStoreList(){
-				resource.ajaxViewStore().then(res => {
+				demandResource.deerShop().then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
 					}else{
@@ -162,10 +171,11 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						shop_id:this.select_store_ids.join(','),
+						jst_code:this.select_store_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
-						sjxrrq:this.sjxrrq?this.sjxrrq:''
+						sjxrrq:this.sjxrrq?this.sjxrrq:'',
+						type:this.type,
 					}
 					demandResource.deforeLbExport(arg).then(res => {
 						if(res){
@@ -192,10 +202,11 @@
 			},
 			getData(){
 				let arg = {
-					shop_id:this.select_store_ids.join(','),
+					jst_code:this.select_store_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
+					type:this.type,
 					page:this.page,
 					pagesize:this.pagesize
 				}

@@ -42,6 +42,7 @@ let path = {
 	updateStock:'supplier/update_stock',				//填写安全库存
 	garmentList:'supplier/garment_list',				//成衣列表
 	statisticalListExport:'supplier/statistical_list_export',	//成衣列表导出
+	deerShop:'common/deer_shop',						//无权限店铺列表（top50/top200专用）
 	
 }						
 export default{
@@ -212,6 +213,10 @@ export default{
 	//成衣列表导出
 	statisticalListExport(params){
 		return http.get(path.statisticalListExport, params)
+	},
+	//无权限店铺列表
+	deerShop(params){
+		return http.get(path.deerShop, params)
 	},
 	
 }

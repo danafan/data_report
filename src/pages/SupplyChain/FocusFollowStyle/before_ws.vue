@@ -15,7 +15,7 @@
 			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.shop_name" :value="item.dept_id">
+					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -48,6 +48,8 @@
 			<el-table-column prop="stl_15" label="15天实退率" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="dhl" label="7天到货率" align="center" width="120" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column prop="pbh_dhl_7" label="7天到货率(排除备货)" align="center" width="130" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="fhl_3" label="3天发货率" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
@@ -148,7 +150,7 @@
 			},
 			// 获取所有店铺
 			getStoreList(){
-				resource.ajaxViewStore().then(res => {
+				demandResource.deerShop().then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
 					}else{
@@ -164,7 +166,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						shop_id:this.select_store_ids.join(','),
+						jst_code:this.select_store_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
 						sjxrrq:this.sjxrrq?this.sjxrrq:''
@@ -194,7 +196,7 @@
 			},
 			getData(){
 				let arg = {
-					shop_id:this.select_store_ids.join(','),
+					jst_code:this.select_store_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',

@@ -47,7 +47,7 @@
 				</div>
 			</div>
 			<div class="right_table">
-				<div class="table_title">共用款上新情况</div>
+				<div class="table_title">公用款上新情况</div>
 				<div class="export_row">
 					<el-form :inline="true" size="small" class="demo-form-inline">
 						<el-form-item label="款式编码：">
