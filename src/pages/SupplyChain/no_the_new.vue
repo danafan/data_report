@@ -48,15 +48,18 @@
 			</div>
 			<div class="right_table">
 				<div class="table_title">共用款上新情况</div>
-				<el-form :inline="true" size="small" class="demo-form-inline">
-					<el-form-item label="款式编码：">
-						<el-select size="mini" v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags @change="newPageChange(1)">
-							<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-							</el-option>
-						</el-select>
-					</el-form-item>
-				</el-form>
-				<el-table size="small" :data="new_data.data" tooltip-effect="dark" style="position: absolute;width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="new_loading">
+				<div class="export_row">
+					<el-form :inline="true" size="small" class="demo-form-inline">
+						<el-form-item label="款式编码：">
+							<el-select size="mini" v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags @change="newPageChange(1)">
+								<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+								</el-option>
+							</el-select>
+						</el-form-item>
+					</el-form>
+					<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
+				<el-table size="small" :data="new_data.data" tooltip-effect="dark" style="position: absolute;width: 100%" max-height="560px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="new_loading">
 					<el-table-column prop="ksbm" label="款式编码" align="center" width="120" show-overflow-tooltip fixed="left">
 					</el-table-column>
 					<el-table-column label="图片" align="center" width="180">
@@ -138,6 +141,8 @@
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import commonResource from '../../api/resource.js'
 	import resource from '../../api/demandResource.js'
+	import {exportPost} from '../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -314,6 +319,28 @@
 					}
 				})
 			},
+			//公用款上新情况导出
+			exportFile(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						ksbm:this.select_ks_ids.join(','),
+						start_time:this.date && this.date.length > 0?this.date[0]:"",
+						end_time:this.date && this.date.length > 0?this.date[1]:""
+					}
+					resource.onIndexExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'公用款上新情况');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 		}
 	}
 </script>
@@ -340,5 +367,11 @@
 		bottom: 0;
 		right: 0;
 	}
+}
+.export_row{
+	margin-bottom:5px;
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 </style>

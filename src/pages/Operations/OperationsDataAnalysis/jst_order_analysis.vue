@@ -586,7 +586,7 @@
 						left:0
 					},
 					grid:{
-						y2:20,
+						y2:110,
 						top:'25%',
 						left: '80',
 						right: '50',
@@ -596,6 +596,7 @@
 						data: days,
 						axisLabel: {
 							color: '#333',
+							rotate:60
 						}
 					}],
 					yAxis:[

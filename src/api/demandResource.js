@@ -15,6 +15,7 @@ let path = {
 	onDeptIndex:'supplier/on_dept_index',		//事业部上架统计
 	onStoreIndex:'supplier/on_store_index',		//店铺上架统计
 	newIndex:'supplier/on_index',				//公用款上新情况
+	onIndexExport:'supplier/on_index_export',	//公共款上新情况导出
 	grabGoods:'supply_chain/grab_goods',		//抢货报表
 	grabGoodsExport:'supply_chain/grab_goods_export',	//抢货报表导出
 	grabGoodsSku:'supply_chain/grab_goods_sku',	//抢货报表下钻
@@ -103,6 +104,10 @@ export default{
 	//公用款上新情况
 	newIndex(params){
 		return http.get(path.newIndex, params)
+	},
+	//公用款上新情况导出
+	onIndexExport(params){
+		return http.get(path.onIndexExport, params)
 	},
 	//抢货报表
 	grabGoods(params){
