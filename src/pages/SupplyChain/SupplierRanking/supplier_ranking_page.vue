@@ -32,13 +32,15 @@
 			<el-table-column prop="kssl" sortable='custom' label="款式数量" align="center"></el-table-column>
 			<el-table-column prop="xssl" sortable='custom' label="15天销量" align="center"></el-table-column>
 			<el-table-column prop="cgcb" sortable='custom' show-overflow-tooltip label="销售成本" align="center"></el-table-column>
-			<el-table-column prop="cgcb_rank" sortable='custom' show-overflow-tooltip label="销售成本排行" align="center"></el-table-column>
+			<el-table-column prop="cgcb_rank" sortable='custom' show-overflow-tooltip width="120" label="销售成本排行" align="center"></el-table-column>
 			<el-table-column prop="mlv" sortable='custom' show-overflow-tooltip label="毛利率" align="center"></el-table-column>
 			<el-table-column prop="mlv_rank" sortable='custom' show-overflow-tooltip label="毛利率排名" align="center"></el-table-column>
 			<el-table-column prop="stl" sortable='custom' show-overflow-tooltip label="实退率" align="center"></el-table-column>
 			<el-table-column prop="stl_rank" sortable='custom' show-overflow-tooltip label="实退率排名" align="center"></el-table-column>
 			<el-table-column prop="dhl" sortable='custom' show-overflow-tooltip label="到货率" align="center"></el-table-column>
 			<el-table-column prop="dhl_rank" sortable='custom' show-overflow-tooltip label="到货率排名" align="center"></el-table-column>
+			<el-table-column prop="pbh_dhl" label="7天到货率(排除备货)" align="center" width="160" sortable="custom" show-overflow-tooltip>
+			</el-table-column>
 			<el-table-column prop="gys_level" label="供应商等级" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="settlement_method" show-overflow-tooltip label="结算方式" align="center"></el-table-column>
 		</el-table>

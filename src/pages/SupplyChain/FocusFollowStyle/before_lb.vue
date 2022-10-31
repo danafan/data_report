@@ -36,7 +36,7 @@
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" v-loading="loading">
+		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
 			<el-table-column label="图片" align="center" width="180">
 				<template slot-scope="scope">
 					<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
@@ -47,41 +47,41 @@
 			</el-table-column>
 			<el-table-column prop="gyshh" label="供应商货号" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="xssl_av7" label="7天日均销量" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="xssl_av7" label="7天日均销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="xssl_30_sum" label="30天销量" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="xssl_30_sum" label="30天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="mlv_7" label="7天毛利率" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="mlv_7" label="7天毛利率" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="stl_15" label="15天实退率" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="stl_15" label="15天实退率" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhl_7" label="7天到货率" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="dhl_7" label="7天到货率" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="pbh_dhl_7" label="7天到货率(排除备货)" align="center" width="130" show-overflow-tooltip>
+			<el-table-column prop="pbh_dhl_7" label="7天到货率(排除备货)" align="center" width="160" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="xssl_3" label="前三天销量" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="xssl_3" label="前三天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="xssl_2" label="前两天销量" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="xssl_2" label="前两天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="xssl_1" label="前一天销量" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="xssl_1" label="前一天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="shop_name" label="主卖店铺" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhs_3" label="前三天到货数" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="dhs_3" label="前三天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhs_2" label="前两天到货数" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="dhs_2" label="前两天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhs_1" label="前一天到货数" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="dhs_1" label="前一天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="xjkc" label="现有库存" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="xjkc" label="现有库存" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="qhs" label="缺货数" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="qhs" label="缺货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="pfj" label="批发价" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="pfj" label="批发价" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="sjcb" label="审计成本" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="sjcb" label="审计成本" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="pjsmj" label="平均售卖价" align="center" width="120" show-overflow-tooltip>
+			<el-table-column prop="pjsmj" label="平均售卖价" align="center" width="120 sortable="custom"" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="mc" label="商品名称" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
@@ -119,7 +119,8 @@
 				page:1,
 				pagesize:10,
 				data:[],
-				total:0
+				total:0,
+				table_sort:""
 			}
 		},
 		created(){
@@ -176,6 +177,7 @@
 						gys:this.select_gys_ids.join(','),
 						sjxrrq:this.sjxrrq?this.sjxrrq:'',
 						type:this.type,
+						sort:this.table_sort,
 					}
 					demandResource.deforeLbExport(arg).then(res => {
 						if(res){
@@ -200,6 +202,15 @@
 				//获取列表
 				this.getData();
 			},
+			//供应商销量排序
+			tableSortChange({ column, prop, order }) {  
+				if(order){
+					this.table_sort = prop + '-' + (order == 'ascending'?'asc':'desc');
+				}else{
+					this.table_sort = "";
+				}
+				this.getData();
+			}, 
 			getData(){
 				let arg = {
 					jst_code:this.select_store_ids.join(','),
@@ -207,6 +218,7 @@
 					gys:this.select_gys_ids.join(','),
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
 					type:this.type,
+					sort:this.table_sort,
 					page:this.page,
 					pagesize:this.pagesize
 				}
