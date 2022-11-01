@@ -398,12 +398,12 @@
 					cdepcode:this.select_yyshop_list.join(','),
 					citemcname:this.select_xmdl_list.join(','),
 					citemname:this.select_xmmc_list.join(','),
-					start_time:this.date?this.date[0]:'',
-					end_time:this.date?this.date[1]:'',
+					start_time:this.date && this.date.length> 0?this.date[0]:"",
+					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					type:this.type,
 					company:this.company.join(',')
 				}
-				// //处理底部项目名称
+				//处理底部项目名称
 				this.mx_xmmc_list = this.select_xmmc_list.length == 0?this.xmmc_list:this.select_xmmc_list;
 				this.selected_mx_xmmc_list = this.mx_xmmc_list.length == this.xmmc_list.length?[]:this.mx_xmmc_list;
 				this.loading = true;

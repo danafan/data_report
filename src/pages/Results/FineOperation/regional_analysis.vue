@@ -150,8 +150,8 @@
 					shop_id:this.shop_id,
 					cpfl:this.cpfl,
 					province:this.select_province_list.join(','),
-					start_time:this.date?this.date[0]:'',
-					end_time:this.date?this.date[1]:'',
+					start_time:this.date && this.date.length> 0?this.date[0]:"",
+					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					select_province:""
 				} 
 				this.$nextTick(() => {

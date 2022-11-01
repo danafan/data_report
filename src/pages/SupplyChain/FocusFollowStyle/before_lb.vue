@@ -115,7 +115,7 @@
 				store_list: [],						//店铺列表	
 				select_store_ids:[],				//选中的店铺id列表
 				sjxrrq:getNowDate(),
-				type:"",
+				type:"1",
 				page:1,
 				pagesize:10,
 				data:[],

@@ -47,6 +47,10 @@
 			<div class="form_box">
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="统计日期：">
+						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+						</el-date-picker>
+					</el-form-item>
+					<!-- <el-form-item label="统计日期：">
 						<el-date-picker
 						v-model="tjrq_start"
 						:picker-options="pickerBeginDateBefore"
@@ -63,7 +67,7 @@
 					value-format="yyyy-MM-dd"
 					placeholder="结束日期">
 				</el-date-picker>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="平台:">
 				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStore" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
@@ -298,24 +302,49 @@
 	export default{
 		data(){
 			return{
-				pickerBeginDateBefore: {
-					disabledDate: (time) => {
-						let beginDateVal = new Date(this.tjrq_end)
-						if (beginDateVal) {
-							return new Date(time).getTime() < beginDateVal.getTime() - 90 * 24 * 60 * 60 * 1000 || new Date(time).getTime() > beginDateVal.getTime()
+				// pickerBeginDateBefore: {
+				// 	disabledDate: (time) => {
+				// 		let beginDateVal = new Date(this.tjrq_end)
+				// 		if (beginDateVal) {
+				// 			return new Date(time).getTime() < beginDateVal.getTime() - 90 * 24 * 60 * 60 * 1000 || new Date(time).getTime() > beginDateVal.getTime()
+				// 		}
+				// 	}
+				// },
+				// pickerBeginDateAfter: {
+				// 	disabledDate: (time) => {
+				// 		let beginDateVal = new Date(this.tjrq_start);
+				// 		if (beginDateVal) {
+				// 			return new Date(time).getTime() > beginDateVal.getTime() + 90 * 24 * 60 * 60 * 1000 || new Date(time).getTime() < beginDateVal.getTime()
+				// 		}
+				// 	}
+				// },
+				// tjrq_start:getMonthStartDate(),								//统计日期（开始时间）
+				// tjrq_end:getCurrentDate(),								//统计日期（结束时间）
+				pickerOptions: {
+					shortcuts: [{
+						text: '当月',
+						onClick(picker) {
+							const start = getMonthStartDate();
+							const end = getCurrentDate();
+							picker.$emit('pick', [start, end]);
 						}
-					}
-				},
-				pickerBeginDateAfter: {
-					disabledDate: (time) => {
-						let beginDateVal = new Date(this.tjrq_start);
-						if (beginDateVal) {
-							return new Date(time).getTime() > beginDateVal.getTime() + 90 * 24 * 60 * 60 * 1000 || new Date(time).getTime() < beginDateVal.getTime()
+					},{
+						text: '上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(1);
+							const end = getLastMonthEndDate(0);
+							picker.$emit('pick', [start, end]);
 						}
-					}
-				},
-				tjrq_start:"",								//统计日期（开始时间）
-				tjrq_end:"",								//统计日期（结束时间）
+					}, {
+						text: '上上个月',
+						onClick(picker) {
+							const start = getLastMonthStartDate(2);
+							const end = getLastMonthEndDate(1);
+							picker.$emit('pick', [start, end]);
+						}
+					}]
+				},	 										//时间区间
+				date:[getMonthStartDate(),getCurrentDate()],//制单日期
 				store_name:"",
 				shop_list:[],								//店铺列表
 				select_shop_list:[],						//选中的店铺列表
@@ -385,26 +414,14 @@
 			}
 		},
 		created(){
-			this.tjrq_start = getMonthStartDate();		//统计日期（开始时间）
-			this.tjrq_end = getCurrentDate();			//统计日期（结束时间）
 			//平台列表
 			this.ajaxPlat();
 			//店铺列表
 			this.getStore();
 			//品类列表
 			this.getPl();
-			//单品分析—-指标汇总
-			this.dpAnalysis();
-			//每日分析-整体数据
-			this.annualDpzt();
-			//每日分析-搜索系列
-			this.annualDpSearch();
-			//每日分析-直通车系列
-			this.annualDpZtc();
-			//每日分析-超级推荐系列
-			this.annualDpCjtj();
-			//每日分析下面的折线图
-			this.dayDpAnalysis();
+			//点击搜索
+			this.searchFun();
 		},
 		methods:{
 			getQianNumber(number) {
@@ -486,8 +503,8 @@
 				let req = {
 					spid:this.select_spid_list.join(','),
 					shop_id:this.select_shop_list.join(','),
-					tjrq_start:this.tjrq_start,
-					tjrq_end:this.tjrq_end,
+					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
+					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
 					cpfl:this.select_pl_ids.join(','),
 					gyskh:this.select_gyshh_ids.join(','),
 					ks:this.select_ks_ids.join(','),
