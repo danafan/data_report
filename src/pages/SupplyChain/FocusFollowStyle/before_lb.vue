@@ -34,6 +34,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="buts">
+			<PopoverWidget title="指标解释" keys="top_lb"/>
 			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
@@ -105,6 +106,8 @@
 
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	export default{
 		data(){
 			return{
@@ -244,6 +247,9 @@
 					}
 				})
 			}
+		},
+		components:{
+			PopoverWidget
 		}
 	}
 </script>
@@ -251,7 +257,8 @@
 .buts{
 	margin-bottom: 15px;
 	display: flex;
-	justify-content: flex-end;
+	align-items: center;
+	justify-content: space-between;
 }
 </style>
 

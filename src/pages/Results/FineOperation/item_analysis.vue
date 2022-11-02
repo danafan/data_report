@@ -605,8 +605,8 @@
 				let req = {
 					spid:this.select_spid_list.join(','),
 					shop_id:this.select_shop_list.join(','),
-					tjrq_start:this.tjrq_start,
-					tjrq_end:this.tjrq_end,
+					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
+					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
 					cpfl:this.select_pl_ids.join(','),
 					gyskh:this.select_gyshh_ids.join(','),
 					ks:this.select_ks_ids.join(',')

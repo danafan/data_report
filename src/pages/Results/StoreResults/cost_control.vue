@@ -1,42 +1,31 @@
 <template>
 	<div>
-		<div class="page_top">
-			<div class="toast_box">
-				<div class="toast_title">关键指标含义</div>
-				<div class="item_row" v-for="item in toast_list">
-					<div class="dian"></div>
-					<div>{{item}}</div>
-				</div>
-			</div>
-			<div class="form_box">
-				<el-form :inline="true" size="mini" class="demo-form-inline">
-					<dps @callBack="checkReq"></dps>
-					<el-form-item label="发货日期:">
-						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
-						</el-date-picker>
-					</el-form-item>
-					<el-form-item>
-						<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
-					</el-form-item>
-				</el-form>
-			</div>
-		</div>
+		<el-form :inline="true" size="mini" class="demo-form-inline">
+			<dps @callBack="checkReq"></dps>
+			<el-form-item label="发货日期:">
+				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+				</el-date-picker>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
+			</el-form-item>
+		</el-form>
 		<!-- 折、柱一体图 -->
-		<div class="custom_title">经营状况趋势图</div>
+		<PopoverWidget class="margin_bottom" title="经营状况趋势图" keys="jyzkqst_list"/>
 		<div class="b_l_chart" id="b_l_chart" v-loading="chart_loading"></div>
 		<!-- 两个圆形图 -->
 		<div class="custom_row">
 			<div class="custom_item">
-				<div class="custom_title">项目部-销售收入圆形图</div>
+				<PopoverWidget class="margin_bottom" title="项目部-销售收入圆形图" keys="xmb_xssryxt_list"/>
 				<div class="custom_chart" id="dept_custom" v-loading="chart_loading"></div>
 			</div>
 			<div class="custom_item">
-				<div class="custom_title">店铺-销售收入圆形图</div>
+				<PopoverWidget class="margin_bottom" title="店铺-销售收入圆形图" keys="dp_xssryxt_list"/>
 				<div class="custom_chart" id="store_custom" v-loading="chart_loading"></div>
 			</div>
 		</div>
 		<!-- 事业部项目部--营销费用投产情况 -->
-		<div class="custom_title">事业部项目部--营销费用投产情况</div>
+		<PopoverWidget class="margin_bottom" title="事业部项目部--营销费用投产情况" keys="sybxmbyxfytcqk"/>
 		<el-table :data="dept_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
 			<el-table-column :label="i.row_name" v-for="i in dept_title_list" show-overflow-tooltip :fixed="i.row_field_name == 'dept_name' || i.row_field_name == 'dept_2'">
 				<template slot="header" slot-scope="scope">
@@ -93,6 +82,7 @@
 <script>
 	import * as d3 from 'd3';
 	import dps from '../../../components/results_components/dps.vue'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
@@ -114,6 +104,37 @@
 				'贡献毛益：毛利额-实际营销费用-事业部费用-项目部费用-店铺团队费用',
 				'贡献毛益率：贡献毛益/销售收入（已发货）',
 				],
+				jyzkqst_list:[{
+					label:"1.横坐标：",
+					value:"发货日期"
+				},{
+					label:"2.指标解释：",
+					value:""
+				},{
+					label:"GMV：",
+					value:"包含刷单的销售金额"
+				},{
+					label:"GMV(排刷单)：",
+					value:"排除刷单的销售金额"
+				},{
+					label:"销售收入-已发货：",
+					value:"即销售收入，销售收入=销售发货金额-售后退款金额-线下退款金额预估+冲减收入"
+				},{
+					label:"毛利额：",
+					value:"销售收入-销售成本，其中：销售收入=销售发货金额-售后退款金额-线下退款金额预估+冲减收入；销售成本=发货成本-退货进仓成本预估+成本差异金额"
+				},{
+					label:"实际-营销费用：",
+					value:"店铺后台获取的实际花费金额"
+				},{
+					label:"毛利率：",
+					value:"（销售收入-销售成本）/销售收入"
+				},{
+					label:"营销费用占比：",
+					value:"实际营销费用/销售收入，淘系C店参考线定为15%，天猫定为20%，高于则标记红色"
+				},{
+					label:"贡献毛利率：",
+					value:"贡献毛益/销售收入，贡献毛益=毛利额-实际营销费用-事业部费用-项目部费用-店铺团队费用"
+				}],
 				dept_name:[],								//项目部
 				pl:[],										//平台
 				shop_code:[],								//店铺
@@ -492,8 +513,12 @@
 			//圆形图表配置
 			setChartOptions(series_data,type){
 				if(series_data.length == 0){
-					this.deptCustomChart.clear();
-					this.storeCustomChart.clear();
+					if(type == 'dept'){
+						this.deptCustomChart.clear();
+					}
+					if(type == 'store'){
+						this.storeCustomChart.clear();
+					}
 					return this.empty_option;
 				}else{
 					if(type == 'dept'){
@@ -687,7 +712,8 @@
 			},
 		},
 		components:{
-			dps
+			dps,
+			PopoverWidget
 		}
 	}
 
@@ -700,40 +726,8 @@
 }
 </style>
 <style lang="less" scoped>
-.page_top{
-	display: flex;
-	.toast_box{
-		margin-right: 15px;
-		margin-top: 15px;
-		padding: 10px;
-		border-radius: 10px;
-		border:1px solid #8D5714;
-		width: 50%;
-		.toast_title{
-			font-weight: bold;
-			font-size: 16px;
-			color: #8D5714;
-		}
-		.item_row{
-			display:flex;
-			align-items: center;
-			font-size: 14px;
-			color: #8D5714;
-			.dian{
-				margin-right: 8px;
-				border-radius: 3px;
-				background:#8D5714; 
-				width: 6px;
-				height: 6px;
-			}
-		}
-	}
-	.form_box{
-		width: 50%;
-	}
-}
 .custom_title{
-	margin-top: 30px;
+	margin-top: 15px;
 	margin-bottom: 15px;
 	font-weight: bold;
 	color: #333333;
@@ -756,6 +750,9 @@
 			height: 600px;
 		}
 	}
+}
+.margin_bottom{
+	margin-bottom: 15px;
 }
 .text_content{
 	overflow: hidden;/*超出部分隐藏*/

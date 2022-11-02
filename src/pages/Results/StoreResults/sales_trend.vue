@@ -44,7 +44,7 @@
 				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :cell-style="columnStyle" @sort-change="sortChange" :show-header="total_data.length == 0" v-loading="loading">
 					<el-table-column label="序号" width="60">
 						<template slot-scope="scope">
-							<div>{{scope.$index}}</div>
+							<div>{{scope.$index + 1}}</div>
 						</template>
 					</el-table-column>
 					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip>
