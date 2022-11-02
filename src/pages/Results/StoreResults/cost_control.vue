@@ -513,12 +513,14 @@
 			//圆形图表配置
 			setChartOptions(series_data,type){
 				if(series_data.length == 0){
-					if(type == 'dept'){
-						this.deptCustomChart.clear();
-					}
-					if(type == 'store'){
-						this.storeCustomChart.clear();
-					}
+					this.deptCustomChart.clear();
+					this.storeCustomChart.clear();
+					// if(type == 'dept'){
+					// 	this.deptCustomChart.clear();
+					// }
+					// if(type == 'store'){
+					// 	this.storeCustomChart.clear();
+					// }
 					return this.empty_option;
 				}else{
 					if(type == 'dept'){
