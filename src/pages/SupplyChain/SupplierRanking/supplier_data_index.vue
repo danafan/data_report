@@ -107,35 +107,35 @@
 			<div class="xltj_row">
 				<div class="left_total">
 					<div class="left_item" v-loading="xl_total_loading">
-						<div class="label">本月销量</div>
+						<div class="label">近30天销量</div>
 						<div class="value">{{pro_info.month_xssl}}</div>
 						<div class="percentage_row">
 							<img class="per_icon" src="../../../static/per_up_icon.png" v-if="pro_info.month_hb >= 0">
 							<img class="per_icon" src="../../../static/per_down_icon.png" v-if="pro_info.month_hb < 0">
 							<div class="per_value" :class="{'red_color':pro_info.month_hb < 0}">{{pro_info.month_hb}}%</div>
-							<div class="per_label">环比上月</div>
+							<div class="per_label">环比上周期</div>
 						</div>
 					</div>
 					<div class="left_item left_item_margin" v-loading="xl_total_loading">
-						<div class="label">本周销量</div>
+						<div class="label">近7天销量</div>
 						<div class="value">{{pro_info.week_xssl}}</div>
 						<div class="percentage_row">
 							<img class="per_icon" src="../../../static/per_up_icon.png" v-if="pro_info.week_hb >= 0">
 							<img class="per_icon" src="../../../static/per_down_icon.png" v-if="pro_info.week_hb < 0">
-							<div class="per_value">{{pro_info.week_hb}}%</div>
-							<div class="per_label">环比上周</div>
+							<div class="per_value" :class="{'red_color':pro_info.week_hb < 0}">{{pro_info.week_hb}}%</div>
+							<div class="per_label">环比上周期</div>
 						</div>
 					</div>
 				</div>
 				<div class="right_chart">
 					<div class="tab_row">
-						<div class="tab_item" :class="{'active_tab':type == '1'}" @click="type = '1'">近30天</div>
-						<div class="tab_item margin_left" :class="{'active_tab':type == '2'}" @click="type = '2'">近7天</div>
+						<div class="tab_item" :class="{'active_tab':type == '1'}" @click="checkDate('1')">近30天</div>
+						<div class="tab_item margin_left" :class="{'active_tab':type == '2'}" @click="checkDate('2')">近7天</div>
 					</div>
 					<!-- 本月图表 -->
-					<div class="tj_chart" id="month_chart" v-show="type == '1'" v-loading="chart_loading"></div>
+					<div class="tj_chart" id="month_chart" v-if="type == '1'" v-loading="chart_loading"></div>
 					<!-- 本周图表 -->
-					<div class="tj_chart" id="week_chart" v-show="type == '2'" v-loading="chart_loading">></div>
+					<div class="tj_chart" id="week_chart" v-if="type == '2'" v-loading="chart_loading"></div>
 				</div>
 			</div>
 		</el-card>
@@ -177,7 +177,7 @@
 					</el-table-column>
 				</el-table>
 				<div class="page">
-					<el-pagination @size-change="ksSizeChange" @current-change="ksPageChange" :current-page="ks_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="ks_total">
+					<el-pagination @size-change="ksSizeChange" @current-change="ksPageChange" :current-page="ks_page" :pager-count="11" :page-size="ks_pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="ks_total">
 					</el-pagination>
 				</div>
 			</div>
@@ -188,7 +188,7 @@
 				<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sort-orders="['descending', 'ascending', null]" :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in sku_column_list"></el-table-column>
 			</el-table>
 			<div class="page">
-				<el-pagination @size-change="skuSizeChange" @current-change="skuPageChange" :current-page="sku_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="sku_total">
+				<el-pagination @size-change="skuSizeChange" @current-change="skuPageChange" :current-page="sku_page" :pager-count="11" :page-size="sku_pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="sku_total">
 				</el-pagination>
 			</div>
 		</el-dialog>
@@ -357,16 +357,6 @@
 			//顶部搜索供应商
 			this.changeFn();
 		},
-		watch:{
-			//切换本月或本周
-			type:function(n,o){
-				if(n == '1'){
-					this.setMonthChart();
-				}else{
-					this.setWeekChart();
-				}
-			}
-		},
 		methods:{
 			//顶部悬浮
 			renderHeader(h, data) {
@@ -401,11 +391,14 @@
 						this.info_loading = false;
 						let data = res.data.data;
 						if(!data.info){
+							this.supplier_name = "";
 							this.$message.warning('不存在该供应商!');
 							return;
 						}
 						this.update_date = data.date;
 						this.top_info = data.info;
+
+						this.type = 1;
 
 						this.ks_page = 1;
 						this.ks_pagesize = 10;
@@ -438,6 +431,15 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//切换时间
+			checkDate(type){
+				this.type = type;
+				if(type == '1'){
+					this.setMonthChart();
+				}else{
+					this.setWeekChart();
+				}
 			},
 			//本月本周销量图表
 			getGysWeekMonthChart(){
