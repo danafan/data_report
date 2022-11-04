@@ -3,7 +3,7 @@
 		<div class="page_top_row">
 			<div class="input_box">
 				<img class="s_search_icon" src="../../../static/s_search_icon.png">
-				<input placeholder="请输入你想要搜索的内容" v-model="supplier_name" @change="changeFn">
+				<input placeholder="供应商名称" v-model="supplier_name" @change="changeFn">
 			</div>
 			<div class="name">{{top_info.gys}}</div>
 			<div class="type_row">
@@ -110,8 +110,9 @@
 						<div class="label">本月销量</div>
 						<div class="value">{{pro_info.month_xssl}}</div>
 						<div class="percentage_row">
-							<img class="per_icon" src="../../../static/per_up_icon.png">
-							<div class="per_value">{{pro_info.month_hb}}</div>
+							<img class="per_icon" src="../../../static/per_up_icon.png" v-if="pro_info.month_hb >= 0">
+							<img class="per_icon" src="../../../static/per_down_icon.png" v-if="pro_info.month_hb < 0">
+							<div class="per_value" :class="{'red_color':pro_info.month_hb < 0}">{{pro_info.month_hb}}%</div>
 							<div class="per_label">环比上月</div>
 						</div>
 					</div>
@@ -119,16 +120,17 @@
 						<div class="label">本周销量</div>
 						<div class="value">{{pro_info.week_xssl}}</div>
 						<div class="percentage_row">
-							<img class="per_icon" src="../../../static/per_up_icon.png">
-							<div class="per_value">{{pro_info.week_hb}}</div>
+							<img class="per_icon" src="../../../static/per_up_icon.png" v-if="pro_info.week_hb >= 0">
+							<img class="per_icon" src="../../../static/per_down_icon.png" v-if="pro_info.week_hb < 0">
+							<div class="per_value">{{pro_info.week_hb}}%</div>
 							<div class="per_label">环比上周</div>
 						</div>
 					</div>
 				</div>
 				<div class="right_chart">
 					<div class="tab_row">
-						<div class="tab_item" :class="{'active_tab':type == '1'}" @click="type = '1'">本月</div>
-						<div class="tab_item margin_left" :class="{'active_tab':type == '2'}" @click="type = '2'">本周</div>
+						<div class="tab_item" :class="{'active_tab':type == '1'}" @click="type = '1'">近30天</div>
+						<div class="tab_item margin_left" :class="{'active_tab':type == '2'}" @click="type = '2'">近7天</div>
 					</div>
 					<!-- 本月图表 -->
 					<div class="tj_chart" id="month_chart" v-show="type == '1'" v-loading="chart_loading"></div>
@@ -144,18 +146,18 @@
 			<div>
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="输入搜索：">
-						<el-input placeholder="款式编码" suffix-icon="el-icon-search" v-model="ksbm" @change="ksPageChange(1)">
+						<el-input placeholder="款式编码" suffix-icon="el-icon-search" v-model="ksbm" @change="ksPageChange(1,'1')">
 						</el-input>
 					</el-form-item>
 					<el-form-item label="是否新品：">
-						<el-select v-model="is_new" clearable :popper-append-to-body="false" placeholder="全部" @change="ksPageChange(1)">
+						<el-select v-model="is_new" clearable :popper-append-to-body="false" placeholder="全部" @change="ksPageChange(1,'1')">
 							<el-option label="是" value="是"></el-option>
 							<el-option label="否" value="否"></el-option>
 						</el-select>
 					</el-form-item>
 				</el-form>
-				<el-table size="small" :data="ks_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="ksSortChange" v-loading="ks_loading">
-					<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in ks_column_list">
+				<el-table size="small" :data="ks_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="ksSortChange" ref="ks_table" v-loading="ks_loading">
+					<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sort-orders="['descending', 'ascending', null]" :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in ks_column_list">
 						<template slot-scope="scope">
 							<!-- 款式编码 -->
 							<!-- <el-tooltip placement="top-end" v-if="item.type == 2">
@@ -181,9 +183,9 @@
 			</div>
 		</el-card>
 		<!-- 下钻 -->
-		<el-dialog title="SKU信息" width="70%" :visible.sync="detailDialog">
-			<el-table size="small" :data="sku_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}"  @sort-change="skuSortChange" v-loading="sku_loading">
-				<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in sku_column_list"></el-table-column>
+		<el-dialog title="SKU信息" width="70%" @close="closeDetail" :visible.sync="detailDialog">
+			<el-table size="small" :data="sku_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}"  @sort-change="skuSortChange" ref="sku_table" v-loading="sku_loading">
+				<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sort-orders="['descending', 'ascending', null]" :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in sku_column_list"></el-table-column>
 			</el-table>
 			<div class="page">
 				<el-pagination @size-change="skuSizeChange" @current-change="skuPageChange" :current-page="sku_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="sku_total">
@@ -194,6 +196,8 @@
 </template>
 <script>
 	import resource from '../../../api/demandResource.js'
+
+	import { getNextDate } from '../../../api/nowMonth.js'
 
 	export default{
 		data(){
@@ -243,25 +247,25 @@
 					prop:'dhl_7',
 					is_fixed:true
 				},{
-					label:"28日销量",
-					prop:'dhs_3',
+					label:"",
+					prop:'xssl_3',
 				},{
-					label:"29日销量",
-					prop:'dhs_2',
+					label:"",
+					prop:'xssl_2',
 				},{
-					label:"30日销量",
-					prop:'dhs_1',
+					label:"",
+					prop:'xssl_1',
 				},{
 					label:"主卖店铺",
 					prop:'zmdp',
 				},{
-					label:"28日到货",
+					label:"",
 					prop:'dhs_3',
 				},{
-					label:"29日到货",
+					label:"",
 					prop:'dhs_2',
 				},{
-					label:"30日到货",
+					label:"",
 					prop:'dhs_1',
 				},{
 					label:"现有库存",
@@ -296,8 +300,8 @@
 				ks_pagesize:10,	
 				detailDialog:false,			//下钻弹窗
 				sku_column_list:[{
-					label:"款式编码",
-					prop:"ksbm"
+					label:"商品编码",
+					prop:"spbm"
 				},{
 					label:"3天销量",
 					prop:"xssl_sum_3",
@@ -311,13 +315,13 @@
 					prop:"xssl_sum_30",
 					is_fixed:true
 				},{
-					label:"28日销量",
+					label:"",
 					prop:"xssl_3"
 				},{
-					label:"29日销量",
+					label:"",
 					prop:"xssl_2"
 				},{
-					label:"30日销量",
+					label:"",
 					prop:"xssl_1"
 				},{
 					label:"现有库存",
@@ -332,13 +336,13 @@
 					prop:"qhs",
 					is_fixed:true
 				},{
-					label:"28日到货数",
+					label:"",
 					prop:"dhs_3"
 				},{
-					label:"29日到货数",
+					label:"",
 					prop:"dhs_2"
 				},{
-					label:"30日到货数",
+					label:"",
 					prop:"dhs_1"
 				}],							//sku信息列
 				sku_table_data:[],			//sku数据列表
@@ -350,14 +354,8 @@
 			}
 		},
 		created(){
-			//顶部信息
-			this.boardGysInfo();
-			//本月本周销量和环比
-			this.getGysWeekMonthTotal();
-			//本月本周销量图表
-			this.getGysWeekMonthChart();
-			//款式信息列表
-			this.ksInfoData();
+			//顶部搜索供应商
+			this.changeFn();
 		},
 		watch:{
 			//切换本月或本周
@@ -389,18 +387,8 @@
 			},
 			//顶部搜索供应商
 			changeFn(){
-				this.ks_page = 1;
-				this.ks_pagesize = 10;
-				this.sku_page = 1;
-				this.sku_pagesize = 10;
 				//顶部信息
 				this.boardGysInfo();
-				//本月本周销量和环比
-				this.getGysWeekMonthTotal();
-				//本月本周销量图表
-				this.getGysWeekMonthChart();
-				//款式信息列表
-				this.ksInfoData();
 			},
 			//顶部信息
 			boardGysInfo(){
@@ -412,8 +400,25 @@
 					if(res.data.code == 1){
 						this.info_loading = false;
 						let data = res.data.data;
+						if(!data.info){
+							this.$message.warning('不存在该供应商!');
+							return;
+						}
 						this.update_date = data.date;
 						this.top_info = data.info;
+
+						this.ks_page = 1;
+						this.ks_pagesize = 10;
+						this.ks_sort = "";
+						this.sku_page = 1;
+						this.sku_pagesize = 10;
+						this.sku_sort = "";
+						//本月本周销量和环比
+						this.getGysWeekMonthTotal();
+						//本月本周销量图表
+						this.getGysWeekMonthChart();
+						//款式信息列表
+						this.ksInfoData();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -452,6 +457,11 @@
 					}
 				})
 			},
+			//获取星期几
+			getWeek(time)  {
+				let datelist = ['周日','周一','周二','周三','周四','周五','周六',]
+				return datelist[new Date(time).getDay()];
+			},
 			//渲染月图表
 			setMonthChart(){
 				this.$nextTick(() => {
@@ -461,7 +471,11 @@
 					if (this.monthChart == null) { 
 						this.monthChart = echarts.init(month_chart);
 					}
-					this.monthChart.setOption(this.setOptions('近一月销售统计',this.month_list_data.day_list,this.month_list_data.data_list));
+					let day_list = [];
+					this.month_list_data.day_list.map(item => {
+						day_list.push(item + `(${this.getWeek(item)})`);
+					})
+					this.monthChart.setOption(this.setOptions('近30天销售统计',day_list,this.month_list_data.data_list));
 					window.addEventListener('resize',() => {
 						this.monthChart.resize();
 					})
@@ -476,7 +490,11 @@
 					if (this.weekChart == null) { 
 						this.weekChart = echarts.init(week_chart);
 					}
-					this.weekChart.setOption(this.setOptions('近一周销售统计',this.week_list_data.day_list,this.week_list_data.data_list));
+					let day_list = [];
+					this.week_list_data.day_list.map(item => {
+						day_list.push(item + `(${this.getWeek(item)})`);
+					})
+					this.weekChart.setOption(this.setOptions('近7天销售统计',day_list,this.week_list_data.data_list));
 					window.addEventListener('resize',() => {
 						this.weekChart.resize();
 					})
@@ -514,8 +532,12 @@
 				//款式信息列表
 				this.ksInfoData();
 			},
-			ksPageChange(val) {
+			ksPageChange(val,type) {
 				this.ks_page = val;
+				if(type) {
+					this.ks_sort = "";
+					this.$refs.ks_table.clearSort(); // 清除排序
+				}
 				//款式信息列表
 				this.ksInfoData();
 			},
@@ -545,6 +567,14 @@
 					if(res.data.code == 1){
 						this.ks_loading = false;
 						let data = res.data.data;
+						let date = data.date;
+						this.ks_column_list[8].label = `${getNextDate(date,-3)}日销量`;
+						this.ks_column_list[9].label = `${getNextDate(date,-2)}日销量`;
+						this.ks_column_list[10].label = `${getNextDate(date,-1)}日销量`;
+						this.ks_column_list[12].label = `${getNextDate(date,-3)}日到货`;
+						this.ks_column_list[13].label = `${getNextDate(date,-2)}日到货`;
+						this.ks_column_list[14].label = `${getNextDate(date,-1)}日到货`;
+						
 						if(data.length == 0){
 							this.ks_table_data = [];
 						}else{
@@ -569,6 +599,13 @@
 				this.select_ksbm = ksbm;
 				//sku信息列表
 				this.skuInfoData();
+			},
+			//关闭弹窗
+			closeDetail(){
+				this.sku_page = 1;
+				this.sku_pagesize = 10;
+				this.sku_sort = "";
+				this.$refs.sku_table.clearSort(); // 清除排序
 			},
 			//sku信息分页
 			skuSizeChange(val) {
@@ -605,6 +642,14 @@
 					if(res.data.code == 1){
 						this.sku_loading = false;
 						let data = res.data.data;
+						let date = data.date;
+						this.sku_column_list[4].label = `${getNextDate(date,-3)}日销量`;
+						this.sku_column_list[5].label = `${getNextDate(date,-2)}日销量`;
+						this.sku_column_list[6].label = `${getNextDate(date,-1)}日销量`;
+						this.sku_column_list[10].label = `${getNextDate(date,-3)}日到货`;
+						this.sku_column_list[11].label = `${getNextDate(date,-2)}日到货`;
+						this.sku_column_list[12].label = `${getNextDate(date,-1)}日到货`;
+						
 						if(data.length == 0){
 							this.sku_table_data = [];
 						}else{
@@ -615,7 +660,6 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-				console.log(arg)
 			}
 		}
 	}
@@ -645,7 +689,7 @@
 			}
 			input{
 				background: #ECEFF8;
-				flex:1;
+				width: 150px;
 				border:none;
 				outline: none;
 				font-size: 14px;
@@ -742,6 +786,10 @@
 						margin-left: 6px;
 						margin-right: 6px;
 						font-size: 14px;
+						color: #52C41B;
+					}
+					.red_color{
+						color: #FF4D4F;
 					}
 					.per_label{
 						color: #999999;
