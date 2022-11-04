@@ -70,8 +70,6 @@ const focus_follow_style = resolve=>require(['@/pages/SupplyChain/focus_follow_s
 const delivery_situation = resolve=>require(['@/pages/SupplyChain/delivery_situation'],resolve)
 const store_new_style = resolve=>require(['@/pages/SupplyChain/store_new_style'],resolve)
 const thp_table = resolve=>require(['@/pages/SupplyChain/thp_table'],resolve)
-//供应商数据管理
-const supplier_data_index = resolve=>require(['@/pages/SupplierData/index'],resolve)
 
 Vue.use(Router)
 
@@ -164,8 +162,7 @@ const router = new Router({
         keepAlive:true
     }, component: demand_report},
     { path: '/created_demand',name:"新建外采需求", component: created_demand},
-    { path: '/procurement_info',name:"运营外采信息", component: procurement_info},
-    { path: '/supplier_data_index',name:"供应商数据管理", component: supplier_data_index},
+    { path: '/procurement_info',name:"运营外采信息", component: procurement_info}
     ]
 }
 ]

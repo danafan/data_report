@@ -39,7 +39,7 @@
 			<el-table-column prop="stl_rank" sortable='custom' show-overflow-tooltip label="实退率排名" align="center"></el-table-column>
 			<el-table-column prop="dhl" sortable='custom' show-overflow-tooltip label="到货率" align="center"></el-table-column>
 			<el-table-column prop="dhl_rank" sortable='custom' show-overflow-tooltip label="到货率排名" align="center"></el-table-column>
-			<el-table-column prop="pbh_dhl" label="7天到货率(排除备货)" align="center" width="160" sortable="custom" show-overflow-tooltip>
+			<el-table-column prop="pbh_dhl" label="15天到货率(排除备货)" align="center" width="170" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="gys_level" label="供应商等级" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="settlement_method" show-overflow-tooltip label="结算方式" align="center"></el-table-column>

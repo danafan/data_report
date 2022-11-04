@@ -95,10 +95,10 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<el-menu-item index="/supplier_data_index">
+				<!-- <el-menu-item index="/supplier_data_index">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">供应商数据管理</span>
-				</el-menu-item>
+				</el-menu-item> -->
 				<!-- <el-menu-item index="/refund_status">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">退款情况看板</span>

@@ -44,9 +44,10 @@ let path = {
 	statisticalListExport:'supplier/statistical_list_export',	//成衣列表导出
 	deerShop:'common/deer_shop',						//无权限店铺列表（top50/top200专用）
 	boardGysInfo:'supply_chain/board_gys_info',			//供应商看板-头部汇总信息
-	getGysWeekmonthTotal:'supply_chain/get_gys_weekmonth_total',	//供应商看板 本月本周销量和环比
+	getGysWeekMonthTotal:'supply_chain/get_gys_weekmonth_total',	//供应商看板 本月本周销量和环比
 	getGysWeekMonthChart:'supply_chain/get_gys_weekmonth_table',	//供应商看板-本月本周销量图表
 	getGysKsbmList:'supply_chain/get_gys_ksbm_list',				//供应商看板-款式编码列表
+	getGysSkuList:'supply_chain/get_gys_sku_list',					//下钻列表
 	
 }						
 export default{
@@ -227,8 +228,8 @@ export default{
 		return http.get(path.boardGysInfo, params)
 	},
 	//供应商看板 本月本周销量和环比
-	getGysWeekmonthTotal(params){
-		return http.get(path.getGysWeekmonthTotal, params)
+	getGysWeekMonthTotal(params){
+		return http.get(path.getGysWeekMonthTotal, params)
 	},
 	//供应商看板-本月本周销量图表
 	getGysWeekMonthChart(params){
@@ -237,6 +238,10 @@ export default{
 	//供应商看板-款式编码列表
 	getGysKsbmList(params){
 		return http.get(path.getGysKsbmList, params)
+	},
+	//下钻列表
+	getGysSkuList(params){
+		return http.get(path.getGysSkuList, params)
 	},
 	
 }

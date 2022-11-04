@@ -3,6 +3,7 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<SupplierRankingPage v-if="item.web_url == 'supplier_ranking_page'"/>
+				<SupplierDataIndex v-if="item.web_url == 'supplier_data_index'"/>
 				<StyleRankingPage v-if="item.web_url == 'style_ranking_page'"/>
 			</el-tab-pane>
 		</el-tabs>
@@ -15,6 +16,7 @@
 </style>
 <script>
 	import SupplierRankingPage from './SupplierRanking/supplier_ranking_page.vue'
+	import SupplierDataIndex from './SupplierRanking/supplier_data_index.vue'
 	import StyleRankingPage from './SupplierRanking/style_ranking_page.vue'
 	export default{
 		data(){
@@ -55,6 +57,7 @@
 		},
 		components:{
 			SupplierRankingPage,
+			SupplierDataIndex,
 			StyleRankingPage
 		}
 	}

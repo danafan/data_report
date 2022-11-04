@@ -2,7 +2,7 @@
 	<div class="supplier_data_container">
 		<div class="page_top_row">
 			<div class="input_box">
-				<img class="s_search_icon" src="../../static/s_search_icon.png">
+				<img class="s_search_icon" src="../../../static/s_search_icon.png">
 				<input placeholder="请输入你想要搜索的内容" v-model="supplier_name" @change="changeFn">
 			</div>
 			<div class="name">{{top_info.gys}}</div>
@@ -17,35 +17,35 @@
 			</div>
 			<div class="content_row">
 				<div class="row_item">
-					<img class="item_icon" src="../../static/zsks_icon.png">
+					<img class="item_icon" src="../../../static/zsks_icon.png">
 					<div class="item_text">
 						<div class="text_val">{{top_info.ksbm_num}}</div>
 						<div class="text_label">在售款数</div>
 					</div>
 				</div>
 				<div class="row_item">
-					<img class="item_icon" src="../../static/zrxl_icon.png">
+					<img class="item_icon" src="../../../static/zrxl_icon.png">
 					<div class="item_text">
 						<div class="text_val">{{top_info.xssl_1}}</div>
 						<div class="text_label">昨日销量</div>
 					</div>
 				</div>
 				<div class="row_item">
-					<img class="item_icon" src="../../static/jsstxl_icon.png">
+					<img class="item_icon" src="../../../static/jsstxl_icon.png">
 					<div class="item_text">
 						<div class="text_val">{{top_info.xssl_sum_30}}</div>
 						<div class="text_label">近30天销量</div>
 					</div>
 				</div>
 				<div class="row_item">
-					<img class="item_icon" src="../../static/stl_icon.png">
+					<img class="item_icon" src="../../../static/stl_icon.png">
 					<div class="item_text">
 						<div class="text_val">{{top_info.stl}}</div>
 						<div class="text_label">实退率</div>
 					</div>
 				</div>
 				<div class="row_item">
-					<img class="item_icon" src="../../static/mll_icon.png">
+					<img class="item_icon" src="../../../static/mll_icon.png">
 					<div class="item_text">
 						<div class="text_val">{{top_info.mll}}</div>
 						<div class="text_label">毛利率</div>
@@ -110,7 +110,7 @@
 						<div class="label">本月销量</div>
 						<div class="value">{{pro_info.month_xssl}}</div>
 						<div class="percentage_row">
-							<img class="per_icon" src="../../static/per_up_icon.png">
+							<img class="per_icon" src="../../../static/per_up_icon.png">
 							<div class="per_value">{{pro_info.month_hb}}</div>
 							<div class="per_label">环比上月</div>
 						</div>
@@ -119,7 +119,7 @@
 						<div class="label">本周销量</div>
 						<div class="value">{{pro_info.week_xssl}}</div>
 						<div class="percentage_row">
-							<img class="per_icon" src="../../static/per_up_icon.png">
+							<img class="per_icon" src="../../../static/per_up_icon.png">
 							<div class="per_value">{{pro_info.week_hb}}</div>
 							<div class="per_label">环比上周</div>
 						</div>
@@ -154,8 +154,8 @@
 						</el-select>
 					</el-form-item>
 				</el-form>
-				<el-table size="small" :data="ks_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="ks_loading">
-					<el-table-column :prop="item.prop" :label="item.label" align="center" show-overflow-tooltip :render-header="renderHeader" v-for="item in ks_column_list">
+				<el-table size="small" :data="ks_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="ksSortChange" v-loading="ks_loading">
+					<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in ks_column_list">
 						<template slot-scope="scope">
 							<!-- 款式编码 -->
 							<!-- <el-tooltip placement="top-end" v-if="item.type == 2">
@@ -182,8 +182,8 @@
 		</el-card>
 		<!-- 下钻 -->
 		<el-dialog title="SKU信息" width="70%" :visible.sync="detailDialog">
-			<el-table size="small" :data="sku_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="sku_loading">
-				<el-table-column :prop="item.prop" :label="item.label" align="center" show-overflow-tooltip :render-header="renderHeader" v-for="item in sku_column_list"></el-table-column>
+			<el-table size="small" :data="sku_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}"  @sort-change="skuSortChange" v-loading="sku_loading">
+				<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in sku_column_list"></el-table-column>
 			</el-table>
 			<div class="page">
 				<el-pagination @size-change="skuSizeChange" @current-change="skuPageChange" :current-page="sku_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="sku_total">
@@ -193,7 +193,7 @@
 	</div>
 </template>
 <script>
-	import resource from '../../api/demandResource.js'
+	import resource from '../../../api/demandResource.js'
 
 	export default{
 		data(){
@@ -225,18 +225,23 @@
 				},{
 					label:"7天日均销量",
 					prop:'xssl_sum_7',
+					is_fixed:true
 				},{
 					label:"30天销量",
 					prop:'xssl_sum_30',
+					is_fixed:true
 				},{
 					label:"7天毛利率",
 					prop:'mll',
+					is_fixed:true
 				},{
 					label:"15天实退率",
 					prop:'stl_15',
+					is_fixed:true
 				},{
 					label:"7天到货率",
 					prop:'dhl_7',
+					is_fixed:true
 				},{
 					label:"28日销量",
 					prop:'dhs_3',
@@ -261,9 +266,11 @@
 				},{
 					label:"现有库存",
 					prop:'xykc',
+					is_fixed:true
 				},{
 					label:"缺货数",
 					prop:'qhs',
+					is_fixed:true
 				},{
 					label:"批发价",
 					prop:'pfj',
@@ -284,6 +291,7 @@
 				ks_table_data:[],			//款式信息数据列表
 				ks_total:0,
 				ks_loading:false,
+				ks_sort:"",
 				ks_page:1,
 				ks_pagesize:10,	
 				detailDialog:false,			//下钻弹窗
@@ -292,13 +300,16 @@
 					prop:"ksbm"
 				},{
 					label:"3天销量",
-					prop:"xssl_sum_3"
+					prop:"xssl_sum_3",
+					is_fixed:true
 				},{
 					label:"7天销量",
-					prop:"xssl_sum_7"
+					prop:"xssl_sum_7",
+					is_fixed:true
 				},{
 					label:"30天销量",
-					prop:"xssl_sum_30"
+					prop:"xssl_sum_30",
+					is_fixed:true
 				},{
 					label:"28日销量",
 					prop:"xssl_3"
@@ -310,13 +321,16 @@
 					prop:"xssl_1"
 				},{
 					label:"现有库存",
-					prop:"xykc"
+					prop:"xykc",
+					is_fixed:true
 				},{
 					label:"订单占有数",
-					prop:"ddzy"
+					prop:"ddzy",
+					is_fixed:true
 				},{
 					label:"缺货数",
-					prop:"qhs"
+					prop:"qhs",
+					is_fixed:true
 				},{
 					label:"28日到货数",
 					prop:"dhs_3"
@@ -330,6 +344,7 @@
 				sku_table_data:[],			//sku数据列表
 				sku_total:0,				
 				sku_loading:false,
+				sku_sort:"",
 				sku_page:1,
 				sku_pagesize:10,	
 			}
@@ -504,12 +519,24 @@
 				//款式信息列表
 				this.ksInfoData();
 			},
+			//款式信息排序
+			ksSortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'1':'0';
+					this.ks_sort = column.prop + '-' + order;
+				}else{
+					this.ks_sort = "";
+				}
+				//款式信息列表
+				this.ksInfoData();
+			},
 			//款式信息列表
 			ksInfoData(){
 				let arg = {
 					gys:this.supplier_name,
 					ksbm:this.ksbm,
 					is_new:this.is_new,
+					sort:this.ks_sort,
 					page:this.ks_page,
 					pagesize:this.ks_pagesize
 				}
@@ -554,10 +581,22 @@
 				//sku信息列表
 				this.skuInfoData();
 			},
+			//sku信息排序
+			skuSortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'1':'0';
+					this.sku_sort = column.prop + '-' + order;
+				}else{
+					this.sku_sort = "";
+				}
+				//款式信息列表
+				this.skuInfoData();
+			},
 			//sku信息列表
 			skuInfoData(){
 				let arg = {
 					ksbm:this.select_ksbm,
+					sort:this.sku_sort,
 					page:this.sku_page,
 					pagesize:this.sku_pagesize
 				}
@@ -583,12 +622,6 @@
 </script>
 <style lang="less" scoped>
 .supplier_data_container{
-	position: absolute;
-	top: 0;
-	left: 0;
-	height: 100%;
-	width: 100%;
-	overflow-y: scroll;
 	background: #ECEFF8;
 	padding: 0 24px;
 	.page_top_row{
