@@ -256,7 +256,7 @@
 					prop:'ce_yxfy',
 					width:'120',
 				},{
-					label:'ROI(实际营销费用/GMV)',
+					label:'ROI(GMV/实际营销费用)',
 					prop:'roi',
 					width:'120',
 				},{
