@@ -30,8 +30,11 @@
 		</el-form-item>
 	</el-form>
 	<div class="table_setting">
-		<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<PopoverWidget title="指标解释" keys="daily_performance"/>
+		<div>
+			<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
+			<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 	</div>
 	<!-- 表格 -->
 	<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary v-loading="loading">
@@ -72,6 +75,7 @@
 .table_setting{
 	margin-bottom: 10px;
 	display: flex;
+	align-items: center;
 	justify-content: space-between;
 }
 .echarts_box{
@@ -110,6 +114,7 @@
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import {exportExcel} from '../../../api/export.js'
 	import dps from '../../../components/results_components/dps.vue'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	export default{
 		data(){
 			return{
@@ -424,7 +429,8 @@
 			
 		},
 		components:{
-			dps
+			dps,
+			PopoverWidget
 		}
 	}
 </script>

@@ -1,9 +1,13 @@
 <template>
-	<div class="supplier_data_container">
+	<div class="supplier_data_container" @click="closeList">
 		<div class="page_top_row">
 			<div class="input_box">
 				<img class="s_search_icon" src="../../../static/s_search_icon.png">
-				<input placeholder="供应商名称" v-model="supplier_name" @change="changeFn">
+				<input placeholder="供应商名称" @focus="getGys('')" @input="ddd" v-model="supplier_name">
+				<div class="search_button" @click="changeFn">搜索</div>
+				<div class="search_list" v-show="show_list">
+					<div class="supplier_item" :class="{'active_index':active_index == index}" v-for="(item,index) in gys_list" @click="changeSupplier(index)">{{item}}</div>
+				</div>
 			</div>
 			<div class="name">{{top_info.gys}}</div>
 			<div class="type_row">
@@ -197,6 +201,8 @@
 <script>
 	import resource from '../../../api/demandResource.js'
 
+	import commonResource from '../../../api/resource.js'
+
 	import { getNextDate } from '../../../api/nowMonth.js'
 
 	export default{
@@ -351,6 +357,9 @@
 				sku_sort:"",
 				sku_page:1,
 				sku_pagesize:10,	
+				show_list:false,
+				gys_list:[],						//供应商
+				active_index:-1
 			}
 		},
 		created(){
@@ -358,6 +367,32 @@
 			this.changeFn();
 		},
 		methods:{
+			ddd(){
+				//供应商列表
+				this.getGys(this.supplier_name);
+			},
+			//供应商列表
+			getGys(e){
+				if(e != ''){
+					this.show_list = true;
+					commonResource.ajaxGys({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gys_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//点击供应商
+			changeSupplier(index){
+				this.active_index = index;
+				this.show_list = false;
+				this.supplier_name = this.gys_list[index];
+			},
+			closeList(){
+				this.show_list = false;
+			},
 			//顶部悬浮
 			renderHeader(h, data) {
 				return h("span", [
@@ -676,26 +711,62 @@
 		align-items: center;
 		justify-content: space-between;
 		.input_box{
+			position: relative;
 			border-radius: 20px;
 			border: 1px solid #5575EB;
-			width: 200px;
 			height: 40px;
 			display: flex;
 			align-items: center;
 			padding-left: 10px;
-			padding-right: 10px;
 			.s_search_icon{
 				margin-right: 5px;
 				width: 16px;
 				height: 16px;
 			}
 			input{
+				flex:1;
 				background: #ECEFF8;
-				width: 150px;
 				border:none;
 				outline: none;
 				font-size: 14px;
+				padding-right: 5px;
 			}
+			.search_button{
+				cursor: pointer;
+				border-radius: 0 20px 20px 0;
+				background: #5575EB;
+				width: 60px;
+				text-align: center;
+				height: 40px;
+				line-height: 40px;
+				font-size: 14px;
+				color: #ffffff;
+			}
+			.search_list{
+				position: absolute;
+				top: 40px;
+				left: 18px;
+				min-width: 150px;
+				height: 130px;
+				padding:7px 15px;
+				background: #ffffff;
+				box-shadow: 0px 2px 12px 0px #D1DAFF;
+				border-radius: 0px 0px 2px 2px;
+				overflow-y: scroll;
+				.supplier_item{
+					cursor: pointer;
+					margin-bottom: 10px;
+					color: #333333;
+					font-size: 14px;
+				}
+				.supplier_item:hover{
+					color: #5575EB;
+				}
+				.active_index{
+					color: #5575EB;
+				}
+			}
+			.search_list::-webkit-scrollbar{display:none}
 		}
 		.name{
 			color: #5575EB;
