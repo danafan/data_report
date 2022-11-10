@@ -43,10 +43,12 @@ let path = {
 	garmentList:'supplier/garment_list',				//成衣列表
 	statisticalListExport:'supplier/statistical_list_export',	//成衣列表导出
 	deerShop:'common/deer_shop',						//无权限店铺列表（top50/top200专用）
+	ajaxCoreGys:'Common/ajaxCoreGys',					//供应商列表
 	boardGysInfo:'supply_chain/board_gys_info',			//供应商看板-头部汇总信息
 	getGysWeekMonthTotal:'supply_chain/get_gys_weekmonth_total',	//供应商看板 本月本周销量和环比
 	getGysWeekMonthChart:'supply_chain/get_gys_weekmonth_table',	//供应商看板-本月本周销量图表
 	getGysKsbmList:'supply_chain/get_gys_ksbm_list',				//供应商看板-款式编码列表
+	getGysKsbmExport:'supply_chain/get_gys_ksbm_export',			//款式编码列表导出
 	getGysSkuList:'supply_chain/get_gys_sku_list',					//下钻列表
 	
 }						
@@ -223,6 +225,10 @@ export default{
 	deerShop(params){
 		return http.get(path.deerShop, params)
 	},
+	//供应商列表
+	ajaxCoreGys(params){
+		return http.get(path.ajaxCoreGys, params)
+	},
 	//供应商看板-头部汇总信息
 	boardGysInfo(params){
 		return http.get(path.boardGysInfo, params)
@@ -238,6 +244,10 @@ export default{
 	//供应商看板-款式编码列表
 	getGysKsbmList(params){
 		return http.get(path.getGysKsbmList, params)
+	},
+	//款式编码列表导出
+	getGysKsbmExport(params){
+		return http.post(path.getGysKsbmExport, params)
 	},
 	//下钻列表
 	getGysSkuList(params){

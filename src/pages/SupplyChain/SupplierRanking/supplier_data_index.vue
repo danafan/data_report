@@ -3,8 +3,8 @@
 		<div class="page_top_row">
 			<div class="input_box">
 				<img class="s_search_icon" src="../../../static/s_search_icon.png">
-				<input placeholder="供应商名称" @focus="getGys('')" @input="ddd" v-model="supplier_name">
-				<div class="search_button" @click="changeFn">搜索</div>
+				<input placeholder="供应商名称" @click.stop="getGys(supplier_name)" @input="getGys(supplier_name)" v-model="supplier_name">
+				<div class="search_button" @click="boardGysInfo">搜索</div>
 				<div class="search_list" v-show="show_list">
 					<div class="supplier_item" :class="{'active_index':active_index == index}" v-for="(item,index) in gys_list" @click="changeSupplier(index)">{{item}}</div>
 				</div>
@@ -144,8 +144,9 @@
 			</div>
 		</el-card>
 		<el-card class="margin_top">
-			<div slot="header">
+			<div class="header_row" slot="header">
 				<span class="card_title">款式信息</span>
+				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 			<div>
 				<el-form :inline="true" size="small" class="demo-form-inline">
@@ -201,16 +202,18 @@
 <script>
 	import resource from '../../../api/demandResource.js'
 
-	import commonResource from '../../../api/resource.js'
-
 	import { getNextDate } from '../../../api/nowMonth.js'
+
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 
 	export default{
 		data(){
 			return{
-				supplier_name:"",	//输入的供应商名称
+				supplier_name:"",	//可传递的供应商名称
 				update_date:"",		//数据更新日
 				top_info:{},		//顶部信息
+				info_loading:false,
 				pro_info:{},		//头部汇总信息
 				xl_total_loading:false,
 				type:'1',			//销量统计类型（1:本月；2:本周）
@@ -363,19 +366,15 @@
 			}
 		},
 		created(){
-			//顶部搜索供应商
-			this.changeFn();
+			//点击搜索
+			this.boardGysInfo();
 		},
 		methods:{
-			ddd(){
-				//供应商列表
-				this.getGys(this.supplier_name);
-			},
 			//供应商列表
 			getGys(e){
 				if(e != ''){
 					this.show_list = true;
-					commonResource.ajaxGys({name:e}).then(res => {
+					resource.ajaxCoreGys({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.gys_list = res.data.data;
 						}else{
@@ -384,13 +383,15 @@
 					})
 				}
 			},
-			//点击供应商
+			//选中某个供应商
 			changeSupplier(index){
 				this.active_index = index;
 				this.show_list = false;
 				this.supplier_name = this.gys_list[index];
 			},
+			//关闭下拉框
 			closeList(){
+				this.supplier_name = this.active_index == -1?'':this.supplier_name;
 				this.show_list = false;
 			},
 			//顶部悬浮
@@ -410,12 +411,7 @@
 						),
 					]);
 			},
-			//顶部搜索供应商
-			changeFn(){
-				//顶部信息
-				this.boardGysInfo();
-			},
-			//顶部信息
+			//点击搜索
 			boardGysInfo(){
 				let arg = {
 					gys:this.supplier_name
@@ -427,6 +423,7 @@
 						let data = res.data.data;
 						if(!data.info){
 							this.supplier_name = "";
+							this.active_index = -1;
 							this.$message.warning('不存在该供应商!');
 							return;
 						}
@@ -455,7 +452,7 @@
 			//本月本周销量和环比
 			getGysWeekMonthTotal(){
 				let arg = {
-					gys:this.supplier_name
+					gys:this.top_info?this.top_info.gys:""
 				}
 				this.xl_total_loading = true;
 				resource.getGysWeekMonthTotal(arg).then(res => {
@@ -479,7 +476,7 @@
 			//本月本周销量图表
 			getGysWeekMonthChart(){
 				let arg = {
-					gys:this.supplier_name
+					gys:this.top_info?this.top_info.gys:""
 				}
 				this.chart_loading = true;
 				resource.getGysWeekMonthChart(arg).then(res => {
@@ -592,7 +589,7 @@
 			//款式信息列表
 			ksInfoData(){
 				let arg = {
-					gys:this.supplier_name,
+					gys:this.top_info?this.top_info.gys:"",
 					ksbm:this.ksbm,
 					is_new:this.is_new,
 					sort:this.ks_sort,
@@ -629,6 +626,33 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//款式信息列表导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						gys:this.top_info?this.top_info.gys:"",
+						ksbm:this.ksbm,
+						is_new:this.is_new,
+						sort:this.ks_sort,
+						page:this.ks_page,
+						pagesize:this.ks_pagesize
+					}
+					resource.getGysKsbmExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'款式编码');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//点击下钻
 			getDetail(ksbm){
@@ -755,7 +779,7 @@
 				overflow-y: scroll;
 				.supplier_item{
 					cursor: pointer;
-					margin-bottom: 10px;
+					padding: 5px 0;
 					color: #333333;
 					font-size: 14px;
 				}
@@ -785,6 +809,11 @@
 	}
 	.margin_top{
 		margin-top: 16px;
+	}
+	.header_row{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
 	}
 	.card_title{
 		font-weight: 500;
