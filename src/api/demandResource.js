@@ -50,6 +50,8 @@ let path = {
 	getGysKsbmList:'supply_chain/get_gys_ksbm_list',				//供应商看板-款式编码列表
 	getGysKsbmExport:'supply_chain/get_gys_ksbm_export',			//款式编码列表导出
 	getGysSkuList:'supply_chain/get_gys_sku_list',					//下钻列表
+	getKsbmFhqk:'supply_chain/get_ksbm_fhqk',						//二部内部款列表
+	getKsbmFhqkExport:'supply_chain/get_ksbm_fhqk_export',			//二部内部款列表导出
 	
 }						
 export default{
@@ -252,6 +254,14 @@ export default{
 	//下钻列表
 	getGysSkuList(params){
 		return http.get(path.getGysSkuList, params)
+	},
+	//二部内部款
+	getKsbmFhqk(params){
+		return http.get(path.getKsbmFhqk, params)
+	},
+	//二部内部款导出
+	getKsbmFhqkExport(params){
+		return http.post(path.getKsbmFhqkExport, params)
 	},
 	
 }
