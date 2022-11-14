@@ -40,72 +40,181 @@
 <!-- 每日鱼塘单量/每日鱼塘金额 -->
 <div class="single_box">
 	<!-- 每日鱼塘单量 -->
-	<div id="single_date" class="single_date" v-show="tab_index == '1'" v-loading="loading"></div>
-	<div id="single_total" class="single_total" v-show="tab_index == '1'" v-loading="loading"></div>
-	<!-- 每日鱼塘金额 -->
-	<div id="money_date" class="single_date" v-show="tab_index == '2'" v-loading="loading"></div>
-	<div id="money_total" class="single_total" v-show="tab_index == '2'" v-loading="loading"></div>
+	<div class="single_date" v-show="tab_index == '1'" v-loading="loading">
+		<div id="single_date" class="absolute"></div>
+		<el-popover
+		placement="top-start"
+		width="500"
+		trigger="hover">
+		<div class="row_content" v-for="item in ddd(single_date)">
+			<span class="bold">{{item.label}}</span>
+			<span>{{item.value}}</span>
+		</div>
+		<i class="icon_style single_date_icon el-icon-info" slot="reference"></i>
+	</el-popover>
+</div>
+<div class="single_total" v-show="tab_index == '1'" v-loading="loading">
+	<div id="single_total" class="absolute"></div>
+	<el-popover
+	placement="top-start"
+	width="500"
+	trigger="hover">
+	<div class="row_content" v-for="item in ddd(single_total)">
+		<span class="bold">{{item.label}}</span>
+		<span>{{item.value}}</span>
+	</div>
+	<i class="icon_style single_total_icon el-icon-info" slot="reference"></i>
+</el-popover>
+</div>
+<!-- 每日鱼塘金额 -->
+<div class="je_single_date" v-show="tab_index == '2'" v-loading="loading">
+	<div id="money_date" class="absolute"></div>
+	<el-popover
+	placement="top-start"
+	width="500"
+	trigger="hover">
+	<div class="row_content" v-for="item in ddd(money_date)">
+		<span class="bold">{{item.label}}</span>
+		<span>{{item.value}}</span>
+	</div>
+	<i class="icon_style single_total_icon el-icon-info" slot="reference"></i>
+</el-popover>
+</div>
+<div class="je_single_total" v-show="tab_index == '2'" v-loading="loading">
+	<div id="money_total" class="absolute"></div>
+	<el-popover
+	placement="top-start"
+	width="500"
+	trigger="hover">
+	<div class="row_content" v-for="item in ddd(money_total)">
+		<span class="bold">{{item.label}}</span>
+		<span>{{item.value}}</span>
+	</div>
+	<i class="icon_style single_total_icon el-icon-info" slot="reference"></i>
+</el-popover>
+</div>
 </div>
 <!-- 各店铺鱼塘单量占比 -->
-<div id="accounted" class="accounted" v-show="tab_index == '1'" v-loading="loading"></div>
+<div class="accounted" v-show="tab_index == '1'" v-loading="loading">
+	<div id="accounted" class="absolute"></div>
+	<el-popover
+	placement="top-start"
+	width="500"
+	trigger="hover">
+	<div class="row_content" v-for="item in ddd(accounted)">
+		<span class="bold">{{item.label}}</span>
+		<span>{{item.value}}</span>
+	</div>
+	<i class="icon_style accounted_icon el-icon-info" slot="reference"></i>
+</el-popover>
+</div>
+
 <!-- 各店铺鱼塘金额占比 -->
-<div id="amount" class="accounted" v-show="tab_index == '2'" v-loading="loading"></div>
+<div class="accounted" v-show="tab_index == '2'" v-loading="loading">
+	<div id="amount" class="absolute"></div>
+	<el-popover
+	placement="top-start"
+	width="500"
+	trigger="hover">
+	<div class="row_content" v-for="item in ddd(amount)">
+		<span class="bold">{{item.label}}</span>
+		<span>{{item.value}}</span>
+	</div>
+	<i class="icon_style amount_icon el-icon-info" slot="reference"></i>
+</el-popover>
+</div>
 <!-- 鱼塘目标完成情况 -->
-<div id="over_state" class="over_state" v-show="tab_index == '1'" v-loading="loading"></div>
+<div class="over_state" v-show="tab_index == '1'" v-loading="loading">
+	<div id="over_state" class="absolute"></div>
+	<el-popover
+	placement="top-start"
+	width="500"
+	trigger="hover">
+	<div class="row_content" v-for="item in ddd(over_state)">
+		<span class="bold">{{item.label}}</span>
+		<span>{{item.value}}</span>
+	</div>
+	<i class="icon_style over_state_icon el-icon-info" slot="reference"></i>
+</el-popover>
+</div>
 <!-- 频次统计 -->
 <div v-show="tab_index == '3'">
 	<!-- 近一年鱼塘频次分析 -->
-	<div class="pc_chart" id="pc_chart" v-loading="pc_chart_loading"></div>
-	<!-- 拉新分析 -->
-	<div class="pc_chart" id="lx_chart" v-loading="pc_chart_loading"></div>
-	<div style="display:flex">
-		<div style="margin-right: 100px">
-			<div class="table_title">
-				<div>鱼塘频次分析</div>
-			</div>
-			<el-table size="small" :data="pin_ci" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
-				<el-table-column prop="pc" width="80" label="做单频次" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="account_num" width="100" label="买家账号统计" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="account_per" width="100" label="买家账号占比" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="sd_num" width="80" label="SD量" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="sd_per" width="80" label="SD占比" show-overflow-tooltip align="center">
-				</el-table-column>
-			</el-table>
+	<div class="pc_chart">
+		<div class="absolute" id="pc_chart" v-loading="pc_chart_loading"></div>
+		<el-popover
+		placement="top-start"
+		width="500"
+		trigger="hover">
+		<div class="row_content" v-for="item in ddd(pc_chart)">
+			<span class="bold">{{item.label}}</span>
+			<span>{{item.value}}</span>
 		</div>
-		<div style="margin-right: 100px">
-			<div class="table_title">
-				<div>五单以上的鱼塘账号</div>
-				<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
-			</div>
-			<el-table size="small" :data="fiv_up" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
-				<el-table-column prop="buyer_account" width="120" label="买家账号" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="ytdl" width="80" label="SD量" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="ytdl_count" width="80" label="公司SD" show-overflow-tooltip align="center">
-				</el-table-column>
-			</el-table>
-		</div>
-		<div>
-			<div class="table_title">
-				<div>店铺鱼塘统计</div>
-			</div>
-			<el-table size="small" :data="dp_yt" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
-				<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="buyer_num" width="120" label="买家SD账号" show-overflow-tooltip align="center">
-				</el-table-column>
-				<el-table-column prop="ytdl_sum" width="120" label="店铺SD量" show-overflow-tooltip align="center">
-				</el-table-column>
-			</el-table>
-		</div>
+		<i class="icon_style pc_chart_icon el-icon-info" slot="reference"></i>
+	</el-popover>
+</div>
+<!-- 拉新分析 -->
+<div class="pc_chart">
+	<div class="absolute" id="lx_chart" v-loading="pc_chart_loading"></div>
+	<el-popover
+	placement="top-start"
+	width="500"
+	trigger="hover">
+	<div class="row_content" v-for="item in ddd(lx_chart)">
+		<span class="bold">{{item.label}}</span>
+		<span>{{item.value}}</span>
 	</div>
+	<i class="icon_style lx_chart_icon el-icon-info" slot="reference"></i>
+</el-popover>
+</div>
+<div style="display:flex">
+	<div style="margin-right: 100px">
+		<div class="table_title">
+			<PopoverWidget title="鱼塘频次分析" keys="ytpc"/>
+		</div>
+		<el-table size="small" :data="pin_ci" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
+			<el-table-column prop="pc" width="80" label="做单频次" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="account_num" width="100" label="买家账号统计" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="account_per" width="100" label="买家账号占比" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="sd_num" width="80" label="SD量" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="sd_per" width="80" label="SD占比" show-overflow-tooltip align="center">
+			</el-table-column>
+		</el-table>
+	</div>
+	<div style="margin-right: 100px">
+		<div class="table_title">
+			<PopoverWidget title="五单以上的鱼塘账号" keys="wdyszh"/>
+			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table size="small" :data="fiv_up" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
+			<el-table-column prop="buyer_account" width="120" label="买家账号" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="ytdl" width="80" label="SD量" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="ytdl_count" width="80" label="公司SD" show-overflow-tooltip align="center">
+			</el-table-column>
+		</el-table>
+	</div>
+	<div>
+		<div class="table_title">
+			<PopoverWidget title="店铺鱼塘统计" keys="dpyttj"/>
+		</div>
+		<el-table size="small" :data="dp_yt" max-height="320" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="pc_table_loading">
+			<el-table-column prop="shop_code" width="120" label="店铺名称" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="buyer_num" width="120" label="买家SD账号" show-overflow-tooltip align="center">
+			</el-table-column>
+			<el-table-column prop="ytdl_sum" width="120" label="店铺SD量" show-overflow-tooltip align="center">
+			</el-table-column>
+		</el-table>
+	</div>
+</div>
 </div>
 </div>
 </template>
@@ -134,25 +243,40 @@
 		width: 100%;
 		display: flex;
 		.single_date{
+			position: relative;
 			min-width:60%;
 			min-height: 300px;
 		}
 		.single_total{
+			position: relative;
+			min-width:40%;
+			min-height: 300px;
+		}
+		.je_single_date{
+			position: relative;
+			min-width:60%;
+			min-height: 300px;
+		}
+		.je_single_total{
+			position: relative;
 			min-width:40%;
 			min-height: 300px;
 		}
 	}
 	.accounted{
+		position: relative;
 		margin-bottom: 50px;
 		min-width: 100%;
 		min-height: 600px;
 	}
 	.over_state{
+		position: relative;
 		min-width: 100%;
 		min-height: 600px;
 	}
 }
 .pc_chart{
+	position: relative;
 	width: 100%;
 	height: 400px;
 }
@@ -165,6 +289,47 @@
 	font-size: 15px;
 	font-weight: bold;
 }
+.row_content{
+	color: #333333;
+	font-size: 14px;
+	line-height: 22px;
+	.bold{
+		font-weight: bold;
+	}
+}
+.absolute{
+	position: absolute;
+	top: 0;
+	left: 0;
+	width:100%;
+	height: 100%;
+}
+.icon_style{
+	color: #E6A23C;
+	position: absolute;
+	top: 5px;
+}
+.single_date_icon{
+	left: 115px;
+}
+.single_total_icon{
+	left: 115px;
+}
+.accounted_icon{
+	left: 170px;
+}
+.over_state_icon{
+	left: 150px;
+}
+.amount_icon{
+	left: 170px;
+}
+.pc_chart_icon{
+	left: 170px;
+}
+.lx_chart_icon{
+	left: 80px;
+}
 </style>
 <script>
 	import resource from '../../../api/resource.js'
@@ -172,6 +337,7 @@
 	import dps from '../../../components/results_components/dps.vue'
 	import {exportExcel} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	export default{
 		data(){
 			return{
@@ -219,7 +385,63 @@
 				dp_yt:[],									//店铺鱼塘统计
 				loading:false,
 				pc_chart_loading:false,
-				pc_table_loading:false
+				pc_table_loading:false,
+				single_date:[
+				'1.维度：付款日期',
+				'2.指标解释：',
+				'鱼塘单量：特殊单的原始线上订单号数',
+				'实际单量：剔除特殊单，正常订单的原始线上订单号数',
+				'鱼塘目标值：特殊单的目标值'
+				],
+				single_total:[
+				'1.指标解释：',
+				'鱼塘单量：特殊单的原始线上订单号数',
+				'实际单量：剔除特殊单，正常订单的原始线上订单号数'
+				],
+				accounted:[
+				'1.维度：店铺',
+				'2.指标解释：',
+				'鱼塘单量：特殊单的原始线上订单号数',
+				'实际单量：剔除特殊单，正常订单的原始线上订单号数',
+				'鱼塘单量占比：鱼塘单量/（鱼塘单量+实际单量）'
+				],
+				over_state:[
+				'1.维度：店铺',
+				'2.指标解释：',
+				'鱼塘单量：特殊单的原始线上订单号数',
+				'鱼塘目标值：特殊单的目标值',
+				'鱼塘完成率：鱼塘单量/鱼塘目标值'
+				],
+				money_date:[
+				'1.维度：付款日期',
+				'2.指标解释：',
+				'鱼塘金额：特殊单的销售金额',
+				'实际金额：剔除特殊单，正常订单的销售金额'
+				],
+				money_total:[
+				'1.指标解释：',
+				'鱼塘金额：特殊单的销售金额',
+				'实际金额：剔除特殊单，正常订单的销售金额'
+				],
+				amount:[
+				'1.维度：店铺',
+				'2.指标解释：',
+				'鱼塘金额：特殊单的销售金额',
+				'实际金额：剔除特殊单，正常订单的销售金额',
+				'鱼塘金额占比：鱼塘金额/（实际金额+鱼塘金额）'
+				],
+				pc_chart:[
+				'1.维度：付款日期',
+				'2.指标解释：',
+				'鱼塘总量：特殊单的原始线上订单号数',
+				'鱼塘五次以上人数百分比：5次以上人数/总刷单人数',
+				'鱼塘五次以内人数百分比：5次以内人数/总刷单人数'
+				],
+				lx_chart:[
+				'1.维度：付款日期',
+				'2.指标解释：',
+				'新用户数量：首次刷单的买家数量'
+				]
 			}
 		},
 		mounted(){
@@ -254,6 +476,19 @@
 			}
 		},
 		methods:{
+			//处理指标解释
+			ddd(list){
+				var new_list = [];
+				list.map(item => {
+					item.split('：');
+					let obj = {
+						label:item.split('：')[0] + "：",
+						value:item.split('：')[1]
+					}
+					new_list.push(obj)
+				})
+				return new_list;
+			},
         	//子组件传递过来的参数
         	checkReq(reqObj){
         		this.select_department_ids = reqObj.select_department_ids;
@@ -1184,7 +1419,8 @@
 },
 },
 components:{
-	dps
+	dps,
+	PopoverWidget
 }
 }
 </script>

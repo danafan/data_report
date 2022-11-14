@@ -32,11 +32,7 @@
 	<!-- 数据模块 -->
 	<div class="data_module">
 		<el-card class="module_item" v-loading="loading">
-			<div class="title">销售收入预估
-				<el-tooltip class="item" effect="dark" :content="xssryg.remark" placement="top-start">
-					<i class="el-icon-warning" style="color: #FFE58F"></i>
-				</el-tooltip>
-			</div>
+			<PopoverWidget title="销售收入预估" keys="xssryg"/>
 			<div class="value">{{xssryg.xssryg}}万</div>
 			<div class="content_row">
 				<div class="label">销售收入月目标</div>
@@ -56,11 +52,7 @@
 			</div>
 		</el-card>
 		<el-card class="module_item" v-loading="loading">
-			<div class="title">营销费用预估
-				<el-tooltip class="item" effect="dark" :content="yxfyyg.remark" placement="top-start">
-					<i class="el-icon-warning" style="color: #FFE58F"></i>
-				</el-tooltip>
-			</div>
+			<PopoverWidget title="营销费用预估" keys="yxfyyg"/>
 			<div class="value">{{yxfyyg.yxfyyg}}万</div>
 			<div class="content_row">
 				<div class="label">营销费用月目标</div>
@@ -80,7 +72,7 @@
 			</div>
 		</el-card>
 		<el-card class="module_item" v-loading="loading">
-			<div class="title">预估值-贡献毛益</div>
+			<PopoverWidget title="预估值-贡献毛益" keys="ygz_gxmy"/>
 			<div class="value">{{ygz_gxmy.ygz_gxmy}}万</div>
 			<div class="content_row">
 				<div class="label">贡献毛益月目标</div>
@@ -100,7 +92,7 @@
 			</div>
 		</el-card>
 		<el-card class="module_item" v-loading="loading">
-			<div class="title">预估值-贡献毛益率</div>
+			<PopoverWidget title="预估值-贡献毛益率" keys="ygz_gxmyl"/>
 			<div class="value">{{ygz_gxmyl.gxmylyg}}%</div>
 			<div class="content_row">
 				<div class="label">贡献毛益率月目标</div>
@@ -112,11 +104,7 @@
 			</div>
 		</el-card>
 		<el-card class="module_item" v-if="jlryg">
-			<div class="title">净利润预估
-				<el-tooltip class="item" effect="dark" :content="jlryg.remark" placement="top-start">
-					<i class="el-icon-warning" style="color: #FFE58F" v-if="jlryg.remark != ''"></i>
-				</el-tooltip>
-			</div>
+			<PopoverWidget title="净利润预估" keys="jlryg"/>
 			<div class="value">{{jlryg.jlryg}}万</div>
 			<div class="content_row">
 				<div class="label">净利润率</div>
@@ -125,8 +113,11 @@
 		</el-card>
 	</div>
 	<div class="table_setting">
-		<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<PopoverWidget title="指标解释" keys="performance_analysis"/>
+		<div style="display: flex;align-items: center">
+			<el-button type="primary" size="small" @click="show_custom = true">店铺自定义列表</el-button>
+			<el-button type="primary" plain size="small" @click="Export" v-if="button_list.export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 	</div>
 	<!-- 表格 -->
 	<div class="table_container" v-loading="loading">
@@ -177,8 +168,11 @@
 	<div style="margin-top: 30px;margin-bottom: 10px;font-size: 22;font-weight: bold">营销周报</div>
 	<!-- 营销周报 -->
 	<div class="table_setting">
-		<el-button type="primary" size="small" @click="show_week_custom = true">店铺自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="ExportWeek" v-if="button_list.week_export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		<PopoverWidget title="指标解释" keys="week_data"/>
+		<div style="display: flex;align-items: center">
+			<el-button type="primary" size="small" @click="show_week_custom = true">店铺自定义列表</el-button>
+			<el-button type="primary" plain size="small" @click="ExportWeek" v-if="button_list.week_export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 	</div>
 	<!-- 表格 -->
 	<div class="table_container" v-loading="loading">
@@ -362,6 +356,7 @@
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import {exportExcel} from '../../../api/export.js'
 	import dps from '../../../components/results_components/dps.vue'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	export default{
 		data(){
 			return{
@@ -693,7 +688,8 @@
 			
 		},
 		components:{
-			dps
+			dps,
+			PopoverWidget
 		}
 	}
 </script>

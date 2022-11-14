@@ -25,7 +25,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-size="pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
 			</el-pagination>
 		</div>
 	</div>
@@ -40,7 +40,7 @@
 			return{
 				date:[lastXDate(7),getNowDate()],					//提报日期
 				page:1,
-				pagesize:10,
+				pagesize:15,
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',

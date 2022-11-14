@@ -23,6 +23,7 @@
 				<el-button type="primary" size="mini" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<PopoverWidget style="margin-bottom: 15px" title="指标解释" keys="thp_sales"/>
 		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
 			<el-table-column prop="cyspbm" label="成衣商品编码" align="center" show-overflow-tooltip>
 			</el-table-column>
@@ -47,6 +48,7 @@
 </template>
 <script>
 	import resource from '../../../api/demandResource.js'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	
 	export default{
 		data(){
@@ -150,6 +152,9 @@
 				})
 			},
 			
+		},
+		components:{
+			PopoverWidget
 		}
 	}
 </script>
