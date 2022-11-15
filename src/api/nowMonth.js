@@ -14,6 +14,10 @@ export function getMonthStartDate(){
 	}
 	return formatDate(monthStartDate); 
 }
+//获得本年
+export function getCurrentYear(){ 
+	return nowYear.toString();
+}
 //获得本月
 export function getCurrentMonth(){ 
 	var currentMonth = new Date(nowYear, nowMonth, 1); 

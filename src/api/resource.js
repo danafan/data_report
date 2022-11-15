@@ -230,6 +230,10 @@ let path = {
 	deptBusiness:'supplier/dept_business',							//项目部-营销费用投产情况
 	shopBusiness:'supplier/shop_business',							//店铺—营销费用投产情况
 	shopDayBusiness:'supplier/shop_day_business',					//店铺日数据
+	briefSelect:'brief/select',										//经营简报搜索
+	briefContent:'brief/content',									//简报内容
+	briefMonthRank:'brief/month_rank',								//简报月度排行
+	briefWeekRank:'brief/week_rank',								//简报单周排行
 		
 
 }					
@@ -1185,6 +1189,22 @@ export default{
 	//店铺日数据
 	shopDayBusiness(params){
 		return http.get(path.shopDayBusiness, params)
+	},
+	//经营简报搜索
+	briefSelect(params){
+		return http.get(path.briefSelect, params)
+	},
+	//简报内容
+	briefContent(params){
+		return http.get(path.briefContent, params)
+	},
+	//简报月度排行
+	briefMonthRank(params){
+		return http.get(path.briefMonthRank, params)
+	},
+	//简报周度排行
+	briefWeekRank(params){
+		return http.get(path.briefWeekRank, params)
 	},
 }
 

@@ -11,6 +11,7 @@
 				<IntervalData v-if="item.web_url == 'interval_data'"/>
 				<Overseas v-if="item.web_url == 'overseas'"/>
 				<CostControl v-if="item.web_url == 'cost_control'"/>
+				<WeekOperation v-if="item.web_url == 'week_operation'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -23,6 +24,7 @@
 <script>
 	import PerformanceAnalysis from './StoreResults/performance_analysis_test.vue'
 	import CostControl from './StoreResults/cost_control.vue'
+	import WeekOperation from './StoreResults/week_operation.vue'
 	import TargetComplete from './StoreResults/target_complete.vue'
 	import DailyPerformance from './StoreResults/daily_performance.vue'
 	import FishPonds from './StoreResults/fish_ponds.vue'
@@ -70,6 +72,7 @@
 		components:{
 			PerformanceAnalysis,
 			CostControl,
+			WeekOperation,
 			TargetComplete,
 			DailyPerformance,
 			FishPonds,
