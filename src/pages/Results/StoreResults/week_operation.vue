@@ -21,7 +21,8 @@
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
 				<div class="table_title">销售收入</div>
-				<div class="table_content flex flex-1 wrap jsb">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本周目标</div>
 						<div class="view_item_value flex-1 flex ac jc">{{xssr_info.week_target}}万</div>
@@ -50,7 +51,8 @@
 			</div>
 			<div class="movement_table flex fcol">
 				<div class="table_title">最近四周数据走势</div>
-				<div class="table_content flex flex-1 as jc" v-loading="content_loading">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 as jc" v-loading="content_loading" v-else>
 					<div class="four_table">
 						<div class="four_row flex" v-for="item in xssr_four_week">
 							<div class="row_label tc">{{item.weeks}}周</div>
@@ -64,7 +66,8 @@
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
 				<div class="table_title">营销费用</div>
-				<div class="table_content flex flex-1 wrap jsb">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本周目标</div>
 						<div class="view_item_value flex-1 flex ac jc">{{yxfy_info.week_target}}万</div>
@@ -93,7 +96,8 @@
 			</div>
 			<div class="movement_table flex fcol">
 				<div class="table_title">最近四周数据走势</div>
-				<div class="table_content flex flex-1 as jc" v-loading="content_loading">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 as jc" v-loading="content_loading" v-else>
 					<div class="four_table">
 						<div class="four_row flex" v-for="item in yxfy_four_week">
 							<div class="row_label tc">{{item.weeks}}周</div>
@@ -107,7 +111,8 @@
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
 				<div class="table_title">贡献毛益</div>
-				<div class="table_content flex flex-1 wrap jsb">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本周目标</div>
 						<div class="view_item_value flex-1 flex ac jc">{{gxml_info.week_target}}万</div>
@@ -136,7 +141,8 @@
 			</div>
 			<div class="movement_table flex fcol">
 				<div class="table_title">最近四周数据走势</div>
-				<div class="table_content flex flex-1 as jc" v-loading="content_loading">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 as jc" v-loading="content_loading" v-else>
 					<div class="four_table">
 						<div class="four_row flex" v-for="item in gxml_four_week">
 							<div class="row_label tc">{{item.weeks}}周</div>
@@ -150,14 +156,15 @@
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
 				<div class="table_title">贡献毛益率</div>
-				<div class="table_content flex flex-1 wrap jsb">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本周目标</div>
-						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.week_target}}万</div>
+						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.week_target}}%</div>
 					</div>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本周实际</div>
-						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.week_actual}}万</div>
+						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.week_actual}}%</div>
 					</div>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">周目标完成率</div>
@@ -165,11 +172,11 @@
 					</div>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本月目标</div>
-						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.month_target}}万</div>
+						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.month_target}}%</div>
 					</div>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本月实际</div>
-						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.month_actual}}万</div>
+						<div class="view_item_value flex-1 flex ac jc">{{gxmyl_info.month_actual}}%</div>
 					</div>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">月目标完成率</div>
@@ -179,11 +186,12 @@
 			</div>
 			<div class="movement_table flex fcol">
 				<div class="table_title">最近四周数据走势</div>
-				<div class="table_content flex flex-1 as jc" v-loading="content_loading">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 as jc" v-loading="content_loading" v-else>
 					<div class="four_table">
 						<div class="four_row flex" v-for="item in gxmyl_four_week">
 							<div class="row_label tc">{{item.weeks}}周</div>
-							<div class="row_value tc">{{item.gxmyl}}万</div>
+							<div class="row_value tc">{{item.gxmyl}}%</div>
 						</div>
 					</div>
 				</div>
@@ -193,7 +201,8 @@
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
 				<div class="table_title">预估净利</div>
-				<div class="table_content flex flex-1 wrap jsb">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
 						<div class="view_item_title flex-1 flex ac jc">本周目标</div>
 						<div class="view_item_value flex-1 flex ac jc">{{jlr_info.week_target}}万</div>
@@ -222,7 +231,8 @@
 			</div>
 			<div class="movement_table flex fcol">
 				<div class="table_title">最近四周数据走势</div>
-				<div class="table_content flex flex-1 as jc" v-loading="content_loading">
+				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+				<div class="table_content flex flex-1 as jc" v-loading="content_loading" v-else>
 					<div class="four_table">
 						<div class="four_row flex" v-for="item in jlr_four_week">
 							<div class="row_label tc">{{item.weeks}}周</div>
@@ -328,6 +338,18 @@
 				week_yl_loading:false,			
 				week_ks_data:[],				//单周列表（亏损）
 				week_ks_loading:false,			
+				is_empty:false,
+				empty_option:{
+					title: {
+						text: '暂无数据~',
+						x: 'center',
+						y: 'center',
+						textStyle: {
+							fontSize: 14,
+							fontWeight: 'normal',
+						}
+					}
+				},
 			}
 		},
 		watch:{
@@ -339,27 +361,29 @@
 		},
 		created(){
 			//获取筛选条件
-			this.briefSelect();
+			this.briefSelect(true);
 		},
 		methods:{
 			//获取筛选条件
-			briefSelect(){
+			briefSelect(type){
 				resource.briefSelect({year:this.year}).then(res => {
 					if(res.data.code == 1){
 						this.week_list = res.data.data;
 						this.week = this.week_list.length == 0?"":this.week_list[0].weeks;
 						this.start_date = this.week_list.length == 0?"":this.week_list[0].start_time;
 						this.end_date = this.week_list.length == 0?"":this.week_list[0].end_time;
-						//简报内容
-						this.briefContent();
-						//月度排行(盈利)
-						this.briefMonthRank(1)
-						//月度排行(亏损)
-						this.briefMonthRank(2)
-						//单周排行(盈利)
-						this.briefWeekRank(1)
-						//单周排行(亏损)
-						this.briefWeekRank(2)
+						if(type){
+							//简报内容
+							this.briefContent();
+							//月度排行(盈利)
+							this.briefMonthRank(1)
+							//月度排行(亏损)
+							this.briefMonthRank(2)
+							//单周排行(盈利)
+							this.briefWeekRank(1)
+							//单周排行(亏损)
+							this.briefWeekRank(2)
+						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -398,124 +422,144 @@
 						var echarts = require("echarts");
 						let data = res.data.data;
 						this.content_loading = false;
-
+						this.is_empty = data.length == 0;
 						// 销售收入
-						let xssr = data.xssr;
-						this.xssr_info = {
-							week_target:xssr.week.target,
-							week_actual:xssr.week.actual,
-							week_rate:xssr.week.rate,
-							month_target:xssr.month.target,
-							month_actual:xssr.month.actual,
-							month_rate:xssr.month.rate,
-						}
-						this.xssr_four_week = xssr.four_week;
 						let xssr_a_axis = [];
 						let xssr_series = [];
-						this.xssr_four_week.map(item => {
-							xssr_a_axis.push(item.weeks + '周');
-							xssr_series.push(item.xssr);
-						})
+						if(!this.is_empty){
+							let xssr = data.xssr;
+							this.xssr_info = {
+								week_target:xssr.week.target,
+								week_actual:xssr.week.actual,
+								week_rate:xssr.week.rate,
+								month_target:xssr.month.target,
+								month_actual:xssr.month.actual,
+								month_rate:xssr.month.rate,
+							}
+							this.xssr_four_week = xssr.four_week;
+							this.xssr_four_week.map(item => {
+								xssr_a_axis.push(item.weeks + '周');
+								xssr_series.push(item.xssr);
+							})
+						}
 						var xssr_chart = document.getElementById('xssr_chart');
 						this.xssrChart = echarts.getInstanceByDom(xssr_chart)
-						if (this.xssrChart == null) { 
-							this.xssrChart = echarts.init(xssr_chart);
+						if (this.xssrChart) { 
+							this.xssrChart.clear();
 						}
-						this.xssrChart.setOption(this.setOptions(xssr_a_axis,xssr_series));
+						this.xssrChart = echarts.init(xssr_chart);
+						this.xssrChart.setOption(this.setOptions(xssr_a_axis,xssr_series,'万'));
 						//营销费用
-						let yxfy = data.yxfy;
-						this.yxfy_info = {
-							week_target:yxfy.week.target,
-							week_actual:yxfy.week.actual,
-							week_rate:yxfy.week.rate,
-							month_target:yxfy.month.target,
-							month_actual:yxfy.month.actual,
-							month_rate:yxfy.month.rate,
-						}
-						this.yxfy_four_week = yxfy.four_week;
 						let yxfy_a_axis = [];
 						let yxfy_series = [];
-						this.yxfy_four_week.map(item => {
-							yxfy_a_axis.push(item.weeks + '周');
-							yxfy_series.push(item.yxfy);
-						})
+						if(!this.is_empty){
+							let yxfy = data.yxfy;
+							this.yxfy_info = {
+								week_target:yxfy.week.target,
+								week_actual:yxfy.week.actual,
+								week_rate:yxfy.week.rate,
+								month_target:yxfy.month.target,
+								month_actual:yxfy.month.actual,
+								month_rate:yxfy.month.rate,
+							}
+							this.yxfy_four_week = yxfy.four_week;
+							this.yxfy_four_week.map(item => {
+								yxfy_a_axis.push(item.weeks + '周');
+								yxfy_series.push(item.yxfy);
+							})
+						}
+						
 						var yxfy_chart = document.getElementById('yxfy_chart');
 						this.yxfyChart = echarts.getInstanceByDom(yxfy_chart)
-						if (this.yxfyChart == null) { 
-							this.yxfyChart = echarts.init(yxfy_chart);
+						if (this.yxfyChart) { 
+							this.yxfyChart.clear();
 						}
-						this.yxfyChart.setOption(this.setOptions(yxfy_a_axis,yxfy_series));
+						this.yxfyChart = echarts.init(yxfy_chart);
+						this.yxfyChart.setOption(this.setOptions(yxfy_a_axis,yxfy_series,'万'));
 						//贡献毛利
-						let gxml = data.gx_ml;
-						this.gxml_info = {
-							week_target:gxml.week.target,
-							week_actual:gxml.week.actual,
-							week_rate:gxml.week.rate,
-							month_target:gxml.month.target,
-							month_actual:gxml.month.actual,
-							month_rate:gxml.month.rate,
-						}
-						this.gxml_four_week = gxml.four_week;
 						let gxml_a_axis = [];
 						let gxml_series = [];
-						this.gxml_four_week.map(item => {
-							gxml_a_axis.push(item.weeks + '周');
-							gxml_series.push(item.gx_ml);
-						})
+						if(!this.is_empty){
+							let gxml = data.gx_ml;
+							this.gxml_info = {
+								week_target:gxml.week.target,
+								week_actual:gxml.week.actual,
+								week_rate:gxml.week.rate,
+								month_target:gxml.month.target,
+								month_actual:gxml.month.actual,
+								month_rate:gxml.month.rate,
+							}
+							this.gxml_four_week = gxml.four_week;
+
+							this.gxml_four_week.map(item => {
+								gxml_a_axis.push(item.weeks + '周');
+								gxml_series.push(item.gx_ml);
+							})
+						}
+						
 						var gxml_chart = document.getElementById('gxml_chart');
 						this.gxmlChart = echarts.getInstanceByDom(gxml_chart)
-						if (this.gxmlChart == null) { 
-							this.gxmlChart = echarts.init(gxml_chart);
+						if (this.gxmlChart) { 
+							this.gxmlChart.clear();
 						}
-						this.gxmlChart.setOption(this.setOptions(gxml_a_axis,gxml_series));
+						this.gxmlChart = echarts.init(gxml_chart);
+						this.gxmlChart.setOption(this.setOptions(gxml_a_axis,gxml_series,'万'));
 						//贡献毛利率
-						let gxmyl = data.gxmyl;
-						this.gxmyl_info = {
-							week_target:gxmyl.week.target,
-							week_actual:gxmyl.week.actual,
-							week_rate:gxmyl.week.rate,
-							month_target:gxmyl.month.target,
-							month_actual:gxmyl.month.actual,
-							month_rate:gxmyl.month.rate,
-						}
-						this.gxmyl_four_week = gxmyl.four_week;
 						let gxmyl_a_axis = [];
 						let gxmyl_series = [];
-						this.gxmyl_four_week.map(item => {
-							gxmyl_a_axis.push(item.weeks + '周');
-							gxmyl_series.push(item.gxmyl);
-						})
+						if(!this.is_empty){
+							let gxmyl = data.gxmyl;
+							this.gxmyl_info = {
+								week_target:gxmyl.week.target,
+								week_actual:gxmyl.week.actual,
+								week_rate:gxmyl.week.rate,
+								month_target:gxmyl.month.target,
+								month_actual:gxmyl.month.actual,
+								month_rate:gxmyl.month.rate,
+							}
+							this.gxmyl_four_week = gxmyl.four_week;
+
+							this.gxmyl_four_week.map(item => {
+								gxmyl_a_axis.push(item.weeks + '周');
+								gxmyl_series.push(item.gxmyl);
+							})
+						}
+						
 						var gxmyl_chart = document.getElementById('gxmyl_chart');
 						this.gxmylChart = echarts.getInstanceByDom(gxmyl_chart)
-						if (this.gxmylChart == null) { 
-							this.gxmylChart = echarts.init(gxmyl_chart);
+						if (this.gxmylChart) { 
+							this.gxmylChart.clear();
 						}
-						this.gxmylChart.setOption(this.setOptions(gxmyl_a_axis,gxmyl_series));
+						this.gxmylChart = echarts.init(gxmyl_chart);
+						this.gxmylChart.setOption(this.setOptions(gxmyl_a_axis,gxmyl_series,'%'));
 						//预估净利
-						let jlr = data.jlr;
-						this.jlr_info = {
-							week_target:jlr.week.target,
-							week_actual:jlr.week.actual,
-							week_rate:jlr.week.rate,
-							month_target:jlr.month.target,
-							month_actual:jlr.month.actual,
-							month_rate:jlr.month.rate,
-						}
-						this.jlr_four_week = jlr.four_week;
 						let jlr_a_axis = [];
 						let jlr_series = [];
-						this.jlr_four_week.map(item => {
-							jlr_a_axis.push(item.weeks + '周');
-							jlr_series.push(item.jlr);
-						})
+						if(!this.is_empty){
+							let jlr = data.jlr;
+							this.jlr_info = {
+								week_target:jlr.week.target,
+								week_actual:jlr.week.actual,
+								week_rate:jlr.week.rate,
+								month_target:jlr.month.target,
+								month_actual:jlr.month.actual,
+								month_rate:jlr.month.rate,
+							}
+							this.jlr_four_week = jlr.four_week;
+
+							this.jlr_four_week.map(item => {
+								jlr_a_axis.push(item.weeks + '周');
+								jlr_series.push(item.jlr);
+							})
+						}
+						
 						var jlr_chart = document.getElementById('jlr_chart');
 						this.jlrChart = echarts.getInstanceByDom(jlr_chart)
-						if (this.jlrChart == null) { 
-							this.jlrChart = echarts.init(jlr_chart);
+						if (this.jlrChart) { 
+							this.jlrChart.clear();
 						}
-						this.jlrChart.setOption(this.setOptions(jlr_a_axis,jlr_series));
-
-
+						this.jlrChart = echarts.init(jlr_chart);
+						this.jlrChart.setOption(this.setOptions(jlr_a_axis,jlr_series,'万'));
 						window.addEventListener('resize',() => {
 							this.xssrChart.resize();
 							this.yxfyChart.resize();
@@ -523,49 +567,47 @@
 							this.gxmylChart.resize();
 							this.jlrChart.resize();
 						});
-
-
-						
-						
-						
-						
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
 },
 			//柱状图配置
-			setOptions(x_axis,series_data){
-				return {
-					xAxis: {
-						type: 'category',
-						data: x_axis
-					},
-					yAxis: {
-						type: 'value',
-						axisLabel: {
-							formatter: '{value} 万'
+			setOptions(x_axis,series_data,unit){
+				if(series_data.length == 0){
+					return this.empty_option;
+				}else{
+					return {
+						xAxis: {
+							type: 'category',
+							data: x_axis
+						},
+						yAxis: {
+							type: 'value',
+							axisLabel: {
+								formatter: '{value}' + unit
+							}
+						},
+						grid:{
+							y2:60
+						},
+						series: [
+						{
+							data: series_data,
+							label: {
+								show: true,
+								fontSize:14,
+								fontWeight:'bold',
+								position: 'top',
+								formatter: '{c}' + unit
+							},
+							itemStyle:{
+								color:"green"
+							},
+							type: 'bar'
 						}
-					},
-					grid:{
-        				y2:60
-        			},
-					series: [
-					{
-						data: series_data,
-						label: {
-							show: true,
-							fontSize:14,
-							fontWeight:'bold',
-							position: 'top',
-							formatter: '{c}' + '万'
-						},
-						itemStyle:{
-							color:"green"
-						},
-						type: 'bar'
+						]
 					}
-					]
 				}
 			},
 			//月度排行
@@ -694,7 +736,10 @@
 .table_content{
 	padding: 15px 15px 0 15px;
 }
-
+.empty{
+	font-size: 14px;
+	color: #666666;
+}
 .table_title{
 	background: #D6E9EF;
 	width: 100%;

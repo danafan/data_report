@@ -52,6 +52,8 @@ let path = {
 	getGysSkuList:'supply_chain/get_gys_sku_list',					//下钻列表
 	getKsbmFhqk:'supply_chain/get_ksbm_fhqk',						//二部内部款列表
 	getKsbmFhqkExport:'supply_chain/get_ksbm_fhqk_export',			//二部内部款列表导出
+	getEbzhkTwo:'supply_chain/get_ebzhk_two',						//二部下面的表格
+	getEbzhkTwoExport:'supply_chain/get_ebzhk_two_export',			//二部下面的表格导出
 	
 }						
 export default{
@@ -262,6 +264,14 @@ export default{
 	//二部内部款导出
 	getKsbmFhqkExport(params){
 		return http.post(path.getKsbmFhqkExport, params)
+	},
+	//二部下面的表格
+	getEbzhkTwo(params){
+		return http.get(path.getEbzhkTwo, params)
+	},
+	//二部下面的表格导出
+	getEbzhkTwoExport(params){
+		return http.post(path.getEbzhkTwoExport, params)
 	},
 	
 }
