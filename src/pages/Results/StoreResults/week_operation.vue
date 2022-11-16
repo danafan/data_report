@@ -638,7 +638,7 @@
 			},
 			briefWeekRank(type){
 				let arg = {
-					week:this.week,
+					day:this.end_date,
 					type:type
 				}
 				if(type == 1){

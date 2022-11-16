@@ -165,10 +165,10 @@
 			<el-button size="small" type="primary" @click="setColumns('2')">保存</el-button>
 		</div>
 	</el-dialog>
-	<div style="margin-top: 30px;margin-bottom: 10px;font-size: 22;font-weight: bold">营销周报</div>
+	<!-- <div style="margin-top: 30px;margin-bottom: 10px;font-size: 22;font-weight: bold">营销周报</div> -->
 	<!-- 营销周报 -->
 	<div class="table_setting">
-		<PopoverWidget title="指标解释" keys="week_data"/>
+		<PopoverWidget title="营销周报" keys="week_data"/>
 		<div style="display: flex;align-items: center">
 			<el-button type="primary" size="small" @click="show_week_custom = true">店铺自定义列表</el-button>
 			<el-button type="primary" plain size="small" @click="ExportWeek" v-if="button_list.week_export == '1'">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -257,6 +257,7 @@
 	}
 }
 .table_setting{
+	margin-top: 15px;
 	display: flex;
 	justify-content: space-between;
 }

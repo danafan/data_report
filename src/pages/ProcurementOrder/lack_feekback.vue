@@ -52,47 +52,49 @@
 				<template slot-scope="scope">
 					<el-input size="small" :placeholder="item.label" v-model="scope.row[item.prop]" @change="changeResult($event,scope.row.ksbm,item.type)" v-if="item.ele_type =='input'">
 					</el-input>
-					<el-button type="text" size="small" @click="getRecord(scope.row.ksbm,item.detail_type)" v-else-if="item.ele_type =='button'">查看</el-button>
-					<div class="prop_text" v-else>{{scope.row[item.prop]}}{{item.unit && scope.row[item.prop]?item.unit:''}}</div>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
-			</el-pagination>
-		</div>
-		<!-- 历史供应链反馈结果弹窗 -->
-		<el-dialog :title="detail_type == '0'?'历史供应商反馈结果':'历史供应链建议'" center :visible.sync="show_table">
-			<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-				<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
-				<el-table-column prop="record" :label="detail_type == '0'?'供应商反馈结果':'供应链建议'" show-overflow-tooltip align="center"></el-table-column>
-				<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
-			</el-table>
-			<div class="page">
-				<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="tableObj.total">
-				</el-pagination>
-			</div>
-			<div slot="footer" class="dialog-footer">
-				<el-button size="small" type="primary" @click="show_table = false">关闭</el-button>
-			</div>
-		</el-dialog>
-		<!-- 导入 -->
-		<el-dialog title="导入" :visible.sync="show_dialog" width="30%">
-			<div class="down_box">
-				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
-				<div class="upload_box">
-					<el-button type="primary" size="small">
-						导入
-						<i class="el-icon-upload el-icon--right"></i>
-					</el-button>
-					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
-				</div>
-			</div>
-			<div slot="footer" class="dialog-footer">
-				<el-button size="small" @click="show_dialog = false">取 消</el-button>
-			</div>
-		</el-dialog>
+					<el-popover
+					placement="right"
+					width="800"
+					:open-delay="1000"
+					trigger="hover"
+					@show="getRecord(scope.row.ksbm,item.detail_type)"
+					>
+					<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
+						<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+						<el-table-column prop="record" :label="detail_type == '0'?'供应商反馈结果':'供应链建议'" show-overflow-tooltip align="center"></el-table-column>
+						<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+					</el-table>
+					<div class="page">
+						<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="tableObj.total">
+						</el-pagination>
+					</div>
+					<el-button slot="reference" type="text" size="mini" v-if="item.ele_type =='button'">查看</el-button>
+				</el-popover>
+				<div class="prop_text" v-if="!item.ele_type">{{scope.row[item.prop]}}{{item.unit && scope.row[item.prop]?item.unit:''}}</div>
+			</template>
+		</el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination @size-change="changePageSize" @current-change="changePage" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+		</el-pagination>
 	</div>
+	<!-- 导入 -->
+	<el-dialog title="导入" :visible.sync="show_dialog" width="30%">
+		<div class="down_box">
+			<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
+			<div class="upload_box">
+				<el-button type="primary" size="small">
+					导入
+					<i class="el-icon-upload el-icon--right"></i>
+				</el-button>
+				<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+			</div>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="show_dialog = false">取 消</el-button>
+		</div>
+	</el-dialog>
+</div>
 </template>
 <script>
 	import resource from '../../api/resource.js'
@@ -116,7 +118,6 @@
 				pagesize:10,
 				sort:"",
 				dataObj:{},
-				show_table:false,		//详情弹窗
 				table_page:1,
 				table_pagesize:10,
 				detail_ksbm:"",
@@ -124,6 +125,7 @@
 				tableObj:{},
 				table_setting:{},
 				loading:false,
+				detail_loading:false,
 				column_list:[{
 					label:'事业部',
 					prop:'dept_name',
@@ -312,8 +314,8 @@
         	},
         	//下载模版
         	downTemplate(){
-				window.open(`${this.downLoadUrl}/缺货跟踪导入模板.xlsx`);
-			},
+        		window.open(`${this.downLoadUrl}/缺货跟踪导入模板.xlsx`);
+        	},
 			//导入
 			uploadCsv(){
 				if (this.$refs.csvUpload.files.length > 0) {
@@ -448,7 +450,6 @@
 				this.table_page = 1;
 				this.detail_ksbm = ksbm;
 				this.detail_type = type;
-				this.show_table = true;
 				//获取详情
 				this.getTableData();
 			},
@@ -460,8 +461,10 @@
 					page:this.table_page,
 					pagesize:this.table_pagesize
 				}
+				this.detail_loading = true;
 				proResource.shortageRecordList(arg).then(res => {
 					if(res.data.code == 1){
+						this.detail_loading = false;
 						this.tableObj = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
