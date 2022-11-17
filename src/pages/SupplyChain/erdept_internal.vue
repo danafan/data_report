@@ -33,7 +33,7 @@
 				<template slot-scope="scope">
 					<el-image fit="cover" style="width: 60px; height: 60px" :src="scope.row.images[0]" :preview-src-list="scope.row.images" v-if="i.prop == 'tp_url' && scope.row[i.prop] != '总计'">
 					</el-image>
-					<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
+					<div v-else>{{scope.row[i.prop]}}{{scope.row[i.prop] !== ''&&i.unit?i.unit:""}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -48,7 +48,7 @@
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="b_current_key" size="small" style="width: 120px" :popper-append-to-body="false" @change="selectChange($event,'b')">
-					<el-option v-for="item in arg_list" :key="item.key" :label="item.label" :value="item.key">
+					<el-option v-for="item in arg_list" :key="item.key" :label="item.label" :value="item.key" :disabled="item.disabled">
 					</el-option>
 				</el-select>
 				<el-select v-model="b_keyword" :placeholder="`请输入${b_placeholder}`" clearable filterable remote reserve-keyword size="small" :popper-append-to-body="false" :remote-method="bSearchKeyWord">
@@ -74,7 +74,7 @@
 				<template slot-scope="scope">
 					<el-image fit="cover" style="width: 60px; height: 60px" :src="scope.row.images[0]" :preview-src-list="scope.row.images" v-if="i.prop == 'tp_url' && scope.row[i.prop] != '总计'">
 					</el-image>
-					<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
+					<div v-else>{{scope.row[i.prop]}}{{scope.row[i.prop] !== ''&&i.unit?i.unit:""}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -101,7 +101,8 @@
 				},{
 					label:'原款式编码',
 					key:'yksbm',
-					type:1
+					type:1,
+					disabled:true
 				},{
 					label:'现供应商',
 					key:'xgys',
@@ -109,7 +110,8 @@
 				},{
 					label:'原供应商',
 					key:'ygys',
-					type:2
+					type:2,
+					disabled:true
 				}],											//筛选条件列表
 				placeholder:"现款式编码",
 				current_key:"xksbm",						//当前选中的查询类型图标
