@@ -48,7 +48,7 @@
 			</el-form-item>
 			<el-form-item>
 				<el-select v-model="b_current_key" size="small" style="width: 120px" :popper-append-to-body="false" @change="selectChange($event,'b')">
-					<el-option v-for="item in arg_list" :key="item.key" :label="item.label" :value="item.key" :disabled="item.disabled">
+					<el-option v-for="item in b_arg_list" :key="item.key" :label="item.label" :value="item.key">
 					</el-option>
 				</el-select>
 				<el-select v-model="b_keyword" :placeholder="`请输入${b_placeholder}`" clearable filterable remote reserve-keyword size="small" :popper-append-to-body="false" :remote-method="bSearchKeyWord">
@@ -101,8 +101,7 @@
 				},{
 					label:'原款式编码',
 					key:'yksbm',
-					type:1,
-					disabled:true
+					type:1
 				},{
 					label:'现供应商',
 					key:'xgys',
@@ -110,8 +109,16 @@
 				},{
 					label:'原供应商',
 					key:'ygys',
-					type:2,
-					disabled:true
+					type:2
+				}],											//筛选条件列表
+				b_arg_list:[{
+					label:'现款式编码',
+					key:'xksbm',
+					type:1
+				},{
+					label:'现供应商',
+					key:'xgys',
+					type:2
 				}],											//筛选条件列表
 				placeholder:"现款式编码",
 				current_key:"xksbm",						//当前选中的查询类型图标
@@ -353,15 +360,19 @@
 		methods:{
 			//切换筛选条件类型
 			selectChange(v,type){
-				let arr = this.arg_list.filter(item => {
-					return item.key == v;
-				})
+				let arr = [];
 				if(type == 'a'){
+					arr = this.arg_list.filter(item => {
+						return item.key == v;
+					})
 					this.placeholder = arr[0].label;
 					this.search_type = arr[0].type;
 					this.options_list = [];
 					this.keyword = "";
 				}else{
+					arr = this.b_arg_list.filter(item => {
+						return item.key == v;
+					})
 					this.b_placeholder = arr[0].label;
 					this.b_search_type = arr[0].type;
 					this.b_options_list = [];
