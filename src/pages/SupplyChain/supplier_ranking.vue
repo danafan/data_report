@@ -5,6 +5,7 @@
 				<SupplierRankingPage v-if="item.web_url == 'supplier_ranking_page'"/>
 				<SupplierDataIndex v-if="item.web_url == 'supplier_data_index'"/>
 				<StyleRankingPage v-if="item.web_url == 'style_ranking_page'"/>
+				<InventoryAnalysis v-if="item.web_url == 'inventory_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -18,6 +19,7 @@
 	import SupplierRankingPage from './SupplierRanking/supplier_ranking_page.vue'
 	import SupplierDataIndex from './SupplierRanking/supplier_data_index.vue'
 	import StyleRankingPage from './SupplierRanking/style_ranking_page.vue'
+	import InventoryAnalysis from './SupplierRanking/inventory_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -58,7 +60,8 @@
 		components:{
 			SupplierRankingPage,
 			SupplierDataIndex,
-			StyleRankingPage
+			StyleRankingPage,
+			InventoryAnalysis
 		}
 	}
 </script>

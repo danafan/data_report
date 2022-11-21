@@ -35,6 +35,10 @@ let path = {
 	deptPlatformGmvList:'supplier/dept_platform_gmv_list',	//部门、平台GMV详情
 	cpflGmvList:'supplier/cpfl_gmv_list',			//品类GMV详情
 	goodsDetails:'supplier/goods_details',			//店铺商品明细
+	stockRate:'supply_chain/stock/rate',			//库存占比
+	stockSelect:'supply_chain/stock/select',		//供应商库存分析检索列表
+	stockDetail:'supply_chain/stock/detail',		//明细表
+	stockEdit:'supply_chain/stock/edit',			//编辑明细
 }						
 export default{
 	//获取款式编码
@@ -176,6 +180,22 @@ export default{
 	//店铺商品明细
 	goodsDetails(params){
 		return http.get(path.goodsDetails, params)
+	},
+	//库存占比
+	stockRate(params){
+		return http.get(path.stockRate, params)
+	},
+	//供应商库存分析检索列表
+	stockSelect(params){
+		return http.get(path.stockSelect, params)
+	},
+	//明细表
+	stockDetail(params){
+		return http.get(path.stockDetail, params)
+	},
+	//编辑明细
+	stockEdit(params){
+		return http.post(path.stockEdit, params)
 	},
 }
 
