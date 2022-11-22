@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<div class="table_row">
-			<el-table :data="syb_data" size="small" border max-height="500" style="flex:1" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}" :cell-style="columnStyle" highlight-current-row :span-method="spanMethod" v-loading="syb_loading" @cell-click="cellClick">
+			<el-table :data="syb_data" size="small" border max-height="500" style="flex:1" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}" :cell-style="columnStyle" :row-class-name="rowStyle" :span-method="spanMethod" v-loading="syb_loading" @cell-click="cellClick">
 				<el-table-column prop="name" show-overflow-tooltip label="事业部" align="center"></el-table-column>
 				<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
 				<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
@@ -12,7 +12,7 @@
 					</template>
 				</el-table-column>
 			</el-table>
-			<el-table :data="spbq_data" size="small" border style="flex:1;margin-left: 15px;" max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" highlight-current-row :span-method="spbqSpanMethod" v-loading="spbq_loading" @cell-click="spbqCellClick">
+			<el-table :data="spbq_data" size="small" border style="flex:1;margin-left: 15px;" max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="spbqRowStyle" :span-method="spbqSpanMethod" v-loading="spbq_loading" @cell-click="spbqCellClick">
 				<el-table-column prop="name" show-overflow-tooltip label="商品标签" align="center"></el-table-column>
 				<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
 				<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
@@ -61,8 +61,8 @@
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
-					<el-input v-if="i.type=='input'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" @change="confirmEdit({id:scope.row.id,remarks:scope.row.remarks})"></el-input>
-					<el-button type="text" size="mini" v-else-if="i.type=='button'" @click="openEdit(scope.row.id,scope.row.is_retreat)">编辑</el-button>
+					<el-input v-if="i.type=='input'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
+					<el-button type="text" size="mini" v-else-if="i.type=='button'" @click="openEdit(scope.row.id,scope.row.is_retreat,scope.row.goods_label)">编辑</el-button>
 					<div v-else>{{scope.row[i.prop]}}</div>
 				</template>
 			</el-table-column>
@@ -99,8 +99,10 @@
 			return{
 				syb_data:[],				//事业部库存占比情况
 				syb_loading:false,			//事业部库存占比情况加载
+				syb_current_cell:"",		//事业部当前点击的单元格类型
 				spbq_data:[],				//商品标签列表
 				spbq_loading:false,			//商品标签情况加载
+				spbq_current_cell:"",		//商品标签当前点击的单元格类型
 				gys_cate_list:[],			//供应商分类列表
 				gys_cate_ids:[],			//选中的供应商分类
 				gys_list:[],				//供应商
@@ -110,7 +112,9 @@
 				ks_list:[],					//款式编码
 				select_ks_ids:[],			//选中的款式编码
 				dept_name:"",				//当前选中的事业部
+				syb_is_retreat:"",			//当前选中的事业部是否可退
 				goods_label:"",				//当前选中的商品标签
+				spbq_is_retreat:"",			//当前选中的商品标签是否可退
 				is_retreat:"",				//当前选中的是否可退
 				sort:"",
 				page:1,
@@ -329,32 +333,63 @@
 			},
 			//事业部单元格点击
 			cellClick(row, column, cell, event){
-				if(column.property != "is_retreat" && column.property != "name"){
+				if(row.name == '总计' || (column.property != "is_retreat" && column.property != "name")){
 					return;
 				}
+				this.syb_current_cell = column.property;	//点击的单元格类型
 				this.dept_name = row.name;
+				this.is_retreat = column.property == "is_retreat"?row.is_retreat:'';
+				this.syb_is_retreat = column.property == "is_retreat"?row.is_retreat:'';
 				this.goods_label = "";
 				let arg = {
 					type:'goods_label',
-					dept_name:this.dept_name
-				}
-				if(column.property == "is_retreat"){
-					arg[column.property] = row[column.property];
+					dept_name:this.dept_name,
+					is_retreat:this.is_retreat
 				}
 				//商品标签占比
 				this.stockRate(arg);
 				//明细表
 				this.stockDetail();
 			},
+			//事业部高亮当前行
+			rowStyle({ row }) {
+				if(this.syb_current_cell == 'name'){
+					if (row.name == this.dept_name) {
+						return "row_style";
+					}
+				}else if(this.syb_current_cell == 'is_retreat'){
+					if (row.name == this.dept_name && row.is_retreat == this.syb_is_retreat) {
+						return "row_style";
+					}
+				}
+			},
 			//商品标签单元格点击
 			spbqCellClick(row, column, cell, event){
-				if(column.property != "is_retreat" && column.property != "name"){
+				if(row.name == '总计' || (column.property != "is_retreat" && column.property != "name")){
 					return;
 				}
+				this.spbq_current_cell = column.property;	//点击的单元格类型
 				this.goods_label = row.name;
-				this.is_retreat = row.is_retreat;
+				this.spbq_is_retreat = column.property == "is_retreat"?row.is_retreat:'';
+				if(column.property == "is_retreat"){
+					this.is_retreat = row.is_retreat;
+				}else{
+					this.is_retreat = this.syb_is_retreat;
+				}
 				//明细表
 				this.stockDetail();
+			},
+			//商品标签高亮当前行
+			spbqRowStyle({ row }) {
+				if(this.spbq_current_cell == 'name'){
+					if (row.name == this.goods_label) {
+						return "row_style";
+					}
+				}else if(this.spbq_current_cell == 'is_retreat'){
+					if (row.name == this.goods_label && row.is_retreat == this.spbq_is_retreat) {
+						return "row_style";
+					}
+				}
 			},
 			//供应商
 			getGys(e){
@@ -437,9 +472,10 @@
 				this.stockDetail();
 			},
 			//点击编辑
-			openEdit(id,is_retreat){
+			openEdit(id,is_retreat,goods_label){
 				this.id = id;
 				this.edit_retreat = is_retreat;
+				this.edit_goods_label = goods_label;
 				this.edit_dialog = true;
 			},
 			//确认编辑
@@ -473,6 +509,10 @@
 	display: flex!important;
 	align-items: center!important;
 	justify-content: center!important;
+}
+.row_style{
+	background: #3467B8!important;
+	color:#ffffff!important;
 }
 </style>
 <style lang="less" scoped>

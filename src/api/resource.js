@@ -228,7 +228,9 @@ let path = {
 	tableSetting:'common/table_setting',							//表格列宽设置
 	businessChart:'supplier/business_chart',						//获取营销费用分析上面三个图标数据
 	deptBusiness:'supplier/dept_business',							//项目部-营销费用投产情况
+	deptBusinessExport:'supplier/dept_business_export',				//项目部-营销费用投产情况导出
 	shopBusiness:'supplier/shop_business',							//店铺—营销费用投产情况
+	shopBusinessExport:'supplier/shop_business_export',				//店铺—营销费用投产情况导出
 	shopDayBusiness:'supplier/shop_day_business',					//店铺日数据
 	briefSelect:'brief/select',										//经营简报搜索
 	briefContent:'brief/content',									//简报内容
@@ -1182,9 +1184,17 @@ export default{
 	deptBusiness(params){
 		return http.get(path.deptBusiness, params)
 	},
+	//项目部-营销费用投产情况导出
+	deptBusinessExport(params){
+		return http.get(path.deptBusinessExport, params)
+	},
 	//店铺—营销费用投产情况
 	shopBusiness(params){
 		return http.get(path.shopBusiness, params)
+	},
+	////店铺—营销费用投产情况导出
+	shopBusinessExport(params){
+		return http.get(path.shopBusinessExport, params)
 	},
 	//店铺日数据
 	shopDayBusiness(params){

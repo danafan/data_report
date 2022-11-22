@@ -69,7 +69,7 @@
 				<el-input style="width:200px" type="text" placeholder="请输入结算档口" v-model="info.settlement_supplier_inside_code">
 				</el-input>
 			</el-form-item>
-			<el-form-item label="供应商分类" required>
+			<el-form-item label="供应商分类">
 				<el-input style="width:200px" type="text" placeholder="请输入供应商分类" v-model="info.gys_type">
 				</el-input>
 			</el-form-item>
@@ -436,8 +436,6 @@
 					this.$message.warning('请输入结算档口!');
 				}else if(this.info.settlement_supplier_inside_code == ''){
 					this.$message.warning('请输入结算档口内部编号!');
-				}else if(this.info.gys_type == ''){
-					this.$message.warning('请输入供应商分类!');
 				}else if(this.info.settlement_method == ''){
 					this.$message.warning('请选择结算方式!');
 				}else{

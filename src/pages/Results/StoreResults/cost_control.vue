@@ -25,7 +25,10 @@
 			</div>
 		</div>
 		<!-- 事业部项目部--营销费用投产情况 -->
-		<PopoverWidget class="margin_bottom" title="事业部项目部--营销费用投产情况" keys="sybxmbyxfytcqk"/>
+		<div class="button_rows">
+			<PopoverWidget class="margin_bottom" title="事业部项目部--营销费用投产情况" keys="sybxmbyxfytcqk"/>
+			<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table :data="dept_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
 			<el-table-column :label="i.row_name" v-for="i in dept_title_list" show-overflow-tooltip :fixed="i.row_field_name == 'dept_name' || i.row_field_name == 'dept_2'">
 				<template slot="header" slot-scope="scope">
@@ -40,7 +43,10 @@
 			</el-table-column>
 		</el-table>
 		<!-- 店铺--营销费用投产情况 -->
-		<div class="custom_title">店铺--营销费用投产情况</div>
+		<div class="button_rows">
+			<div class="custom_title">店铺--营销费用投产情况</div>
+			<el-button type="primary" plain size="small" @click="storeExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table :data="shop_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="shop_loading">
 			<el-table-column :label="i.row_name" v-for="i in shop_title_list" show-overflow-tooltip :fixed="i.row_field_name == 'shop_code' || i.row_field_name == 'shop_name'">
 				<template slot="header" slot-scope="scope">
@@ -86,6 +92,8 @@
 
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default {
 		data() {
 			return {
@@ -639,6 +647,32 @@
 					}
 				})
 			},
+			//项目部-导出
+			deptExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_time:this.date && this.date.length> 0?this.date[0]:"",
+						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						platform:this.pl.join(','),
+						dept_id:this.dept_name.join(','),
+						shop_id:this.shop_code.join(','),
+					}
+					resource.deptBusinessExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'项目部-营销费用投产情况');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//店铺—营销费用投产情况
 			shopBusiness(){
 				let arg = {
@@ -661,6 +695,32 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//店铺-导出
+			storeExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_time:this.date && this.date.length> 0?this.date[0]:"",
+						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						platform:this.pl.join(','),
+						dept_id:this.dept_name.join(','),
+						shop_id:this.shop_code.join(','),
+					}
+					resource.shopBusinessExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'店铺-营销费用投产情况');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//店铺—营销费用投产情况分页
 			storeSizeChange(val) {
@@ -768,5 +828,10 @@
 }
 .red_style{
 	color: red;
+}
+.button_rows{
+	display: flex;
+	align-items: center;
+	justify-content: space-between;
 }
 </style>

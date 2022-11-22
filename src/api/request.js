@@ -41,6 +41,7 @@ export function middleWare(params,type) {
      key != 'file' && 
      key.indexOf('remark') == -1 && 
      key != "refuse_reason" && 
+     key != "remarks" && 
      key != "version_describe" && 
      key != "without_describe" && 
      key != "special_content" && 
