@@ -1,28 +1,40 @@
 <template>
 	<div>
 		<div class="table_row">
-			<el-table :data="syb_data" size="small" border max-height="500" style="flex:1" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}" :cell-style="columnStyle" :row-class-name="rowStyle" :span-method="spanMethod" v-loading="syb_loading" @cell-click="cellClick">
-				<el-table-column prop="name" show-overflow-tooltip label="事业部" align="center"></el-table-column>
-				<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
-				<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
-				<el-table-column prop="kc" show-overflow-tooltip label="库存" align="center"></el-table-column>
-				<el-table-column prop="rate" label="百分比" align="center">
-					<template slot-scope="scope">
-						<div>{{scope.row.rate}}%</div>
-					</template>
-				</el-table-column>
-			</el-table>
-			<el-table :data="spbq_data" size="small" border style="flex:1;margin-left: 15px;" max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="spbqRowStyle" :span-method="spbqSpanMethod" v-loading="spbq_loading" @cell-click="spbqCellClick">
-				<el-table-column prop="name" show-overflow-tooltip label="商品标签" align="center"></el-table-column>
-				<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
-				<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
-				<el-table-column prop="kc" show-overflow-tooltip label="库存" align="center"></el-table-column>
-				<el-table-column prop="rate" label="百分比" align="center">
-					<template slot-scope="scope">
-						<div>{{scope.row.rate}}%</div>
-					</template>
-				</el-table-column>
-			</el-table>
+			<div style="width: 49%" >
+				<div class="jsb">
+					<div class="table_title">事业部库存占比情况</div>
+					<el-button type="text" size="mini" @click="clearSyb">清空</el-button>
+				</div>
+				<el-table :data="syb_data" size="small" border max-height="500" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}" :cell-style="columnStyle" :row-class-name="rowStyle" :span-method="spanMethod" v-loading="syb_loading" @cell-click="cellClick">
+					<el-table-column prop="name" show-overflow-tooltip label="事业部" align="center"></el-table-column>
+					<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
+					<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
+					<el-table-column prop="kc" show-overflow-tooltip label="库存" align="center"></el-table-column>
+					<el-table-column prop="rate" label="百分比" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.rate}}%</div>
+						</template>
+					</el-table-column>
+				</el-table>
+			</div>
+			<div style="width: 49%">
+				<div class="jsb">
+					<div class="table_title">商品标签库存占比情况</div>
+					<el-button type="text" size="mini" @click="clearSpbq">清空</el-button>
+				</div>
+				<el-table :data="spbq_data" size="small" border max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="spbqRowStyle" :span-method="spbqSpanMethod" v-loading="spbq_loading" @cell-click="spbqCellClick">
+					<el-table-column prop="name" show-overflow-tooltip label="商品标签" align="center"></el-table-column>
+					<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
+					<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
+					<el-table-column prop="kc" show-overflow-tooltip label="库存" align="center"></el-table-column>
+					<el-table-column prop="rate" label="百分比" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.rate}}%</div>
+						</template>
+					</el-table-column>
+				</el-table>
+			</div>
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline margin_top">
 			<el-form-item label="供应商分类：">
@@ -53,6 +65,9 @@
 				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="jsb">
+			<div class="table_title">明细表</div>
+		</div>
 		<el-table :data="detail_data" size="small" style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading">
 			<el-table-column :label="i.label" :prop="i.prop" align="center" v-for="i in column_list" :width="i.width" show-overflow-tooltip :sortable="i.sort?'custom':false">
 				<template slot="header" slot-scope="scope">
@@ -341,6 +356,23 @@
 				this.is_retreat = column.property == "is_retreat"?row.is_retreat:'';
 				this.syb_is_retreat = column.property == "is_retreat"?row.is_retreat:'';
 				this.goods_label = "";
+				this.page = 1;
+				let arg = {
+					type:'goods_label',
+					dept_name:this.dept_name,
+					is_retreat:this.is_retreat
+				}
+				//商品标签占比
+				this.stockRate(arg);
+				//明细表
+				this.stockDetail();
+			},
+			//事业部清空
+			clearSyb(){
+				this.dept_name = '';
+				this.is_retreat = '';
+				this.goods_label = "";
+				this.page = 1;
 				let arg = {
 					type:'goods_label',
 					dept_name:this.dept_name,
@@ -371,11 +403,20 @@
 				this.spbq_current_cell = column.property;	//点击的单元格类型
 				this.goods_label = row.name;
 				this.spbq_is_retreat = column.property == "is_retreat"?row.is_retreat:'';
+				this.page = 1;
 				if(column.property == "is_retreat"){
 					this.is_retreat = row.is_retreat;
 				}else{
 					this.is_retreat = this.syb_is_retreat;
 				}
+				//明细表
+				this.stockDetail();
+			},
+			//商品标签清空
+			clearSpbq(){
+				this.goods_label = '';
+				this.is_retreat = this.syb_is_retreat;
+				this.page = 1;
 				//明细表
 				this.stockDetail();
 			},
@@ -518,8 +559,20 @@
 <style lang="less" scoped>
 .table_row{
 	display: flex;
+	justify-content:space-between;
 }
 .margin_top{
 	margin-top: 30px;
+}
+.jsb{
+	margin-bottom: 5px;
+	display: flex;
+	align-items: center;
+	justify-content:space-between;
+	.table_title{
+		font-size: 16px;
+		font-weight: bold;
+		color: #333333;
+	}
 }
 </style>
