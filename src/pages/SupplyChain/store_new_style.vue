@@ -197,7 +197,7 @@
 	import {lastXDate,getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import resource from '../../api/resource.js'
 	import demandResource from '../../api/demandResource.js'
-	import {exportPost} from '../../api/export.js'
+	import {exportPost,exportNewExcel,exportUp} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 
 	export default{
@@ -459,63 +459,44 @@
 			},
 			//数据-导出
 			exportFn(item){
-				MessageBox.confirm('确认导出?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					let arg = {
-						start_time:this.date && this.date.length> 0?this.date[0]:"",
-						end_time:this.date && this.date.length> 0?this.date[1]:"",
-						shop_id:this.select_store_ids.join(','),
-						type:this.type,
-						item:item
-					}
-					if(item == 'company' || item == 'dept'){	//公司、事业部
+				let arg = {
+					start_time:this.date && this.date.length> 0?this.date[0]:"",
+					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					shop_id:this.select_store_ids.join(','),
+					type:this.type
+				}
+				if(item == 'detail'){		//店铺上新明细
+					MessageBox.confirm('确认导出?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
 						arg.item = item;
-						demandResource.companyDeptKsExport(arg).then(res => {
-							if(res){
-								exportPost("\ufeff" + res.data,`${item == 'company'?'公司':'事业部'}数据`);
-							}
-						})
-					}else if(item == 'xmb'){		//项目部
-						demandResource.deptExport(arg).then(res => {
-							if(res){
-								exportPost("\ufeff" + res.data,'项目部数据');
-							}
-						})
-					}else if(item == 'store'){		//店铺
-						demandResource.shopKsListExport(arg).then(res => {
-							if(res){
-								exportPost("\ufeff" + res.data,'店铺数据');
-							}
-						})
-					}else if(item == 'supplier'){	//供应商
-						demandResource.gysKsListExport(arg).then(res => {
-							if(res){
-								exportPost("\ufeff" + res.data,'供应商数据');
-							}
-						})
-					}else if(item == 'supplier_sa'){	//供应商sa
-						demandResource.saKsListExport(arg).then(res => {
-							if(res){
-								exportPost("\ufeff" + res.data,'S+A供应商数据');
-							}
-						})
-					}else if(item == 'detail'){		//店铺上新明细
 						demandResource.shopKsDetailExport(arg).then(res => {
 							if(res){
 								exportPost("\ufeff" + res.data,'店铺上新明细数据');
 							}
 						})
+					}).catch(() => {
+						Message({
+							type: 'info',
+							message: '取消导出'
+						});          
+					});
+				}else{
+					if(item == 'company' || item == 'dept'){	//公司、事业部
+						arg.item = item;
+						exportUp(`supplier/company_dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}&item=${arg.item}`);
+					}else if(item == 'xmb'){		//项目部
+						exportUp(`supplier/dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
+					}else if(item == 'store'){		//店铺
+						exportUp(`supplier/shop_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
+					}else if(item == 'supplier'){	//供应商
+						exportUp(`supplier/gys_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
+					}else if(item == 'supplier_sa'){	//供应商sa
+						exportUp(`supplier/sa_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
 					}
-					
-				}).catch(() => {
-					Message({
-						type: 'info',
-						message: '取消导出'
-					});          
-				});
+				}
 			},
 			//项目部数据
 			xmbKsList(){

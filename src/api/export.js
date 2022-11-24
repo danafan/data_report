@@ -50,6 +50,7 @@ function exportSet(url,req,code){
 
 	var val_open_url = `${location.origin}/api/${url}?${val_get_str}`;//验证
 	var open_url = `${location.origin}/api/${url}?${get_str}`;//导出
+
 	//导出前验证
 	axios.get(val_open_url).then(res => {
 		if(res.data.code == 1){
@@ -117,7 +118,7 @@ export function exportUp(url){
 // 		var sign_get_str = middleWare({...arg,...{export_flag:1}},'get');
 // 		//导出参数加密
 // 		var export_get_str = middleWare({...arg,...{export_flag:2}},'get');
-		
+
 // 		var sign_url = `${location.origin}/api/${url}?${sign_get_str}`;//验证
 // 		var open_url = `${location.origin}/api/${url}?${export_get_str}`;//导出
 // 		//导出前验证
