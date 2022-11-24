@@ -32,11 +32,17 @@ let path = {
 	ckSend:'supplier/ck_send',						//仓库发货情况
 	ckList:'supplier/ck',							//仓库列表
 	companyDeptKsList:'supplier/company_dept_ks_list',	//公司,事业部上新
+	companyDeptKsExport:'supplier/company_dept_ks_list_export',	//公司,事业部导出
 	xmbKsList:'supplier/dept_ks_list',					//项目部数据
+	deptExport:'supplier/dept_ks_list_export',			//项目部数据导出
 	storeKsList:'supplier/shop_ks_list',				//店铺数据
+	shopKsListExport:'supplier/shop_ks_list_export',	//店铺数据导出
 	styleKsList:'supplier/shop_ks_detail',				//店铺款式上新
+	shopKsDetailExport:'supplier/shop_ks_detail_export',	//店铺款式上新导出
 	supplierList:'supplier/gys_ks_list',				//供应商
+	gysKsListExport:'supplier/gys_ks_list_export',		//供应商导出
 	saSupplierList:'supplier/sa_ks_list',				//sa供应商
+	saKsListExport:'supplier/sa_ks_list_export',		//sa供应商导出
 	statisticalSearch:'supplier/statistical_search',	//烫画片使用情况统计搜索条件
 	statisticalList:'supplier/statistical_list',		//统计列表
 	updateStock:'supplier/update_stock',				//填写安全库存
@@ -185,25 +191,49 @@ export default{
 	companyDeptKsList(params){
 		return http.get(path.companyDeptKsList, params)
 	},
+	//公司,事业部导出
+	companyDeptKsExport(params){
+		return http.get(path.companyDeptKsExport, params)
+	},
 	//项目部数据
 	xmbKsList(params){
 		return http.get(path.xmbKsList, params)
+	},
+	//项目部数据导出
+	deptExport(params){
+		return http.get(path.deptExport, params)
 	},
 	//店铺数据
 	storeKsList(params){
 		return http.get(path.storeKsList, params)
 	},
+	//店铺数据导出
+	shopKsListExport(params){
+		return http.get(path.shopKsListExport, params)
+	},
 	//店铺款式上新
 	styleKsList(params){
 		return http.get(path.styleKsList, params)
+	},
+	//店铺款式上新导出
+	shopKsDetailExport(params){
+		return http.get(path.shopKsDetailExport, params)
 	},
 	//供应商
 	supplierList(params){
 		return http.get(path.supplierList, params)
 	},
+	//供应商导出
+	gysKsListExport(params){
+		return http.get(path.gysKsListExport, params)
+	},
 	//sa供应商
 	saSupplierList(params){
 		return http.get(path.saSupplierList, params)
+	},
+	//sa供应商导出
+	saKsListExport(params){
+		return http.get(path.saKsListExport, params)
 	},
 	//烫画片使用情况统计搜索条件
 	statisticalSearch(params){

@@ -24,7 +24,10 @@
 		<!-- 公司-店铺款式粒度 -->
 		<div class="table_row">
 			<div class="item table_box">
-				<div class="table_title">公司</div>
+				<div class="button_rows">
+					<div class="table_title">公司</div>
+					<el-button type="primary" plain size="mini" @click="exportFn('company')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<el-table :data="company_data" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle" v-loading="company_dept_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="index == 0?90:200" align="center" v-for="(item,index) in company_title" :fixed="index == 0">
 						<template slot-scope="scope">
@@ -46,7 +49,10 @@
 		<!-- 事业部数据 -->
 		<div class="table_row">
 			<div class="item table_box">
-				<div class="table_title">事业部</div>
+				<div class="button_rows">
+					<div class="table_title">事业部</div>
+					<el-button type="primary" plain size="mini" @click="exportFn('dept')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<el-table :data="dept_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="spanMethod" v-loading="company_dept_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="index == 0 || index == 1?100:200" align="center" v-for="(item,index) in dept_title" :fixed="index == 0 || index == 1">
 						<template slot-scope="scope">
@@ -68,7 +74,10 @@
 		<!-- 项目部数据 -->
 		<div class="table_row">
 			<div class="item table_box">
-				<div class="table_title">项目部</div>
+				<div class="button_rows">
+					<div class="table_title">项目部</div>
+					<el-button type="primary" plain size="mini" @click="exportFn('xmb')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<el-table :data="xmb_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="spanMethod" v-loading="xmb_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="index == 0 || index == 1?100:200" align="center" v-for="(item,index) in xmb_title" :fixed="index == 0 || index == 1">
 						<template slot-scope="scope">
@@ -90,7 +99,10 @@
 		<!-- 店铺数据 -->
 		<div class="table_row">
 			<div class="item table_box">
-				<div class="table_title">店铺</div>
+				<div class="button_rows">
+					<div class="table_title">店铺</div>
+					<el-button type="primary" plain size="mini" @click="exportFn('store')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<el-table :data="store_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="spanMethod" v-loading="store_loading">
 					<el-table-column :label="item.row_name" show-overflow-tooltip :prop="item.row_field_name" :width="index == 0 || index == 1?100:200" align="center" v-for="(item,index) in store_title" :fixed="index == 0 || index == 1">
 						<template slot-scope="scope">
@@ -109,7 +121,10 @@
 				</div>
 			</div>
 			<div class="item">
-				<div class="table_title">店铺款式上新明细表</div>
+				<div class="button_rows">
+					<div class="table_title">店铺款式上新明细表</div>
+					<el-button type="primary" plain size="mini" @click="exportFn('detail')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<el-table size="small" :data="style_data" max-height="320" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="style_loading">
 					<el-table-column show-overflow-tooltip prop="sjsj" label="上架时间" align="center"></el-table-column>
 					<el-table-column show-overflow-tooltip prop="dpmc" label="店铺名称" align="center"></el-table-column>
@@ -132,7 +147,10 @@
 		<!-- 供应商 -->
 		<div class="table_row">
 			<div class="item table_box">
-				<div class="table_title">供应商</div>
+				<div class="button_rows">
+					<div class="table_title">供应商</div>
+					<el-button type="primary" plain size="mini" @click="exportFn('supplier')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<el-table :data="supplier_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle" v-loading="supplier_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" width="120" align="center" v-for="(item,index) in supplier_title" :fixed="index == 0">
 						<template slot-scope="scope">
@@ -151,7 +169,10 @@
 				</div>
 			</div>
 			<div class="item">
-				<div class="table_title">S+A供应商</div>
+				<div class="button_rows">
+					<div class="table_title">S+A供应商</div>
+					<el-button type="primary" plain size="mini" @click="exportFn('supplier_sa')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<el-table :data="sa_supplier_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="columnStyle" v-loading="sa_supplier_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" width="120" align="center" v-for="(item,index) in sa_supplier_title" :fixed="index == 0">
 						<template slot-scope="scope">
@@ -176,6 +197,8 @@
 	import {lastXDate,getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
 	import resource from '../../api/resource.js'
 	import demandResource from '../../api/demandResource.js'
+	import {exportPost} from '../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 
 	export default{
 		data(){
@@ -433,6 +456,66 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//数据-导出
+			exportFn(item){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_time:this.date && this.date.length> 0?this.date[0]:"",
+						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						shop_id:this.select_store_ids.join(','),
+						type:this.type,
+						item:item
+					}
+					if(item == 'company' || item == 'dept'){	//公司、事业部
+						arg.item = item;
+						demandResource.companyDeptKsExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,`${item == 'company'?'公司':'事业部'}数据`);
+							}
+						})
+					}else if(item == 'xmb'){		//项目部
+						demandResource.deptExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'项目部数据');
+							}
+						})
+					}else if(item == 'store'){		//店铺
+						demandResource.shopKsListExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'店铺数据');
+							}
+						})
+					}else if(item == 'supplier'){	//供应商
+						demandResource.gysKsListExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'供应商数据');
+							}
+						})
+					}else if(item == 'supplier_sa'){	//供应商sa
+						demandResource.saKsListExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'S+A供应商数据');
+							}
+						})
+					}else if(item == 'detail'){		//店铺上新明细
+						demandResource.shopKsDetailExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'店铺上新明细数据');
+							}
+						})
+					}
+					
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//项目部数据
 			xmbKsList(){
@@ -736,12 +819,6 @@
 	justify-content: space-between;
 	.item{
 		width: 49%;
-		.table_title{
-			margin-bottom: 15px;
-			color: #333333;
-			font-size:16px;
-			font-weight:bold;
-		}
 		.bold_style{
 			color: #333333;
 			font-weight: bold;
@@ -749,6 +826,17 @@
 	}
 	.chart_box{
 		height: 420px;
+	}
+}
+.button_rows{
+	margin-bottom: 5px;
+	display: flex;
+	align-items: center;
+	justify-content:space-between;
+	.table_title{
+		color: #333333;
+		font-size:16px;
+		font-weight:bold;
 	}
 }
 </style>
