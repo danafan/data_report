@@ -68,8 +68,8 @@
 		<div class="jsb">
 			<div class="table_title">明细表</div>
 		</div>
-		<el-table :data="detail_data" size="small" style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading">
-			<el-table-column :label="i.label" :prop="i.prop" align="center" v-for="i in column_list" :width="i.width" show-overflow-tooltip :sortable="i.sort?'custom':false">
+		<el-table :data="detail_data" size="small" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @header-dragend="secondChange">
+			<el-table-column :index="index" :label="i.label" :prop="i.prop" align="center" v-for="(i,index) in column_list" :width="i.width" show-overflow-tooltip :sortable="i.sort?'custom':false">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="i.label" placement="top-start">
 						<div class="text_content">{{i.label}}</div>
@@ -77,7 +77,7 @@
 				</template>
 				<template slot-scope="scope">
 					<el-input v-if="i.type=='input'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
-					<el-button type="text" size="mini" v-else-if="i.type=='button'" @click="openEdit(scope.row.id,scope.row.is_retreat,scope.row.goods_label)">编辑</el-button>
+					<el-button type="text" size="mini" v-else-if="i.type=='button'" @click="openEdit(scope.row.id,scope.row.is_retreat,scope.row.goods_label,scope.row.is_supply,scope.row.gys_type)">编辑</el-button>
 					<div v-else>{{scope.row[i.prop]}}</div>
 				</template>
 			</el-table-column>
@@ -89,12 +89,24 @@
 		<!-- 编辑 -->
 		<el-dialog title="编辑" size="mini" width="40%" :visible.sync="edit_dialog">
 			<el-form size="mini">
-				<el-form-item label="是否可退">
-					<el-radio-group v-model="edit_retreat">
-						<el-radio label="不可退">不可退</el-radio>
-						<el-radio label="可退">可退</el-radio>
-						<el-radio label="待核实">待核实</el-radio>
-					</el-radio-group>
+				<el-form-item label="供应商分类：">
+					<el-select v-model="gys_type" placeholder="请选择">
+						<el-option v-for="item in gys_cate_list" :key="item" :label="item" :value="item">
+						</el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="是否可退：">
+					<el-select v-model="edit_retreat" placeholder="请选择">
+						<el-option label="不可退" value="不可退"></el-option>
+						<el-option label="可退" value="可退"></el-option>
+						<el-option label="待核实" value="待核实"></el-option>
+					</el-select>
+				</el-form-item>
+				<el-form-item label="是否支持内供：">
+					<el-select v-model="is_supply" placeholder="请选择">
+						<el-option label="是" value="是"></el-option>
+						<el-option label="否" value="否"></el-option>
+					</el-select>
 				</el-form-item>
 				<el-form-item label="商品标签">
 					<el-input style="width: 200px" v-model="edit_goods_label" placeholder="请输入商品标签"></el-input>
@@ -109,6 +121,7 @@
 </template>
 <script>
 	import resource from '../../../api/operationResource.js'
+	import commonResource from '../../../api/resource.js'
 	export default{
 		data(){
 			return{
@@ -145,6 +158,10 @@
 					label:'是否可退',
 					width:"80",
 					prop:'is_retreat'
+				},{
+					label:'是否内供',
+					width:"80",
+					prop:'is_supply'
 				},{
 					label:'商品标签',
 					width:"80",
@@ -241,9 +258,13 @@
 					type:'button',
 					prop:''
 				}],
+				table_id:"",
+				edit_id:"",
 				edit_dialog:false,
 				id:"",
-				edit_retreat:"不可退",		//编辑是否可退
+				gys_type:"",				//供应商分类
+				edit_retreat:"",			//是否可退
+				is_supply:"",				//是否内供
 				edit_goods_label:"",		//商品标签
 
 			}
@@ -487,7 +508,46 @@
 						let data = res.data.data;
 						this.detail_data = data.data;
 						this.total = data.total;
+						this.table_id = data.table_setting.table_id;
+						if(data.table_setting.setting){
+							this.edit_id = data.table_setting.edit_id;
+							let setting_arr = data.table_setting.setting.split(',');
+							setting_arr.map(item => {
+								this.column_list.map(iii => {
+									if(item.split('-')[0] == iii.prop){
+										iii.width = item.split('-')[1]
+									}
+								})
+							})
+						}
 					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//明细表表列宽修改
+			secondChange(newWidth, oldWidth, column, event){
+				let index = column.index;
+				this.column_list[index].width = newWidth;
+				let arr = [];
+				this.column_list.map(item => {
+					let str = item.prop + '-' + item.width;
+					arr.push(str);
+				})
+				let arg = {
+					table_id:this.table_id,
+					setting:arr.join(','),
+				}
+				if(this.edit_id){
+					arg.id = this.edit_id;
+				}
+				//修改宽度
+				this.changeWidth(arg)
+			},
+			//修改宽度
+			changeWidth(arg){
+				commonResource.tableSetting(arg).then(res => {
+					if(res.data.code != 1){
 						this.$message.warning(res.data.msg);
 					}
 				})
@@ -513,10 +573,12 @@
 				this.stockDetail();
 			},
 			//点击编辑
-			openEdit(id,is_retreat,goods_label){
+			openEdit(id,is_retreat,goods_label,is_supply,gys_type){
 				this.id = id;
 				this.edit_retreat = is_retreat;
 				this.edit_goods_label = goods_label;
+				this.is_supply = is_supply;
+				this.gys_type = gys_type;
 				this.edit_dialog = true;
 			},
 			//确认编辑
@@ -524,7 +586,9 @@
 				let arg = {
 					id:this.id,
 					is_retreat:this.edit_retreat,
-					goods_label:this.edit_goods_label
+					goods_label:this.edit_goods_label,
+					is_supply:this.is_supply,
+					gys_type:this.gys_type
 				}
 				//提交编辑
 				this.confirmEdit(arg);
