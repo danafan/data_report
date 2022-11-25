@@ -1,6 +1,12 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="部门：">
+				<el-select v-model="dept_name" clearable :popper-append-to-body="false" filterable placeholder="全部">
+					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="店铺：">
 				<el-select v-model="shop_name" clearable :popper-append-to-body="false" filterable placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item" :label="item" :value="item">
@@ -142,6 +148,8 @@
 				pagesize:10,
 				shop_list:[],			//店铺列表
 				shop_name:"",			//选中的店铺
+				dept_list:['事业二部','事业四部','新兴事业部','抖店中心','直播BD项目部','运营中心闲置'],			//部门列表
+				dept_name:"",			//选中的部门
 				supplier:"",			//供应商
 				ksbm:"",				//款式编码
 				dataObj:{},				//返回数据
@@ -182,6 +190,7 @@
 			getData(){
 				let arg = {
 					ksbm:this.ksbm,
+					dept_name:this.dept_name,
 					shop_name:this.shop_name,
 					supplier:this.supplier,
 					page:this.page,
@@ -258,6 +267,7 @@
 				var arr = [];
 				let arg = {
 					ksbm:this.ksbm,
+					dept_name:this.dept_name,
 					shop_name:this.shop_name,
 					supplier:this.supplier,
 				}
