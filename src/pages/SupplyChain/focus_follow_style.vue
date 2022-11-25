@@ -42,8 +42,9 @@
 				this.ss.map(item => {
 					if (item.web_url == 'focus_follow_style') {
 						this.menu_list = item.list;
-						let current_tab = this.$store.state.current_tab;
-						this.activeTab = current_tab == ''?this.menu_list[0].web_url:current_tab;
+						this.activeTab = this.menu_list[0].web_url;
+						// let current_tab = this.$store.state.current_tab;
+						// this.activeTab = current_tab == ''?this.menu_list[0].web_url:current_tab;
 					}
 				})
 			},

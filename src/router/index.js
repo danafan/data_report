@@ -2,6 +2,8 @@ import Vue from 'vue'
 import Router from 'vue-router'
 
 const home = resolve=>require(['@/pages/home'],resolve)
+//重点核心指标
+const focus_core = resolve=>require(['@/pages/FocusCore/focus_core'],resolve)
 //业绩指标
 const store_data = resolve=>require(['@/pages/Results/StoreResults/store_data'],resolve)
 const store_results = resolve=>require(['@/pages/Results/store_results'],resolve)
@@ -81,6 +83,7 @@ const router = new Router({
     component: home,
     name:"首页",
     children:[
+    { path: '/focus_core',name:"重点核心指标", component: focus_core},
     { path: '/store_data',name:"店铺日数据", component: store_data},
     { path: '/store_results',name:"店铺业绩", component: store_results},
     { path: '/category_analysis',name:"品类分析", component: category_analysis},
