@@ -45,13 +45,11 @@
 			</div>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
-			<el-table-column width="120" show-overflow-tooltip prop="shop_code" label="主卖店铺" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="i_id" label="款式编码" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="gys" label="供应商" align="center"></el-table-column>
-			<el-table-column width="120" show-overflow-tooltip prop="ksbm" label="款式编码" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="gys_type" label="供应商分类" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="gyshh" label="供应商货号" align="center"></el-table-column>
-			<el-table-column width="120" show-overflow-tooltip prop="splb" label="货品类型" align="center">
-			</el-table-column>
-			<el-table-column prop="avg3" label="近3天日均" align="center">
+			<el-table-column prop="xssl_3_sum" label="近3天销量" align="center">
 			</el-table-column>
 			<el-table-column label="款式缺货情况" align="center">
 				<el-table-column :label="item" align="center" v-for="(item,index) in ks_shortage_day_list">
@@ -60,39 +58,47 @@
 					</template>
 				</el-table-column>
 			</el-table-column>
-			<el-table-column label="缺货跟踪反馈" align="center">
-				<el-table-column width="120" :label="item" align="center" v-for="(item,index) in feedback_day_list">
-					<template slot-scope="scope">
-						<el-input
-						@blur="editFun(scope.row.feedback_list[index],scope.row.id)"
-						size="small" 
-						type="textarea"
-						placeholder="输入反馈"
-						v-model="scope.row.feedback_list[index]"
-						v-if="index == feedback_day_list.length - 1"
-						>
-					</el-input>
-					<div v-else>{{scope.row.feedback_list[index]}}</div>
-				</template>
-			</el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="zmdp" label="主卖店铺" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="dept_name" label="部门" align="center"></el-table-column>
+			<el-table-column label="历史跟踪反馈" align="center" width="180">
+				<template slot-scope="scope">
+					<el-popover
+					placement="right"
+					width="800"
+					:open-delay="1000"
+					trigger="hover"
+					@show="getRecord(scope.row.i_id)"
+					>
+					<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
+						<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+						<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+						<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+					</el-table>
+					<div class="page">
+						<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="tableObj.total">
+						</el-pagination>
+					</div>
+					<el-button slot="reference" type="text" size="mini">查看</el-button>
+				</el-popover>
+			</template>
 		</el-table-column>
-		<el-table-column prop="yxdl" label="已下单量" align="center">
-		</el-table-column>
-		<el-table-column width="150" prop="check_date" label="下单日期" align="center">
-		</el-table-column>
-		<el-table-column width="150" prop="deliver_date" label="交货日期" align="center">
-		</el-table-column>
-		<el-table-column prop="okpdtnum" label="已入库数" align="center">
-		</el-table-column>
-		<el-table-column prop="ponum" label="再途数量" align="center">
-		</el-table-column>
-		<el-table-column prop="rodate" label="延期天数" align="center">
-		</el-table-column>
-	</el-table>
-	<div class="page">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
-		</el-pagination>
-	</div>
+		<el-table-column label="今日跟踪反馈" align="center" width="180">
+			<template slot-scope="scope">
+				<el-input
+				@blur="editFun(scope.row.today_remark,scope.row.i_id)"
+				size="small" 
+				type="textarea"
+				placeholder="输入反馈"
+				v-model="scope.row.today_remark"
+				>
+			</el-input>
+		</template>
+	</el-table-column>
+</el-table>
+<div class="page">
+	<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+	</el-pagination>
+</div>
 </div>
 </template>
 <style lang="less" scoped>
@@ -141,7 +147,12 @@
 				dataObj:{},				//返回数据
 				ks_shortage_day_list:[],	//款式缺货情况对应日期数组
 				feedback_day_list:[],			//缺货跟踪反馈对应日期数组
-				loading:false
+				loading:false,
+				table_page:1,
+				table_pagesize:10,
+				i_id:"",
+				detail_loading:false,
+				tableObj:{},
 			}
 		},
 		created(){
@@ -207,7 +218,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						id:id,
+						ksbm:id,
 						remark:v
 					};
 					resource.stockEdit(arg).then(res => {
@@ -255,7 +266,43 @@
 					arr.push(str);
 				};
 				exportUp(`stock/export?${arr.join('&')}`);
-			}
+			},
+			//点击查看
+			getRecord(i_id){
+				this.table_page = 1;
+				this.i_id = i_id;
+				//获取详情
+				this.getTableData();
+			},
+			//获取详情
+			getTableData(){
+				let arg = {
+					ksbm:this.i_id,
+					page:this.table_page,
+					pagesize:this.table_pagesize
+				}
+				this.detail_loading = true;
+				resource.editLog(arg).then(res => {
+					if(res.data.code == 1){
+						this.detail_loading = false;
+						this.tableObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//详情分页
+			handlePageSize(val) {
+				this.table_page = 1;
+				this.table_pagesize = val;
+				//获取列表
+				this.getTableData();
+			},
+			handlePage(val) {
+				this.table_page = val;
+				//获取列表
+				this.getTableData();
+			},
 		}
 	}
 </script>

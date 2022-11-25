@@ -3,6 +3,7 @@ let path = {
 	stockList:'stock/list',										//库存情况汇总
 	shopList:'stock/shoplist',									//店铺列表
 	stockEdit:'stock/edit',										//提交反馈
+	editLog:'stock/edit_log',									//历史跟踪反馈列表
 	stockImport:'stock/import',									//导入
 }						
 export default{
@@ -17,6 +18,10 @@ export default{
 	//提交反馈
 	stockEdit(params){
 		return http.post(path.stockEdit, params)
+	},
+	//历史跟踪反馈列表
+	editLog(params){
+		return http.get(path.editLog, params)
 	},
 	//导入
 	stockImport(params){
