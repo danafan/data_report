@@ -1,6 +1,34 @@
 <template>
 	<div>
 		<div class="table_row">
+			<div style="width: 49%">
+				<div class="jsb">
+					<div class="table_title">库存分布情况</div>
+					<el-button type="text" size="mini">&nbsp</el-button>
+				</div>
+				<div class="tree" id="tree" style="width: 100%">
+
+				</div>
+			</div>
+			<div style="width: 49%">
+				<div class="jsb">
+					<div class="table_title">公司库存占比情况</div>
+					<el-button type="text" size="mini" @click="clearSpbq">清空</el-button>
+				</div>
+				<el-table :data="spbq_data" size="small" border max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="spbqRowStyle" :span-method="spbqSpanMethod" v-loading="spbq_loading" @cell-click="spbqCellClick">
+					<el-table-column prop="name" show-overflow-tooltip label="商品标签" align="center"></el-table-column>
+					<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
+					<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
+					<el-table-column prop="kc" show-overflow-tooltip label="库存" align="center"></el-table-column>
+					<el-table-column prop="rate" label="百分比" align="center">
+						<template slot-scope="scope">
+							<div>{{scope.row.rate}}%</div>
+						</template>
+					</el-table-column>
+				</el-table>
+			</div>
+		</div>
+		<div class="table_row margin_top">
 			<div style="width: 49%" >
 				<div class="jsb">
 					<div class="table_title">事业部库存占比情况</div>
@@ -125,6 +153,7 @@
 	export default{
 		data(){
 			return{
+				treeChart:null,
 				syb_data:[],				//事业部库存占比情况
 				syb_loading:false,			//事业部库存占比情况加载
 				syb_current_cell:"",		//事业部当前点击的单元格类型
@@ -287,7 +316,95 @@
 			//供应商等级
 			this.getSearchList({type:'gys_level'});
 		},
+		mounted(){
+			//图表渲染
+			this.getCharts();
+		},
 		methods:{
+			getCharts(){
+				var echarts = require("echarts");
+				var tree_chart = document.getElementById('tree');
+				this.treeChart = echarts.getInstanceByDom(tree_chart)
+				if (this.treeChart) { 
+					this.treeChart.clear();
+				}
+				this.treeChart = echarts.init(tree_chart);
+				this.treeChart.setOption(this.setOptions());
+			},
+			// 图表渲染
+			setOptions(){
+				return {
+					tooltip: {
+						trigger: 'item',
+						formatter: function (params) {
+							let data = params.data;
+							let tip = "";
+							if(!!params) {
+								tip = '事业部：' + data.dept + "</br>"
+								+'是否可退：' + data.is_return + "</br>"
+								+'库存：' + data.value + "</br>"
+								+'库存占总额百分比：' + data.rate + "%";
+							}
+							return tip;
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+						axisPointer: {            
+							type: 'shadow'        
+						}
+					},
+					series: [
+					{
+						type: 'treemap',
+						roam:false,
+						nodeClick:false,
+						breadcrumb:{
+							show:false
+						},
+						left:0,
+						top:0,
+						right:0,
+						bottom:0,
+						label:{
+							show:true,
+							lineHeight:20,
+							color:"#333333",
+							fontSize:14,
+							fontWeight:'bold',
+							formatter: function (params) {
+								let data = params.data;
+								let tip = "";
+								if(!!params) {
+									tip = data.dept + "\n"
+									+data.is_return + "\n"
+									+data.value + "\n"
+									+data.rate + "%";
+								}
+								return tip;
+							},
+						},
+						data: [
+						{
+							dept:"事业二部",
+							is_return:'1',
+							value: 123123,
+							rate:32
+							
+						},
+						{
+							dept:"事业四部",
+							is_return:'2',
+							value: 36453,
+							rate:45
+						}
+						]
+					}
+					]
+				}
+			},
 			//库存占比
 			stockRate(arg){
 				if(arg.type == 'dept_name'){		//事业部占比
@@ -624,6 +741,9 @@
 .table_row{
 	display: flex;
 	justify-content:space-between;
+	.tree{
+		height: 500px;
+	}
 }
 .margin_top{
 	margin-top: 30px;

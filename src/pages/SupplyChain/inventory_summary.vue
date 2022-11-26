@@ -1,6 +1,9 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="供应商：">
+				<el-input v-model="supplier" clearable placeholder="输入供应商"></el-input>
+			</el-form-item>
 			<el-form-item label="部门：">
 				<el-select v-model="dept_name" clearable :popper-append-to-body="false" filterable placeholder="全部">
 					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
@@ -13,9 +16,6 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商：">
-				<el-input v-model="supplier" clearable placeholder="输入供应商"></el-input>
-			</el-form-item>
 			<el-form-item label="款式：">
 				<el-input v-model="ksbm" clearable placeholder="输入款式编码"></el-input>
 			</el-form-item>
@@ -26,7 +26,7 @@
 		<div class="buts">
 			<div class="toast">
 				<div>
-					缺货数据由当天早上7:30的库存和异常订单数据生成，数据整体更新时间为11:20，内供款式有生产周期数据
+					缺货数据由当天早上7:30的库存和实时订单占有数生成
 				</div>
 				<div>更新时间：{{dataObj.update_time}}</div>
 			</div>
@@ -66,38 +66,38 @@
 			</el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="zmdp" label="主卖店铺" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="dept_name" label="部门" align="center"></el-table-column>
-			<el-table-column label="历史跟踪反馈" align="center" width="180">
+			<el-table-column label="今日跟踪反馈" align="center" width="180">
 				<template slot-scope="scope">
-					<el-popover
-					placement="right"
-					width="800"
-					:open-delay="1000"
-					trigger="hover"
-					@show="getRecord(scope.row.i_id)"
+					<el-input
+					@blur="editFun(scope.row.today_remark,scope.row.i_id)"
+					size="small" 
+					type="textarea"
+					placeholder="输入反馈"
+					v-model="scope.row.today_remark"
 					>
-					<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
-						<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
-						<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
-						<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
-					</el-table>
-					<div class="page">
-						<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="tableObj.total">
-						</el-pagination>
-					</div>
-					<el-button slot="reference" type="text" size="mini">查看</el-button>
-				</el-popover>
+				</el-input>
 			</template>
 		</el-table-column>
-		<el-table-column label="今日跟踪反馈" align="center" width="180">
+		<el-table-column label="历史跟踪反馈" align="center" width="180">
 			<template slot-scope="scope">
-				<el-input
-				@blur="editFun(scope.row.today_remark,scope.row.i_id)"
-				size="small" 
-				type="textarea"
-				placeholder="输入反馈"
-				v-model="scope.row.today_remark"
+				<el-popover
+				placement="right"
+				width="800"
+				:open-delay="1000"
+				trigger="hover"
+				@show="getRecord(scope.row.i_id)"
 				>
-			</el-input>
+				<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
+					<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+					<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+					<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+				</el-table>
+				<div class="page">
+					<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="tableObj.total">
+					</el-pagination>
+				</div>
+				<el-button slot="reference" type="text" size="mini">查看</el-button>
+			</el-popover>
 		</template>
 	</el-table-column>
 </el-table>
