@@ -66,6 +66,7 @@
 			</el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="zmdp" label="主卖店铺" align="center"></el-table-column>
 			<el-table-column width="120" show-overflow-tooltip prop="dept_name" label="部门" align="center"></el-table-column>
+			<el-table-column width="120" show-overflow-tooltip prop="yesterday_remark" label="昨日跟踪反馈" align="center"></el-table-column>
 			<el-table-column label="今日跟踪反馈" align="center" width="180">
 				<template slot-scope="scope">
 					<el-input

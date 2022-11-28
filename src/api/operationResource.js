@@ -39,6 +39,7 @@ let path = {
 	stockSelect:'supply_chain/stock/select',		//供应商库存分析检索列表
 	stockDetail:'supply_chain/stock/detail',		//明细表
 	stockEdit:'supply_chain/stock/edit',			//编辑明细
+	distriBution:'supply_chain/stock/distribution',	//库存分布情况图表
 }						
 export default{
 	//获取款式编码
@@ -196,6 +197,10 @@ export default{
 	//编辑明细
 	stockEdit(params){
 		return http.post(path.stockEdit, params)
+	},
+	//库存分布情况图表
+	distriBution(params){
+		return http.get(path.distriBution, params)
 	},
 }
 

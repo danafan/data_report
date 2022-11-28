@@ -6,16 +6,14 @@
 					<div class="table_title">库存分布情况</div>
 					<el-button type="text" size="mini">&nbsp</el-button>
 				</div>
-				<div class="tree" id="tree" style="width: 100%">
-
-				</div>
+				<div class="tree" id="tree" style="width: 100%" v-loading="chart_loading"></div>
 			</div>
 			<div style="width: 49%">
 				<div class="jsb">
 					<div class="table_title">公司库存占比情况</div>
-					<el-button type="text" size="mini" @click="clearSpbq">清空</el-button>
+					<el-button type="text" size="mini" @click="clearGs">清空</el-button>
 				</div>
-				<el-table :data="spbq_data" size="small" border max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="spbqRowStyle" :span-method="spbqSpanMethod" v-loading="spbq_loading" @cell-click="spbqCellClick">
+				<el-table :data="gs_data" size="small" border max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="gsRowStyle" :span-method="gsSpanMethod" v-loading="gs_loading" @cell-click="gsCellClick">
 					<el-table-column prop="name" show-overflow-tooltip label="商品标签" align="center"></el-table-column>
 					<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
 					<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
@@ -154,6 +152,10 @@
 		data(){
 			return{
 				treeChart:null,
+				chart_loading:false,
+				gs_data:[],					//公司占比
+				gs_loading:false,			//公司库存占比情况加载
+				gs_current_cell:"",			//公司当前点击的单元格类型
 				syb_data:[],				//事业部库存占比情况
 				syb_loading:false,			//事业部库存占比情况加载
 				syb_current_cell:"",		//事业部当前点击的单元格类型
@@ -168,6 +170,8 @@
 				gys_level_ids:[],			//选中的供应商等级
 				ks_list:[],					//款式编码
 				select_ks_ids:[],			//选中的款式编码
+				company_name:"",			//当前选中的公司
+				gs_is_retreat:"",		//当前选中的公司是否可退
 				dept_name:"",				//当前选中的事业部
 				syb_is_retreat:"",			//当前选中的事业部是否可退
 				goods_label:"",				//当前选中的商品标签
@@ -277,6 +281,10 @@
 					width:"80",
 					prop:'platform'
 				},{
+					label:'公司',
+					width:"80",
+					prop:'company'
+				},{
 					label:'处理方式备注',
 					width:"120",
 					type:'input',
@@ -299,7 +307,12 @@
 			}
 		},
 		created(){
-			//库存占比
+			//公司占比
+			let gs_arg = {
+				type:'company'
+			}
+			this.stockRate(gs_arg);
+			//事业部占比
 			let syb_arg = {
 				type:'dept_name'
 			}
@@ -317,22 +330,46 @@
 			this.getSearchList({type:'gys_level'});
 		},
 		mounted(){
-			//图表渲染
+			//库存分布情况图表
 			this.getCharts();
 		},
 		methods:{
+			// 库存分布情况图表
 			getCharts(){
-				var echarts = require("echarts");
-				var tree_chart = document.getElementById('tree');
-				this.treeChart = echarts.getInstanceByDom(tree_chart)
-				if (this.treeChart) { 
-					this.treeChart.clear();
-				}
-				this.treeChart = echarts.init(tree_chart);
-				this.treeChart.setOption(this.setOptions());
+				this.chart_loading = true;
+				resource.distriBution().then(res => {
+					if(res.data.code == 1){
+						this.chart_loading = false;
+						let data = res.data.data;
+						data.sort(function(a,b){
+							if(parseFloat(a.kc)<parseFloat(b.kc)){
+								return 1
+							}
+							if(parseFloat(a.kc)>parseFloat(b.kc)){
+								return -1
+							}
+							if(parseFloat(a.kc)==parseFloat(b.kc)){
+								return 0
+							}
+						})
+						data.map(item => {
+							item['value'] = item.kc
+						})
+						var echarts = require("echarts");
+						var tree_chart = document.getElementById('tree');
+						this.treeChart = echarts.getInstanceByDom(tree_chart)
+						if (this.treeChart) { 
+							this.treeChart.clear();
+						}
+						this.treeChart = echarts.init(tree_chart);
+						this.treeChart.setOption(this.setOptions(data));
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			// 图表渲染
-			setOptions(){
+			setOptions(series_data){
 				return {
 					tooltip: {
 						trigger: 'item',
@@ -340,8 +377,8 @@
 							let data = params.data;
 							let tip = "";
 							if(!!params) {
-								tip = '事业部：' + data.dept + "</br>"
-								+'是否可退：' + data.is_return + "</br>"
+								tip = '事业部：' + data.name + "</br>"
+								+'是否可退：' + data.is_retreat + "</br>"
 								+'库存：' + data.value + "</br>"
 								+'库存占总额百分比：' + data.rate + "%";
 							}
@@ -377,37 +414,25 @@
 							formatter: function (params) {
 								let data = params.data;
 								let tip = "";
-								if(!!params) {
-									tip = data.dept + "\n"
-									+data.is_return + "\n"
+								if(!!params && params.dataIndex <= 5) {
+									tip = data.name + "\n"
+									+data.is_retreat + "\n"
 									+data.value + "\n"
 									+data.rate + "%";
 								}
 								return tip;
 							},
 						},
-						data: [
-						{
-							dept:"事业二部",
-							is_return:'1',
-							value: 123123,
-							rate:32
-							
-						},
-						{
-							dept:"事业四部",
-							is_return:'2',
-							value: 36453,
-							rate:45
-						}
-						]
+						data: series_data
 					}
 					]
 				}
 			},
 			//库存占比
 			stockRate(arg){
-				if(arg.type == 'dept_name'){		//事业部占比
+				if(arg.type == 'company'){		//公司占比
+					this.gs_loading = true;
+				}else if(arg.type == 'dept_name'){	//事业部占比
 					this.syb_loading = true;
 				}else{								//商品标签占比
 					this.spbq_loading = true;
@@ -415,7 +440,10 @@
 				resource.stockRate(arg).then(res => {
 					if(res.data.code == 1){
 						let data = res.data.data;
-						if(arg.type == 'dept_name'){	//事业部占比
+						if(arg.type == 'company'){	//公司占比
+							this.gs_loading = false;
+							this.gs_data = data;
+						}else if(arg.type == 'dept_name'){	//事业部占比
 							this.syb_loading = false;
 							this.syb_data = data;
 						}else{							//商品标签占比
@@ -430,6 +458,17 @@
 			columnStyle({ row, column, rowIndex, columnIndex }) {
 				if(columnIndex == 0 || columnIndex == 1){
 					return 'background: #3467B8;color:#ffffff';
+				}
+			},
+			//公司合并单元格
+			gsSpanMethod({ row, column, rowIndex, columnIndex }){
+				if (columnIndex === 0) {
+					const _row = this.filterData(this.gs_data, columnIndex).one[rowIndex];
+					const _col = _row > 0 ? 1 : 0;
+					return {
+						rowspan: _row,
+						colspan: _col,
+					}
 				}
 			},
 			//事业部合并单元格
@@ -484,6 +523,73 @@
 					one: spanOneArr,
 				};
 			},
+			//公司单元格点击
+			gsCellClick(row, column, cell, event){
+				if(row.name == '总计' || (column.property != "is_retreat" && column.property != "name")){
+					return;
+				}
+				this.gs_current_cell = column.property;	//点击的单元格类型
+				this.company_name = row.name;
+				this.is_retreat = column.property == "is_retreat"?row.is_retreat:'';
+				this.gs_is_retreat = column.property == "is_retreat"?row.is_retreat:'';
+				this.dept_name = "";
+				this.goods_label = "";
+				this.page = 1;
+				//事业部占比
+				let syb_arg = {
+					type:'dept_name',
+					company:this.company_name,
+					is_retreat:this.is_retreat
+				}
+				this.stockRate(syb_arg);
+				//商品标签占比
+				let spbq_arg = {
+					type:'goods_label',
+					company:this.company_name,
+					dept_name:this.dept_name,
+					is_retreat:this.is_retreat
+				}
+				this.stockRate(spbq_arg);
+				//明细表
+				this.stockDetail();
+			},
+			//公司清空
+			clearGs(){
+				this.company_name = '';
+				this.dept_name = '';
+				this.goods_label = "";
+				this.is_retreat = '';
+				this.page = 1;
+				//事业部占比
+				let syb_arg = {
+					type:'dept_name',
+					company:this.company_name,
+					is_retreat:this.is_retreat
+				}
+				this.stockRate(syb_arg);
+				//商品标签占比
+				let spbq_arg = {
+					type:'goods_label',
+					company:this.company_name,
+					dept_name:this.dept_name,
+					is_retreat:this.is_retreat
+				}
+				this.stockRate(spbq_arg);
+				//明细表
+				this.stockDetail();
+			},
+			//公司高亮当前行
+			gsRowStyle({ row }) {
+				if(this.gs_current_cell == 'name'){
+					if (row.name == this.company_name) {
+						return "row_style";
+					}
+				}else if(this.gs_current_cell == 'is_retreat'){
+					if (row.name == this.company_name && row.is_retreat == this.gs_is_retreat) {
+						return "row_style";
+					}
+				}
+			},
 			//事业部单元格点击
 			cellClick(row, column, cell, event){
 				if(row.name == '总计' || (column.property != "is_retreat" && column.property != "name")){
@@ -491,12 +597,17 @@
 				}
 				this.syb_current_cell = column.property;	//点击的单元格类型
 				this.dept_name = row.name;
-				this.is_retreat = column.property == "is_retreat"?row.is_retreat:'';
 				this.syb_is_retreat = column.property == "is_retreat"?row.is_retreat:'';
+				if(column.property == "is_retreat"){
+					this.is_retreat = row.is_retreat;
+				}else{
+					this.is_retreat = this.gs_is_retreat;
+				}
 				this.goods_label = "";
 				this.page = 1;
 				let arg = {
 					type:'goods_label',
+					company:this.company_name,
 					dept_name:this.dept_name,
 					is_retreat:this.is_retreat
 				}
@@ -508,11 +619,11 @@
 			//事业部清空
 			clearSyb(){
 				this.dept_name = '';
-				this.is_retreat = '';
 				this.goods_label = "";
 				this.page = 1;
 				let arg = {
 					type:'goods_label',
+					company:this.company_name,
 					dept_name:this.dept_name,
 					is_retreat:this.is_retreat
 				}
@@ -544,8 +655,6 @@
 				this.page = 1;
 				if(column.property == "is_retreat"){
 					this.is_retreat = row.is_retreat;
-				}else{
-					this.is_retreat = this.syb_is_retreat;
 				}
 				//明细表
 				this.stockDetail();
@@ -553,7 +662,6 @@
 			//商品标签清空
 			clearSpbq(){
 				this.goods_label = '';
-				this.is_retreat = this.syb_is_retreat;
 				this.page = 1;
 				//明细表
 				this.stockDetail();
@@ -609,6 +717,7 @@
 				let arg = {
 					page:this.page,
 					pagesize:this.pagesize,
+					company:this.company_name,
 					dept_name:this.dept_name,
 					goods_label:this.goods_label,
 					is_retreat:this.is_retreat,
@@ -742,7 +851,7 @@
 	display: flex;
 	justify-content:space-between;
 	.tree{
-		height: 500px;
+		height: 480px;
 	}
 }
 .margin_top{
