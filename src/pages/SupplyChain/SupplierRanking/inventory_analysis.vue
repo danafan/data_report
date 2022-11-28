@@ -93,19 +93,27 @@
 		</el-form>
 		<div class="jsb">
 			<div class="table_title">明细表</div>
-			<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<div style="display: flex">
+				<el-button type="primary" size="mini" @click="show_custom = true">自定义列表</el-button>
+				<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
 		</div>
-		<el-table :data="detail_data" size="small" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @header-dragend="secondChange">
-			<el-table-column :index="index" :label="i.label" :prop="i.prop" align="center" v-for="(i,index) in column_list" :width="i.width" show-overflow-tooltip :sortable="i.sort?'custom':false">
+		<!-- 自定义列表 -->
+		<el-table size="small" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @header-dragend="secondChange">
+			<el-table-column :index="index" :label="item.row_name" :prop="item.row_field_name" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort === 1?'custom':false" show-overflow-tooltip>
 				<template slot="header" slot-scope="scope">
-					<el-tooltip class="item" effect="dark" :content="i.label" placement="top-start">
-						<div class="text_content">{{i.label}}</div>
+					<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+						<div class="text_style">{{item.row_name}}</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
-					<el-input v-if="i.type=='input'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" :disabled="button_list.edit === 0" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
-					<el-button type="text" size="mini" v-else-if="i.type=='button' && button_list.edit == 1" @click="openEdit(scope.row.id,scope.row.is_retreat,scope.row.goods_label,scope.row.is_supply,scope.row.gys_type)">编辑</el-button>
-					<div v-else>{{scope.row[i.prop]}}</div>
+					<el-input v-if="item.type=='6'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" :disabled="button_list.edit === 0" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
+					<div class='text_style' v-else>{{scope.row[item.row_field_name]}}</div>
+				</template>
+			</el-table-column>
+			<el-table-column label="操作" align="center" width="120" fixed="right">
+				<template slot-scope="scope">
+					<el-button type="text" size="mini" v-if="button_list.edit == 1" @click="openEdit(scope.row.id,scope.row.is_retreat,scope.row.goods_label,scope.row.is_supply,scope.row.gys_type)">编辑</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -142,6 +150,19 @@
 			<div slot="footer" class="dialog-footer">
 				<el-button size="mini" @click="edit_dialog = false">取 消</el-button>
 				<el-button size="mini" type="primary" @click="okFn">确 定</el-button>
+			</div>
+		</el-dialog>
+		<!-- 自定义列表 -->
+		<el-dialog title="自定义列表（点击取消列表名保存直接修改）" :visible.sync="show_custom">
+			<div class="select_box">
+				<el-checkbox-group v-model="row_ids">
+					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_rows">{{item.row_name}}</el-checkbox>
+				</el-checkbox-group>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="mini" @click="Restore">恢复默认</el-button>
+				<el-button size="mini" @click="show_custom = false">取消</el-button>
+				<el-button size="mini" type="primary" @click="setColumns">保存</el-button>
 			</div>
 		</el-dialog>
 	</div>
@@ -299,6 +320,8 @@
 					type:'button',
 					prop:''
 				}],
+				view_rows:[],
+				row_ids:[],
 				table_id:"",
 				edit_id:"",
 				edit_dialog:false,
@@ -307,6 +330,7 @@
 				edit_retreat:"",			//是否可退
 				is_supply:"",				//是否内供
 				edit_goods_label:"",		//商品标签
+				show_custom:false,			//自定义弹窗
 
 			}
 		},
@@ -624,6 +648,8 @@
 			clearSyb(){
 				this.dept_name = '';
 				this.goods_label = "";
+				this.is_retreat = this.gs_is_retreat;
+				this.syb_is_retreat = this.gs_is_retreat
 				this.page = 1;
 				let arg = {
 					type:'goods_label',
@@ -666,6 +692,13 @@
 			//商品标签清空
 			clearSpbq(){
 				this.goods_label = '';
+				if(this.gs_is_retreat != ''){
+					this.is_retreat = this.gs_is_retreat;
+				}else if(this.syb_is_retreat != ''){
+					this.is_retreat = this.syb_is_retreat;
+				}else{
+					this.is_retreat = '';
+				}
 				this.page = 1;
 				//明细表
 				this.stockDetail();
@@ -740,21 +773,48 @@
 						this.total = data.total;
 						this.button_list = data.button_list;
 						this.table_id = data.table_setting.table_id;
+						var title_list = data.title_list;
 						if(data.table_setting.setting){
 							this.edit_id = data.table_setting.edit_id;
 							let setting_arr = data.table_setting.setting.split(',');
-							setting_arr.map(item => {
-								this.column_list.map(iii => {
-									if(item.split('-')[0] == iii.prop){
-										iii.width = item.split('-')[1]
-									}
+							title_list.map(iii => {
+								let arr = setting_arr.filter(item => {
+									return iii.row_field_name == item.split('-')[0]
 								})
+								iii.width = arr.length > 0?arr[0].split('-')[1]:'80';
 							})
+							this.column_list = title_list;
+						}else{
+							title_list.map(iii => {
+								iii.width = '80';
+							})
+							this.column_list = title_list;
 						}
+						this.view_rows = data.view_rows;
+						this.row_ids = data.selected_ids;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//恢复默认
+			Restore(){
+				this.row_ids = [];
+				this.view_rows.map(item => {
+					this.row_ids.push(item.row_id)
+				})
+			},
+			//设置自定义列
+			setColumns(){
+				commonResource.setColumns({menu_id:'152',row_ids:this.row_ids.join(',')}).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.show_custom = false;
+						this.stockDetail();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
 			},
 			//导出
 			commitExport(){
@@ -792,7 +852,7 @@
 				this.column_list[index].width = newWidth;
 				let arr = [];
 				this.column_list.map(item => {
-					let str = item.prop + '-' + item.width;
+					let str = item.row_field_name + '-' + item.width;
 					arr.push(str);
 				})
 				let arg = {
@@ -902,5 +962,10 @@
 		font-weight: bold;
 		color: #333333;
 	}
+}
+.text_style{
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 </style>
