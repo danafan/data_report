@@ -38,6 +38,7 @@ let path = {
 	stockRate:'supply_chain/stock/rate',			//库存占比
 	stockSelect:'supply_chain/stock/select',		//供应商库存分析检索列表
 	stockDetail:'supply_chain/stock/detail',		//明细表
+	exportDetail:'supply_chain/stock/export_detail',//明细表导出
 	stockEdit:'supply_chain/stock/edit',			//编辑明细
 	distriBution:'supply_chain/stock/distribution',	//库存分布情况图表
 }						
@@ -193,6 +194,10 @@ export default{
 	//明细表
 	stockDetail(params){
 		return http.get(path.stockDetail, params)
+	},
+	//明细导出
+	exportDetail(params){
+		return http.get(path.exportDetail, params)
 	},
 	//编辑明细
 	stockEdit(params){

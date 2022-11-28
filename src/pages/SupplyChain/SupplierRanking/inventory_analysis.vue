@@ -93,6 +93,7 @@
 		</el-form>
 		<div class="jsb">
 			<div class="table_title">明细表</div>
+			<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table :data="detail_data" size="small" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @header-dragend="secondChange">
 			<el-table-column :index="index" :label="i.label" :prop="i.prop" align="center" v-for="(i,index) in column_list" :width="i.width" show-overflow-tooltip :sortable="i.sort?'custom':false">
@@ -102,8 +103,8 @@
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
-					<el-input v-if="i.type=='input'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
-					<el-button type="text" size="mini" v-else-if="i.type=='button'" @click="openEdit(scope.row.id,scope.row.is_retreat,scope.row.goods_label,scope.row.is_supply,scope.row.gys_type)">编辑</el-button>
+					<el-input v-if="i.type=='input'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" :disabled="button_list.edit === 0" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
+					<el-button type="text" size="mini" v-else-if="i.type=='button' && button_list.edit == 1" @click="openEdit(scope.row.id,scope.row.is_retreat,scope.row.goods_label,scope.row.is_supply,scope.row.gys_type)">编辑</el-button>
 					<div v-else>{{scope.row[i.prop]}}</div>
 				</template>
 			</el-table-column>
@@ -148,6 +149,8 @@
 <script>
 	import resource from '../../../api/operationResource.js'
 	import commonResource from '../../../api/resource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -181,6 +184,7 @@
 				page:1,
 				pagesize:10,
 				detail_data:[],				//明细列表
+				button_list:{},
 				total:0,
 				detail_loading:false,		
 				column_list:[{
@@ -734,6 +738,7 @@
 						let data = res.data.data;
 						this.detail_data = data.data;
 						this.total = data.total;
+						this.button_list = data.button_list;
 						this.table_id = data.table_setting.table_id;
 						if(data.table_setting.setting){
 							this.edit_id = data.table_setting.edit_id;
@@ -750,6 +755,36 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						company:this.company_name,
+						dept_name:this.dept_name,
+						goods_label:this.goods_label,
+						is_retreat:this.is_retreat,
+						gys_type:this.gys_cate_ids.join(','),
+						gys:this.gys_ids.join(','),
+						gys_level:this.gys_level_ids.join(','),
+						ksbm:this.select_ks_ids.join(','),
+						sort:this.sort
+					}
+					resource.exportDetail(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'库存分析明细');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//明细表表列宽修改
 			secondChange(newWidth, oldWidth, column, event){
