@@ -35,6 +35,7 @@
 					<el-option label="自主款" value="自主款"></el-option>
 					<el-option label="海外" value="海外"></el-option>
 					<el-option label="VASCO" value="VASCO"></el-option>
+					<el-option label="得物" value="得物"></el-option>
 					<el-option label="其他" value="其他"></el-option>
 				</el-select>
 			</el-form-item>

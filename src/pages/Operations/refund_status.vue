@@ -34,6 +34,8 @@
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<!-- 图表 -->
+		<div class="chart" id="chart" v-loading="chart_loading"></div>
 		<!-- 部门GMV详情 -->
 		<div class="table_title">部门GMV详情</div>
 		<el-table :data="dept_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
@@ -241,6 +243,8 @@
 				pagesize:10,
 				sort:"",
 				sort_type:"",
+				chart_loading:false,
+				dataChart:null
 			}
 		},
 		created(){
@@ -248,25 +252,133 @@
 			this.getPl();
 			//搜索
 			this.searchFn();
+			
+		},
+		mounted(){
+			//图表
+			this.getChartData();
 		},
 		methods:{
-			//顶部悬浮
-			renderHeader(h, data) {
-				return h("span", [
-					h(
-						"el-tooltip",
-						{
-							attrs: {
-								class: "item",
-								effect: "dark",
-								content: data.column.label,
-								placement: "top",
-							},
-						},
-						[h("span", data.column.label)]
-						),
-					]);
+			getChartData(){
+				let arg = {
+					start_date:this.date && this.date.length > 0?this.date[0]:"",
+					end_date:this.date && this.date.length > 0?this.date[1]:""
+				}
+				this.chart_loading = true;
+				operationResource.thlChart(arg).then(res => {
+					if(res.data.code == 1){
+						this.chart_loading = false;
+						let data = res.data.data;
+						
+						var echarts = require("echarts");
+						let x_axis = data.day_list;
+						let legend = [];
+
+						let series_data = [];
+
+						let chart_list = data.chart_list;
+						let ss = {
+							name:'全公司',
+							list:data.company_list
+						}
+						chart_list.push(ss);
+						chart_list.map((item,index) => {
+							legend.push(item.name)
+							let obj = {
+								name: item.name,
+								type: 'line',
+								data: item.list,
+								lineStyle:{
+									width:index == chart_list.length - 1?3.8:2
+								},
+								yAxisIndex:index == chart_list.length - 1?1:0
+							}
+							series_data.push(obj)
+						})
+
+
+						var data_chart = document.getElementById('chart');
+						this.dataChart = echarts.getInstanceByDom(data_chart)
+						if (this.dataChart) { 
+							this.dataChart.clear();
+						}
+						this.dataChart = echarts.init(data_chart);
+						this.dataChart.setOption(this.setOptions(x_axis,legend,series_data));
+						window.addEventListener('resize',() => {
+							this.dataChart.resize();
+						});
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+				
 			},
+			setOptions(x_axis,legend,series_data){
+				return {
+					title: {
+						text: '退货率折线图'
+					},
+					tooltip: {
+						trigger: 'axis',
+						formatter: function (params) {
+							let tip = params[0].axisValueLabel + "</br>";
+							if(params != null && params.length > 0) {
+								params.map(item => {
+									tip += item.seriesName + "：" + item.value + "%</br>";
+								})
+							}
+							return tip;
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+					},
+					legend: {
+						data: legend
+					},
+					grid:{
+						left:50,
+						top:50,
+						bottom:30,
+						right:50
+					},
+					xAxis: {
+						type: 'category',
+						data: x_axis
+					},
+					yAxis: [{
+						type: 'value',
+						axisLabel: {
+							formatter: '{value} %'
+						}
+					},{
+						type: 'value',
+						axisLabel: {
+							formatter: '{value} %'
+						}
+					}],
+					series: series_data
+				}
+			},
+		//顶部悬浮
+		renderHeader(h, data) {
+			return h("span", [
+				h(
+					"el-tooltip",
+					{
+						attrs: {
+							class: "item",
+							effect: "dark",
+							content: data.column.label,
+							placement: "top",
+						},
+					},
+					[h("span", data.column.label)]
+					),
+				]);
+		},
 			//搜索
 			async searchFn(){
 				this.page = 1;
@@ -482,6 +594,10 @@
 	}
 </script>
 <style lang="less" scoped>
+.chart{
+	width:100%;
+	height: 300px;
+}
 .table_title{
 	margin-top: 15px;
 	margin-bottom: 15px;

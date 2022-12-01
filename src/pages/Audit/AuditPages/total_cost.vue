@@ -73,7 +73,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
-			<el-table-column prop="supplier_ksbm" label="供应商款号" width="120" align="center"></el-table-column>
+			<el-table-column prop="supplier_ksbm" show-overflow-tooltip label="供应商款号" width="120" align="center"></el-table-column>
 			<el-table-column label="批发价" width="120" align="center">
 				<template slot-scope="scope">
 					<el-input size="small" @mousewheel.native.prevent type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="button_list.edit_batch_price != 1"></el-input>

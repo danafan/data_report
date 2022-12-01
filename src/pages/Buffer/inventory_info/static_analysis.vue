@@ -8,6 +8,7 @@
 					<el-option label="自主款" value="自主款"></el-option>
 					<el-option label="海外" value="海外"></el-option>
 					<el-option label="VASCO" value="VASCO"></el-option>
+					<el-option label="得物" value="得物"></el-option>
 					<el-option label="其他" value="其他"></el-option>
 				</el-select>
 			</el-form-item>
@@ -26,7 +27,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品牌：">
-				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入品牌" :remote-method="ajaxPp" collapse-tags>
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable reserve-keyword placeholder="请选择品牌" collapse-tags>
 					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -226,6 +227,8 @@
 			this.stockAnalysisKs();
 			//品类列表
 			this.getPl();
+			//品牌列表
+			this.ajaxPp();
 			//款式列表
 			this.stockAnalysisKsList();
 		},
@@ -241,16 +244,14 @@
 				})
 			},
 			//品牌列表
-			ajaxPp(e){
-				if(e != ''){
-					resource.ajaxPp({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.pp_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
+			ajaxPp(){
+				resource.ajaxPp().then(res => {
+					if(res.data.code == 1){
+						this.pp_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//款式编码
 			getKsbm(e){
