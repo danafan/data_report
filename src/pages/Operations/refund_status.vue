@@ -288,6 +288,10 @@
 								name: item.name,
 								type: 'line',
 								data: item.list,
+								label:{
+									show:index == chart_list.length - 1?true:false,
+									formatter: '{c}' + '%'
+								},
 								lineStyle:{
 									width:index == chart_list.length - 1?3.8:2
 								},
@@ -338,9 +342,10 @@
 					legend: {
 						data: legend
 					},
+					color:['#3ba272', '#fc8452', '#9a60b4', '#ea7ccc','red'],
 					grid:{
 						left:50,
-						top:50,
+						top:60,
 						bottom:30,
 						right:50
 					},
@@ -350,11 +355,13 @@
 					},
 					yAxis: [{
 						type: 'value',
+						name:'事业部',
 						axisLabel: {
 							formatter: '{value} %'
 						}
 					},{
 						type: 'value',
+						name:'全公司',
 						axisLabel: {
 							formatter: '{value} %'
 						}
@@ -393,6 +400,8 @@
 					tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length > 0?this.date[1]:""
 				}
+				//图表
+				await this.getChartData();
 				//获取部门、平台GMV详情
 				await this.deptPlatformGmvList(arg);
 				//获取品类GMV详情
