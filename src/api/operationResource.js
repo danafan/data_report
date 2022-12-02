@@ -41,7 +41,7 @@ let path = {
 	exportDetail:'supply_chain/stock/export_detail',//明细表导出
 	stockEdit:'supply_chain/stock/edit',			//编辑明细
 	distriBution:'supply_chain/stock/distribution',	//库存分布情况图表
-	thlChart:'supplier/thl_chart',					//退货率图表
+	thlChart:'supplier/lj_thl_chart',					//退货率图表
 }						
 export default{
 	//获取款式编码

@@ -34,8 +34,12 @@
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="tab_container">
+			<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">每日明细</div>
+			<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">累加</div>
+		</div>
 		<!-- 图表 -->
-		<div class="chart" id="chart" v-loading="chart_loading"></div>
+		<div class="chart" id="dept_chart" v-loading="chart_loading"></div>
 		<!-- 部门GMV详情 -->
 		<div class="table_title">部门GMV详情</div>
 		<el-table :data="dept_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
@@ -243,8 +247,19 @@
 				pagesize:10,
 				sort:"",
 				sort_type:"",
+				tab_index:'1',					//图表类型（1:单日；2:累计）
 				chart_loading:false,
-				dataChart:null
+				deptDataChart:null,
+				ljDataChart:null
+			}
+		},
+		watch:{
+			tab_index:function(n,o){
+				if(n == '1'){
+					this.getChartData('1');
+				}else{
+					this.getChartData('2');
+				}
 			}
 		},
 		created(){
@@ -255,61 +270,89 @@
 			
 		},
 		mounted(){
-			//图表
-			this.getChartData();
+			this.getChartData('1');
 		},
 		methods:{
-			getChartData(){
-				let arg = {
-					start_date:this.date && this.date.length > 0?this.date[0]:"",
-					end_date:this.date && this.date.length > 0?this.date[1]:""
-				}
+			//单日
+			getChartData(type){
 				this.chart_loading = true;
-				operationResource.thlChart(arg).then(res => {
+				operationResource.thlChart().then(res => {
 					if(res.data.code == 1){
 						this.chart_loading = false;
 						let data = res.data.data;
-						
 						var echarts = require("echarts");
-						let x_axis = data.day_list;
-						let legend = [];
 
-						let series_data = [];
-
-						let chart_list = data.chart_list;
-						let ss = {
-							name:'全公司',
-							list:data.company_list
-						}
-						chart_list.push(ss);
-						chart_list.map((item,index) => {
-							legend.push(item.name)
-							let obj = {
-								name: item.name,
-								type: 'line',
-								data: item.list,
-								label:{
-									show:index == chart_list.length - 1?true:false,
-									formatter: '{c}' + '%'
-								},
-								lineStyle:{
-									width:index == chart_list.length - 1?3.8:2
-								},
-								yAxisIndex:index == chart_list.length - 1?1:0
+						if(type == '1'){ // 每日
+							let dept_x_axis = data.dept_day_list;
+							let dept_legend = [];
+							let dept_series_data = [];
+							let dept_chart_list = data.dept_day_chart_list;
+							let dept_company_list = {
+								name:'全公司',
+								list:data.dept_day_company_list
 							}
-							series_data.push(obj)
-						})
-
-
-						var data_chart = document.getElementById('chart');
-						this.dataChart = echarts.getInstanceByDom(data_chart)
-						if (this.dataChart) { 
-							this.dataChart.clear();
+							dept_chart_list.push(dept_company_list);
+							dept_chart_list.map((item,index) => {
+								dept_legend.push(item.name)
+								let obj = {
+									name: item.name,
+									type: 'line',
+									data: item.list,
+									label:{
+										show:index == dept_chart_list.length - 1?true:false,
+										formatter: '{c}' + '%'
+									},
+									lineStyle:{
+										width:index == dept_chart_list.length - 1?3.8:2
+									},
+									yAxisIndex:index == dept_chart_list.length - 1?1:0
+								}
+								dept_series_data.push(obj)
+							})
+							var dept_chart = document.getElementById('dept_chart');
+							this.deptDataChart = echarts.getInstanceByDom(dept_chart)
+							if (this.deptDataChart) { 
+								this.deptDataChart.clear();
+							}
+							this.deptDataChart = echarts.init(dept_chart);
+							this.deptDataChart.setOption(this.setOptions('退货率-部门每日明细',dept_x_axis,dept_legend,dept_series_data));
+						}else{//累加
+							let lj_x_axis = data.lj_day_list;
+							let lj_legend = [];
+							let lj_series_data = [];
+							let lj_chart_list = data.lj_chart_list;
+							let lj_company_list = {
+								name:'全公司',
+								list:data.lj_company_list
+							}
+							lj_chart_list.push(lj_company_list);
+							lj_chart_list.map((item,index) => {
+								lj_legend.push(item.name)
+								let obj = {
+									name: item.name,
+									type: 'line',
+									data: item.list,
+									label:{
+										show:index == lj_chart_list.length - 1?true:false,
+										formatter: '{c}' + '%'
+									},
+									lineStyle:{
+										width:index == lj_chart_list.length - 1?3.8:2
+									},
+									yAxisIndex:index == lj_chart_list.length - 1?1:0
+								}
+								lj_series_data.push(obj)
+							})
+							var dept_chart = document.getElementById('dept_chart');
+							this.deptDataChart = echarts.getInstanceByDom(dept_chart)
+							if (this.deptDataChart) { 
+								this.deptDataChart.clear();
+							}
+							this.deptDataChart = echarts.init(dept_chart);
+							this.deptDataChart.setOption(this.setOptions('退货率-部门累加',lj_x_axis,lj_legend,lj_series_data));
 						}
-						this.dataChart = echarts.init(data_chart);
-						this.dataChart.setOption(this.setOptions(x_axis,legend,series_data));
 						window.addEventListener('resize',() => {
-							this.dataChart.resize();
+							this.deptDataChart.resize();
 						});
 					}else{
 						this.$message.warning(res.data.msg);
@@ -317,10 +360,10 @@
 				})
 				
 			},
-			setOptions(x_axis,legend,series_data){
+			setOptions(title,x_axis,legend,series_data){
 				return {
 					title: {
-						text: '退货率折线图'
+						text: title
 					},
 					tooltip: {
 						trigger: 'axis',
@@ -401,7 +444,7 @@
 					tjrq_end:this.date && this.date.length > 0?this.date[1]:""
 				}
 				//图表
-				await this.getChartData();
+				// await this.getChartData();
 				//获取部门、平台GMV详情
 				await this.deptPlatformGmvList(arg);
 				//获取品类GMV详情
@@ -603,6 +646,24 @@
 	}
 </script>
 <style lang="less" scoped>
+.tab_container{
+	display:flex;
+	justify-content: flex-end;
+	.tab_item{
+		background: #EFEFEF;
+		width:120px;
+		text-align: center;
+		height: 30px;
+		line-height: 30px;
+		font-size: 12px;
+		color: #8a8a8a;
+		cursor: pointer;
+	}
+	.active_tab_item{
+		background:#008DFF;
+		color: #fff;
+	}
+}
 .chart{
 	width:100%;
 	height: 300px;
