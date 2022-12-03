@@ -315,7 +315,7 @@
 								this.deptDataChart.clear();
 							}
 							this.deptDataChart = echarts.init(dept_chart);
-							this.deptDataChart.setOption(this.setOptions('退货率-部门每日明细',dept_x_axis,dept_legend,dept_series_data));
+							this.deptDataChart.setOption(this.setOptions('退货率-部门每日明细',dept_x_axis,dept_legend,dept_series_data,80,20));
 						}else{//累加
 							let lj_x_axis = data.lj_day_list;
 							let lj_legend = [];
@@ -349,7 +349,7 @@
 								this.deptDataChart.clear();
 							}
 							this.deptDataChart = echarts.init(dept_chart);
-							this.deptDataChart.setOption(this.setOptions('退货率-部门累加',lj_x_axis,lj_legend,lj_series_data));
+							this.deptDataChart.setOption(this.setOptions('退货率-部门累加',lj_x_axis,lj_legend,lj_series_data,50,10));
 						}
 						window.addEventListener('resize',() => {
 							this.deptDataChart.resize();
@@ -360,7 +360,7 @@
 				})
 				
 			},
-			setOptions(title,x_axis,legend,series_data){
+			setOptions(title,x_axis,legend,series_data,y_max,interval_num){
 				return {
 					title: {
 						text: title
@@ -399,12 +399,18 @@
 					yAxis: [{
 						type: 'value',
 						name:'事业部',
+						max: y_max,
+						min: 0,
+						interval:interval_num,
 						axisLabel: {
 							formatter: '{value} %'
 						}
 					},{
 						type: 'value',
 						name:'全公司',
+						max: y_max,
+						min: 0,
+						interval:interval_num,
 						axisLabel: {
 							formatter: '{value} %'
 						}

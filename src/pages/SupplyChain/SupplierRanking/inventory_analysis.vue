@@ -70,10 +70,10 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商：">
-				<el-select v-model="gys_ids" clearable filterable multiple remote reserve-keyword placeholder="全部" :remote-method="getGys">
-					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
+				<el-input v-model="gys_ids" clearable placeholder="请输入供应商"></el-input>
+			</el-form-item>
+			<el-form-item label="供应商货号：">
+				<el-input v-model="gyshh" clearable placeholder="请输入供应商货号"></el-input>
 			</el-form-item>
 			<el-form-item label="供应商等级：">
 				<el-select v-model="gys_level_ids" clearable filterable multiple reserve-keyword placeholder="全部">
@@ -86,6 +86,33 @@
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
+			</el-form-item>
+			<el-form-item label="主卖店铺：">
+				<el-select v-model="main_dp_ids" clearable multiple filterable remote reserve-keyword placeholder="全部" :remote-method="getMainDp" collapse-tags>
+					<el-option v-for="item in main_dp_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="品类：">
+				<el-select v-model="cpfl_ids" clearable multiple filterable remote reserve-keyword placeholder="全部" :remote-method="getCpfl" collapse-tags>
+					<el-option v-for="item in cpfl_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="是否内供：">
+				<el-select v-model="is_supply_ids" clearable multiple filterable remote reserve-keyword placeholder="全部" collapse-tags>
+					<el-option v-for="item in is_supply_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="结算方式：">
+				<el-select v-model="jsfs_ids" clearable multiple filterable remote reserve-keyword placeholder="全部" collapse-tags>
+					<el-option v-for="item in jsfs_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="备注：">
+				<el-input v-model="remarks" clearable placeholder="请输入备注"></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
@@ -188,19 +215,28 @@
 				spbq_current_cell:"",		//商品标签当前点击的单元格类型
 				gys_cate_list:[],			//供应商分类列表
 				gys_cate_ids:[],			//选中的供应商分类
-				gys_list:[],				//供应商
-				gys_ids:[],					//选中的供应商
+				gys_ids:"",					//输入的供应商
+				gyshh:"",					//供应商货号
+				remarks:"",					//备注
 				gys_level_list:[],			//供应商等级列表
 				gys_level_ids:[],			//选中的供应商等级
 				ks_list:[],					//款式编码
 				select_ks_ids:[],			//选中的款式编码
 				company_name:"",			//当前选中的公司
-				gs_is_retreat:"",		//当前选中的公司是否可退
+				gs_is_retreat:"",			//当前选中的公司是否可退
 				dept_name:"",				//当前选中的事业部
 				syb_is_retreat:"",			//当前选中的事业部是否可退
 				goods_label:"",				//当前选中的商品标签
 				spbq_is_retreat:"",			//当前选中的商品标签是否可退
 				is_retreat:"",				//当前选中的是否可退
+				main_dp_list:[],			//主卖店铺列表
+				main_dp_ids:[],				//选中的主卖店铺
+				cpfl_list:[],				//品类列表
+				cpfl_ids:[],				//选中的品类列表
+				is_supply_list:[],			//是否内供
+				is_supply_ids:[],			//选中的是否内供
+				jsfs_list:[],				//结算方式列表
+				jsfs_ids:[],				//选中的结算方式
 				sort:"",
 				page:1,
 				pagesize:10,
@@ -208,118 +244,7 @@
 				button_list:{},
 				total:0,
 				detail_loading:false,		
-				column_list:[{
-					label:'供应商分类',
-					width:"80",
-					prop:'gys_type'
-				},{
-					label:'是否可退',
-					width:"80",
-					prop:'is_retreat'
-				},{
-					label:'是否内供',
-					width:"80",
-					prop:'is_supply'
-				},{
-					label:'商品标签',
-					width:"80",
-					prop:'goods_label'
-				},{
-					label:'供应商',
-					width:"80",
-					prop:'gys'
-				},{
-					label:'供应商等级',
-					width:"80",
-					prop:'gys_level'
-				},{
-					label:'结算方式',
-					width:"80",
-					prop:'jsfs'
-				},{
-					label:'款式编码',
-					width:"80",
-					prop:'ksbm'
-				},{
-					label:'供应商货号',
-					width:"80",
-					prop:'gyshh'
-				},{
-					label:'库存',
-					width:"80",
-					sort:true,
-					prop:'kc'
-				},{
-					label:'库存转数',
-					width:"80",
-					sort:true,
-					prop:'kczs'
-				},{
-					label:'前一天销量',
-					width:"100",
-					sort:true,
-					prop:'xssl_1'
-				},{
-					label:'前两天销量',
-					width:"100",
-					sort:true,
-					prop:'xssl_2'
-				},{
-					label:'前三天销量',
-					width:"100",
-					sort:true,
-					prop:'xssl_3'
-				},{
-					label:'3天销量',
-					width:"80",
-					sort:true,
-					prop:'xssl_3sum'
-				},{
-					label:'7天销量',
-					width:"80",
-					sort:true,
-					prop:'xssl_7sum'
-				},{
-					label:'15天销量',
-					width:"80",
-					sort:true,
-					prop:'xssl_15sum'
-				},{
-					label:'30天销量',
-					width:"80",
-					sort:true,
-					prop:'xssl_30sum'
-				},{
-					label:'品类',
-					width:"80",
-					prop:'cpfl'
-				},{
-					label:'主卖店铺',
-					width:"80",
-					prop:'main_dp'
-				},{
-					label:'事业部',
-					width:"80",
-					prop:'dept_name'
-				},{
-					label:'平台',
-					width:"80",
-					prop:'platform'
-				},{
-					label:'公司',
-					width:"80",
-					prop:'company'
-				},{
-					label:'处理方式备注',
-					width:"120",
-					type:'input',
-					prop:'remark'
-				},{
-					label:'操作',
-					width:"80",
-					type:'button',
-					prop:''
-				}],
+				column_list:[],
 				view_rows:[],
 				row_ids:[],
 				table_id:"",
@@ -356,6 +281,10 @@
 			this.getSearchList({type:'gys_type'});
 			//供应商等级
 			this.getSearchList({type:'gys_level'});
+			//是否内供
+			this.getSearchList({type:'is_supply'});
+			//结算方式
+			this.getSearchList({type:'jsfs'});
 		},
 		mounted(){
 			//库存分布情况图表
@@ -383,6 +312,30 @@
 						data.map(item => {
 							item['value'] = item.kc
 						})
+
+						let new_data = this.sortArr(data, 'name');
+						var series_data = [];
+						new_data.map(item => {
+							let item_name = "";
+							let item_value = 0;
+							let item_children = [];
+							item.map((ii,index) => {
+								item_name = ii.name;
+								item_value += parseFloat(ii.value);
+								if(index == 0){
+									ii['show_tag'] = true;
+								}
+								item_children.push(ii)
+							})
+							let series_item = {
+								name:item_name,
+								value:item_value,
+								children:item_children
+							}
+							series_data.push(series_item)
+						})
+
+
 						var echarts = require("echarts");
 						var tree_chart = document.getElementById('tree');
 						this.treeChart = echarts.getInstanceByDom(tree_chart)
@@ -390,7 +343,10 @@
 							this.treeChart.clear();
 						}
 						this.treeChart = echarts.init(tree_chart);
-						this.treeChart.setOption(this.setOptions(data));
+						this.treeChart.setOption(this.setOptions(series_data));
+						window.addEventListener('resize',() => {
+							this.treeChart.resize();
+						});
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -429,6 +385,9 @@
 						breadcrumb:{
 							show:false
 						},
+						itemStyle:{
+							gapWidth: 1
+						},
 						left:0,
 						top:0,
 						right:0,
@@ -442,7 +401,7 @@
 							formatter: function (params) {
 								let data = params.data;
 								let tip = "";
-								if(!!params && params.dataIndex <= 5) {
+								if(!!params && data.show_tag) {
 									tip = data.name + "\n"
 									+data.is_retreat + "\n"
 									+data.value + "\n"
@@ -456,6 +415,37 @@
 					]
 				}
 			},
+			sortArr(arr, str) {
+				var _arr = [],
+				_t = [],
+        		// 临时的变量
+        		_tmp;
+
+    			// 按照特定的参数将数组排序将具有相同值得排在一起
+    			arr = arr.sort(function(a, b) {
+    				var s = a[str],
+    				t = b[str];
+
+    				return s < t ? -1 : 1;
+    			});
+
+    			if ( arr.length ){
+    				_tmp = arr[0][str];
+    			}
+    			// 将相同类别的对象添加到统一个数组
+    			for (var i in arr) {
+    				if ( arr[i][str] === _tmp ){
+    					_t.push( arr[i] );
+    				} else {
+    					_tmp = arr[i][str];
+    					_arr.push( _t );
+    					_t = [arr[i]];
+    				}
+    			}
+    			// 将最后的内容推出新数组
+    			_arr.push( _t );
+    			return _arr;
+    		},
 			//库存占比
 			stockRate(arg){
 				if(arg.type == 'company'){		//公司占比
@@ -715,14 +705,20 @@
 					}
 				}
 			},
+			//主卖店铺
+			getMainDp(e){
+				this.getSearchList({type:'main_dp',keyword:e});
+			},
+			//品类
+			getCpfl(e){
+				this.getSearchList({type:'cpfl',keyword:e});
+			},
 			//供应商
 			getGys(e){
-				//供应商
 				this.getSearchList({type:'gys',keyword:e});
 			},
 			//款式编码
 			getKsbm(e){
-				//款式编码
 				this.getSearchList({type:'ksbm',keyword:e});
 			},
 			//获取搜索条件
@@ -731,14 +727,23 @@
 					if(res.data.code == 1){
 						let data = res.data.data;
 						switch(arg.type){
+							case 'main_dp':
+							this.main_dp_list = data.main_dp;
+							break;
+							case 'cpfl':
+							this.cpfl_list = data.cpfl;
+							break;
+							case 'is_supply':
+							this.is_supply_list = data.is_supply;
+							break;
+							case 'jsfs':
+							this.jsfs_list = data.jsfs;
+							break;
 							case 'gys_type':
 							this.gys_cate_list = data.gys_type;
 							break;
 							case 'gys_level':
 							this.gys_level_list = data.gys_level;
-							break;
-							case 'gys':
-							this.gys_list = data.gys;
 							break;
 							case 'ksbm':
 							this.ks_list = data.ksbm;
@@ -759,9 +764,15 @@
 					goods_label:this.goods_label,
 					is_retreat:this.is_retreat,
 					gys_type:this.gys_cate_ids.join(','),
-					gys:this.gys_ids.join(','),
+					gys:this.gys_ids,
+					gyshh:this.gyshh,
+					remarks:this.remarks,
 					gys_level:this.gys_level_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
+					main_dp:this.main_dp_ids.join(','),
+					cpfl:this.cpfl_ids.join(','),
+					is_supply:this.is_supply_ids.join(','),
+					jsfs:this.jsfs_ids.join(','),
 					sort:this.sort
 				}
 				this.detail_loading = true;
@@ -829,9 +840,15 @@
 						goods_label:this.goods_label,
 						is_retreat:this.is_retreat,
 						gys_type:this.gys_cate_ids.join(','),
-						gys:this.gys_ids.join(','),
+						gys:this.gys_ids,
+						gyshh:this.gyshh,
+						remarks:this.remarks,
 						gys_level:this.gys_level_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
+						main_dp:this.main_dp_ids.join(','),
+						cpfl:this.cpfl_ids.join(','),
+						is_supply:this.is_supply_ids.join(','),
+						jsfs:this.jsfs_ids.join(','),
 						sort:this.sort
 					}
 					resource.exportDetail(arg).then(res => {
