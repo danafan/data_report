@@ -121,12 +121,15 @@
 		<div class="jsb">
 			<div class="table_title">明细表</div>
 			<div style="display: flex">
+				<el-button type="primary" size="mini" @click="allEdit" :disabled="selected_list.length == 0">批量编辑</el-button>
 				<el-button type="primary" size="mini" @click="show_custom = true">自定义列表</el-button>
 				<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<!-- 自定义列表 -->
-		<el-table size="small" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @header-dragend="secondChange">
+		<el-table size="small" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
+			<el-table-column type="selection" width="45" fixed="left">
+			</el-table-column>
 			<el-table-column :index="index" :label="item.row_name" :prop="item.row_field_name" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort === 1?'custom':false" show-overflow-tooltip>
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
@@ -149,7 +152,7 @@
 			</el-pagination>
 		</div>
 		<!-- 编辑 -->
-		<el-dialog title="编辑" size="mini" width="40%" :visible.sync="edit_dialog">
+		<el-dialog title="编辑" size="mini" width="40%" :visible.sync="edit_dialog" @close="closeEdit">
 			<el-form size="mini">
 				<el-form-item label="供应商分类：">
 					<el-select v-model="gys_type" placeholder="请选择">
@@ -250,12 +253,14 @@
 				table_id:"",
 				edit_id:"",
 				edit_dialog:false,
+				edit_type:'1',				//编辑类型（1:批量；2:单个）
 				id:"",
 				gys_type:"",				//供应商分类
 				edit_retreat:"",			//是否可退
 				is_supply:"",				//是否内供
 				edit_goods_label:"",		//商品标签
 				show_custom:false,			//自定义弹窗
+				selected_list:[],			//已勾选的列表
 
 			}
 		},
@@ -910,8 +915,18 @@
 				}   
 				this.stockDetail();
 			},
+			//切换选中
+			changeSelected(val) {
+				this.selected_list = val;
+			},
+			//点击批量编辑
+			allEdit(){
+				this.edit_type = '1';
+				this.edit_dialog = true;
+			},
 			//点击编辑
 			openEdit(id,is_retreat,goods_label,is_supply,gys_type){
+				this.edit_type = '2';
 				this.id = id;
 				this.edit_retreat = is_retreat;
 				this.edit_goods_label = goods_label;
@@ -919,17 +934,36 @@
 				this.gys_type = gys_type;
 				this.edit_dialog = true;
 			},
+			//关闭编辑
+			closeEdit(){
+				this.edit_retreat = '';
+				this.edit_goods_label = '';
+				this.is_supply = '';
+				this.gys_type = '';
+			},
 			//确认编辑
 			okFn(){
 				let arg = {
-					id:this.id,
 					is_retreat:this.edit_retreat,
 					goods_label:this.edit_goods_label,
 					is_supply:this.is_supply,
 					gys_type:this.gys_type
 				}
-				//提交编辑
-				this.confirmEdit(arg);
+				if(this.edit_type == '1'){		//批量
+					arg.id = this.selected_list.map(item => {
+						return item.id;
+					})
+					if(this.edit_retreat != '' ||this.edit_goods_label != '' || this.is_supply != '' || this.gys_type != ''){
+						//提交编辑
+						this.confirmEdit(arg);
+					}else{
+						this.$message.warning('至少输入一个编辑项！');
+					}
+				}else{				//单个
+					arg.id = this.id;
+					//提交编辑
+					this.confirmEdit(arg);
+				}
 			},
 			//提交编辑
 			confirmEdit(arg){
