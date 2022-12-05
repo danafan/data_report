@@ -82,10 +82,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="款式：">
-				<el-select v-model="select_ks_ids" clearable multiple filterable remote reserve-keyword placeholder="全部" :remote-method="getKsbm" collapse-tags>
-					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
+				<el-input v-model="select_ks_ids" clearable placeholder="请输入款式编码"></el-input>
 			</el-form-item>
 			<el-form-item label="主卖店铺：">
 				<el-select v-model="main_dp_ids" clearable multiple filterable remote reserve-keyword placeholder="全部" :remote-method="getMainDp" collapse-tags>
@@ -128,7 +125,7 @@
 		</div>
 		<!-- 自定义列表 -->
 		<el-table size="small" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
-			<el-table-column type="selection" width="45" fixed="left">
+			<el-table-column type="selection" width="50" align="center" fixed="left">
 			</el-table-column>
 			<el-table-column :index="index" :label="item.row_name" :prop="item.row_field_name" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort === 1?'custom':false" show-overflow-tooltip>
 				<template slot="header" slot-scope="scope">
@@ -223,7 +220,6 @@
 				remarks:"",					//备注
 				gys_level_list:[],			//供应商等级列表
 				gys_level_ids:[],			//选中的供应商等级
-				ks_list:[],					//款式编码
 				select_ks_ids:[],			//选中的款式编码
 				company_name:"",			//当前选中的公司
 				gs_is_retreat:"",			//当前选中的公司是否可退
@@ -722,10 +718,6 @@
 			getGys(e){
 				this.getSearchList({type:'gys',keyword:e});
 			},
-			//款式编码
-			getKsbm(e){
-				this.getSearchList({type:'ksbm',keyword:e});
-			},
 			//获取搜索条件
 			getSearchList(arg){
 				resource.stockSelect(arg).then(res => {
@@ -750,9 +742,6 @@
 							case 'gys_level':
 							this.gys_level_list = data.gys_level;
 							break;
-							case 'ksbm':
-							this.ks_list = data.ksbm;
-							break;
 						}
 					}else{
 						this.$message.warning(res.data.msg);
@@ -773,7 +762,7 @@
 					gyshh:this.gyshh,
 					remarks:this.remarks,
 					gys_level:this.gys_level_ids.join(','),
-					ksbm:this.select_ks_ids.join(','),
+					ksbm:this.select_ks_ids,
 					main_dp:this.main_dp_ids.join(','),
 					cpfl:this.cpfl_ids.join(','),
 					is_supply:this.is_supply_ids.join(','),
@@ -849,7 +838,7 @@
 						gyshh:this.gyshh,
 						remarks:this.remarks,
 						gys_level:this.gys_level_ids.join(','),
-						ksbm:this.select_ks_ids.join(','),
+						ksbm:this.select_ks_ids,
 						main_dp:this.main_dp_ids.join(','),
 						cpfl:this.cpfl_ids.join(','),
 						is_supply:this.is_supply_ids.join(','),

@@ -34,9 +34,13 @@
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="tab_container">
-			<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">每日明细</div>
-			<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">累加</div>
+		<div class="flex jsb afe">
+			<PopoverWidget class="margin_bottom" title="退货率-部门每日明细" keys="thl_bmmrmx" v-if="tab_index == '1'"/>
+			<PopoverWidget class="margin_bottom" title="退货率-部门累加" keys="thl_bmlj" v-if="tab_index == '2'"/>
+			<div class="flex">
+				<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">每日明细</div>
+				<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">累加</div>
+			</div>
 		</div>
 		<!-- 图表 -->
 		<div class="chart" id="dept_chart" v-loading="chart_loading"></div>
@@ -179,6 +183,7 @@
 	</div>
 </template>
 <script>
+	import PopoverWidget from '../../components/popover_widget.vue'
 	import dps from '../../components/results_components/dps.vue'
 	import resource from '../../api/resource.js'
 	import operationResource from '../../api/operationResource.js'
@@ -315,7 +320,7 @@
 								this.deptDataChart.clear();
 							}
 							this.deptDataChart = echarts.init(dept_chart);
-							this.deptDataChart.setOption(this.setOptions('退货率-部门每日明细',dept_x_axis,dept_legend,dept_series_data,80,20));
+							this.deptDataChart.setOption(this.setOptions(dept_x_axis,dept_legend,dept_series_data,80,20));
 						}else{//累加
 							let lj_x_axis = data.lj_day_list;
 							let lj_legend = [];
@@ -349,7 +354,7 @@
 								this.deptDataChart.clear();
 							}
 							this.deptDataChart = echarts.init(dept_chart);
-							this.deptDataChart.setOption(this.setOptions('退货率-部门累加',lj_x_axis,lj_legend,lj_series_data,50,10));
+							this.deptDataChart.setOption(this.setOptions(lj_x_axis,lj_legend,lj_series_data,50,10));
 						}
 						window.addEventListener('resize',() => {
 							this.deptDataChart.resize();
@@ -360,11 +365,8 @@
 				})
 				
 			},
-			setOptions(title,x_axis,legend,series_data,y_max,interval_num){
+			setOptions(x_axis,legend,series_data,y_max,interval_num){
 				return {
-					title: {
-						text: title
-					},
 					tooltip: {
 						trigger: 'axis',
 						formatter: function (params) {
@@ -647,28 +649,34 @@
 			},
 		},
 		components:{
-			dps
+			dps,
+			PopoverWidget
 		}
 	}
 </script>
 <style lang="less" scoped>
-.tab_container{
-	display:flex;
-	justify-content: flex-end;
-	.tab_item{
-		background: #EFEFEF;
-		width:120px;
-		text-align: center;
-		height: 30px;
-		line-height: 30px;
-		font-size: 12px;
-		color: #8a8a8a;
-		cursor: pointer;
-	}
-	.active_tab_item{
-		background:#008DFF;
-		color: #fff;
-	}
+.flex{
+	display: flex;
+}
+.afe{
+	align-items: flex-end;
+}
+.jsb{
+	justify-content: space-between;
+}
+.tab_item{
+	background: #EFEFEF;
+	width:120px;
+	text-align: center;
+	height: 30px;
+	line-height: 30px;
+	font-size: 12px;
+	color: #8a8a8a;
+	cursor: pointer;
+}
+.active_tab_item{
+	background:#008DFF;
+	color: #fff;
 }
 .chart{
 	width:100%;
