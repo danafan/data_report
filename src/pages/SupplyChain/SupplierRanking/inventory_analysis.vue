@@ -123,8 +123,8 @@
 				<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<!-- 自定义列表 -->
-		<el-table size="small" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
+		<!-- 明细表 -->
+		<el-table size="small" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" :cell-style="detailColumnStyle" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
 			<el-table-column type="selection" width="50" align="center" fixed="left">
 			</el-table-column>
 			<el-table-column :index="index" :label="item.row_name" :prop="item.row_field_name" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort === 1?'custom':false" show-overflow-tooltip>
@@ -134,7 +134,14 @@
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
+					<!-- 备注 -->
 					<el-input v-if="item.type=='6'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" :disabled="button_list.edit === 0" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
+					<!-- 修改主卖店铺 -->
+					<el-select v-else-if="item.type=='7'" size="mini" v-model="scope.row.main_dp1" filterable placeholder="全部" @change="confirmEdit({id:scope.row.id,main_dp1:scope.row.main_dp1})">
+						<el-option v-for="i in store_list" :key="i.shop_name" :label="i.shop_name" :value="i.shop_name">
+						</el-option>
+					</el-select>
+					<!-- 普通文字 -->
 					<div class='text_style' v-else>{{scope.row[item.row_field_name]}}</div>
 				</template>
 			</el-table-column>
@@ -220,7 +227,7 @@
 				remarks:"",					//备注
 				gys_level_list:[],			//供应商等级列表
 				gys_level_ids:[],			//选中的供应商等级
-				select_ks_ids:[],			//选中的款式编码
+				select_ks_ids:"",			//选中的款式编码
 				company_name:"",			//当前选中的公司
 				gs_is_retreat:"",			//当前选中的公司是否可退
 				dept_name:"",				//当前选中的事业部
@@ -243,6 +250,7 @@
 				button_list:{},
 				total:0,
 				detail_loading:false,		
+				store_list:[],				//店铺列表
 				column_list:[],
 				view_rows:[],
 				row_ids:[],
@@ -257,7 +265,6 @@
 				edit_goods_label:"",		//商品标签
 				show_custom:false,			//自定义弹窗
 				selected_list:[],			//已勾选的列表
-
 			}
 		},
 		created(){
@@ -275,6 +282,8 @@
 			let spbq_arg = {
 				type:'goods_label'
 			}
+			// 获取所有店铺
+			this.getStoreList();
 			this.stockRate(spbq_arg);
 			//明细表
 			this.stockDetail();
@@ -706,6 +715,16 @@
 					}
 				}
 			},
+			// 获取所有店铺
+			getStoreList(){
+				commonResource.ajaxViewStore({from:1}).then(res => {
+					if(res.data.code == 1){
+						this.store_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//主卖店铺
 			getMainDp(e){
 				this.getSearchList({type:'main_dp',keyword:e});
@@ -786,7 +805,7 @@
 								let arr = setting_arr.filter(item => {
 									return iii.row_field_name == item.split('-')[0]
 								})
-								iii.width = arr.length > 0?arr[0].split('-')[1]:'80';
+								iii.width = arr.length > 0?arr[0].split('-')[1]:'100';
 							})
 							this.column_list = title_list;
 						}else{
@@ -801,6 +820,12 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//明细修改过的标记
+			detailColumnStyle({ row, column, rowIndex, columnIndex }) {
+				if(row.status == 1 && column.property == 'main_dp1'){
+					return 'background: #F7BD47';
+				}
 			},
 			//恢复默认
 			Restore(){

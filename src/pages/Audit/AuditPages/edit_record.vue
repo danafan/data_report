@@ -1,6 +1,21 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="供应商款号：">
+				<el-select v-model="select_gyshh_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
+					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="供应商：">
+				<el-select v-model="select_gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
+					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="提交人：">
+				<el-input v-model="commit_name" placeholder="请输入提交人"clearable></el-input>
+			</el-form-item>
 			<el-form-item label="新编码：">
 				<el-select v-model="select_ksbm_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入新编码" :remote-method="ajaxKsbm" collapse-tags>
 					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
@@ -164,7 +179,7 @@
 			</div>
 		</el-dialog>
 		<!-- 导出弹框 -->
-		<el-dialog title="导出" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="exportDialog">
+		<!-- <el-dialog title="导出" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="exportDialog">
 			<el-form size="small">
 				<el-form-item label="供应商：">
 				<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
@@ -181,7 +196,7 @@
 				<el-button type="primary" size="small" @click="exportDialog = false">取消</el-button>
 				<el-button type="primary" size="small" @click="commitExport">确认</el-button>
 			</div>
-		</el-dialog>
+		</el-dialog> -->
 	</div>
 </template>
 <style lang="less" scoped>
@@ -230,6 +245,11 @@
 			return{
 				page:1,
 				pagesize:10,
+				gyshh_list:[],			//所有供应商款号
+				select_gyshh_ids:[],	//选中的供应商款号
+				gys_list:[],			//所有供应商列表
+				select_gys_ids:[],		//选中的供应商列表
+				commit_name:"",			//提交人
 				ksbm_list:[],			//所有款式编码
 				select_ksbm_ids:[],		//选中的款式编码
 				status:'0',				//选中的状态
@@ -272,34 +292,34 @@
 				detailObj:{},			//详情列表
 				dialog_title:"",		//详情弹窗标题
 				big_img_list:[],
-				exportDialog:false,		//导出弹窗
-				pickerOptions: {
-					shortcuts: [{
-						text: '当月',
-						onClick(picker) {
-							const start = getMonthStartDate();
-							const end = getCurrentDate();
-							picker.$emit('pick', [start, end]);
-						}
-					},{
-						text: '上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(1);
-							const end = getLastMonthEndDate(0);
-							picker.$emit('pick', [start, end]);
-						}
-					}, {
-						text: '上上个月',
-						onClick(picker) {
-							const start = getLastMonthStartDate(2);
-							const end = getLastMonthEndDate(1);
-							picker.$emit('pick', [start, end]);
-						}
-					}]
-				},	 					//时间区间
-				export_date:[],			//导出日期区间
-				gys_list:[],								//供应商列表
-				select_gys_ids:[],							//选中的供应商
+				// exportDialog:false,		//导出弹窗
+				// pickerOptions: {
+				// 	shortcuts: [{
+				// 		text: '当月',
+				// 		onClick(picker) {
+				// 			const start = getMonthStartDate();
+				// 			const end = getCurrentDate();
+				// 			picker.$emit('pick', [start, end]);
+				// 		}
+				// 	},{
+				// 		text: '上个月',
+				// 		onClick(picker) {
+				// 			const start = getLastMonthStartDate(1);
+				// 			const end = getLastMonthEndDate(0);
+				// 			picker.$emit('pick', [start, end]);
+				// 		}
+				// 	}, {
+				// 		text: '上上个月',
+				// 		onClick(picker) {
+				// 			const start = getLastMonthStartDate(2);
+				// 			const end = getLastMonthEndDate(1);
+				// 			picker.$emit('pick', [start, end]);
+				// 		}
+				// 	}]
+				// },	 					//时间区间
+				// export_date:[],			//导出日期区间
+				// gys_list:[],								//供应商列表
+				// select_gys_ids:[],							//选中的供应商
 				loading:false,
 			}
 		},
@@ -308,6 +328,30 @@
 			this.getData();
 		},
 		methods:{
+			//供应商货号
+			getGyshh(e){
+				if(e != ''){
+					resource.ajaxSupplierKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gyshh_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//供应商
+			getGys(e){
+				if(e != ''){
+					resource.ajaxSupplier({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gys_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
 			//款式编码列表
 			ajaxKsbm(e){
 				if(e != ''){
@@ -334,6 +378,9 @@
 			//获取列表
 			getData(){
 				let arg = {
+					supplier_ksbm:this.select_gyshh_ids.join(','),
+					supplier:this.select_gys_ids.join(','),
+					opreater_name:this.commit_name,
 					ksbm:this.select_ksbm_ids.join(','),
 					from:this.from,
 					status:this.status,
@@ -362,46 +409,34 @@
 				//获取列表
 				this.getData();
 			},
-			//供应商列表
-			getGys(e){
-				if(e != ''){
-					resource.ajaxSupplier({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.gys_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
 			//关闭替换弹框
-			closeDialog(){
-				this.select_gys_ids = [];
-				this.export_date = [];
-			},
+			// closeDialog(){
+			// 	this.select_gys_ids = [];
+			// 	this.export_date = [];
+			// },
 			//导出
-			commitExport(){
-				MessageBox.confirm('确认导出?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					let arg = {
-						supplier:this.select_gys_ids.join(','),
-						start_date:this.export_date && this.export_date.length > 0?this.export_date[0]:"",
-						end_date:this.export_date && this.export_date.length > 0?this.export_date[1]:"",
-					}
-					resource.zeroLogExport(arg).then(res => {
-						exportPost("\ufeff" + res.data,'修改记录表');
-						this.exportDialog = false;
-					})
-				}).catch(() => {
-					Message({
-						type: 'info',
-						message: '取消导出'
-					});          
-				});
-			},
+			// commitExport(){
+			// 	MessageBox.confirm('确认导出?', '提示', {
+			// 		confirmButtonText: '确定',
+			// 		cancelButtonText: '取消',
+			// 		type: 'warning'
+			// 	}).then(() => {
+			// 		let arg = {
+			// 			supplier:this.select_gys_ids.join(','),
+			// 			start_date:this.export_date && this.export_date.length > 0?this.export_date[0]:"",
+			// 			end_date:this.export_date && this.export_date.length > 0?this.export_date[1]:"",
+			// 		}
+			// 		resource.zeroLogExport(arg).then(res => {
+			// 			exportPost("\ufeff" + res.data,'修改记录表');
+			// 			this.exportDialog = false;
+			// 		})
+			// 	}).catch(() => {
+			// 		Message({
+			// 			type: 'info',
+			// 			message: '取消导出'
+			// 		});          
+			// 	});
+			// },
 			//获取详情
 			getDetail(id){
 				resource.editLogDetail({id:id}).then(res => {
