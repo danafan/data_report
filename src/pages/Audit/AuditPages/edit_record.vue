@@ -38,6 +38,9 @@
 				</el-select>
 			</el-form-item>
 		</el-form>
+		<div style="display: flex;justify-content: flex-end;margin-bottom: 15px;" v-if="button_list.export == 1">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center"></el-table-column>
 			<el-table-column prop="ksbm" label="新编码" align="center"></el-table-column>
@@ -328,6 +331,33 @@
 			this.getData();
 		},
 		methods:{
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						supplier_ksbm:this.select_gyshh_ids.join(','),
+						supplier:this.select_gys_ids.join(','),
+						opreater_name:this.commit_name,
+						ksbm:this.select_ksbm_ids.join(','),
+						from:this.from,
+						status:this.status,
+					}
+					resource.logsExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'修改记录表');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//供应商货号
 			getGyshh(e){
 				if(e != ''){

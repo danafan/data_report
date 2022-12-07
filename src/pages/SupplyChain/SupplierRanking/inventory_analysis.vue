@@ -719,7 +719,12 @@
 			getStoreList(){
 				commonResource.ajaxViewStore({from:1}).then(res => {
 					if(res.data.code == 1){
-						this.store_list = res.data.data;
+						let store_list = res.data.data;
+						let obj = {
+							shop_name:'全公司'
+						}
+						store_list.unshift(obj);
+						this.store_list = store_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

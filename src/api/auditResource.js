@@ -8,6 +8,7 @@ let path = {
 	editBatch:'audit/edit_batch',									//修改批发价
 	editSupplier:'audit/edit_supplier',								//修改供应商
 	auditLogs:'audit/logs',											//修改记录列表
+	logsExport:'audit/logs_export',									//修改记录列表导出
 	logDetail:'audit/audit_detail',									//审核表详情
 	editLogDetail:'audit/edit_log_detail',							//修改记录表详情
 	auidtLog:'audit/auidt_log',										//审核表列表
@@ -85,6 +86,10 @@ export default{
 	//修改记录列表
 	auditLogs(params){
 		return http.get(path.auditLogs, params)
+	},
+	//修改记录列表导出
+	logsExport(params){
+		return http.post(path.logsExport, params)
 	},
 	//审核表详情
 	logDetail(params){
