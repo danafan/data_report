@@ -85,7 +85,7 @@
 				<el-input v-model="select_ks_ids" clearable placeholder="请输入款式编码"></el-input>
 			</el-form-item>
 			<el-form-item label="主卖店铺：">
-				<el-select v-model="main_dp_ids" clearable multiple filterable remote reserve-keyword placeholder="全部" :remote-method="getMainDp" collapse-tags>
+				<el-select v-model="main_dp_ids" style="width:240px" clearable multiple filterable remote reserve-keyword placeholder="全部" :remote-method="getMainDp" collapse-tags>
 					<el-option v-for="item in main_dp_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
