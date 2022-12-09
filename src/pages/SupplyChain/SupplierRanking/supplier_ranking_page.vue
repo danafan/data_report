@@ -31,14 +31,14 @@
 			<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center">
 				<template slot-scope="scope">
 					<el-popover placement="right" trigger="click" @hide="list_page = 1">
-						<el-table size="small" :data="account_data">
+						<el-table size="small" :data="account_data" max-height="550">
 							<el-table-column prop="phone" width="120" align="center" show-overflow-tooltip label="手机号"></el-table-column>
 							<el-table-column prop="add_user_name" width="120" align="center" show-overflow-tooltip label="添加人"></el-table-column>
 							<el-table-column prop="add_time" width="160" align="center" label="添加时间">
 							</el-table-column>
 							<el-table-column label="操作" width="120" align="center">
 								<template slot-scope="sss">
-									<el-button type="text" size="small" @click="accountDel(sss.row.account_id)">删除</el-button>
+									<el-button type="text" size="small" @click="accountDel(sss.row.account_id)" v-if="button_list.del_account == 1">删除</el-button>
 								</template>
 							</el-table-column>
 						</el-table>
@@ -46,8 +46,9 @@
 							<el-pagination @size-change="listSizeChange" @current-change="listPageChange" :current-page="list_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="list_total">
 							</el-pagination>
 						</div>
-						<el-button type="text" size="small" slot="reference" @click="getAccount(scope.row.gys)">{{scope.row.gys}}</el-button>
+						<el-button type="text" size="small" slot="reference" @click="getAccount(scope.row.gys)" v-if="button_list.view_account_list == 1">{{scope.row.gys}}</el-button>
 					</el-popover>
+					<div v-if="button_list.view_account_list == 0">{{scope.row.gys}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column prop="kssl" sortable='custom' label="款式数量" align="center"></el-table-column>
@@ -67,7 +68,7 @@
 			<el-table-column prop="settlement_method" show-overflow-tooltip label="结算方式" align="center"></el-table-column>
 			<el-table-column label="操作" width="120" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="addFn(scope.row.gys)">添加</el-button>
+					<el-button type="text" size="small" @click="addFn(scope.row.gys)" v-if="scope.row.is_core == 1 && button_list.add_account == 1">添加</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -108,6 +109,7 @@
 				sort_field:"",
 				sort_type:"",					//销量排序
 				dataObj:{},						//销量数据
+				button_list:{},
 				loading:false,
 				add_dialog:false,				//添加手机号弹窗
 				gys:"",							//点击的供应商
@@ -169,6 +171,7 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+						this.button_list = res.data.data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
