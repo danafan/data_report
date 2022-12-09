@@ -28,9 +28,30 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="600px" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
-			<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center"></el-table-column>
+			<el-table-column prop="gys" show-overflow-tooltip label="供应商" align="center">
+				<template slot-scope="scope">
+					<el-popover placement="right" trigger="click" @hide="list_page = 1">
+						<el-table size="small" :data="account_data">
+							<el-table-column prop="phone" width="120" align="center" show-overflow-tooltip label="手机号"></el-table-column>
+							<el-table-column prop="add_user_name" width="120" align="center" show-overflow-tooltip label="添加人"></el-table-column>
+							<el-table-column prop="add_time" width="160" align="center" label="添加时间">
+							</el-table-column>
+							<el-table-column label="操作" width="120" align="center">
+								<template slot-scope="sss">
+									<el-button type="text" size="small" @click="accountDel(sss.row.account_id)">删除</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+						<div class="page">
+							<el-pagination @size-change="listSizeChange" @current-change="listPageChange" :current-page="list_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="list_total">
+							</el-pagination>
+						</div>
+						<el-button type="text" size="small" slot="reference" @click="getAccount(scope.row.gys)">{{scope.row.gys}}</el-button>
+					</el-popover>
+				</template>
+			</el-table-column>
 			<el-table-column prop="kssl" sortable='custom' label="款式数量" align="center"></el-table-column>
-			<el-table-column prop="xssl" sortable='custom' label="15天销量" align="center"></el-table-column>
+			<el-table-column prop="xssl" sortable='custom' label="30天销量" align="center"></el-table-column>
 			<el-table-column prop="cgcb" sortable='custom' show-overflow-tooltip label="销售成本" align="center"></el-table-column>
 			<el-table-column prop="cgcb_rank" sortable='custom' show-overflow-tooltip width="120" label="销售成本排行" align="center"></el-table-column>
 			<el-table-column prop="mlv" sortable='custom' show-overflow-tooltip label="毛利率" align="center"></el-table-column>
@@ -39,16 +60,35 @@
 			<el-table-column prop="stl_rank" sortable='custom' show-overflow-tooltip label="实退率排名" align="center"></el-table-column>
 			<el-table-column prop="dhl" sortable='custom' show-overflow-tooltip label="到货率" align="center"></el-table-column>
 			<el-table-column prop="dhl_rank" sortable='custom' show-overflow-tooltip label="到货率排名" align="center"></el-table-column>
-			<el-table-column prop="pbh_dhl" label="15天到货率(排除备货)" align="center" width="170" sortable="custom" show-overflow-tooltip>
+			<el-table-column prop="pbh_dhl" label="30天到货率(排除备货)" align="center" width="170" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="gys_level" label="供应商系统评级" show-overflow-tooltip align="center" width="100"></el-table-column>
 			<el-table-column prop="gys_level_sj" label="供应商实际评级" show-overflow-tooltip align="center" width="100"></el-table-column>
 			<el-table-column prop="settlement_method" show-overflow-tooltip label="结算方式" align="center"></el-table-column>
+			<el-table-column label="操作" width="120" align="center">
+				<template slot-scope="scope">
+					<el-button type="text" size="small" @click="addFn(scope.row.gys)">添加</el-button>
+				</template>
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
+		<el-dialog title="添加用户" width="30%" @close="phone = ''" :visible.sync="add_dialog">
+			<el-form size="small">
+				<el-form-item label="供应商">
+					<div>{{gys}}</div>
+				</el-form-item>
+				<el-form-item label="手机号">
+					<el-input style="width: 200px" type="number" v-model="phone" placeholder="请输入手机号"></el-input>
+				</el-form-item>
+			</el-form>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="add_dialog = false">取 消</el-button>
+				<el-button size="small" type="primary" @click="confirmAdd">确 定</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -69,6 +109,13 @@
 				sort_type:"",					//销量排序
 				dataObj:{},						//销量数据
 				loading:false,
+				add_dialog:false,				//添加手机号弹窗
+				gys:"",							//点击的供应商
+				phone:"",						//输入的手机号
+				list_page:1,
+				list_pagesize:10,
+				account_data:[],				//账号列表
+				list_total:0
 			}
 		},
 		created(){
@@ -170,6 +217,81 @@
 					});          
 				});
 			},
+			//点击添加
+			addFn(gys){
+				this.gys = gys;
+				this.add_dialog = true;
+			},
+			//确认添加
+			confirmAdd(){
+				if(!this.judgmentPhone.test(this.phone)){
+					this.$message.warning("请输入正确的手机号");
+				}else{
+					let arg = {
+						supplier_name:this.gys,
+						phone:this.phone
+					}
+					operResource.accountAdd(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.add_dialog = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//查看账号列表
+			getAccount(gys){
+				this.gys = gys;
+				let arg = {
+					page:this.list_page,
+					pagesize:this.list_pagesize,
+					supplier_name:gys
+				}
+				operResource.accountList(arg).then(res => {
+					if(res.data.code == 1){
+						let data = res.data.data;
+						this.account_data = data.data;
+						this.list_total = data.total;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//账号分页
+			listSizeChange(val) {
+				this.list_pagesize = val;
+				//获取列表
+				this.getAccount(this.gys);
+			},
+			listPageChange(val) {
+				this.list_page = val;
+				//获取列表
+				this.getAccount(this.gys);
+			},
+			//删除账号
+			accountDel(account_id){
+				this.$confirm('确认删除账号?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					operResource.accountDel({account_id:account_id}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
+				});
+
+			}
 		}
 	}
 </script>

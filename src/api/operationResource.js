@@ -42,6 +42,9 @@ let path = {
 	stockEdit:'supply_chain/stock/edit',			//编辑明细
 	distriBution:'supply_chain/stock/distribution',	//库存分布情况图表
 	thlChart:'supplier/lj_thl_chart',					//退货率图表
+	accountAdd:'supplier/account_add',					//添加账号
+	accountList:'supplier/account_list',				//查看账号列表
+	accountDel:'supplier/account_del',					//删除账号
 }						
 export default{
 	//获取款式编码
@@ -211,6 +214,18 @@ export default{
 	//退货率图表
 	thlChart(params){
 		return http.get(path.thlChart, params)
+	},
+	//添加账号
+	accountAdd(params){
+		return http.post(path.accountAdd, params)
+	},
+	//查看账号列表
+	accountList(params){
+		return http.get(path.accountList, params)
+	},
+	//删除账号
+	accountDel(params){
+		return http.post(path.accountDel, params)
 	},
 }
 
