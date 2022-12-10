@@ -1,30 +1,33 @@
 <template>
 	<div>
-		<div class="table_title">使用排行榜</div>
 		<div class="raking_row">
 			<div>
-				<el-table size="small" border :data="today_data" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
+				<div class="table_title">当日记录</div>
+				<el-table size="small" :data="today_list" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
 					<el-table-column width="100" prop="supplier_name" show-overflow-tooltip label="供应商" align="center"></el-table-column>
 					<el-table-column width="80" prop="level" label="供应商等级" align="center"></el-table-column>
 					<el-table-column width="90" prop="num" label="当日登录次数" align="center"></el-table-column>
 				</el-table>
 			</div>
 			<div>
-				<el-table size="small" border :data="seven_days_list" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
+				<div class="table_title">七日记录</div>
+				<el-table size="small" :data="seven_days_list" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
 					<el-table-column width="100" prop="supplier_name" show-overflow-tooltip label="供应商" align="center"></el-table-column>
 					<el-table-column width="80" prop="level" label="供应商等级" align="center"></el-table-column>
-					<el-table-column width="90" prop="num" label="7日登录次数" align="center"></el-table-column>
+					<el-table-column width="90" prop="days" label="七日登录天数" align="center"></el-table-column>
 				</el-table>
 			</div>
 			<div>
-				<el-table size="small" border :data="month_list" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
+				<div class="table_title">30日记录</div>
+				<el-table size="small" :data="month_list" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
 					<el-table-column width="100" prop="supplier_name" show-overflow-tooltip label="供应商" align="center"></el-table-column>
 					<el-table-column width="80" prop="level" label="供应商等级" align="center"></el-table-column>
-					<el-table-column width="90" prop="num" label="30日登录次数" align="center"></el-table-column>
+					<el-table-column width="90" prop="days" label="30日登录天数" align="center"></el-table-column>
 				</el-table>
 			</div>
 			<div>
-				<el-table size="small" border :data="total_list" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
+				<div class="table_title">累计记录</div>
+				<el-table size="small" :data="total_list" tooltip-effect="dark" max-height="350px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="raking_loading">
 					<el-table-column width="100" prop="supplier_name" show-overflow-tooltip label="供应商" align="center"></el-table-column>
 					<el-table-column width="80" prop="level" label="供应商等级" align="center"></el-table-column>
 					<el-table-column width="100" prop="rate" label="登录比率" align="center"></el-table-column>
@@ -86,7 +89,7 @@
 		data(){
 			return{
 				raking_loading:false,
-				today_data:[],			//当日
+				today_list:[],			//当日
 				seven_days_list:[],		//七日
 				month_list:[],			//30日
 				total_list:[],			//累计
@@ -94,7 +97,7 @@
 				gysmc:"",							//选中的供应商
 				gys_level:"",						//选中的供应商等级
 				date:[],							//日期
-				unlogin_flag:0,
+				unlogin_flag:'0',
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
