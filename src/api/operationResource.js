@@ -45,6 +45,9 @@ let path = {
 	accountAdd:'supplier/account_add',					//添加账号
 	accountList:'supplier/account_list',				//查看账号列表
 	accountDel:'supplier/account_del',					//删除账号
+	usedRecord:'supplier/used_record',					//使用记录
+	loginLog:'supplier/log_statistics',							//登录统计
+	loginRecord:'supplier/log',						//登录明细
 }						
 export default{
 	//获取款式编码
@@ -226,6 +229,18 @@ export default{
 	//删除账号
 	accountDel(params){
 		return http.post(path.accountDel, params)
+	},
+	//使用记录
+	usedRecord(params){
+		return http.get(path.usedRecord, params)
+	},
+	//登录统计
+	loginLog(params){
+		return http.get(path.loginLog, params)
+	},
+	//登录明细
+	loginRecord(params){
+		return http.get(path.loginRecord, params)
 	},
 }
 
