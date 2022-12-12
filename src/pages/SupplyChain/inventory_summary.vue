@@ -67,6 +67,7 @@
 					</template>
 				</el-table-column>
 			</el-table-column>
+			<el-table-column :index="6" :width="getWidth('dhs_1')" show-overflow-tooltip :render-header="renderHeader" prop="dhs_1" label="前一天到货数" align="center"></el-table-column>
 			<el-table-column :index="6" :width="getWidth('zmdp')" show-overflow-tooltip :render-header="renderHeader" prop="zmdp" label="主卖店铺" align="center"></el-table-column>
 			<el-table-column :index="7" :width="getWidth('dept_name')" show-overflow-tooltip :render-header="renderHeader" prop="dept_name" label="部门" align="center"></el-table-column>
 			<el-table-column :index="8" :width="getWidth('yesterday_remark')" show-overflow-tooltip :render-header="renderHeader" prop="yesterday_remark" label="昨日跟踪反馈" align="center"></el-table-column>
@@ -170,6 +171,9 @@
 				},{
 					prop:'ksqhqk',
 					width:"180"
+				},{
+					prop:'dhs_1',
+					width:"120"
 				},{
 					prop:'zmdp',
 					width:"120"

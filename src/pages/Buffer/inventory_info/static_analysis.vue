@@ -148,6 +148,12 @@
 			<el-table-column prop="ksbm" label="款式编码" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gys" label="供应商" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gyshh" label="供应商货号" sortable width="120" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="is_retret" label="是否可退" width="100" align="center"></el-table-column>
+			<el-table-column prop="plbz" label="标签" width="100" align="center">
+				<template slot-scope="scope">
+					<el-input size="mini" v-model="scope.row.labels" placeholder="标签" @change="tagEdit({ksbm:scope.row.ksbm,labels:scope.row.labels})"></el-input>
+				</template>
+			</el-table-column>
 			<el-table-column prop="plbz" label="货品" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="pl" label="品牌" sortable show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="xb" label="性别" sortable show-overflow-tooltip width="120" align="center">
@@ -510,6 +516,16 @@
         				this.loading = false;
         				this.dataObj = res.data.data.list;
         				this.cbj_total = res.data.data.cbj_total;
+        			}else{
+        				this.$message.warning(res.data.msg);
+        			}
+        		})
+        	},
+        	//修改标签
+        	tagEdit(arg){
+        		resource.editLabels(arg).then(res => {
+        			if(res.data.code == 1){
+        				this.$message.success(res.data.msg);
         			}else{
         				this.$message.warning(res.data.msg);
         			}

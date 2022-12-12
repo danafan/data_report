@@ -236,6 +236,7 @@ let path = {
 	briefContent:'brief/content',									//简报内容
 	briefMonthRank:'brief/month_rank',								//简报月度排行
 	briefWeekRank:'brief/week_rank',								//简报单周排行
+	editLabels:'stock_analysis/edit_labels',						//修改标签
 		
 
 }					
@@ -1215,6 +1216,10 @@ export default{
 	//简报周度排行
 	briefWeekRank(params){
 		return http.get(path.briefWeekRank, params)
+	},
+	//修改标签
+	editLabels(params){
+		return http.post(path.editLabels, params)
 	},
 }
 
