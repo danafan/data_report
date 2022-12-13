@@ -55,6 +55,16 @@
 				<el-date-picker v-model="date" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
 				</el-date-picker>
 			</el-form-item>
+			<el-form-item label="是否可退：">
+				<el-select v-model="is_retreat" placeholder="请选择">
+					<el-option label="不可退" value="不可退"></el-option>
+					<el-option label="可退" value="可退"></el-option>
+					<el-option label="待核实" value="待核实"></el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="标签：">
+				<el-input size="mini" v-model="labels" placeholder="标签"></el-input>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
@@ -148,7 +158,7 @@
 			<el-table-column prop="ksbm" label="款式编码" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gys" label="供应商" sortable width="100" show-overflow-tooltip align="center"></el-table-column>
 			<el-table-column prop="gyshh" label="供应商货号" sortable width="120" show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="is_retret" label="是否可退" width="100" align="center"></el-table-column>
+			<el-table-column prop="is_retreat" label="是否可退" width="100" align="center"></el-table-column>
 			<el-table-column prop="plbz" label="标签" width="100" align="center">
 				<template slot-scope="scope">
 					<el-input size="mini" v-model="scope.row.labels" placeholder="标签" @change="tagEdit({ksbm:scope.row.ksbm,labels:scope.row.labels})"></el-input>
@@ -206,6 +216,8 @@
 				select_pl_ids:[],		//选中的品类列表
 				select_xb_id:"",		//选中的性别	
 				date:getNowDate(),		//库存日期
+				is_retreat:"",			//是否可退
+				labels:"",				//标签
 				date_list:['2020','2021','2022'],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
 				kcCbChart:null,			//近一年库存/成本趋势图表
@@ -305,6 +317,8 @@
 					ksbm:this.select_ks_ids.join(','),
 					xb:this.select_xb_id,
 					cpfl:this.select_pl_ids.join(','),
+					is_retreat:this.is_retreat,
+					labels:this.labels
 				}
 				this.analysis_row_loading = true;
 				resource.stockAnalysis(arg).then(res => {
@@ -504,6 +518,8 @@
         			ksbm:this.select_ks_ids.join(','),
         			xb:this.select_xb_id,
         			cpfl:this.select_pl_ids.join(','),
+        			is_retreat:this.is_retreat,
+					labels:this.labels,
         			page:this.page,
         			pagesize:this.pagesize
         		}
@@ -557,6 +573,8 @@
         				ksbm:this.select_ks_ids.join(','),
         				xb:this.select_xb_id,
         				cpfl:this.select_pl_ids.join(','),
+        				is_retreat:this.is_retreat,
+						labels:this.labels
         			}
         			if(this.sort != ''){
         				arg.sort = this.sort;
