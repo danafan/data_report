@@ -46,8 +46,9 @@ let path = {
 	accountList:'supplier/account_list',				//查看账号列表
 	accountDel:'supplier/account_del',					//删除账号
 	usedRecord:'supplier/used_record',					//使用记录
-	loginLog:'supplier/log_statistics',							//登录统计
-	loginRecord:'supplier/log',						//登录明细
+	loginLog:'supplier/log_statistics',					//登录统计
+	loginRecord:'supplier/log',							//登录明细
+	getDefaultPassword:'supplier/get_default_password',	//获取账号默认密码
 }						
 export default{
 	//获取款式编码
@@ -241,6 +242,10 @@ export default{
 	//登录明细
 	loginRecord(params){
 		return http.get(path.loginRecord, params)
+	},
+	//获取账号默认密码
+	getDefaultPassword(params){
+		return http.get(path.getDefaultPassword, params)
 	},
 }
 

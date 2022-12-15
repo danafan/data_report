@@ -3,18 +3,18 @@
 		<div class="table_row">
 			<div style="width: 49%">
 				<div class="jsb">
-					<div class="table_title">库存分布情况</div>
+					<PopoverWidget title="库存分布情况" keys="kcfx_kcfbqk"/>
 					<el-button type="text" size="mini">&nbsp</el-button>
 				</div>
 				<div class="tree" id="tree" style="width: 100%" v-loading="chart_loading"></div>
 			</div>
 			<div style="width: 49%">
 				<div class="jsb">
-					<div class="table_title">公司库存占比情况</div>
+					<PopoverWidget title="公司库存占比情况" keys="kcfx_gskczbqk"/>
 					<el-button type="text" size="mini" @click="clearGs">清空</el-button>
 				</div>
 				<el-table :data="gs_data" size="small" border max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="gsRowStyle" :span-method="gsSpanMethod" v-loading="gs_loading" @cell-click="gsCellClick">
-					<el-table-column prop="name" show-overflow-tooltip label="商品标签" align="center"></el-table-column>
+					<el-table-column prop="name" show-overflow-tooltip label="公司" align="center"></el-table-column>
 					<el-table-column prop="is_retreat" label="是否可退" align="center"></el-table-column>
 					<el-table-column prop="count" show-overflow-tooltip label="款数" align="center"></el-table-column>
 					<el-table-column prop="kc" show-overflow-tooltip label="库存" align="center"></el-table-column>
@@ -29,7 +29,7 @@
 		<div class="table_row margin_top">
 			<div style="width: 49%" >
 				<div class="jsb">
-					<div class="table_title">事业部库存占比情况</div>
+					<PopoverWidget title="事业部库存占比情况" keys="kcfx_sybkczbqk"/>
 					<el-button type="text" size="mini" @click="clearSyb">清空</el-button>
 				</div>
 				<el-table :data="syb_data" size="small" border max-height="500" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}" :cell-style="columnStyle" :row-class-name="rowStyle" :span-method="spanMethod" v-loading="syb_loading" @cell-click="cellClick">
@@ -46,7 +46,7 @@
 			</div>
 			<div style="width: 49%">
 				<div class="jsb">
-					<div class="table_title">商品标签库存占比情况</div>
+					<PopoverWidget title="商品标签库存占比情况" keys="kcfx_spbqkczbqk"/>
 					<el-button type="text" size="mini" @click="clearSpbq">清空</el-button>
 				</div>
 				<el-table :data="spbq_data" size="small" border max-height="500px" :header-cell-style="{'background':'#3467B8','color':'#ffffff'}"  :cell-style="columnStyle" :row-class-name="spbqRowStyle" :span-method="spbqSpanMethod" v-loading="spbq_loading" @cell-click="spbqCellClick">
@@ -116,7 +116,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="jsb">
-			<div class="table_title">明细表</div>
+			<PopoverWidget title="明细表" keys="kcfx_mxb"/>
 			<div style="display: flex">
 				<el-button type="primary" size="mini" @click="allEdit" :disabled="selected_list.length == 0">批量编辑</el-button>
 				<el-button type="primary" size="mini" @click="show_custom = true">自定义列表</el-button>
@@ -206,7 +206,12 @@
 	import commonResource from '../../../api/resource.js'
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	export default{
+		components:{
+			PopoverWidget
+		},
 		data(){
 			return{
 				treeChart:null,

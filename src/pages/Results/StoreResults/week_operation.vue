@@ -20,7 +20,9 @@
 		</el-form>
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
-				<div class="table_title">销售收入</div>
+				<div class="table_title">
+					<PopoverWidget class="margin_bottom" title="销售收入" keys="zjyjb_xssr"/>
+				</div>
 				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
 				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
@@ -65,7 +67,9 @@
 		</div>
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
-				<div class="table_title">营销费用</div>
+				<div class="table_title">
+					<PopoverWidget class="margin_bottom" title="营销费用" keys="zjyjb_yxfy"/>
+				</div>
 				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
 				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
@@ -110,7 +114,9 @@
 		</div>
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
-				<div class="table_title">贡献毛益</div>
+				<div class="table_title">
+					<PopoverWidget class="margin_bottom" title="贡献毛益" keys="zjyjb_gxmy"/>
+				</div>
 				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
 				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
@@ -155,7 +161,9 @@
 		</div>
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
-				<div class="table_title">贡献毛益率</div>
+				<div class="table_title">
+					<PopoverWidget class="margin_bottom" title="贡献毛益率" keys="zjyjb_gxmyl"/>
+				</div>
 				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
 				<div class="table_content flex flex-1 wrap jsb" v-else>
 					<div class="view_item flex fcol" v-loading="content_loading">
@@ -200,102 +208,108 @@
 		</div>
 		<div class="flex jsb mb30">
 			<div class="view_table flex fcol">
-				<div class="table_title">预估净利</div>
-				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
-				<div class="table_content flex flex-1 wrap jsb" v-else>
-					<div class="view_item flex fcol" v-loading="content_loading">
-						<div class="view_item_title flex-1 flex ac jc">本周目标</div>
-						<div class="view_item_value flex-1 flex ac jc">{{jlr_info.week_target}}万</div>
-					</div>
-					<div class="view_item flex fcol" v-loading="content_loading">
-						<div class="view_item_title flex-1 flex ac jc">本周实际</div>
-						<div class="view_item_value flex-1 flex ac jc">{{jlr_info.week_actual}}万</div>
-					</div>
-					<div class="view_item flex fcol" v-loading="content_loading">
-						<div class="view_item_title flex-1 flex ac jc">周目标完成率</div>
-						<div class="view_item_value flex-1 flex ac jc">{{jlr_info.week_rate}}%</div>
-					</div>
-					<div class="view_item flex fcol" v-loading="content_loading">
-						<div class="view_item_title flex-1 flex ac jc">本月目标</div>
-						<div class="view_item_value flex-1 flex ac jc">{{jlr_info.month_target}}万</div>
-					</div>
-					<div class="view_item flex fcol" v-loading="content_loading">
-						<div class="view_item_title flex-1 flex ac jc">本月实际</div>
-						<div class="view_item_value flex-1 flex ac jc">{{jlr_info.month_actual}}万</div>
-					</div>
-					<div class="view_item flex fcol" v-loading="content_loading">
-						<div class="view_item_title flex-1 flex ac jc">月目标完成率</div>
-						<div class="view_item_value flex-1 flex ac jc">{{jlr_info.month_rate}}%</div>
-					</div>
-				</div>
-			</div>
-			<div class="movement_table flex fcol">
-				<div class="table_title">最近四周数据走势</div>
-				<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
-				<div class="table_content flex flex-1 as jc" v-loading="content_loading" v-else>
-					<div class="four_table">
-						<div class="four_row flex" v-for="item in jlr_four_week">
-							<div class="row_label tc">{{item.weeks}}周</div>
-							<div class="row_value tc">{{item.jlr}}万</div>
+				<div class="table_title">
+					<PopoverWidget class="margin_bottom" title="预估净利" keys="zjyjb_ygjl"/></div>
+					<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+					<div class="table_content flex flex-1 wrap jsb" v-else>
+						<div class="view_item flex fcol" v-loading="content_loading">
+							<div class="view_item_title flex-1 flex ac jc">本周目标</div>
+							<div class="view_item_value flex-1 flex ac jc">{{jlr_info.week_target}}万</div>
+						</div>
+						<div class="view_item flex fcol" v-loading="content_loading">
+							<div class="view_item_title flex-1 flex ac jc">本周实际</div>
+							<div class="view_item_value flex-1 flex ac jc">{{jlr_info.week_actual}}万</div>
+						</div>
+						<div class="view_item flex fcol" v-loading="content_loading">
+							<div class="view_item_title flex-1 flex ac jc">周目标完成率</div>
+							<div class="view_item_value flex-1 flex ac jc">{{jlr_info.week_rate}}%</div>
+						</div>
+						<div class="view_item flex fcol" v-loading="content_loading">
+							<div class="view_item_title flex-1 flex ac jc">本月目标</div>
+							<div class="view_item_value flex-1 flex ac jc">{{jlr_info.month_target}}万</div>
+						</div>
+						<div class="view_item flex fcol" v-loading="content_loading">
+							<div class="view_item_title flex-1 flex ac jc">本月实际</div>
+							<div class="view_item_value flex-1 flex ac jc">{{jlr_info.month_actual}}万</div>
+						</div>
+						<div class="view_item flex fcol" v-loading="content_loading">
+							<div class="view_item_title flex-1 flex ac jc">月目标完成率</div>
+							<div class="view_item_value flex-1 flex ac jc">{{jlr_info.month_rate}}%</div>
 						</div>
 					</div>
 				</div>
+				<div class="movement_table flex fcol">
+					<div class="table_title">最近四周数据走势</div>
+					<div class="empty flex flex-1 ac jc" v-if="is_empty">暂无数据</div>
+					<div class="table_content flex flex-1 as jc" v-loading="content_loading" v-else>
+						<div class="four_table">
+							<div class="four_row flex" v-for="item in jlr_four_week">
+								<div class="row_label tc">{{item.weeks}}周</div>
+								<div class="row_value tc">{{item.jlr}}万</div>
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="chart flex-1" id="jlr_chart" v-loading="content_loading"></div>
 			</div>
-			<div class="chart flex-1" id="jlr_chart" v-loading="content_loading"></div>
+			<div class="flex jsb">
+				<div class="width-50 mr30">
+					<div class="title">月度</div>
+					<div class="top_title">店铺盈利Top10</div>
+					<el-table :data="month_yl_data" size="small" style="width: 100%" :header-cell-style="{'background':'#A1161B','color':'#ffffff','text-align': 'center'}" v-loading="month_yl_loading">
+						<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
+							<template slot-scope="scope">
+								<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
+								<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
+							</template>
+						</el-table-column>
+					</el-table>
+					<div class="top_title">店铺亏损Top10</div>
+					<el-table :data="month_ks_data" size="small" style="width: 100%" :header-cell-style="{'background':'#409C45','color':'#333333','text-align': 'center'}" v-loading="month_ks_loading">
+						<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
+							<template slot-scope="scope">
+								<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
+								<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+				<div class="width-50">
+					<div class="title">单周</div>
+					<div class="top_title">店铺盈利Top10</div>
+					<el-table :data="week_yl_data" size="small" style="width: 100%" :header-cell-style="{'background':'#A1161B','color':'#ffffff','text-align': 'center'}" v-loading="week_yl_loading">
+						<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
+							<template slot-scope="scope">
+								<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
+								<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
+							</template>
+						</el-table-column>
+					</el-table>
+					<div class="top_title">店铺亏损Top10</div>
+					<el-table :data="week_ks_data" size="small" style="width: 100%" :header-cell-style="{'background':'#409C45','color':'#333333','text-align': 'center'}" v-loading="week_ks_loading">
+						<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
+							<template slot-scope="scope">
+								<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
+								<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
+							</template>
+						</el-table-column>
+					</el-table>
+				</div>
+			</div>
 		</div>
-		<div class="flex jsb">
-			<div class="width-50 mr30">
-				<div class="title">月度</div>
-				<div class="top_title">店铺盈利Top10</div>
-				<el-table :data="month_yl_data" size="small" style="width: 100%" :header-cell-style="{'background':'#A1161B','color':'#ffffff','text-align': 'center'}" v-loading="month_yl_loading">
-					<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
-						<template slot-scope="scope">
-							<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
-							<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
-						</template>
-					</el-table-column>
-				</el-table>
-				<div class="top_title">店铺亏损Top10</div>
-				<el-table :data="month_ks_data" size="small" style="width: 100%" :header-cell-style="{'background':'#409C45','color':'#333333','text-align': 'center'}" v-loading="month_ks_loading">
-					<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
-						<template slot-scope="scope">
-							<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
-							<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
-						</template>
-					</el-table-column>
-				</el-table>
-			</div>
-			<div class="width-50">
-				<div class="title">单周</div>
-				<div class="top_title">店铺盈利Top10</div>
-				<el-table :data="week_yl_data" size="small" style="width: 100%" :header-cell-style="{'background':'#A1161B','color':'#ffffff','text-align': 'center'}" v-loading="week_yl_loading">
-					<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
-						<template slot-scope="scope">
-							<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
-							<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
-						</template>
-					</el-table-column>
-				</el-table>
-				<div class="top_title">店铺亏损Top10</div>
-				<el-table :data="week_ks_data" size="small" style="width: 100%" :header-cell-style="{'background':'#409C45','color':'#333333','text-align': 'center'}" v-loading="week_ks_loading">
-					<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
-						<template slot-scope="scope">
-							<div v-if="i.prop == 'sort'">{{scope.$index + 1}}</div>
-							<div v-else>{{scope.row[i.prop]}}{{i.unit?i.unit:""}}</div>
-						</template>
-					</el-table-column>
-				</el-table>
-			</div>
-		</div>
-	</div>
-</template>
-<script>
-	import resource from '../../../api/resource.js'
+	</template>
+	<script>
+		import resource from '../../../api/resource.js'
 
-	import { getCurrentYear } from '../../../api/nowMonth.js'
-	export default{
-		data(){
-			return{
+		import { getCurrentYear } from '../../../api/nowMonth.js'
+
+		import PopoverWidget from '../../../components/popover_widget.vue'
+		export default{
+			components:{
+				PopoverWidget
+			},
+			data(){
+				return{
 				year:getCurrentYear(),			//选中的年份
 				week_list:[],					//周数列表
 				week:"",						//选中的周数
@@ -743,12 +757,10 @@
 .table_title{
 	background: #D6E9EF;
 	width: 100%;
-	text-align: center;
 	height: 50px;
-	line-height: 50px;
-	font-size: 20px;
-	color: #333333;
-	font-weight: bold;
+	display: flex;
+	align-items: center;
+	justify-content: center;
 }
 .four_table{
 	width: 280px;

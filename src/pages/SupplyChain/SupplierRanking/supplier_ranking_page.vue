@@ -76,7 +76,7 @@
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
 			</el-pagination>
 		</div>
-		<el-dialog title="添加用户" width="30%" @close="phone = ''" :visible.sync="add_dialog">
+		<el-dialog title="添加用户" width="30%" @close="closeDialog" :visible.sync="add_dialog">
 			<el-form size="small">
 				<el-form-item label="供应商">
 					<div>{{gys}}</div>
@@ -117,7 +117,7 @@
 				list_page:1,
 				list_pagesize:10,
 				account_data:[],				//账号列表
-				list_total:0
+				list_total:0,
 			}
 		},
 		created(){
@@ -219,6 +219,10 @@
 						message: '取消导出'
 					});          
 				});
+			},
+			//关闭添加用户弹窗
+			closeDialog(){
+				this.phone = "";
 			},
 			//点击添加
 			addFn(gys){
