@@ -354,7 +354,7 @@
 								this.deptDataChart.clear();
 							}
 							this.deptDataChart = echarts.init(dept_chart);
-							this.deptDataChart.setOption(this.setOptions(lj_x_axis,lj_legend,lj_series_data,50,10));
+							this.deptDataChart.setOption(this.setOptions(lj_x_axis,lj_legend,lj_series_data,80,20));
 						}
 						window.addEventListener('resize',() => {
 							this.deptDataChart.resize();

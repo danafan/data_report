@@ -48,6 +48,22 @@
 			</el-table-column>
 			<el-table-column prop="gyshh" label="供应商货号" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
+			<el-table-column prop="xjkc" label="现有库存" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column width="400" label="款式缺货情况" align="center">
+				<el-table-column :label="item.label" align="center" v-for="(item,index) in ks_shortage_day_list">
+					<template slot-scope="scope">
+						<div>{{scope.row[item.prop]}}</div>
+					</template>
+				</el-table-column>
+			</el-table-column>
+			<el-table-column prop="dhs_3" label="前三天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column prop="dhs_2" label="前两天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column prop="dhs_1" label="前一天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			</el-table-column>
+
 			<el-table-column prop="xssl_av7" label="7天日均销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="xssl_30_sum" label="30天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
@@ -68,16 +84,10 @@
 			</el-table-column>
 			<el-table-column prop="shop_name" label="主卖店铺" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhs_3" label="前三天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			<el-table-column prop="dept_name" label="部门" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhs_2" label="前两天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="dhs_1" label="前一天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="xjkc" label="现有库存" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="qhs" label="缺货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
+			<!-- <el-table-column prop="qhs" label="缺货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			</el-table-column> -->
 			<el-table-column prop="pfj" label="批发价" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="sjcb" label="审计成本" align="center" width="120" sortable="custom" show-overflow-tooltip>
@@ -87,6 +97,8 @@
 			<el-table-column prop="mc" label="商品名称" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="gys" label="供应商" align="center" width="120" show-overflow-tooltip>
+			</el-table-column>
+			<el-table-column prop="gys_type" label="供应商分类" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="gys_level" label="供应商等级" align="center" width="120" show-overflow-tooltip>
 			</el-table-column>
@@ -102,7 +114,7 @@
 <script>
 	import resource from '../../../api/resource.js'
 	import demandResource from '../../../api/demandResource.js'
-	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getNextDate} from '../../../api/nowMonth.js'
 
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
@@ -115,13 +127,14 @@
 				select_ks_ids:[],							//选中的款式编码列表
 				gys_list:[],								//供应商列表
 				select_gys_ids:[],							//选中的供应商
-				store_list: [],						//店铺列表	
-				select_store_ids:[],				//选中的店铺id列表
+				store_list: [],								//店铺列表	
+				select_store_ids:[],						//选中的店铺id列表
 				sjxrrq:getNowDate(),
 				type:"1",
 				page:1,
 				pagesize:10,
 				data:[],
+				ks_shortage_day_list:[],					//款式缺货情况对应日期数组
 				total:0,
 				table_sort:""
 			}
@@ -131,6 +144,13 @@
 			this.getStoreList();
 			//获取列表
 			this.getData();
+			for(let i = -3;i <= 0;i++){
+				let ff = {
+					label:getNextDate(this.sjxrrq,i).split('-')[1] + '日',
+					prop:i < 0?`qhs_${i*-1}`:'qhs'
+				}
+				this.ks_shortage_day_list.push(ff)
+			}
 		},
 		methods:{
 			//款式编码
