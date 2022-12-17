@@ -118,7 +118,7 @@
 		<div class="jsb">
 			<PopoverWidget title="明细表" keys="kcfx_mxb"/>
 			<div style="display: flex">
-				<el-button type="primary" size="mini" @click="allEdit" :disabled="selected_list.length == 0">批量编辑</el-button>
+				<el-button type="primary" size="mini" @click="allEdit" :disabled="selected_list.length == 0 && !is_all">批量编辑</el-button>
 				<el-button type="primary" size="mini" @click="show_custom = true">自定义列表</el-button>
 				<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
@@ -135,9 +135,9 @@
 				</template>
 				<template slot-scope="scope">
 					<!-- 备注 -->
-					<el-input v-if="item.type=='6'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" :disabled="button_list.edit === 0" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
+					<el-input v-if="item.type=='6'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" :disabled="button_list.edit === 0" @change="confirmEdit({id:scope.row.id,edit_remark:scope.row.remarks})"></el-input>
 					<!-- 修改主卖店铺 -->
-					<el-select v-else-if="item.type=='7'" :class="{'main_dp':scope.row.status == 1}" size="mini" v-model="scope.row.main_dp1" filterable placeholder="全部" @change="confirmEdit({id:scope.row.id,main_dp1:scope.row.main_dp1})">
+					<el-select v-else-if="item.type=='7'" :class="{'main_dp':scope.row.status == 1}" size="mini" v-model="scope.row.main_dp1" filterable placeholder="全部" @change="confirmEdit({id:scope.row.id,edit_main_dp1:scope.row.main_dp1})">
 						<el-option v-for="i in store_list" :key="i.shop_name" :label="i.shop_name" :value="i.shop_name">
 						</el-option>
 					</el-select>
@@ -977,10 +977,10 @@
 			//确认编辑
 			okFn(){
 				let arg = {
-					is_retreat:this.edit_retreat,
-					goods_label:this.edit_goods_label,
-					is_supply:this.is_supply,
-					gys_type:this.gys_type
+					edit_is_retreat:this.edit_retreat,
+					edit_goods_label:this.edit_goods_label,
+					edit_is_supply:this.is_supply,
+					edit_gys_type:this.gys_type
 				}
 				if(this.edit_type == '1'){		//批量
 					arg.is_all = this.is_all?1:0;
@@ -989,6 +989,21 @@
 							return item.id;
 						})
 						arg.id = ids.join(',');
+					}else{
+						arg.company = this.company_name;
+						arg.dept_name = this.dept_name;
+						arg.goods_label = this.goods_label;
+						arg.is_retreat = this.is_retreat;
+						arg.gys_type = this.gys_cate_ids.join(',');
+						arg.gys = this.gys_ids;
+						arg.gyshh = this.gyshh;
+						arg.remarks = this.remarks;
+						arg.gys_level = this.gys_level_ids.join(',');
+						arg.ksbm = this.select_ks_ids;
+						arg.main_dp = this.main_dp_ids.join(',');
+						arg.cpfl = this.cpfl_ids.join(',');
+						arg.is_supply = this.is_supply_ids.join(',');
+						arg.jsfs = this.jsfs_ids.join(',');
 					}
 					if(this.edit_retreat != '' ||this.edit_goods_label != '' || this.is_supply != '' || this.gys_type != ''){
 						//提交编辑
