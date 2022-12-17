@@ -1004,8 +1004,6 @@
 			},
 			//提交编辑
 			confirmEdit(arg){
-				console.log(arg);
-				return;
 				resource.stockEdit(arg).then(res => {
 					if(res.data.code == 1){
 						this.$message.success(res.data.msg);
