@@ -20,7 +20,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="统计日期：">
-				<el-date-picker v-model="sjxrrq" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
+				<el-date-picker v-model="sjxrrq" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="类型：">
@@ -63,29 +63,53 @@
 			</el-table-column>
 			<el-table-column prop="dhs_1" label="前一天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
+			<el-table-column prop="yesterday_remark" label="昨日跟踪反馈" align="center" width="120" show-overflow-tooltip></el-table-column>
+			<el-table-column label="今日跟踪反馈" align="center" width="180">
+				<template slot-scope="scope">
+					<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
+					</el-input>
+				</template>
+			</el-table-column>
+			<el-table-column width="120"  label="历史跟踪反馈" align="center">
+				<template slot-scope="scope">
+					<el-popover placement="right" width="800" :open-delay="1000"
+					trigger="hover" @show="getRecord(scope.row.ksbm)" >
+					<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
+						<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+						<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+						<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+					</el-table>
+					<div class="page">
+						<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
+						</el-pagination>
+					</div>
+					<el-button slot="reference" type="text" size="mini">查看</el-button>
+				</el-popover>
+			</template>
+		</el-table-column>
 
-			<el-table-column prop="xssl_av7" label="7天日均销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="xssl_30_sum" label="30天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="mlv_7" label="7天毛利率" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="stl_15" label="15天实退率" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="dhl_7" label="7天到货率" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="pbh_dhl_7" label="7天到货率(排除备货)" align="center" width="160" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="xssl_3" label="前三天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="xssl_2" label="前两天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="xssl_1" label="前一天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="shop_name" label="主卖店铺" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="dept_name" label="部门" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
+		<el-table-column prop="xssl_av7" label="7天日均销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="xssl_30_sum" label="30天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="mlv_7" label="7天毛利率" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="stl_15" label="15天实退率" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="dhl_7" label="7天到货率" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="pbh_dhl_7" label="7天到货率(排除备货)" align="center" width="160" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="xssl_3" label="前三天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="xssl_2" label="前两天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="xssl_1" label="前一天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="shop_name" label="主卖店铺" align="center" width="120" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="dept_name" label="部门" align="center" width="120" show-overflow-tooltip>
+		</el-table-column>
 			<!-- <el-table-column prop="qhs" label="缺货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column> -->
 			<el-table-column prop="pfj" label="批发价" align="center" width="120" sortable="custom" show-overflow-tooltip>
@@ -123,6 +147,7 @@
 	export default{
 		data(){
 			return{
+				nowDate:"",
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
 				gys_list:[],								//供应商列表
@@ -136,10 +161,16 @@
 				data:[],
 				ks_shortage_day_list:[],					//款式缺货情况对应日期数组
 				total:0,
-				table_sort:""
+				table_sort:"",
+				table_page:1,
+				table_pagesize:10,
+				ksbm:"",
+				detail_loading:false,
+				tableObj:{}
 			}
 		},
 		created(){
+			this.nowDate = getNowDate();
 			// 获取所有店铺
 			this.getStoreList();
 			//获取列表
@@ -266,7 +297,68 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
-			}
+			},
+			//编辑今日反馈
+			editFun(v,ksbm){
+				this.$confirm('确认提交反馈?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						ksbm:ksbm,
+						remark:v
+					};
+					demandResource.stockEdit(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '取消'
+					});          
+				});
+			},
+			//点击查看
+			getRecord(ksbm){
+				this.table_page = 1;
+				this.ksbm = ksbm;
+				//获取详情
+				this.getTableData();
+			},
+			//获取详情
+			getTableData(){
+				let arg = {
+					ksbm:this.ksbm,
+					page:this.table_page,
+					pagesize:this.table_pagesize
+				}
+				this.detail_loading = true;
+				demandResource.editLog(arg).then(res => {
+					if(res.data.code == 1){
+						this.detail_loading = false;
+						this.tableObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//详情分页
+			handlePageSize(val) {
+				this.table_page = 1;
+				this.table_pagesize = val;
+				//获取列表
+				this.getTableData();
+			},
+			handlePage(val) {
+				this.table_page = val;
+				//获取列表
+				this.getTableData();
+			},
 		},
 		components:{
 			PopoverWidget

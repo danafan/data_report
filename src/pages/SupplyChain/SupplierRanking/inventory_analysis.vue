@@ -124,8 +124,8 @@
 			</div>
 		</div>
 		<!-- 明细表 -->
-		<el-table size="small" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" :cell-style="detailColumnStyle" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
-			<el-table-column type="selection" width="50" align="center" fixed="left">
+		<el-table size="small" ref="table" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" :cell-style="detailColumnStyle" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
+			<el-table-column type="selection" width="50" align="center" fixed="left" :selectable="selectableFn">
 			</el-table-column>
 			<el-table-column :index="index" :label="item.row_name" :prop="item.row_field_name" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort === 1?'custom':false" show-overflow-tooltip>
 				<template slot="header" slot-scope="scope">
@@ -151,7 +151,8 @@
 				</template>
 			</el-table-column>
 		</el-table>
-		<div class="page">
+		<div class="bottom_page">
+			<el-checkbox v-model="is_all">全选所有</el-checkbox>
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
 			</el-pagination>
 		</div>
@@ -270,6 +271,7 @@
 				edit_goods_label:"",		//商品标签
 				show_custom:false,			//自定义弹窗
 				selected_list:[],			//已勾选的列表
+				is_all:false,				//是否全选
 			}
 		},
 		created(){
@@ -304,6 +306,13 @@
 		mounted(){
 			//库存分布情况图表
 			this.getCharts();
+		},
+		watch:{
+			is_all:function(n,o){
+				if(n != o){
+					this.$refs.table.toggleAllSelection();
+				}
+			}
 		},
 		methods:{
 			// 库存分布情况图表
@@ -826,10 +835,19 @@
 						}
 						this.view_rows = data.view_rows;
 						this.row_ids = data.selected_ids;
+						if(this.is_all){
+							this.$refs.table.toggleAllSelection();
+						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			selectableFn(row,index){
+				return !this.is_all;
+				// if(row.disabled){
+				// 	return trie
+				// }
 			},
 			//明细修改过的标记
 			detailColumnStyle({ row, column, rowIndex, columnIndex }) {
@@ -974,9 +992,13 @@
 					gys_type:this.gys_type
 				}
 				if(this.edit_type == '1'){		//批量
-					arg.id = this.selected_list.map(item => {
-						return item.id;
-					})
+					arg.is_all = this.is_all?1:0;
+					if(!this.is_all){
+						let ids = this.selected_list.map(item => {
+							return item.id;
+						})
+						arg.id = ids.join(',');
+					}
 					if(this.edit_retreat != '' ||this.edit_goods_label != '' || this.is_supply != '' || this.gys_type != ''){
 						//提交编辑
 						this.confirmEdit(arg);
@@ -991,6 +1013,8 @@
 			},
 			//提交编辑
 			confirmEdit(arg){
+				console.log(arg);
+				return;
 				resource.stockEdit(arg).then(res => {
 					if(res.data.code == 1){
 						this.$message.success(res.data.msg);
@@ -1042,5 +1066,10 @@
 	overflow: hidden;
 	text-overflow: ellipsis;
 	white-space: nowrap;
+}
+.bottom_page{
+	margin-top: 15px;
+	display: flex;
+	justify-content: space-between;
 }
 </style>

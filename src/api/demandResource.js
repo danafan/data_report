@@ -23,6 +23,8 @@ let path = {
 	supplierShortageRankingExport:'supply_chain/supplier_shortage_ranking_export',	//供应商缺货排行导出
 	deforeLbList:'supplier/top_200_list',			//款式Top200列表
 	deforeLbExport:'supplier/top_200_list_export',	//款式Top200列表导出
+	stockEdit:'stock/edit',							//编辑今日反馈
+	editLog:'stock/edit_log',						//查看历史反馈
 	deforeWsList:'supplier/top_50_list',			//3店铺Top50列表
 	deforeWsExport:'supplier/top_50_list_export',	//3店铺Top50列表导出
 	shopNoDeliverList:'supply_chain/shop_no_deliver_list',	//店铺待发货列表
@@ -150,6 +152,14 @@ export default{
 	//款式Top200列表导出
 	deforeLbExport(params){
 		return http.get(path.deforeLbExport, params)
+	},
+	//编辑今日反馈
+	stockEdit(params){
+		return http.post(path.stockEdit, params)
+	},
+	//查看历史反馈
+	editLog(params){
+		return http.get(path.editLog, params)
 	},
 	//3店铺Top50列表
 	deforeWsList(params){
