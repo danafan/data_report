@@ -55,6 +55,7 @@
 				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
+		<div style="font-size: 14px;color: red">缺货更新时间：{{update_time}}</div>
 		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
 			<el-table-column label="图片" align="center" width="180">
 				<template slot-scope="scope">
@@ -75,11 +76,11 @@
 					</template>
 				</el-table-column>
 			</el-table-column>
-			<el-table-column prop="dhs_3" label="前三天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			<el-table-column prop="dhs_3" :label="filterLabel(-3)" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhs_2" label="前两天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			<el-table-column prop="dhs_2" :label="filterLabel(-2)" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
-			<el-table-column prop="dhs_1" label="前一天到货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
+			<el-table-column prop="dhs_1" :label="filterLabel(-1)" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="yesterday_remark" label="昨日跟踪反馈" align="center" width="120" show-overflow-tooltip></el-table-column>
 			<el-table-column label="今日跟踪反馈" align="center" width="180">
@@ -176,6 +177,7 @@
 				type:"1",
 				page:1,
 				pagesize:10,
+				update_time:"",				//缺货更新时间
 				data:[],
 				ks_shortage_day_list:[],					//款式缺货情况对应日期数组
 				total:0,
@@ -202,6 +204,10 @@
 			}
 		},
 		methods:{
+			//表格前几天到货数
+			filterLabel(num){
+				return getNextDate(this.sjxrrq,num).split('-')[1] + '日到货数'
+			},
 			//款式编码
 			getKsbm(e){
 				if(e != ''){
@@ -328,6 +334,7 @@
 						})
 						this.data = data.data;
 						this.total = data.total;
+						this.update_time = data.update_time;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
