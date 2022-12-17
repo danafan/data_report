@@ -35,7 +35,25 @@
 		</el-form>
 		<div class="buts">
 			<PopoverWidget title="指标解释" keys="top_lb"/>
-			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<div style="display: flex">
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+					<el-tooltip class="item" placement="top">
+						<div slot="content">
+							1、批量导入，第一行为“款式”，“备注”两个字段，填写的数据从第二行开始<br/>
+							2、导入失败原因1：数据中存在某款式编码找不到<br/>
+							3、导入失败原因2：数据中存在重复款式编码<br/>
+							4、导入失败原因3：数据不对应(款式填到备注里面了)
+						</div>
+						<i class="el-icon-info" style="color: red"></i>
+					</el-tooltip>
+				</div>
+				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
 		</div>
 		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
 			<el-table-column label="图片" align="center" width="180">
@@ -87,7 +105,6 @@
 				</el-popover>
 			</template>
 		</el-table-column>
-
 		<el-table-column prop="xssl_av7" label="7天日均销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
 		</el-table-column>
 		<el-table-column prop="xssl_30_sum" label="30天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
@@ -137,6 +154,7 @@
 </template>
 <script>
 	import resource from '../../../api/resource.js'
+	import inventoryResource from '../../../api/inventoryResource.js'
 	import demandResource from '../../../api/demandResource.js'
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getNextDate} from '../../../api/nowMonth.js'
 
@@ -217,6 +235,23 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//导入
+			uploadCsv(){
+				if (this.$refs.csvUpload.files.length > 0) {
+					let files = this.$refs.csvUpload.files;
+					inventoryResource.stockImport({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.page = 1;
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//导出
 			exportFn(){
@@ -371,6 +406,25 @@
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+.upload_box{
+	margin-right: 10px;
+	position: relative;
+	.upload_file{
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
+	.item{
+		position: absolute;
+		top: -10px;
+		right: -10px;
+	}
 }
 </style>
 

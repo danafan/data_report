@@ -129,7 +129,7 @@
 			},
 			//下载模版
 			downTemplate(){
-				window.open(`${this.downLoadUrl}/%E6%95%B0%E6%8D%AE%E6%A8%A1%E6%9D%BF.xlsx`);
+				window.open(`${this.downLoadUrl}/下架登记数据模版.xlsx`);
 			},
 			//导入
 			uploadCsv(){
@@ -168,7 +168,7 @@
 					Message({
 						type: 'info',
 						message: '取消导出'
-					});          
+					});
 				});
 			},
 			//获取列表

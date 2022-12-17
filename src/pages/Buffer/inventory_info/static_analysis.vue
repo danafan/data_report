@@ -146,6 +146,10 @@
 		<div class="title">款式库存数量</div>
 		<div class="toast">总成本：{{cbj_total}}万</div>
 		<div class="buts">
+			<el-button type="primary" size="small" @click="show_dialog = true">
+				导入
+				<i class="el-icon-upload el-icon--right"></i>
+			</el-button>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
@@ -194,6 +198,22 @@
 				<el-button type="primary" @click="imageDialog = false">关闭</el-button>
 			</span>
 		</el-dialog>
+		<!-- 导入 -->
+		<el-dialog title="导入" :visible.sync="show_dialog" width="30%">
+			<div class="down_box">
+				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="show_dialog = false">取 消</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -232,7 +252,9 @@
 				cbj_total:0,			//总成本
 				analysis_row_loading:false,
 				kc_cb_chart_loading:false,
-				loading:false
+				loading:false,
+				show_dialog:false,
+
 
 			}
 		},
@@ -519,7 +541,7 @@
         			xb:this.select_xb_id,
         			cpfl:this.select_pl_ids.join(','),
         			is_retreat:this.is_retreat,
-					labels:this.labels,
+        			labels:this.labels,
         			page:this.page,
         			pagesize:this.pagesize
         		}
@@ -557,6 +579,28 @@
         		}
         		this.stockAnalysisKsList();
         	},
+        	//下载模版
+        	downTemplate(){
+        		window.open(`${this.downLoadUrl}/静态库存分析_款式标签导入模板.xlsx`);
+        	},
+        	//导入
+			uploadCsv(){
+				if (this.$refs.csvUpload.files.length > 0) {
+					let files = this.$refs.csvUpload.files;
+					resource.importLabels({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						this.show_dialog = false;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.page = 1;
+							//获取列表
+							this.stockAnalysisKsList();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
         	//导出
         	commitExport(){
         		MessageBox.confirm('确认导出?', '提示', {
@@ -574,7 +618,7 @@
         				xb:this.select_xb_id,
         				cpfl:this.select_pl_ids.join(','),
         				is_retreat:this.is_retreat,
-						labels:this.labels
+        				labels:this.labels
         			}
         			if(this.sort != ''){
         				arg.sort = this.sort;
@@ -612,6 +656,7 @@
 </script>
 <style lang="less" scoped>
 .buts{
+	margin-bottom: 5px;
 	display: flex;
 	justify-content: flex-end;
 }
@@ -685,6 +730,23 @@
 	margin-bottom: 15px;
 	font-size: 14px;
 	color:red;
+}
+.down_box{
+	display:flex;
+	.upload_box{
+		margin-left: 10px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+	}
 }
 </style>
 

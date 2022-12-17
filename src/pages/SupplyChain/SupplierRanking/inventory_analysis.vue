@@ -124,7 +124,7 @@
 			</div>
 		</div>
 		<!-- 明细表 -->
-		<el-table size="small" ref="table" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" :cell-style="detailColumnStyle" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
+		<el-table size="small" ref="table" :data="detail_data" border style="width: 100%" max-height='680' :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="detail_loading" @selection-change="changeSelected" @header-dragend="secondChange">
 			<el-table-column type="selection" width="50" align="center" fixed="left" :selectable="selectableFn">
 			</el-table-column>
 			<el-table-column :index="index" :label="item.row_name" :prop="item.row_field_name" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort === 1?'custom':false" show-overflow-tooltip>
@@ -137,7 +137,7 @@
 					<!-- 备注 -->
 					<el-input v-if="item.type=='6'" size="mini" v-model="scope.row.remarks" placeholder="请输入备注" :disabled="button_list.edit === 0" @change="confirmEdit({id:scope.row.id,remark:scope.row.remarks})"></el-input>
 					<!-- 修改主卖店铺 -->
-					<el-select v-else-if="item.type=='7'" size="mini" v-model="scope.row.main_dp1" filterable placeholder="全部" @change="confirmEdit({id:scope.row.id,main_dp1:scope.row.main_dp1})">
+					<el-select v-else-if="item.type=='7'" :class="{'main_dp':scope.row.status == 1}" size="mini" v-model="scope.row.main_dp1" filterable placeholder="全部" @change="confirmEdit({id:scope.row.id,main_dp1:scope.row.main_dp1})">
 						<el-option v-for="i in store_list" :key="i.shop_name" :label="i.shop_name" :value="i.shop_name">
 						</el-option>
 					</el-select>
@@ -845,15 +845,6 @@
 			},
 			selectableFn(row,index){
 				return !this.is_all;
-				// if(row.disabled){
-				// 	return trie
-				// }
-			},
-			//明细修改过的标记
-			detailColumnStyle({ row, column, rowIndex, columnIndex }) {
-				if(row.status == 1 && column.property == 'main_dp1'){
-					return 'background: #F7BD47';
-				}
 			},
 			//恢复默认
 			Restore(){
@@ -1038,6 +1029,10 @@
 .row_style{
 	background: #3467B8!important;
 	color:#ffffff!important;
+}
+.main_dp .el-input__inner{
+	border:none!important;
+	background: #F7BD47!important;
 }
 </style>
 <style lang="less" scoped>

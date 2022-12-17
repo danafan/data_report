@@ -237,6 +237,7 @@ let path = {
 	briefMonthRank:'brief/month_rank',								//简报月度排行
 	briefWeekRank:'brief/week_rank',								//简报单周排行
 	editLabels:'stock_analysis/edit_labels',						//修改标签
+	importLabels:'stock_analysis/import_labels',					//静态库存分析--批量导入标签接口
 		
 
 }					
@@ -1220,6 +1221,10 @@ export default{
 	//修改标签
 	editLabels(params){
 		return http.post(path.editLabels, params)
+	},
+	//静态库存分析--批量导入标签接口
+	importLabels(params){
+		return http.post(path.importLabels, params)
 	},
 }
 
