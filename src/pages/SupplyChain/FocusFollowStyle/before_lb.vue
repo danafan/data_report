@@ -195,13 +195,6 @@
 			this.getStoreList();
 			//获取列表
 			this.getData();
-			for(let i = -3;i <= 0;i++){
-				let ff = {
-					label:getNextDate(this.sjxrrq,i).split('-')[1] + '日',
-					prop:i < 0?`qhs_${i*-1}`:'qhs'
-				}
-				this.ks_shortage_day_list.push(ff)
-			}
 		},
 		methods:{
 			//表格前几天到货数
@@ -321,6 +314,14 @@
 				demandResource.deforeLbList(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
+						this.ks_shortage_day_list = [];
+						for(let i = -3;i <= 0;i++){
+							let ff = {
+								label:getNextDate(this.sjxrrq,i).split('-')[1] + '日',
+								prop:i < 0?`qhs_${i*-1}`:'qhs'
+							}
+							this.ks_shortage_day_list.push(ff)
+						}
 						let data = res.data.data;
 						let table_data = data.data;
 						table_data.map(item => {
