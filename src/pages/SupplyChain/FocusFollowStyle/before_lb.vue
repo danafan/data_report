@@ -59,7 +59,7 @@
 			</div>
 		</div>
 		<div style="font-size: 14px;color: red">缺货更新时间：{{update_time}}</div>
-		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
+		<!-- <el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
 			<el-table-column label="图片" align="center" width="180">
 				<template slot-scope="scope">
 					<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
@@ -87,10 +87,9 @@
 				<template slot-scope="scope">
 					<div style="display: flex;align-items: center">
 						<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
-					<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
-					</el-input>
+						<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
+						</el-input>
 					</div>
-					
 				</template>
 			</el-table-column>
 			<el-table-column width="120"  label="历史跟踪反馈" align="center">
@@ -148,14 +147,95 @@
 		</el-table-column>
 		<el-table-column prop="jsfs" label="结算方式" align="center" width="120" show-overflow-tooltip>
 		</el-table-column>
-	</el-table>
-	<div class="page">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
-		</el-pagination>
-	</div>
+	</el-table> -->
+	<el-table border size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading" @header-dragend="secondChange">
+		<el-table-column :index="index" :label="item.label" :prop="item.prop" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip>
+			<template slot="header" slot-scope="scope">
+				<el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
+					<div class="text_style">{{item.label}}</div>
+				</el-tooltip>
+			</template>
+			<div v-if="item.prop == 'qhghqk'">
+			<el-table-column :label="i.label" :prop="i.prop" align="center" :sortable="i.is_sort?'custom':false" v-for="(i,index) in ks_shortage_day_list">
+			</el-table-column>
+		</div>
+			<template slot-scope="scope">
+				<!-- 图片 -->
+				<div v-if="item.prop == 'images'">
+					<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
+					<div v-else></div>
+				</div>
+				<!-- 今日跟踪反馈 -->
+				<div style="display: flex;align-items: center" v-else-if="item.prop == 'jrgzfk'">
+					<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
+					<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
+					</el-input>
+				</div>
+				<!-- 历史跟踪反馈 -->
+				<div v-else-if="item.prop == 'lsgzfk'">
+					<el-popover placement="right" width="800" :open-delay="1000"
+					trigger="hover" @show="getRecord(scope.row.ksbm)" >
+					<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
+						<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+						<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+						<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+					</el-table>
+					<div class="page">
+						<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
+						</el-pagination>
+					</div>
+					<el-button slot="reference" type="text" size="mini">查看</el-button>
+				</el-popover>
+			</div>
+			<!-- 普通文字 -->
+			<div class='text_style' v-else>{{scope.row[item.prop]}}</div>
+		</template>
+		
+	</el-table-column>
+	<!-- <el-table-column width="400" label="款式缺货情况" align="center">
+		<el-table-column :label="item.label" :prop="item.prop" align="center" :sortable="item.is_sort?'custom':false" v-for="(item,index) in ks_shortage_day_list">
+		</el-table-column>
+	</el-table-column> -->
+	<!-- <el-table-column :index="index" ddd="asd" :label="item.label" :prop="item.prop" :width="item.width" align="center" v-for="(item,index) in column_list_three" :sortable="item.is_sort?'custom':false" show-overflow-tooltip>
+		<template slot="header" slot-scope="scope">
+			<el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
+				<div class="text_style">{{item.label}}</div>
+			</el-tooltip>
+		</template>
+		<template slot-scope="scope">
+			<div style="display: flex;align-items: center" v-if="item.prop == 'jrgzfk'">
+				<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
+				<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
+				</el-input>
+			</div>
+			<div v-else-if="item.prop == 'lsgzfk'">
+				<el-popover placement="right" width="800" :open-delay="1000"
+				trigger="hover" @show="getRecord(scope.row.ksbm)" >
+				<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
+					<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+					<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+					<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+				</el-table>
+				<div class="page">
+					<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
+					</el-pagination>
+				</div>
+				<el-button slot="reference" type="text" size="mini">查看</el-button>
+			</el-popover>
+		</div>
+		<div class='text_style' v-else>{{scope.row[item.prop]}}</div>
+	</template>
+
+</el-table-column> -->
+</el-table>
+<div class="page">
+	<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
+	</el-pagination>
+</div>
 </div>
 </template>
 <script>
+	import commonResource from '../../../api/resource.js'
 	import resource from '../../../api/resource.js'
 	import inventoryResource from '../../../api/inventoryResource.js'
 	import demandResource from '../../../api/demandResource.js'
@@ -181,6 +261,188 @@
 				page:1,
 				pagesize:10,
 				update_time:"",				//缺货更新时间
+				column_list:[{
+					label:'图片',
+					prop:'images'
+				},{
+					label:'款式编码',
+					prop:'ksbm',
+				},{
+					label:'供应商货号',
+					prop:'gyshh',
+				},{
+					label:'现有库存',
+					prop:'xjkc',
+					is_sort:true
+				},{
+					label:'缺货跟货情况',
+					prop:'qhghqk',
+				},{
+					label:'昨日跟踪反馈',
+					prop:'yesterday_remark',
+				},{
+					label:'今日跟踪反馈',
+					prop:'jrgzfk',
+				},{
+					label:'历史跟踪反馈',
+					prop:'lsgzfk',
+				},{
+					label:'7天日均销量',
+					prop:'xssl_av7',
+					is_sort:true
+				},{
+					label:'30天销量',
+					prop:'xssl_30_sum',
+					is_sort:true
+				},{
+					label:'7天毛利率',
+					prop:'mlv_7',
+					is_sort:true
+				},{
+					label:'15天实退率',
+					prop:'stl_15',
+					is_sort:true
+				},{
+					label:'7天到货率',
+					prop:'dhl_7',
+					is_sort:true
+				},{
+					label:'7天到货率(排除备货)',
+					prop:'pbh_dhl_7',
+					is_sort:true
+				},{
+					label:'前三天销量',
+					prop:'xssl_3',
+					is_sort:true
+				},{
+					label:'前两天销量',
+					prop:'xssl_2',
+					is_sort:true
+				},{
+					label:'前一天销量',
+					prop:'xssl_1',
+					is_sort:true
+				},{
+					label:'主卖店铺',
+					prop:'shop_name',
+				},{
+					label:'部门',
+					prop:'dept_name',
+				},{
+					label:'批发价',
+					prop:'pfj',
+					is_sort:true
+				},{
+					label:'审计成本',
+					prop:'sjcb',
+					is_sort:true
+				},{
+					label:'商品名称',
+					prop:'mc',
+				},{
+					label:'供应商',
+					prop:'gys',
+				},{
+					label:'供应商分类',
+					prop:'gys_type',
+				},{
+					label:'供应商等级',
+					prop:'gys_level',
+				},{
+					label:'结算方式',
+					prop:'jsfs',
+				}],
+				// column_list_first:[{
+				// 	label:'图片',
+				// 	prop:'images'
+				// },{
+				// 	label:'款式编码',
+				// 	prop:'ksbm',
+				// },{
+				// 	label:'供应商货号',
+				// 	prop:'gyshh',
+				// },{
+				// 	label:'现有库存',
+				// 	prop:'xjkc',
+				// 	is_sort:true
+				// }],									//退款表格列数据
+				column_list_three:[{
+					label:'昨日跟踪反馈',
+					prop:'yesterday_remark',
+				},{
+					label:'今日跟踪反馈',
+					prop:'jrgzfk',
+				},{
+					label:'历史跟踪反馈',
+					prop:'lsgzfk',
+				},{
+					label:'7天日均销量',
+					prop:'xssl_av7',
+					is_sort:true
+				},{
+					label:'30天销量',
+					prop:'xssl_30_sum',
+					is_sort:true
+				},{
+					label:'7天毛利率',
+					prop:'mlv_7',
+					is_sort:true
+				},{
+					label:'15天实退率',
+					prop:'stl_15',
+					is_sort:true
+				},{
+					label:'7天到货率',
+					prop:'dhl_7',
+					is_sort:true
+				},{
+					label:'7天到货率(排除备货)',
+					prop:'pbh_dhl_7',
+					is_sort:true
+				},{
+					label:'前三天销量',
+					prop:'xssl_3',
+					is_sort:true
+				},{
+					label:'前两天销量',
+					prop:'xssl_2',
+					is_sort:true
+				},{
+					label:'前一天销量',
+					prop:'xssl_1',
+					is_sort:true
+				},{
+					label:'主卖店铺',
+					prop:'shop_name',
+				},{
+					label:'部门',
+					prop:'dept_name',
+				},{
+					label:'批发价',
+					prop:'pfj',
+					is_sort:true
+				},{
+					label:'审计成本',
+					prop:'sjcb',
+					is_sort:true
+				},{
+					label:'商品名称',
+					prop:'mc',
+				},{
+					label:'供应商',
+					prop:'gys',
+				},{
+					label:'供应商分类',
+					prop:'gys_type',
+				},{
+					label:'供应商等级',
+					prop:'gys_level',
+				},{
+					label:'结算方式',
+					prop:'jsfs',
+				}],									//退款表格列数据
+				table_id:"",
+				edit_id:"",
 				data:[],
 				ks_shortage_day_list:[],					//款式缺货情况对应日期数组
 				total:0,
@@ -196,13 +458,37 @@
 			this.nowDate = getNowDate();
 			// 获取所有店铺
 			this.getStoreList();
+			// 处理款式缺货情况
+			this.ks_shortage_day_list = [];
+			for(let i = -3;i <= 0;i++){
+				let ff = {
+					label:this.filterLabel(i,'2'),
+					prop:i < 0?`qhs_${i*-1}`:'qhs',
+					is_sort:i == 0?true:false
+				}
+				this.ks_shortage_day_list.push(ff)
+			}
+			// this.ks_shortage_day_list.splice(0,1,...this.ks_shortage_day_list.splice(0, 1 , this.ks_shortage_day_list[3]));
+			let dd = this.ks_shortage_day_list[3];
+			this.ks_shortage_day_list.splice(3,1);
+			this.ks_shortage_day_list.unshift(dd)
+			console.log(this.ks_shortage_day_list)
+			//处理前几日到货数
+			for(let j = -1;j >= -3;j--){
+				let ddd = {
+					label:this.filterLabel(j,'1'),
+					prop:'dhs_' + `${j*-1}`,
+					is_sort:true
+				}
+				this.column_list.splice(5,0,ddd);
+			}
 			//获取列表
 			this.getData();
 		},
 		methods:{
 			//表格前几天到货数
-			filterLabel(num){
-				return getNextDate(this.sjxrrq,num).split('-')[1] + '日到货数'
+			filterLabel(num,type){
+				return `${getNextDate(this.sjxrrq,num).split('-')[1]}日${type == '1'?'到货数':''}`
 			},
 			//款式编码
 			getKsbm(e){
@@ -319,15 +605,8 @@
 				demandResource.deforeLbList(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
-						this.ks_shortage_day_list = [];
-						for(let i = -3;i <= 0;i++){
-							let ff = {
-								label:getNextDate(this.sjxrrq,i).split('-')[1] + '日',
-								prop:i < 0?`qhs_${i*-1}`:'qhs',
-								is_sort:i == 0?true:false
-							}
-							this.ks_shortage_day_list.push(ff)
-						}
+						
+						
 						let data = res.data.data;
 						let table_data = data.data;
 						table_data.map(item => {
@@ -342,7 +621,65 @@
 						this.data = data.data;
 						this.total = data.total;
 						this.update_time = data.update_time;
+						this.table_id = data.table_setting.table_id;
+						if(data.table_setting.setting){
+							this.edit_id = data.table_setting.edit_id;
+							let setting_arr = data.table_setting.setting.split(',');
+							this.column_list.map(iii => {
+								let arr = setting_arr.filter(item => {
+									return iii.prop == item.split('-')[0]
+								})
+								iii['width'] = arr.length > 0?arr[0].split('-')[1]:'80';
+							})
+							// this.column_list_three.map(iii => {
+							// 	let arr1 = setting_arr.filter(item => {
+							// 		return iii.prop == item.split('-')[0]
+							// 	})
+							// 	iii['width'] = arr1.length > 0?arr1[0].split('-')[1]:'80';
+							// })
+							// title_list.map(iii => {
+							// 	let arr = setting_arr.filter(item => {
+							// 		return iii.row_field_name == item.split('-')[0]
+							// 	})
+							// 	iii.width = arr.length > 0?arr[0].split('-')[1]:'100';
+							// })
+							// this.column_list = title_list;
+						}else{
+							this.column_list.map(item => {
+								item['width'] = '80';
+							})
+							// this.column_list_three.map(item => {
+							// 	item['width'] = '80';
+							// })
+						}
 					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//明细表表列宽修改
+			secondChange(newWidth, oldWidth, column, event){
+				let index = column.index;
+				this.column_list[index].width = newWidth;
+				let arr = [];
+				this.column_list.map(item => {
+					let str = item.prop + '-' + item.width;
+					arr.push(str);
+				})
+				let arg = {
+					table_id:this.table_id,
+					setting:arr.join(','),
+				}
+				if(this.edit_id){
+					arg.id = this.edit_id;
+				}
+				//修改宽度
+				this.changeWidth(arg)
+			},
+			//修改宽度
+			changeWidth(arg){
+				commonResource.tableSetting(arg).then(res => {
+					if(res.data.code != 1){
 						this.$message.warning(res.data.msg);
 					}
 				})
@@ -415,12 +752,33 @@
 		}
 	}
 </script>
+<style type="text/css">
+.el-table th>.cell{
+	display: flex!important;
+	align-items: center!important;
+	justify-content: center!important;
+}
+.row_style{
+	background: #3467B8!important;
+	color:#ffffff!important;
+}
+.main_dp .el-input__inner{
+	border:none!important;
+	background: #F7BD47!important;
+}
+</style>
 <style lang="less" scoped>
 .buts{
 	margin-bottom: 15px;
 	display: flex;
 	align-items: center;
 	justify-content: space-between;
+}
+.text_style{
+	width: 100%;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	white-space: nowrap;
 }
 .upload_box{
 	margin-right: 10px;
