@@ -83,10 +83,14 @@
 			<el-table-column prop="dhs_1" :label="filterLabel(-1)" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column prop="yesterday_remark" label="昨日跟踪反馈" align="center" width="120" show-overflow-tooltip></el-table-column>
-			<el-table-column label="今日跟踪反馈" align="center" width="180">
+			<el-table-column label="今日跟踪反馈" align="center" width="200">
 				<template slot-scope="scope">
-					<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
+					<div style="display: flex;align-items: center">
+						<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
+					<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
 					</el-input>
+					</div>
+					
 				</template>
 			</el-table-column>
 			<el-table-column width="120"  label="历史跟踪反馈" align="center">
@@ -344,7 +348,7 @@
 				})
 			},
 			//编辑今日反馈
-			editFun(v,ksbm){
+			editFun(v,ksbm,type){
 				this.$confirm('确认提交反馈?', '提示', {
 					confirmButtonText: '确定',
 					cancelButtonText: '取消',
@@ -352,6 +356,7 @@
 				}).then(() => {
 					let arg = {
 						ksbm:ksbm,
+						type:type,
 						remark:v
 					};
 					demandResource.stockEdit(arg).then(res => {
