@@ -13,6 +13,9 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="供应商货号：">
+				<el-input v-model="gyshh" clearable placeholder="请输入供应商货号"></el-input>
+			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
@@ -70,10 +73,7 @@
 			<el-table-column prop="xjkc" label="现有库存" align="center" width="120" sortable="custom" show-overflow-tooltip>
 			</el-table-column>
 			<el-table-column width="400" label="款式缺货情况" align="center">
-				<el-table-column :label="item.label" align="center" v-for="(item,index) in ks_shortage_day_list">
-					<template slot-scope="scope">
-						<div>{{scope.row[item.prop]}}</div>
-					</template>
+				<el-table-column :label="item.label" :prop="item.prop" align="center" :sortable="item.is_sort?'custom':false" v-for="(item,index) in ks_shortage_day_list">
 				</el-table-column>
 			</el-table-column>
 			<el-table-column prop="dhs_3" :label="filterLabel(-3)" align="center" width="120" sortable="custom" show-overflow-tooltip>
@@ -128,30 +128,28 @@
 		</el-table-column>
 		<el-table-column prop="dept_name" label="部门" align="center" width="120" show-overflow-tooltip>
 		</el-table-column>
-			<!-- <el-table-column prop="qhs" label="缺货数" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column> -->
-			<el-table-column prop="pfj" label="批发价" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="sjcb" label="审计成本" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="pjsmj" label="平均售卖价" align="center" width="120 sortable="custom"" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="mc" label="商品名称" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="gys" label="供应商" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="gys_type" label="供应商分类" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="gys_level" label="供应商等级" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="jsfs" label="结算方式" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
-			</el-pagination>
-		</div>
+		<el-table-column prop="pfj" label="批发价" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="sjcb" label="审计成本" align="center" width="120" sortable="custom" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="pjsmj" label="平均售卖价" align="center" width="120 sortable="custom"" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="mc" label="商品名称" align="center" width="120" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="gys" label="供应商" align="center" width="120" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="gys_type" label="供应商分类" align="center" width="120" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="gys_level" label="供应商等级" align="center" width="120" show-overflow-tooltip>
+		</el-table-column>
+		<el-table-column prop="jsfs" label="结算方式" align="center" width="120" show-overflow-tooltip>
+		</el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		</el-pagination>
 	</div>
+</div>
 </template>
 <script>
 	import resource from '../../../api/resource.js'
@@ -171,6 +169,7 @@
 				select_ks_ids:[],							//选中的款式编码列表
 				gys_list:[],								//供应商列表
 				select_gys_ids:[],							//选中的供应商
+				gyshh:"",									//供应商货号
 				store_list: [],								//店铺列表	
 				select_store_ids:[],						//选中的店铺id列表
 				sjxrrq:getNowDate(),
@@ -263,6 +262,7 @@
 						jst_code:this.select_store_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
+						gyshh:this.gyshh,
 						sjxrrq:this.sjxrrq?this.sjxrrq:'',
 						type:this.type,
 						sort:this.table_sort,
@@ -304,6 +304,7 @@
 					jst_code:this.select_store_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),
+					gyshh:this.gyshh,
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
 					type:this.type,
 					sort:this.table_sort,
@@ -318,7 +319,8 @@
 						for(let i = -3;i <= 0;i++){
 							let ff = {
 								label:getNextDate(this.sjxrrq,i).split('-')[1] + '日',
-								prop:i < 0?`qhs_${i*-1}`:'qhs'
+								prop:i < 0?`qhs_${i*-1}`:'qhs',
+								is_sort:i == 0?true:false
 							}
 							this.ks_shortage_day_list.push(ff)
 						}

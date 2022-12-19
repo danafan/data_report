@@ -180,6 +180,28 @@
 				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
 			</div>
 		</el-dialog>
+		<!-- 公司、京东、抖音退款 -->
+		<div class="flex mt10">
+			<div class="tab_item" :class="{'active_tab_item':return_index == '1'}" @click="return_index = '1'">公司退款（销售前200）</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '2'}" @click="return_index = '2'">京东退款（销售前50）</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '3'}" @click="return_index = '3'">抖音退款（销售前50）</div>
+		</div>
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table ref="return_table" :data="return_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' @sort-change="returnSortChange" v-loading="return_loading">
+			<el-table-column :label="item.label" :prop="item.prop" :width="item.width" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in column_list">
+				<el-table-column :label="i.label" :prop="i.prop" :width="i.width" align="center" v-for="i in item.list">
+					<template slot-scope="scope">
+						<div>{{scope.row[i.prop]}}</div>
+					</template>
+				</el-table-column>
+			</el-table-column>
+		</el-table>
+		<div class="page">
+			<el-pagination @size-change="returnSizeChange" @current-change="returnPageChange" :current-page="return_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="return_total">
+			</el-pagination>
+		</div>
 	</div>
 </template>
 <script>
@@ -188,6 +210,9 @@
 	import resource from '../../api/resource.js'
 	import operationResource from '../../api/operationResource.js'
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+
+	import {exportPost} from '../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -255,7 +280,84 @@
 				tab_index:'1',					//图表类型（1:单日；2:累计）
 				chart_loading:false,
 				deptDataChart:null,
-				ljDataChart:null
+				ljDataChart:null,
+				return_index:'1',				//1:公司；2:京东；3:抖音
+				return_page:1,
+				return_pagesize:10,
+				return_sort:"",
+				column_list:[{
+					label:'排行',
+					prop:'xssl_ph',
+					width:'50',
+				},{
+					label:'款式编码',
+					prop:'ksbm',
+				},{
+					label:'主卖店铺',
+					prop:'shop_name',
+				},{
+					label:'供应商',
+					prop:'gys',
+				},{
+					label:'供应商货号',
+					prop:'gyskh',
+				},{
+					label:'近7天销量',
+					width:'160',
+					list:[{
+						label:'公司',
+						prop:'gs_week_xssl',
+						width:'80',
+					},{
+						label:'店铺',
+						prop:'week_xssl',
+						width:'80',
+					}]
+				},{
+					label:'近30天销量',
+					width:'160',
+					list:[{
+						label:'公司',
+						prop:'gs_month_xssl',
+						width:'80',
+					},{
+						label:'店铺',
+						prop:'month_xssl',
+						width:'80',
+					}]
+				},{
+					label:'退款率',
+					prop:'gs_th_dev',
+					width:'90',
+					is_sort:true
+				},{
+					label:'仅退款率',
+					width:'160',
+					list:[{
+						label:'公司',
+						prop:'gs_pre_th_dev',
+						width:'80',
+					},{
+						label:'店铺',
+						prop:'pre_th_dev',
+						width:'80',
+					}]
+				},{
+					label:'退货退款率',
+					width:'160',
+					list:[{
+						label:'公司',
+						prop:'gs_fut_th_dev',
+						width:'80',
+					},{
+						label:'店铺',
+						prop:'fut_th_dev',
+						width:'80',
+					}]
+				}],									//退款表格列数据
+				return_loading:false,
+				return_data:[],						//退款表格数据
+				return_total:0
 			}
 		},
 		watch:{
@@ -265,6 +367,17 @@
 				}else{
 					this.getChartData('2');
 				}
+			},
+			//监听退款切换
+			return_index:function(n,o){
+				this.return_page = 1;
+				this.return_pagesize = 10;
+				this.return_sort = "";
+				this.return_data = [];
+				this.return_total = 0;
+				this.$refs.return_table.clearSort();
+				//公司京东抖音退款表格
+				this.returnBoardTable();
 			}
 		},
 		created(){
@@ -272,7 +385,8 @@
 			this.getPl();
 			//搜索
 			this.searchFn();
-			
+			//公司京东抖音退款表格
+			this.returnBoardTable();
 		},
 		mounted(){
 			this.getChartData('1');
@@ -647,6 +761,80 @@
 				this.pl = reqObj.select_plat_ids;
 				this.shop_code = reqObj.select_store_ids;
 			},
+			//公司京东抖音退款表格
+			returnBoardTable(){
+				let arg = {
+					type:this.return_index,
+					sort:this.return_sort,
+					page:this.return_page,
+					pagesize:this.return_pagesize
+				}
+				this.return_loading = true;
+				operationResource.returnBoardTable(arg).then(res => {
+					if(res.data.code == 1){
+						this.return_loading = false;
+						let data = res.data.data;
+						this.return_data = data.data;
+						this.return_total = data.total;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//退款排序
+			returnSortChange({ column, prop, order }) {  
+				if(order){
+					this.return_sort = prop + '-' + (order == 'ascending'?'1':'0');
+				}else{
+					this.return_sort = "";
+				}
+				this.returnBoardTable();
+			}, 
+			//退款分页
+			returnSizeChange(val) {
+				this.return_pagesize = val;
+				//公司京东抖音退款表格
+				this.returnBoardTable();
+			},
+			returnPageChange(val) {
+				this.return_page = val;
+				//公司京东抖音退款表格
+				this.returnBoardTable();
+			},
+			//导出
+			exportFn(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						type:this.return_index,
+					}
+					operationResource.exportReturnBoardTable(arg).then(res => {
+						if(res){
+							var str = "";
+							switch(this.return_index){
+								case '1':
+								str = '公司退款（销售前200）';
+								break;
+								case '2':
+								str = '京东退款（销售前50）';
+								break;
+								case '3':
+								str = '抖音退款（销售前50）';
+								break;
+							}
+							exportPost("\ufeff" + res.data,str);
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 		},
 		components:{
 			dps,
@@ -655,8 +843,16 @@
 	}
 </script>
 <style lang="less" scoped>
+.buts{
+	margin-bottom: 5px;
+	display: flex;
+	justify-content: flex-end;
+}
 .flex{
 	display: flex;
+}
+.mt10{
+	margin-top: 10px;
 }
 .afe{
 	align-items: flex-end;
@@ -666,8 +862,8 @@
 }
 .tab_item{
 	background: #EFEFEF;
-	width:120px;
-	text-align: center;
+	padding-left: 10px;
+	padding-right: 10px;
 	height: 30px;
 	line-height: 30px;
 	font-size: 12px;
