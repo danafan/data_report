@@ -16,6 +16,12 @@
 			<el-form-item label="供应商货号：">
 				<el-input v-model="gyshh" clearable placeholder="请输入供应商货号"></el-input>
 			</el-form-item>
+			<el-form-item label="供应商分类：">
+				<el-select v-model="gys_cate_ids" clearable filterable multiple reserve-keyword placeholder="全部">
+					<el-option v-for="item in gys_cate_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
@@ -47,7 +53,7 @@
 					<input type="file" ref="csvUpload" class="upload_file" accept="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
 					<el-tooltip class="item" placement="top">
 						<div slot="content">
-							1、批量导入，第一行为“款式”，“备注”两个字段，填写的数据从第二行开始<br/>
+							1、批量导入，第一行为“款式”、“备注”、“重要程度”三个字段，填写的数据从第二行开始<br/>
 							2、导入失败原因1：数据中存在某款式编码找不到<br/>
 							3、导入失败原因2：数据中存在重复款式编码<br/>
 							4、导入失败原因3：数据不对应(款式填到备注里面了)
@@ -59,184 +65,59 @@
 			</div>
 		</div>
 		<div style="font-size: 14px;color: red">缺货更新时间：{{update_time}}</div>
-		<!-- <el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
-			<el-table-column label="图片" align="center" width="180">
-				<template slot-scope="scope">
-					<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
-					<div v-else></div>
+		<el-table border size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading" @header-dragend="secondChange">
+			<el-table-column :index="index" :label="item.label" :prop="item.prop" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip>
+				<template slot="header" slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
+						<div class="text_style">{{item.label}}</div>
+					</el-tooltip>
 				</template>
-			</el-table-column>
-			<el-table-column prop="ksbm" label="款式编码" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="gyshh" label="供应商货号" align="center" width="120" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="xjkc" label="现有库存" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column width="400" label="款式缺货情况" align="center">
-				<el-table-column :label="item.label" :prop="item.prop" align="center" :sortable="item.is_sort?'custom':false" v-for="(item,index) in ks_shortage_day_list">
-				</el-table-column>
-			</el-table-column>
-			<el-table-column prop="dhs_3" :label="filterLabel(-3)" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="dhs_2" :label="filterLabel(-2)" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="dhs_1" :label="filterLabel(-1)" align="center" width="120" sortable="custom" show-overflow-tooltip>
-			</el-table-column>
-			<el-table-column prop="yesterday_remark" label="昨日跟踪反馈" align="center" width="120" show-overflow-tooltip></el-table-column>
-			<el-table-column label="今日跟踪反馈" align="center" width="200">
+				<div v-if="item.prop == 'qhghqk'">
+					<el-table-column :label="i.label" :prop="i.prop" align="center" :sortable="i.is_sort?'custom':false" v-for="(i,index) in ks_shortage_day_list">
+					</el-table-column>
+				</div>
 				<template slot-scope="scope">
-					<div style="display: flex;align-items: center">
-						<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
+					<!-- 图片 -->
+					<div v-if="item.prop == 'images'">
+						<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
+						<div v-else></div>
+					</div>
+					<!-- 今日跟踪反馈 -->
+					<div style="display: flex;align-items: center" v-else-if="item.prop == 'jrgzfk'">
+						<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" :disabled="nowDate != sjxrrq" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
 						<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
 						</el-input>
 					</div>
-				</template>
-			</el-table-column>
-			<el-table-column width="120"  label="历史跟踪反馈" align="center">
-				<template slot-scope="scope">
-					<el-popover placement="right" width="800" :open-delay="1000"
-					trigger="hover" @show="getRecord(scope.row.ksbm)" >
-					<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
-						<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
-						<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
-						<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
-					</el-table>
-					<div class="page">
-						<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
-						</el-pagination>
-					</div>
-					<el-button slot="reference" type="text" size="mini">查看</el-button>
-				</el-popover>
+					<!-- 历史跟踪反馈 -->
+					<div v-else-if="item.prop == 'lsgzfk'">
+						<el-popover placement="right" width="800" :open-delay="1000"
+						trigger="hover" @show="getRecord(scope.row.ksbm)" >
+						<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
+							<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+							<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+							<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+						</el-table>
+						<div class="page">
+							<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
+							</el-pagination>
+						</div>
+						<el-button slot="reference" type="text" size="mini">查看</el-button>
+					</el-popover>
+				</div>
+				<!-- 普通文字 -->
+				<div class='text_style' v-else>{{scope.row[item.prop]}}</div>
 			</template>
 		</el-table-column>
-		<el-table-column prop="xssl_av7" label="7天日均销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="xssl_30_sum" label="30天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="mlv_7" label="7天毛利率" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="stl_15" label="15天实退率" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="dhl_7" label="7天到货率" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="pbh_dhl_7" label="7天到货率(排除备货)" align="center" width="160" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="xssl_3" label="前三天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="xssl_2" label="前两天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="xssl_1" label="前一天销量" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="shop_name" label="主卖店铺" align="center" width="120" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="dept_name" label="部门" align="center" width="120" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="pfj" label="批发价" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="sjcb" label="审计成本" align="center" width="120" sortable="custom" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="pjsmj" label="平均售卖价" align="center" width="120 sortable="custom"" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="mc" label="商品名称" align="center" width="120" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="gys" label="供应商" align="center" width="120" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="gys_type" label="供应商分类" align="center" width="120" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="gys_level" label="供应商等级" align="center" width="120" show-overflow-tooltip>
-		</el-table-column>
-		<el-table-column prop="jsfs" label="结算方式" align="center" width="120" show-overflow-tooltip>
-		</el-table-column>
-	</el-table> -->
-	<el-table border size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading" @header-dragend="secondChange">
-		<el-table-column :index="index" :label="item.label" :prop="item.prop" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip>
-			<template slot="header" slot-scope="scope">
-				<el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
-					<div class="text_style">{{item.label}}</div>
-				</el-tooltip>
-			</template>
-			<div v-if="item.prop == 'qhghqk'">
-			<el-table-column :label="i.label" :prop="i.prop" align="center" :sortable="i.is_sort?'custom':false" v-for="(i,index) in ks_shortage_day_list">
-			</el-table-column>
-		</div>
-			<template slot-scope="scope">
-				<!-- 图片 -->
-				<div v-if="item.prop == 'images'">
-					<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
-					<div v-else></div>
-				</div>
-				<!-- 今日跟踪反馈 -->
-				<div style="display: flex;align-items: center" v-else-if="item.prop == 'jrgzfk'">
-					<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
-					<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
-					</el-input>
-				</div>
-				<!-- 历史跟踪反馈 -->
-				<div v-else-if="item.prop == 'lsgzfk'">
-					<el-popover placement="right" width="800" :open-delay="1000"
-					trigger="hover" @show="getRecord(scope.row.ksbm)" >
-					<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
-						<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
-						<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
-						<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
-					</el-table>
-					<div class="page">
-						<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
-						</el-pagination>
-					</div>
-					<el-button slot="reference" type="text" size="mini">查看</el-button>
-				</el-popover>
-			</div>
-			<!-- 普通文字 -->
-			<div class='text_style' v-else>{{scope.row[item.prop]}}</div>
-		</template>
-		
-	</el-table-column>
-	<!-- <el-table-column width="400" label="款式缺货情况" align="center">
-		<el-table-column :label="item.label" :prop="item.prop" align="center" :sortable="item.is_sort?'custom':false" v-for="(item,index) in ks_shortage_day_list">
-		</el-table-column>
-	</el-table-column> -->
-	<!-- <el-table-column :index="index" ddd="asd" :label="item.label" :prop="item.prop" :width="item.width" align="center" v-for="(item,index) in column_list_three" :sortable="item.is_sort?'custom':false" show-overflow-tooltip>
-		<template slot="header" slot-scope="scope">
-			<el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
-				<div class="text_style">{{item.label}}</div>
-			</el-tooltip>
-		</template>
-		<template slot-scope="scope">
-			<div style="display: flex;align-items: center" v-if="item.prop == 'jrgzfk'">
-				<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
-				<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
-				</el-input>
-			</div>
-			<div v-else-if="item.prop == 'lsgzfk'">
-				<el-popover placement="right" width="800" :open-delay="1000"
-				trigger="hover" @show="getRecord(scope.row.ksbm)" >
-				<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
-					<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
-					<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
-					<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
-				</el-table>
-				<div class="page">
-					<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
-					</el-pagination>
-				</div>
-				<el-button slot="reference" type="text" size="mini">查看</el-button>
-			</el-popover>
-		</div>
-		<div class='text_style' v-else>{{scope.row[item.prop]}}</div>
-	</template>
-
-</el-table-column> -->
-</el-table>
-<div class="page">
-	<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
-	</el-pagination>
-</div>
+	</el-table>
+	<div class="page">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		</el-pagination>
+	</div>
 </div>
 </template>
 <script>
-	import commonResource from '../../../api/resource.js'
 	import resource from '../../../api/resource.js'
+	import operationResource from '../../../api/operationResource.js'
 	import inventoryResource from '../../../api/inventoryResource.js'
 	import demandResource from '../../../api/demandResource.js'
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getNextDate} from '../../../api/nowMonth.js'
@@ -254,6 +135,8 @@
 				gys_list:[],								//供应商列表
 				select_gys_ids:[],							//选中的供应商
 				gyshh:"",									//供应商货号
+				gys_cate_list:[],			//供应商分类列表
+				gys_cate_ids:[],			//选中的供应商分类
 				store_list: [],								//店铺列表	
 				select_store_ids:[],						//选中的店铺id列表
 				sjxrrq:getNowDate(),
@@ -352,95 +235,6 @@
 					label:'结算方式',
 					prop:'jsfs',
 				}],
-				// column_list_first:[{
-				// 	label:'图片',
-				// 	prop:'images'
-				// },{
-				// 	label:'款式编码',
-				// 	prop:'ksbm',
-				// },{
-				// 	label:'供应商货号',
-				// 	prop:'gyshh',
-				// },{
-				// 	label:'现有库存',
-				// 	prop:'xjkc',
-				// 	is_sort:true
-				// }],									//退款表格列数据
-				column_list_three:[{
-					label:'昨日跟踪反馈',
-					prop:'yesterday_remark',
-				},{
-					label:'今日跟踪反馈',
-					prop:'jrgzfk',
-				},{
-					label:'历史跟踪反馈',
-					prop:'lsgzfk',
-				},{
-					label:'7天日均销量',
-					prop:'xssl_av7',
-					is_sort:true
-				},{
-					label:'30天销量',
-					prop:'xssl_30_sum',
-					is_sort:true
-				},{
-					label:'7天毛利率',
-					prop:'mlv_7',
-					is_sort:true
-				},{
-					label:'15天实退率',
-					prop:'stl_15',
-					is_sort:true
-				},{
-					label:'7天到货率',
-					prop:'dhl_7',
-					is_sort:true
-				},{
-					label:'7天到货率(排除备货)',
-					prop:'pbh_dhl_7',
-					is_sort:true
-				},{
-					label:'前三天销量',
-					prop:'xssl_3',
-					is_sort:true
-				},{
-					label:'前两天销量',
-					prop:'xssl_2',
-					is_sort:true
-				},{
-					label:'前一天销量',
-					prop:'xssl_1',
-					is_sort:true
-				},{
-					label:'主卖店铺',
-					prop:'shop_name',
-				},{
-					label:'部门',
-					prop:'dept_name',
-				},{
-					label:'批发价',
-					prop:'pfj',
-					is_sort:true
-				},{
-					label:'审计成本',
-					prop:'sjcb',
-					is_sort:true
-				},{
-					label:'商品名称',
-					prop:'mc',
-				},{
-					label:'供应商',
-					prop:'gys',
-				},{
-					label:'供应商分类',
-					prop:'gys_type',
-				},{
-					label:'供应商等级',
-					prop:'gys_level',
-				},{
-					label:'结算方式',
-					prop:'jsfs',
-				}],									//退款表格列数据
 				table_id:"",
 				edit_id:"",
 				data:[],
@@ -456,32 +250,10 @@
 		},
 		created(){
 			this.nowDate = getNowDate();
+			//获取供应商分类
+			this.getGysfl();
 			// 获取所有店铺
 			this.getStoreList();
-			// 处理款式缺货情况
-			this.ks_shortage_day_list = [];
-			for(let i = -3;i <= 0;i++){
-				let ff = {
-					label:this.filterLabel(i,'2'),
-					prop:i < 0?`qhs_${i*-1}`:'qhs',
-					is_sort:i == 0?true:false
-				}
-				this.ks_shortage_day_list.push(ff)
-			}
-			// this.ks_shortage_day_list.splice(0,1,...this.ks_shortage_day_list.splice(0, 1 , this.ks_shortage_day_list[3]));
-			let dd = this.ks_shortage_day_list[3];
-			this.ks_shortage_day_list.splice(3,1);
-			this.ks_shortage_day_list.unshift(dd)
-			console.log(this.ks_shortage_day_list)
-			//处理前几日到货数
-			for(let j = -1;j >= -3;j--){
-				let ddd = {
-					label:this.filterLabel(j,'1'),
-					prop:'dhs_' + `${j*-1}`,
-					is_sort:true
-				}
-				this.column_list.splice(5,0,ddd);
-			}
 			//获取列表
 			this.getData();
 		},
@@ -513,6 +285,17 @@
 						}
 					})
 				}
+			},
+			//获取供应商分类
+			getGysfl(){
+				operationResource.stockSelect({type:'gys_type'}).then(res => {
+					if(res.data.code == 1){
+						let data = res.data.data;
+						this.gys_cate_list = data.gys_type;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			// 获取所有店铺
 			getStoreList(){
@@ -553,6 +336,7 @@
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
 						gyshh:this.gyshh,
+						gys_type:this.gys_cate_ids.join(','),
 						sjxrrq:this.sjxrrq?this.sjxrrq:'',
 						type:this.type,
 						sort:this.table_sort,
@@ -595,6 +379,7 @@
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					gyshh:this.gyshh,
+					gys_type:this.gys_cate_ids.join(','),
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
 					type:this.type,
 					sort:this.table_sort,
@@ -605,8 +390,33 @@
 				demandResource.deforeLbList(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
-						
-						
+
+						// 处理款式缺货情况
+						this.ks_shortage_day_list = [];
+						for(let i = -3;i <= 0;i++){
+							let ff = {
+								label:this.filterLabel(i,'2'),
+								prop:i < 0?`qhs_${i*-1}`:'qhs',
+								is_sort:i == 0?true:false
+							}
+							this.ks_shortage_day_list.push(ff)
+						}
+						// 这里不知道为啥顺序会乱
+						let dd = this.ks_shortage_day_list[3];
+						this.ks_shortage_day_list.splice(3,1);
+						this.ks_shortage_day_list.unshift(dd)
+						//处理前几日到货数
+						let sss = [];
+						for(let j = -3;j <= -1;j++){
+							let ddd = {
+								label:this.filterLabel(j,'1'),
+								prop:'dhs_' + `${j*-1}`,
+								is_sort:true
+							}
+							sss.push(ddd)
+						}
+						this.column_list.splice(5,this.column_list.length>26?3:0,...sss);
+
 						let data = res.data.data;
 						let table_data = data.data;
 						table_data.map(item => {
@@ -631,26 +441,10 @@
 								})
 								iii['width'] = arr.length > 0?arr[0].split('-')[1]:'80';
 							})
-							// this.column_list_three.map(iii => {
-							// 	let arr1 = setting_arr.filter(item => {
-							// 		return iii.prop == item.split('-')[0]
-							// 	})
-							// 	iii['width'] = arr1.length > 0?arr1[0].split('-')[1]:'80';
-							// })
-							// title_list.map(iii => {
-							// 	let arr = setting_arr.filter(item => {
-							// 		return iii.row_field_name == item.split('-')[0]
-							// 	})
-							// 	iii.width = arr.length > 0?arr[0].split('-')[1]:'100';
-							// })
-							// this.column_list = title_list;
 						}else{
 							this.column_list.map(item => {
 								item['width'] = '80';
 							})
-							// this.column_list_three.map(item => {
-							// 	item['width'] = '80';
-							// })
 						}
 					}else{
 						this.$message.warning(res.data.msg);
@@ -678,7 +472,7 @@
 			},
 			//修改宽度
 			changeWidth(arg){
-				commonResource.tableSetting(arg).then(res => {
+				resource.tableSetting(arg).then(res => {
 					if(res.data.code != 1){
 						this.$message.warning(res.data.msg);
 					}
