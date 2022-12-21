@@ -12,6 +12,7 @@
 				<AduitDataAnalysis v-if="item.web_url == 'aduit_data_analysis'"/>
 				<SupplierList v-if="item.web_url == 'supplier_list'"/>
 				<EditSupplier v-if="item.web_url == 'edit_supplier'"/>
+				<WaitAdjust v-if="item.web_url == 'wait_adjust'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -32,6 +33,7 @@
 	import AduitDataAnalysis from './AuditPages/aduit_data_analysis.vue'
 	import SupplierList from './AuditPages/supplier_list.vue'
 	import EditSupplier from './AuditPages/edit_supplier.vue'
+	import WaitAdjust from './AuditPages/wait_adjust.vue'
 	export default{
 		data(){
 			return{
@@ -79,7 +81,8 @@
 			Timeout,
 			AduitDataAnalysis,
 			SupplierList,
-			EditSupplier
+			EditSupplier,
+			WaitAdjust
 		}
 	}
 </script>

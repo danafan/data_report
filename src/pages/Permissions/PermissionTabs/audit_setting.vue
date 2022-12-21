@@ -1,12 +1,12 @@
 <template>
 	<div class="aduit_box">
 		<el-form size="small" class="demo-form-inline">
-			<el-form-item label="财务部">
+			<!-- <el-form-item label="财务部">
 				<el-select v-model="finance_list.selected" clearable multiple filterable reserve-keyword placeholder="请选择">
 					<el-option v-for="i in finance_list.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
 					</el-option>
 				</el-select>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item :label="item.dept_name" v-for="item in list">
 				<el-select v-model="item.selected" clearable multiple filterable reserve-keyword placeholder="请选择">
 					<el-option v-for="i in item.users" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
@@ -28,7 +28,7 @@
 	export default{
 		data(){
 			return{
-				finance_list:{},	//财务权限
+				// finance_list:{},	//财务权限
 				list:[],			//审计权限
 			}
 		},
@@ -40,7 +40,7 @@
 			getInfo(){
 				resource.auditGetSetting().then(res => {
 					if(res.data.code == 1){
-						this.finance_list = res.data.data.finance_list;
+						// this.finance_list = res.data.data.finance_list;
 						this.list = res.data.data.list;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -63,7 +63,7 @@
 					});
 					let arg = {
 						dept_users:	dept_users_arr.join(','),
-						finance_users:this.finance_list.selected
+						// finance_users:this.finance_list.selected
 					};
 					resource.auditPostSetting(arg).then(res => {
 						if(res.data.code == 1){

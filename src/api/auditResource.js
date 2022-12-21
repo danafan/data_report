@@ -53,6 +53,10 @@ let path = {
 	editFlagList:'supplier/edit_flag_list',							//修改内容列表
 	editIndex:'supplier/edit_index',								//修改记录表 
 	supplierCheck:'supplier/check',									//审核
+	auditWait:'audit/wait',											//待调价表	
+	waitApply:'audit/wait_apply',									//提交调价
+	handOver:'audit/hand_over',										//提交转交	
+	noNeed:'audit/no_need',											//无需调价
 }						
 export default{
 	//款式编码列表
@@ -270,6 +274,22 @@ export default{
 	//审核
 	supplierCheck(params){
 		return http.post(path.supplierCheck, params)
+	},
+	//待调价表
+	auditWait(params){
+		return http.get(path.auditWait, params)
+	},
+	//提交调价
+	waitApply(params){
+		return http.post(path.waitApply, params)
+	},
+	//提交转交
+	handOver(params){
+		return http.post(path.handOver, params)
+	},
+	//无需调价
+	noNeed(params){
+		return http.post(path.noNeed, params)
 	},
 }
 
