@@ -11,17 +11,15 @@
 		<el-table :data="table_data" size="small" style="width:100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}"  :cell-style="{'text-align':'center'}" v-loading="loading">
 			<el-table-column :label="item.label" :prop="item.prop" v-for="item in main_column" show-overflow-tooltip>
 				<template slot-scope="scope">
-					<div v-if="item.prop == 'is_blessingbag'">
-						{{scope.row.is_blessingbag =='0'?'否':'是'}}
-					</div>
+					<div v-if="item.prop == 'is_blessingbag'">{{scope.row.is_blessingbag =='0'?'否':'是'}}</div>
 					<div v-else>{{scope.row[item.prop]}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column label="操作" width="180" fixed="right">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="adjustPrice(scope.row)">调价</el-button>
-					<el-button type="text" size="small" @click="noNeedFn(scope.row.ksbm)">无需调价</el-button>
-					<el-button type="text" size="small" @click="transferFn(scope.row.ksbm)">转交</el-button>
+					<el-button type="text" size="small" @click="adjustPrice(scope.row)" v-if="button_list.edit_price == 1">调价</el-button>
+					<el-button type="text" size="small" @click="noNeedFn(scope.row.ksbm)" v-if="button_list.no_need_edit == 1">无需调价</el-button>
+					<el-button type="text" size="small" @click="transferFn(scope.row.ksbm)" v-if="button_list.handover == 1">转交</el-button>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -91,7 +89,7 @@
 			</div>
 		</el-dialog>
 		<!-- 转交 -->
-		<el-dialog title="转交给同事" width="30%" center :close-on-click-modal="false" :visible.sync="hand_over_dialog">
+		<el-dialog title="转交给同事" width="30%" center :close-on-click-modal="false" @close="handle_user_id = ''" :visible.sync="hand_over_dialog">
 			<el-form size="small" class="demo-form-inline">
 				<el-form-item label="转交人：">
 					<el-select size="small" clearable v-model="handle_user_id" :popper-append-to-body="false" filterable placeholder="请选择转交人">
@@ -166,6 +164,7 @@
 					label:"生成时间",
 					prop:"sjxrrq",
 				}],
+				button_list:{},
 				table_data:[],					
 				total:0,
 				loading:false,
@@ -223,6 +222,7 @@
 						this.loading = false;
 						let data = res.data.data;
 						this.table_data = data.data;
+						this.button_list = data.button_list;
 						this.total = data.total;
 					}else{
 						this.$message.warning(res.data.msg);
