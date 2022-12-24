@@ -8,10 +8,16 @@
 				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="buts">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table :data="table_data" size="small" style="width:100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}"  :cell-style="{'text-align':'center'}" v-loading="loading">
 			<el-table-column :label="item.label" :prop="item.prop" v-for="item in main_column" show-overflow-tooltip>
 				<template slot-scope="scope">
-					<div v-if="item.prop == 'is_blessingbag'">{{scope.row.is_blessingbag =='0'?'否':'是'}}</div>
+					<div v-if="item.prop == 'is_blessingbag'">
+						<div v-if="scope.row.is_blessingbag =='0'">否</div>
+						<div v-if="scope.row.is_blessingbag =='1'">是</div>
+					</div>
 					<div v-else>{{scope.row[item.prop]}}</div>
 				</template>
 			</el-table-column>
@@ -133,6 +139,9 @@
 	import commonResource from '../../../api/targetSales.js'
 
 	import UploadFile from '../../../components/upload_file.vue'
+
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -149,8 +158,14 @@
 					label:"新编码",
 					prop:"ksbm",
 				},{
+					label:"批发价",
+					prop:"batch_price",
+				},{
 					label:"成本价",
 					prop:"cb_price",
+				},{
+					label:"折扣率",
+					prop:"zkl",
 				},{
 					label:"是否福袋款",
 					prop:"is_blessingbag",
@@ -228,6 +243,28 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//款式信息列表导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						search:this.search
+					}
+					resource.waitExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'待调价表');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//分页
 			handleSizeChange(val) {
@@ -429,10 +466,8 @@
 </script>
 <style lang="less" scoped>
 .buts{
-	margin-top: 15px;
 	margin-bottom: 15px;
 	display: flex;
-	align-items: center;
 	justify-content: flex-end;
 }
 .img_list{
