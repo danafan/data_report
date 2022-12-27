@@ -272,6 +272,14 @@
 					prop:'yx_rate',
 					width:'120',
 				},{
+					label:'天猫扣点',
+					prop:'tmyj',
+					width:'120',
+				},{
+					label:'天猫扣点占比',
+					prop:'tmkdzb',
+					width:'120',
+				},{
 					label:'鱼塘开支',
 					prop:'yt_cost',
 					width:'120',
