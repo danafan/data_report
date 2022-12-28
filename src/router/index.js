@@ -73,6 +73,8 @@ const delivery_situation = resolve=>require(['@/pages/SupplyChain/delivery_situa
 const store_new_style = resolve=>require(['@/pages/SupplyChain/store_new_style'],resolve)
 const thp_table = resolve=>require(['@/pages/SupplyChain/thp_table'],resolve)
 const erdept_internal = resolve=>require(['@/pages/SupplyChain/erdept_internal'],resolve)
+//代发系统
+const replace_send = resolve=>require(['@/pages/ReplaceSend/index'],resolve)
 
 Vue.use(Router)
 
@@ -122,6 +124,7 @@ const router = new Router({
     { path: '/store_new_style',name:"店铺款式上新", component: store_new_style},
     { path: '/thp_table',name:"烫画片使用报表", component: thp_table},
     { path: '/erdept_internal',name:"二部内部款", component: erdept_internal},
+    { path: '/replace_send',name:"代发系统", component: replace_send},
     { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
         isUseCache:false,
         keepAlive:true
