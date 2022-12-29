@@ -6,12 +6,12 @@
 			</el-form-item>
 			<el-form-item label="售后类型：">
 				<el-select v-model="after_sales_type" clearable multiple filterable reserve-keyword placeholder="请选择售后类型" collapse-tags>
-					<el-option v-for="item in after_sales_type_list" :key="item.id" :label="item.name" :value="item.id">
+					<el-option v-for="item in after_sales_type_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="售后状态：">
-				<el-select v-model="after_sales_status" clearable multiple filterable reserve-keyword placeholder="请选择售后类型" collapse-tags>
+				<el-select v-model="after_sales_status" clearable multiple filterable reserve-keyword placeholder="请选择售后状态" collapse-tags>
 					<el-option v-for="item in after_sales_status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
@@ -29,11 +29,7 @@
 		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column :label="item.label" :prop="item.prop" :width="item.width" align="center" show-overflow-tooltip v-for="item in main_columns">
 				<template slot-scope="scope">
-					<div class="fcol" v-if="item.prop == 'labels'">
-						<el-tag class="mb5" size="mini" v-for="tag in scope.row.labels
-						">{{tag}}</el-tag>
-					</div>
-					<div v-else>{{scope.row[item.prop]}}</div>
+					<div>{{scope.row[item.prop]}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -49,37 +45,28 @@
 		data(){
 			return{
 				search:"",				//搜索的内容
-				after_sales_type_list:[{
-					id:'0',
-					name:'售后类型1'
-				},{
-					id:'1',
-					name:'售后类型2'
-				},{
-					id:'2',
-					name:'售后类型3'
-				}],							//售后类型列表
+				after_sales_type_list:['退货','换货','补发'],	//售后类型列表
 				after_sales_type:[],		//选中的售后类型
 				after_sales_status_list:[{
-					id:'0',
-					name:'售后状态1'
+					id:'WaitConfirm',
+					name:'待确认'
 				},{
-					id:'1',
-					name:'售后状态2'
+					id:'Confirmed',
+					name:'已确认'
 				},{
-					id:'2',
-					name:'售后状态3'
+					id:'Cancelled',
+					name:'作废'
+				},{
+					id:'Merged',
+					name:'被合并'
 				}],							//售后状态列表
 				after_sales_status:[],		//选中的售后状态
 				after_sales_goods_status_list:[{
-					id:'0',
-					name:'货物状态1'
+					id:'BUYER_NOT_RECEIVED',
+					name:'买家未收到货'
 				},{
-					id:'1',
-					name:'货物状态2'
-				},{
-					id:'2',
-					name:'货物状态3'
+					id:'BUYER_RECEIVED',
+					name:'买家已收到'
 				}],									//货物状态列表
 				after_sales_goods_status:[],		//选中的货物状态
 				page:1,
@@ -102,7 +89,7 @@
 					width:"100"
 				},{
 					label:"售后单号",
-					prop:"jst_weight",
+					prop:"as_id",
 					width:"100"
 				},{
 					label:"内部订单号",
@@ -126,27 +113,27 @@
 					width:"100"
 				},{
 					label:"售后原因",
-					prop:"logistname",
+					prop:"question_type",
 					width:"100"
 				},{
 					label:"售后类型",
-					prop:"logistic_no",
+					prop:"type",
 					width:"100"
 				},{
 					label:"售后状态",
-					prop:"",
+					prop:"new_status",
 					width:"100"
 				},{
 					label:"货物状态",
-					prop:"",
+					prop:"new_good_status",
 					width:"100"
 				},{
 					label:"实退数量",
-					prop:"seller_append_remark",
+					prop:"qty",
 					width:"100"
 				},{
 					label:"实收数量",
-					prop:"seller_append_remark",
+					prop:"r_qty",
 					width:"100"
 				}],
 				loading:false,
@@ -173,7 +160,13 @@
 				replaceSend.returnGoods(arg).then(res=> {
 					if(res.data.code == 1){
 						this.loading = false;
-						this.table_data = res.data.data.data;
+						let table_data = res.data.data.data;
+						table_data.map(item => {
+							item.new_status = this.filterStatus(item.status);
+							item.new_good_status = this.filterGoodsStatus(item.good_status);
+						})
+						this.table_data = table_data;
+						console.log(this.table_data)
 						this.total = res.data.data.total;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -191,6 +184,20 @@
 				//获取列表
 				this.getList();
 			},
+			//售后状态
+			filterStatus(v){
+				let arr = this.after_sales_status_list.filter(item => {
+					return item.id == v;
+				})
+				return arr[0].name;
+			},
+			//货物状态
+			filterGoodsStatus(v){
+				let arr = this.after_sales_goods_status_list.filter(item => {
+					return item.id == v;
+				})
+				return arr.length > 0?arr[0].name:'';
+			}
 		}
 	}
 </script>

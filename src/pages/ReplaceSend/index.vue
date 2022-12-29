@@ -5,12 +5,6 @@
 				<OrderList v-if="item.web_url == 'order_list'"/>
 				<ReturnGoods v-if="item.web_url == 'return_goods'"/>
 			</el-tab-pane>
-			<!-- <el-tab-pane label="订单列表" lazy name="order_list" class="tab_pane_box">
-				<OrderList/>
-			</el-tab-pane>
-			<el-tab-pane label="退货列表" lazy name="return_goods" class="tab_pane_box">
-				<ReturnGoods/>
-			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>

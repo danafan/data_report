@@ -38,38 +38,20 @@
 			return{
 				search:"",				//搜索的内容
 				status_list:[{
-					id:'0',
-					name:'被取消'
+					id:'Sent',
+					name:'发货'
 				},{
-					id:'1',
-					name:'等待单'
-				},{
-					id:'2',
+					id:'WaitConfirm',
 					name:'待审核'
 				},{
-					id:'3',
-					name:'预订单'
+					id:'WaitOuterSent',
+					name:'等供销商或外仓发货'
 				},{
-					id:'4',
-					name:'待结算'
+					id:'Delivering',
+					name:'发货中'
 				},{
-					id:'5',
-					name:'待发货'
-				},{
-					id:'6',
-					name:'生产等待'
-				},{
-					id:'7',
-					name:'发货在途'
-				},{
-					id:'8',
-					name:'代销发货'
-				},{
-					id:'10',
-					name:'委外发货'
-				},{
-					id:'11',
-					name:'已完成'
+					id:'Question',
+					name:'异常'
 				}],							//订单状态列表
 				select_order_status:[],		//选中的订单状态
 				page:1,
