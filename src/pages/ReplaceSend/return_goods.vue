@@ -166,7 +166,6 @@
 							item.new_good_status = this.filterGoodsStatus(item.good_status);
 						})
 						this.table_data = table_data;
-						console.log(this.table_data)
 						this.total = res.data.data.total;
 					}else{
 						this.$message.warning(res.data.msg);

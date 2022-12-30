@@ -185,6 +185,10 @@
 			<div class="tab_item" :class="{'active_tab_item':return_index == '1'}" @click="return_index = '1'">公司退款（销售前200）</div>
 			<div class="tab_item" :class="{'active_tab_item':return_index == '2'}" @click="return_index = '2'">京东退款（销售前50）</div>
 			<div class="tab_item" :class="{'active_tab_item':return_index == '3'}" @click="return_index = '3'">抖音退款（销售前50）</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '4'}" @click="return_index = '4'">淘宝</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '5'}" @click="return_index = '5'">天猫</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '6'}" @click="return_index = '6'">得物</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '7'}" @click="return_index = '7'">拼多多</div>
 		</div>
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -823,6 +827,18 @@
 								break;
 								case '3':
 								str = '抖音退款（销售前50）';
+								break;
+								case '4':
+								str = '淘宝（销售前50）';
+								break;
+								case '5':
+								str = '天猫（销售前50）';
+								break;
+								case '6':
+								str = '得物（销售前50）';
+								break;
+								case '7':
+								str = '拼多多（销售前50）';
 								break;
 							}
 							exportPost("\ufeff" + res.data,str);

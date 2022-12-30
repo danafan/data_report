@@ -21,6 +21,47 @@
 						<el-tag class="mb5" size="mini" v-for="tag in scope.row.labels
 						">{{tag}}</el-tag>
 					</div>
+					<div v-else-if="item.prop == 'goods_name'">
+						<el-popover placement="right" trigger="hover">
+							<el-table size="small" :data="scope.row.goods_list" :show-header="false">
+								<el-table-column width="100">
+									<template slot-scope="prop">
+										<el-image :z-index="2006" class="table_image" :src="domain + prop.row.image" fit="scale-down"></el-image>
+									</template>
+								</el-table-column>
+								<el-table-column width="120">
+									<template slot-scope="prop">
+										<div class="box flex jsb col fs">
+											<div class="lan">{{prop.row.i_id}}</div>
+											<div class="ccc">{{prop.row.refund_status}}</div>
+										</div>
+									</template>
+								</el-table-column>
+								<el-table-column width="50">
+									<template slot-scope="prop">
+										<div class="box red">¥ {{prop.row.sell_price}}</div>
+									</template>
+								</el-table-column>
+								<el-table-column width="50">
+									<template slot-scope="prop">
+										<div class="box">x{{prop.row.sell_count}}</div>
+									</template>
+								</el-table-column>
+								<el-table-column width="280">
+									<template slot-scope="prop">
+										<div class="box flex col fs jsb">
+											<div class="name">{{prop.row.goods_name}}</div>
+											<div>{{prop.row.spec_name}}</div>
+										</div>
+									</template>
+								</el-table-column>
+							</el-table>
+							<div class="jsa" slot="reference">
+								<el-image :z-index="2006" class="image" :src="item" fit="scale-down" v-for="item in scope.row.goods_img_arr"></el-image>
+							</div>
+						</el-popover>
+
+					</div>
 					<div v-else>{{scope.row[item.prop]}}</div>
 				</template>
 			</el-table-column>
@@ -75,7 +116,7 @@
 				},{
 					label:"店铺",
 					prop:"shop_name",
-					width:"100"
+					width:"150"
 				},{
 					label:"供应商",
 					prop:"supplier_name",
@@ -83,7 +124,7 @@
 				},{
 					label:"商品",
 					prop:"goods_name",
-					width:"100"
+					width:"160"
 				},{
 					label:"包裹重量",
 					prop:"jst_weight",
@@ -118,7 +159,7 @@
 					width:"100"
 				},{
 					label:"订单状态",
-					prop:"",
+					prop:"new_status",
 					width:"100"
 				},{
 					label:"卖家备注",
@@ -127,6 +168,7 @@
 				}],
 				loading:false,
 				table_data:[],
+				domain:"",
 				total:0,
 			}
 		},
@@ -148,11 +190,30 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.table_data = res.data.data.data;
+						this.domain = res.data.data.domain;
+						this.table_data.map(item => {
+							let arr = [];
+							item.goods_img_list.map((i,index) => {
+								if(index <= 1){
+									arr.push(this.domain + i);
+								}
+							})
+							item['goods_img_arr'] = arr;
+
+							item.new_status = this.filterStatus(item.trade_status);
+						})
 						this.total = res.data.data.total;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//状态
+			filterStatus(v){
+				let arr = this.status_list.filter(item => {
+					return item.id == v;
+				})
+				return arr.length > 0?arr[0].name:"";
 			},
 			//分页
 			handleSizeChange(val) {
@@ -173,6 +234,56 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+.jsa{
+	width: 140px;
+	display: flex;
+	align-items: center;
+	justify-content:space-around;
+}
+.image{
+	width: 50px;
+	height: 50px;
+}
+.table_image{
+	width: 80px;
+	height: 80px;
+}
+.box{
+	width: 100%;
+	height: 80px;
+	font-size: 12px;
+}
+.flex{
+	display:flex;
+}
+.name{
+	width: 100%;
+	overflow:hidden;
+	text-overflow: ellipsis;
+	-webkit-line-clamp: 2;
+	display: -webkit-box;
+	-webkit-box-orient: vertical;
+	word-break:break-all;//英文
+	white-space:pre-wrap;//中文
+}
+.lan{
+	color: #1296db;
+}
+.ccc{
+	color: #999999;
+}
+.red{
+	color: red;
+}
+.col{
+	flex-direction: column;
+}
+.jsb{
+	justify-content: space-between;
+}
+.fs{
+	align-items: flex-start;
 }
 .mb5{
 	margin-bottom: 5px;
