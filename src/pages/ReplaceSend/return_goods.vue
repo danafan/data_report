@@ -23,13 +23,19 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="getList">搜索</el-button>
+				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column :label="item.label" :prop="item.prop" :width="item.width" align="center" show-overflow-tooltip v-for="item in main_columns">
 				<template slot-scope="scope">
-					<div>{{scope.row[item.prop]}}</div>
+					<div v-if="item.prop == 'pic'">
+						<el-popover placement="right" width="400" trigger="hover">
+							<el-image class="big_image" :src="scope.row.pic" fit="scale-down"></el-image>
+							<el-image slot="reference" class="table_image" :src="scope.row.pic" fit="scale-down"></el-image>
+						</el-popover>
+					</div>
+					<div v-else>{{scope.row[item.prop]}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -45,7 +51,7 @@
 		data(){
 			return{
 				search:"",				//搜索的内容
-				after_sales_type_list:['退货','换货','补发'],	//售后类型列表
+				after_sales_type_list:['普通退货','其它','拒收退货','仅退款','投诉','补发','换货'],	//售后类型列表
 				after_sales_type:[],		//选中的售后类型
 				after_sales_status_list:[{
 					id:'WaitConfirm',
@@ -66,7 +72,13 @@
 					name:'买家未收到货'
 				},{
 					id:'BUYER_RECEIVED',
-					name:'买家已收到'
+					name:'买家已收到货'
+				},{
+					id:'BUYER_RETURNED_GOODS',
+					name:'买家已退货'
+				},{
+					id:'SELLER_RECEIVED',
+					name:'卖家已收到退货'
 				}],									//货物状态列表
 				after_sales_goods_status:[],		//选中的货物状态
 				page:1,
@@ -77,7 +89,7 @@
 					width:"100"
 				},{
 					label:"商品",
-					prop:"goods_name",
+					prop:"pic",
 					width:"100"
 				},{
 					label:"平台",
@@ -205,6 +217,13 @@
 	display: flex;
 	flex-direction: column;
 	align-items: center;
+}
+.table_image{
+	width: 50px;
+	height: 50px;
+}
+.big_image{
+	width: 100%;
 }
 .mb5{
 	margin-bottom: 5px;

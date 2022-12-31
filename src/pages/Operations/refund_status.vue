@@ -185,10 +185,10 @@
 			<div class="tab_item" :class="{'active_tab_item':return_index == '1'}" @click="return_index = '1'">公司退款（销售前200）</div>
 			<div class="tab_item" :class="{'active_tab_item':return_index == '2'}" @click="return_index = '2'">京东退款（销售前50）</div>
 			<div class="tab_item" :class="{'active_tab_item':return_index == '3'}" @click="return_index = '3'">抖音退款（销售前50）</div>
-			<div class="tab_item" :class="{'active_tab_item':return_index == '4'}" @click="return_index = '4'">淘宝</div>
-			<div class="tab_item" :class="{'active_tab_item':return_index == '5'}" @click="return_index = '5'">天猫</div>
-			<div class="tab_item" :class="{'active_tab_item':return_index == '6'}" @click="return_index = '6'">得物</div>
-			<div class="tab_item" :class="{'active_tab_item':return_index == '7'}" @click="return_index = '7'">拼多多</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '4'}" @click="return_index = '4'">淘宝退款（销售前50）</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '5'}" @click="return_index = '5'">天猫退款（销售前50）</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '6'}" @click="return_index = '6'">得物退款（销售前50）</div>
+			<div class="tab_item" :class="{'active_tab_item':return_index == '7'}" @click="return_index = '7'">拼多多退款（销售前50）</div>
 		</div>
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -203,7 +203,7 @@
 			</el-table-column>
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="returnSizeChange" @current-change="returnPageChange" :current-page="return_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="return_total">
+			<el-pagination @size-change="returnSizeChange" @current-change="returnPageChange" :current-page="return_page" :page-size="return_pagesize" :pager-count="5" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="return_total">
 			</el-pagination>
 		</div>
 	</div>
