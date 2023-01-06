@@ -218,6 +218,7 @@
 	flex-direction: column;
 	align-items: center;
 }
+
 .table_image{
 	width: 50px;
 	height: 50px;
