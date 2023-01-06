@@ -407,10 +407,18 @@
 						this.blChart.setOption(this.setOptions(legend,x_axis,series_data));
 						//部门圆形图
 						let dept_custom_data = data.dept_chart;
+						// let dept_custom_data = [{
+						// 	dept_2:"测试1",
+						// 	xssr:-150
+						// },{
+						// 	dept_2:"测试12",
+						// 	xssr:100
+						// }];
 						dept_custom_data.map(item => {
 							item['id'] = `dept.${item.dept_2}`;
 							item['name'] = item.dept_2;
-							item['value'] = item.xssr;
+							item['show_value'] = item.xssr;
+							item['value'] = item.xssr < 0?item.xssr*-1:item.xssr;
 							item['unit'] = '万';
 						})
 						if(dept_custom_data.length > 0){
@@ -434,7 +442,8 @@
 						store_custom_data.map(item => {
 							item['id'] = `store.${item.shop_code}`;
 							item['name'] = item.shop_code;
-							item['value'] = item.xssr;
+							item['show_value'] = item.xssr;
+							item['value'] = item.xssr < 0?item.xssr*-1:item.xssr;
 							item['unit'] = '万';
 						})
 						store_custom_data.unshift({
@@ -531,12 +540,6 @@
 				if(series_data.length == 0){
 					this.deptCustomChart.clear();
 					this.storeCustomChart.clear();
-					// if(type == 'dept'){
-					// 	this.deptCustomChart.clear();
-					// }
-					// if(type == 'store'){
-					// 	this.storeCustomChart.clear();
-					// }
 					return this.empty_option;
 				}else{
 					if(type == 'dept'){
@@ -574,6 +577,7 @@
 				}
 				let name = api.value('name');
 				let value = api.value('value');
+				let show_value = api.value('show_value');
 				let node = context.nodes[id];
 				if (node.id === id.split('.')[0]) {
 					node.r = 0
@@ -591,7 +595,8 @@
 					textContent: {
 						type: 'text',
 						style: {
-							text: idx < 5 || (value >= 100 && idx >= 5)?name + '\n' + `${value}万`:'',
+							// text: idx < 5 || (value >= 100 && idx >= 5)?name + '\n' + `${value}万`:'',
+							text: idx < 5 || (value >= 100 && idx >= 5)?name + '\n' + `${show_value}万`:'',
 							fill: '#fff',
 							fontFamily: 'Arial',
 							width: node.r * 1.3,
