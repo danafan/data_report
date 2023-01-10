@@ -218,7 +218,7 @@
 </template>
 <script>
 	import resource from '../../../api/resource.js'
-	import {getNowDate} from '../../../api/nowMonth.js'
+	import {getNowDate,getLastYear} from '../../../api/nowMonth.js'
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	export default{
@@ -238,7 +238,7 @@
 				date:getNowDate(),		//库存日期
 				is_retreat:"",			//是否可退
 				labels:"",				//标签
-				date_list:['2020','2021','2022'],	//年份列表
+				date_list:[getLastYear(2),getLastYear(1),getLastYear(0)],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
 				kcCbChart:null,			//近一年库存/成本趋势图表
 				mom:{},					//右上角百分比
