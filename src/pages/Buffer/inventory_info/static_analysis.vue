@@ -238,7 +238,7 @@
 				date:getNowDate(),		//库存日期
 				is_retreat:"",			//是否可退
 				labels:"",				//标签
-				date_list:[getLastYear(2),getLastYear(1),getLastYear(0)],	//年份列表
+				date_list:[getLastYear(1),getLastYear(0)],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
 				kcCbChart:null,			//近一年库存/成本趋势图表
 				mom:{},					//右上角百分比
@@ -390,7 +390,6 @@
 			},
 			//环形图配置
 			pieOptions(data){
-				console.log(data)
 				return {
 					tooltip: {
 						trigger: 'item',
