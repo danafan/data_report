@@ -33,6 +33,8 @@
 			</el-table-column>
 			<el-table-column prop="dfhs" label="待发货数" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
+			<el-table-column prop="xykc" label="现有库存" align="center" show-overflow-tooltip sortable="custom">
+			</el-table-column>
 			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
 			<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip sortable="custom">
