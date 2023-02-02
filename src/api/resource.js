@@ -238,6 +238,8 @@ let path = {
 	briefWeekRank:'brief/week_rank',								//简报单周排行
 	editLabels:'stock_analysis/edit_labels',						//修改标签
 	importLabels:'stock_analysis/import_labels',					//静态库存分析--批量导入标签接口
+	keywords:'annual/keywords',										//关键词看板
+	ajaxKeywordPl:'annual/ajax_keyword_pl',							//关键词获取品类列表
 		
 
 }					
@@ -1225,6 +1227,14 @@ export default{
 	//静态库存分析--批量导入标签接口
 	importLabels(params){
 		return http.post(path.importLabels, params)
+	},
+	//关键词看板
+	keywords(params){
+		return http.get(path.keywords, params)
+	},
+	//关键词获取品类列表
+	ajaxKeywordPl(params){
+		return http.get(path.ajaxKeywordPl, params)
 	},
 }
 
