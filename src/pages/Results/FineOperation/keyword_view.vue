@@ -12,10 +12,6 @@
 				:props="props"
 				collapse-tags
 				clearable></el-cascader>
-				<!-- <el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select> -->
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
@@ -23,18 +19,20 @@
 		</el-form>
 		<!-- 表格 -->
 		<div class="title">类目-关键词排行榜</div>
-		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="620" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
-			<el-table-column prop="pl" label="品类" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="lm" label="类目" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="ssc" label="搜索词" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="rspm" label="热搜排名" sortable  show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="ssrq" label="搜索人气" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="djrq" label="点击人气" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="djl" label="点击率" sortable show-overflow-tooltip align="center"></el-table-column>
-			<el-table-column prop="zfzhl" label="支付转化率" sortable show-overflow-tooltip align="center"></el-table-column>
+		<el-table size="mini" :data="table_data" tooltip-effect="dark" style="width: 100%" max-height="620" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
+			<el-table-column v-for="item in title_list
+			" :prop="item.row_field_name" :label="item.row_name" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip align="center"></el-table-column>
+			<!-- <el-table-column prop="pl" label="品类" sortable="custom" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="lm" label="类目" sortable="custom" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="ssc" label="搜索词" sortable="custom" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="rspm" label="热搜排名" sortable="custom"  show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="ssrq" label="搜索人气" sortable="custom" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="djrq" label="点击人气" sortable="custom" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="djl" label="点击率" sortable="custom" show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column prop="zfzhl" label="支付转化率" sortable="custom" show-overflow-tooltip align="center"></el-table-column> -->
 		</el-table>
 		<div class="page">
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :page-size="pagesize" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
+			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :page-size="pagesize" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
 			</el-pagination>
 		</div>
 	</div>
@@ -86,7 +84,12 @@
 				},						
 				pl_list:[],				//品类列表
 				select_pl_ids:[],		//选中的品类列表
-				dataObj:{},				//表格数据
+				dataObj:{
+
+				},				//表格数据
+				table_data:[],
+				title_list:[],
+				total:0,
 				sort:"",
 				page:1,
 				pagesize:20,			
@@ -105,7 +108,6 @@
 				resource.ajaxKeywordPl().then(res => {
 					if(res.data.code == 1){
 						this.pl_list = res.data.data;
-						console.log(this.pl_list)
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -133,7 +135,10 @@
         		resource.keywords(arg).then(res => {
         			if(res.data.code == 1){
         				this.loading = false;
-        				this.dataObj = res.data.data;
+        				let data = res.data.data;
+        				this.table_data = data.data.data;
+						this.title_list = data.title_list;
+						this.total = data.data.total;
         			}else{
         				this.$message.warning(res.data.msg);
         			}
