@@ -240,6 +240,16 @@ let path = {
 	importLabels:'stock_analysis/import_labels',					//静态库存分析--批量导入标签接口
 	keywords:'annual/keywords',										//关键词看板
 	ajaxKeywordPl:'annual/ajax_keyword_pl',							//关键词获取品类列表
+	accountStatementChart:'audit/accountstatementchart',			//对账报表--顶部汇总和折线图接口
+	accountStatementDayDetail:'audit/accountstatementdaydetail',	//分销货款每日明细
+	accountStatementdayExport:'audit/accountstatementdayexport',	//分销货款每日明细导出
+	accountStatementFhcb:'audit/accountstatementfhcb',				//发货成本下钻
+	accountStatementFhcbExport:'audit/accountstatementfhcbexport',	//发货成本下钻导出
+	accountStatementThcb:'audit/accountstatementthcb',				//退货成本下钻
+	accountStatementThcbExport:'audit/accountstatementthcbexport',	//退货成本下钻导出
+	accountStatementZhcb:'audit/accountstatementzhcb',				//追回成本下钻
+	accountStatementZhcbExport:'audit/accountstatementzhcbexport',	//追回成本下钻导出
+	ajaxAccountStatement:'audit/ajax_accountstatement',				//获取查询条件列表
 		
 
 }					
@@ -1235,6 +1245,46 @@ export default{
 	//关键词获取品类列表
 	ajaxKeywordPl(params){
 		return http.get(path.ajaxKeywordPl, params)
+	},
+	//对账报表--顶部汇总和折线图接口
+	accountStatementChart(params){
+		return http.get(path.accountStatementChart, params)
+	},
+	//分销货款每日明细
+	accountStatementDayDetail(params){
+		return http.get(path.accountStatementDayDetail, params)
+	},
+	//分销货款每日明细导出
+	accountStatementdayExport(params){
+		return http.post(path.accountStatementdayExport, params)
+	},
+	//发货成本下钻
+	accountStatementFhcb(params){
+		return http.get(path.accountStatementFhcb, params)
+	},
+	//发货成本下钻导出
+	accountStatementFhcbExport(params){
+		return http.post(path.accountStatementFhcbExport, params)
+	},
+	//退货成本下钻
+	accountStatementThcb(params){
+		return http.get(path.accountStatementThcb, params)
+	},
+	//退货成本下钻导出
+	accountStatementThcbExport(params){
+		return http.post(path.accountStatementThcbExport, params)
+	},
+	//追回成本下钻
+	accountStatementZhcb(params){
+		return http.get(path.accountStatementZhcb, params)
+	},
+	//追回成本下钻导出
+	accountStatementZhcbExport(params){
+		return http.post(path.accountStatementZhcbExport, params)
+	},
+	//获取查询条件列表
+	ajaxAccountStatement(params){
+		return http.get(path.ajaxAccountStatement, params)
 	},
 }
 

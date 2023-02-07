@@ -4,7 +4,11 @@
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<OrderList v-if="item.web_url == 'order_list'"/>
 				<ReturnGoods v-if="item.web_url == 'return_goods'"/>
+				<ReferenceView v-if="item.web_url == 'reference_view'"/>
 			</el-tab-pane>
+			<!-- <el-tab-pane label="对账报表" lazy name="reference_view" class="tab_pane_box">
+				<ReferenceView/>
+			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>
@@ -16,6 +20,7 @@
 <script>
 	import OrderList from './order_list.vue'
 	import ReturnGoods from './return_goods.vue'
+	import ReferenceView from './reference_view.vue'
 	export default{
 		data(){
 			return{
@@ -55,7 +60,8 @@
 		},
 		components:{
 			OrderList,
-			ReturnGoods
+			ReturnGoods,
+			ReferenceView
 		}
 	}
 </script>
