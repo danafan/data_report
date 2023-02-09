@@ -47,7 +47,7 @@
 			<div class="form_box">
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="统计日期：">
-						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 						</el-date-picker>
 					</el-form-item>
 					<!-- <el-form-item label="统计日期：">

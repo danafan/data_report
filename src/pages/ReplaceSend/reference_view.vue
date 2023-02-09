@@ -46,7 +46,7 @@
 			<div class="title">分销货款每日明细</div>
 			<el-button type="primary" plain size="small" @click="exportFn('1')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
+		<el-table ref="dataTable" size="mini" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 			<el-table-column :prop="item.row_field_name" :label="item.row_name" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip align="center" v-for="item in title_list">
 				<template slot-scope="scope">
 					<el-button type="text" v-if="item.row_field_name == 'fhcb'" @click="getDetail('only','fhcb','发货成本',scope.row)">{{scope.row[item.row_field_name]}}</el-button>
@@ -63,21 +63,21 @@
 		<!-- 下钻 -->
 		<el-dialog :title="dialog_title" :visible.sync="show_dialog" @close="closeDialog" @open="getNbddh('')" width="65%">
 			<div class="buts">
-			<el-form :inline="true" size="small" class="demo-form-inline">
-				<el-form-item label="内部订单号：">
-					<el-select v-model="select_nbddh_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入内部订单号" :remote-method="getNbddh" collapse-tags >
-						<el-option v-for="item in nbddh_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" size="small" @click="searchDetailFn">搜索</el-button>
-				</el-form-item>
-			</el-form>
-			
+				<el-form :inline="true" size="small" class="demo-form-inline">
+					<el-form-item :label="dialog_type == 'thcb'?'单据编号：':'内部订单号：'">
+						<el-select v-model="select_nbddh_ids" clearable multiple filterable remote reserve-keyword :placeholder="dialog_type == 'thcb'?'请输入单据编号':'请输入内部订单号'" :remote-method="getNbddh" collapse-tags >
+							<el-option v-for="item in nbddh_list" :key="item" :label="item" :value="item">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item>
+						<el-button type="primary" size="small" @click="searchDetailFn">搜索</el-button>
+					</el-form-item>
+				</el-form>
+
 				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
-			<el-table size="mini" :data="detailData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortDetailChange" v-loading="loading">
+			<el-table ref="detailTable" size="mini" :data="detailData.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortDetailChange" v-loading="loading">
 				<el-table-column :prop="item.row_field_name" :label="item.row_name" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip align="center" v-for="item in detail_title_list"></el-table-column>
 			</el-table>
 			<div class="page">
@@ -192,6 +192,7 @@
 			searchFn() {
 				this.page = 1;
 				this.sort = '';
+				this.$refs.dataTable.clearSort(); // 清除排序
 				//获取顶部汇总和折线图接口
 				this.accountStatementChart();
 				//分销货款每日明细
@@ -373,7 +374,8 @@
 				this.detail_sort = "";
 				this.nbddh_list = [];
 				this.select_nbddh_ids = [];
-			},
+				this.$refs.detailTable.clearSort(); // 清除排序
+     		},
 			//获取内部编号
 			getNbddh(e){
 				if(this.dialog_type == 'fhcb'){

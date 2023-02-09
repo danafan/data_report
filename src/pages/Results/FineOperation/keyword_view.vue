@@ -19,6 +19,7 @@
 		</el-form>
 		<!-- 表格 -->
 		<div class="title">类目-关键词排行榜</div>
+		<div style="font-size: 14px;color: red">数据更新时间为11点</div>
 		<el-table size="mini" :data="table_data" tooltip-effect="dark" style="width: 100%" max-height="620" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 			<el-table-column v-for="item in title_list
 			" :prop="item.row_field_name" :label="item.row_name" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip align="center"></el-table-column>
