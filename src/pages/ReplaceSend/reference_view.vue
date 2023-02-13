@@ -253,7 +253,6 @@
 					tooltip: {
 						trigger: 'axis',
 						formatter: function (params) {
-							console.log(params)
 							let date = params[0].axisValue;
 							let fhcb_txt = params[0].value;
 							let zhcb_txt = params[1].value;
@@ -262,9 +261,9 @@
 							let tip = "";
 							if(params != null && params.length > 0) {
 								tip = date + "</br>"
-								+ "发货成本：" + fhcb_txt + "万</br>"
-								+ "追回成本：" + zhcb_txt + "万</br>"
-								+ "退货成本：" + thcb_txt + "万</br>";
+								+ "发货成本：" + fhcb_txt + "</br>"
+								+ "追回成本：" + zhcb_txt + "</br>"
+								+ "退货成本：" + thcb_txt + "</br>";
 							}
 							return tip;
 						},
@@ -287,7 +286,7 @@
 					yAxis:[{
 						type: 'value',
 						axisLabel: {
-							formatter: '{value}万'
+							formatter: '{value}'
 						}
 					}],
 					series: [{
