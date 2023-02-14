@@ -14,6 +14,9 @@
 				<EditSupplier v-if="item.web_url == 'edit_supplier'"/>
 				<WaitAdjust v-if="item.web_url == 'wait_adjust'"/>
 			</el-tab-pane>
+			<el-tab-pane label="降本" lazy name="reduce_cost" class="tab_pane_box">
+				<ReduceCost/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -34,6 +37,7 @@
 	import SupplierList from './AuditPages/supplier_list.vue'
 	import EditSupplier from './AuditPages/edit_supplier.vue'
 	import WaitAdjust from './AuditPages/wait_adjust.vue'
+	import ReduceCost from './AuditPages/reduce_cost.vue'
 	export default{
 		data(){
 			return{
@@ -82,7 +86,8 @@
 			AduitDataAnalysis,
 			SupplierList,
 			EditSupplier,
-			WaitAdjust
+			WaitAdjust,
+			ReduceCost
 		}
 	}
 </script>
