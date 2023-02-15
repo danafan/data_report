@@ -13,9 +13,7 @@
 				<SupplierList v-if="item.web_url == 'supplier_list'"/>
 				<EditSupplier v-if="item.web_url == 'edit_supplier'"/>
 				<WaitAdjust v-if="item.web_url == 'wait_adjust'"/>
-			</el-tab-pane>
-			<el-tab-pane label="降本" lazy name="reduce_cost" class="tab_pane_box">
-				<ReduceCost/>
+				<ReduceCost v-if="item.web_url == 'reduce_cost'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

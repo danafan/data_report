@@ -118,6 +118,13 @@
 		<div class="jsb">
 			<PopoverWidget title="明细表" keys="kcfx_mxb"/>
 			<div style="display: flex">
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+				</div>
 				<el-button type="primary" size="mini" @click="allEdit" :disabled="selected_list.length == 0 && !is_all">批量编辑</el-button>
 				<el-button type="primary" size="mini" @click="show_custom = true">自定义列表</el-button>
 				<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -786,6 +793,49 @@
 					}
 				})
 			},
+			//导入
+			uploadCsv(){
+				if (this.$refs.csvUpload.files.length > 0) {
+					let files = this.$refs.csvUpload.files;
+					resource.importData({file:files[0],flag:1}).then(res => {
+						if(res.data.code == 1){
+							// 提交导入
+							this.importFile(files[0]);
+						}else if(res.data.code == 2){
+							//弹窗提示
+							MessageBox.confirm(`${res.data.msg},继续导出?`, '提示', {
+								confirmButtonText: '确定',
+								cancelButtonText: '取消',
+								type: 'warning'
+							}).then(() => {
+								// 提交导入
+								this.importFile(files[0]);
+							}).catch(() => {
+								Message({
+									type: 'info',
+									message: '取消导出'
+								});          
+							});
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			// 提交导入
+			importFile(file){
+				resource.importData({file:file,flag:2}).then(res => {
+					this.$refs.csvUpload.value = null;
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.page = 1;
+						//获取列表
+						this.stockDetail();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//明细表
 			stockDetail(){
 				let arg = {
@@ -1058,6 +1108,20 @@
 }
 .margin_top{
 	margin-top: 30px;
+}
+.upload_box{
+	margin-right: 10px;
+	position: relative;
+	.upload_file{
+		position: absolute;
+		top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		width: 100%;
+		height: 100%;
+		opacity: 0;
+	}
 }
 .jsb{
 	margin-bottom: 5px;

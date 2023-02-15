@@ -58,6 +58,10 @@ let path = {
 	waitApply:'audit/wait_apply',									//提交调价
 	handOver:'audit/hand_over',										//提交转交	
 	noNeed:'audit/no_need',											//无需调价
+	jbKs:'audit/jb_ks',												//降本数据报表
+	jbKsExport:'audit/jb_ks_export',								//降本数据报表导出
+	jbDept:'audit/jb_dept',											//降本数据报表（部门）
+	jbDeptExport:'audit/jb_dept_export',							//降本数据报表（部门）导出
 }						
 export default{
 	//款式编码列表
@@ -295,6 +299,22 @@ export default{
 	//无需调价
 	noNeed(params){
 		return http.post(path.noNeed, params)
+	},
+	//降本数据报表
+	jbKs(params){
+		return http.get(path.jbKs, params)
+	},
+	//降本数据报表导出
+	jbKsExport(params){
+		return http.post(path.jbKsExport, params)
+	},
+	//降本数据报表（部门）
+	jbDept(params){
+		return http.get(path.jbDept, params)
+	},
+	//降本数据报表（部门）导出
+	jbDeptExport(params){
+		return http.post(path.jbDeptExport, params)
 	},
 }
 

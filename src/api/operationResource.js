@@ -51,6 +51,7 @@ let path = {
 	getDefaultPassword:'supplier/get_default_password',	//获取账号默认密码
 	returnBoardTable:'supplier/return_board_table',		//公司京东抖音退款表格
 	exportReturnBoardTable:'supplier/export_return_board_table',	//公司京东抖音退款表格导出
+	importData:'supply_chain/stock/import_data',		//库存分析导入
 }						
 export default{
 	//获取款式编码
@@ -256,6 +257,10 @@ export default{
 	//公司京东抖音退款表格导出
 	exportReturnBoardTable(params){
 		return http.post(path.exportReturnBoardTable, params)
+	},
+	//库存分析导入
+	importData(params){
+		return http.post(path.importData, params)
 	},
 }
 
