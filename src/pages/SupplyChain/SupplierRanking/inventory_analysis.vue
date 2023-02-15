@@ -118,13 +118,10 @@
 		<div class="jsb">
 			<PopoverWidget title="明细表" keys="kcfx_mxb"/>
 			<div style="display: flex">
-				<div class="upload_box">
-					<el-button type="primary" size="small">
-						导入
-						<i class="el-icon-upload el-icon--right"></i>
-					</el-button>
-					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
-				</div>
+				<el-button type="primary" size="small" @click="import_dialog = true">
+					导入
+					<i class="el-icon-upload el-icon--right"></i>
+				</el-button>
 				<el-button type="primary" size="mini" @click="allEdit" :disabled="selected_list.length == 0 && !is_all">批量编辑</el-button>
 				<el-button type="primary" size="mini" @click="show_custom = true">自定义列表</el-button>
 				<el-button type="primary" plain size="small" @click="commitExport" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -207,6 +204,22 @@
 				<el-button size="mini" type="primary" @click="setColumns">保存</el-button>
 			</div>
 		</el-dialog>
+		<!-- 导入 -->
+		<el-dialog title="导入" :visible.sync="import_dialog" width="30%">
+			<div class="down_box">
+				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="import_dialog = false">取 消</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <script>
@@ -279,6 +292,7 @@
 				show_custom:false,			//自定义弹窗
 				selected_list:[],			//已勾选的列表
 				is_all:false,				//是否全选
+				import_dialog:false
 			}
 		},
 		created(){
@@ -793,6 +807,10 @@
 					}
 				})
 			},
+			//下载模版
+			downTemplate(){
+				window.open(`${this.downLoadUrl}/库存分析导入更新模板.xlsx`);
+			},
 			//导入
 			uploadCsv(){
 				if (this.$refs.csvUpload.files.length > 0) {
@@ -803,7 +821,7 @@
 							this.importFile(files[0]);
 						}else if(res.data.code == 2){
 							//弹窗提示
-							MessageBox.confirm(`${res.data.msg},继续导出?`, '提示', {
+							MessageBox.confirm(`${res.data.msg},继续导入?`, '提示', {
 								confirmButtonText: '确定',
 								cancelButtonText: '取消',
 								type: 'warning'
@@ -828,6 +846,7 @@
 					this.$refs.csvUpload.value = null;
 					if(res.data.code == 1){
 						this.$message.success(res.data.msg);
+						this.import_dialog = false;
 						this.page = 1;
 						//获取列表
 						this.stockDetail();
@@ -1109,18 +1128,21 @@
 .margin_top{
 	margin-top: 30px;
 }
-.upload_box{
-	margin-right: 10px;
-	position: relative;
-	.upload_file{
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		width: 100%;
-		height: 100%;
-		opacity: 0;
+.down_box{
+	display:flex;
+	.upload_box{
+		margin-left: 10px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
 	}
 }
 .jsb{

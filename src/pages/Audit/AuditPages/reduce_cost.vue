@@ -121,7 +121,7 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[lastXDate(1),lastXDate(1)],	
+				date:[],	
 				page:1,
 				pagesize:10,
 				ks_sort:"",
