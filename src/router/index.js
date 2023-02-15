@@ -19,7 +19,7 @@ const goods_nature = resolve=>require(['@/pages/Buffer/goods_nature'],resolve)
 const inventory_info = resolve=>require(['@/pages/Buffer/inventory_info'],resolve)
 //审计管理
 const audit_index = resolve=>require(['@/pages/Audit/audit_index'],resolve)
-const report_management = resolve=>require(['@/pages/Audit/report_management'],resolve)
+const report_index = resolve=>require(['@/pages/Audit/report_index'],resolve)
 const account_store = resolve=>require(['@/pages/Audit/account_store'],resolve)
 //权限
 const permssions_index = resolve=>require(['@/pages/Permissions/permissions_index'],resolve)
@@ -98,7 +98,7 @@ const router = new Router({
     { path: '/goods_nature',name:"货品性质管理", component: goods_nature},
     { path: '/inventory_info',name:"", component: inventory_info},
     { path: '/audit_index',name:"成本管理", component: audit_index},
-    { path: '/report_management',name:"报表管理", component: report_management},
+    { path: '/report_index',name:"报表管理", component: report_index},
     { path: '/account_store',name:"账号店铺余额", component: account_store},
     { path: '/permssions_index',name:"权限管理", component: permssions_index},
     { path: '/role_user',name:"角色人员", component: role_user},

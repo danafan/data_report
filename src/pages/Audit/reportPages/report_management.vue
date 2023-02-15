@@ -192,11 +192,11 @@
 </div>
 </template>
 <script>
-	import dps from '../../components/results_components/dps.vue'
-	import {getCurrentDate,getMonthStartDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
-	import {exportPost} from '../../api/export.js'
+	import dps from '../../../components/results_components/dps.vue'
+	import {getCurrentDate,getMonthStartDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
-	import resource from '../../api/auditResource.js'
+	import resource from '../../../api/auditResource.js'
 	export default{
 		data(){
 			return{

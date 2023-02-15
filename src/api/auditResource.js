@@ -62,6 +62,7 @@ let path = {
 	jbKsExport:'audit/jb_ks_export',								//降本数据报表导出
 	jbDept:'audit/jb_dept',											//降本数据报表（部门）
 	jbDeptExport:'audit/jb_dept_export',							//降本数据报表（部门）导出
+	storeSdReport:'audit/store_sd_report',							//审计刷单情况
 }						
 export default{
 	//款式编码列表
@@ -315,6 +316,10 @@ export default{
 	//降本数据报表（部门）导出
 	jbDeptExport(params){
 		return http.post(path.jbDeptExport, params)
+	},
+	//审计刷单情况
+	storeSdReport(params){
+		return http.get(path.storeSdReport, params)
 	},
 }
 
