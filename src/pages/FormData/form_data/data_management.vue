@@ -367,13 +367,13 @@
 			this.isMac()
 		},
 		methods:{
-  			isMac() { 
-  				let is_ding_talk = this.$store.state.is_ding_talk
-  				let is_mac_os = /macintosh|mac os x/i.test(navigator.userAgent); 
-  				if(is_ding_talk == true && is_mac_os == true){
-  					this.is = true;
-  				}
-  			},
+			isMac() { 
+				let is_ding_talk = this.$store.state.is_ding_talk
+				let is_mac_os = /macintosh|mac os x/i.test(navigator.userAgent); 
+				if(is_ding_talk == true && is_mac_os == true){
+					this.is = true;
+				}
+			},
 			//数据管理头部信息
 			formTableHearder(){
 				resource.formTableHearder({form_id:this.form_id}).then(res => {
@@ -632,43 +632,41 @@
 			//添加提交
 			commitData(){
 				var arg = {form_id:this.form_id};
-				var is_next = true;
+				var num = 0;
 				this.fields_list.map(item => {
-					if(item.type == 'date' && (item.value == null || item.value == '')){
-						this.$message.warning(`请填写${item.title}`);
-						is_next = false;
-						return;
-					}else{
-						arg[item.column_name] = item.value;
+					arg[item.column_name] = item.value === null?'':item.value;
+					if(item.value !== null && item.value !== ''){
+						num += 1;
 					}
 				})
-				if(!!is_next){
-					if(is_next && this.data_dialog_type == '1'){	//创建
-						resource.formTableAddPost(arg).then(res => {
-							if(res.data.code == 1){
-								this.$message.success(res.data.msg);
-								//获取列表数据
-								this.getData();
-								this.data_dialog = false;
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
-					}else{	//修改
-						arg.id = this.id;
-						resource.formtableEditPost(arg).then(res => {
-							if(res.data.code == 1){
-								this.$message.success(res.data.msg);
-								//获取列表数据
-								this.getData();
-								this.data_dialog = false;
-							}else{
-								this.$message.warning(res.data.msg);
-							}
-						})
-					}
+				if(num == 0){
+					this.$message.warning('至少填写一项！');
+					return;
 				}
-
+				if(this.data_dialog_type == '1'){	//创建
+					resource.formTableAddPost(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							//获取列表数据
+							this.getData();
+							this.data_dialog = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{	//修改
+					arg.id = this.id;
+					resource.formtableEditPost(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							//获取列表数据
+							this.getData();
+							this.data_dialog = false;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//点击批量添加
 			allAddData(){

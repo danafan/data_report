@@ -4,7 +4,7 @@
 			<div class="title">店铺款式刷单情况</div>
 		</div>
 		<el-table size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
-			<el-table-column :prop="item.row_field_name" :label="item.row_name" align="center" :sortable="item.is_sort?'custom':false" v-for="item in title_list">
+			<el-table-column :prop="item.row_field_name" :label="item.row_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in title_list">
 				<template slot-scope="scope">
 					<el-image :z-index="2006" class="image" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.row_field_name == 'tp'"></el-image>
 					<div v-else>{{scope.row[item.row_field_name]}}</div>
@@ -83,6 +83,7 @@
 			//分页
 			handleSizeChange(val) {
 				this.pagesize = val;
+				this.page = 1;
 				//获取列表
 				this.getData();
 			},

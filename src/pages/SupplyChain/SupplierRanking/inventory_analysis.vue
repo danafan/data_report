@@ -835,6 +835,8 @@
 								});          
 							});
 						}else{
+							this.$refs.csvUpload.value = null;
+							this.import_dialog = false;
 							this.$message.warning(res.data.msg);
 						}
 					})

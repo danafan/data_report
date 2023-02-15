@@ -46,10 +46,11 @@ instance.interceptors.response.use(response => {
     router.replace("/login");
     return;
     case 0:
-    Message({
-      type: 'warning',
-      message: response.data.msg
-    });
+    // Message({
+    //   type: 'warning',
+    //   message: response.data.msg
+    // });
+    return response;
     return;
     default:
        return response;
