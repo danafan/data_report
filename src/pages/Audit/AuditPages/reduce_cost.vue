@@ -13,15 +13,11 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="项目部:">
-				<el-cascader
-				ref="cascader"
-				:options="dept_list"
-				:props="props"
-				@change="getIds"
-				filterable
-				collapse-tags
-				clearable></el-cascader>
+			<el-form-item label="项目部">
+				<el-select v-model="dept_ids" clearable multiple filterable reserve-keyword placeholder="请输入新编码" collapse-tags>
+					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item label="日期:">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
@@ -132,12 +128,6 @@
 				ksbm_list:[],			//所有款式编码
 				select_ksbm_ids:[],		//选中的款式编码
 				dept_list:[],			//项目部列表
-				props:{
-					multiple:true,
-					value:'dept_id',
-					label:'dept_name',
-					children:'list',
-				},
 				dept_ids:[],			//选中的项目部
 				ks_title_list:[],
 				ks_data:{},
@@ -170,47 +160,13 @@
 			},
 			//项目部列表
 			getDeptList(){
-				commonResource.ajaxViewDept().then(res => {
+				commonResource.ajaxOperationCenterDept().then(res => {
 					if(res.data.code == 1){
 						this.dept_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			getIds(){
-				this.$nextTick(()=>{
-					var arr = [];
-					let select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
-					select_department.map(s => {
-					if(s.parent){	//最后一层有父级
-						var m = s.parent;
-						if(m.checked){ //倒数第二层被全选了
-							if(m.parent){ //倒数第二层有父级
-								var d = m.parent;
-								if(d.checked){ //倒数第三层被全选了
-									if(arr.indexOf(d.value) == -1){
-										arr.push(d.value);
-									}
-								}else{
-									if(arr.indexOf(m.value) == -1){
-										arr.push(m.value);
-									}
-								}
-							}else{
-								if(arr.indexOf(m.value) == -1){
-									arr.push(m.value);
-								}
-							}
-						}else{
-							arr.push(s.value);
-						}
-					}else{	//只有一层
-						arr.push(s.value);
-					}
-				})
-					this.dept_ids = arr;
-				});
 			},
 			//搜索
 			getList(){

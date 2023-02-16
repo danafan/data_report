@@ -9,6 +9,7 @@ let path = {
 	getMenu:'access/mymenu',										//获取所有菜单列表
 	jsapi:'jsapi',													//获取用户权限
 	ajaxViewDept:'Common/ajaxViewDept',								//部门列表
+	ajaxOperationCenterDept:'Common/ajaxOperationCenterDept',		//部门列表（包括ID）
 	ajaxViewStore:'Common/ajaxViewShop',							//店铺列表
 	performanceReport:'PerformanceReport/index',					//业绩分析
 	dayAnalysis:'PerformanceReport/DayAnalysis',					//每日业绩
@@ -289,6 +290,10 @@ export default{
 	//部门列表
 	ajaxViewDept(params){
 		return http.get(path.ajaxViewDept, params)
+	},
+	//部门列表（包含ID）
+	ajaxOperationCenterDept(params){
+		return http.get(path.ajaxOperationCenterDept, params)
 	},
 	//店铺列表
 	ajaxViewStore(params){
