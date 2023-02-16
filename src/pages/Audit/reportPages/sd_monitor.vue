@@ -1,7 +1,34 @@
 <template>
 	<div>
+		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="款式编码：">
+				<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="getKsbm" collapse-tags>
+					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="供应商：">
+				<el-select v-model="select_gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
+					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="店铺名称：">
+				<el-select v-model="dpmc_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.shop_name" :value="item.shop_name">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="商品编码：">
+				<el-input clearable v-model="spbm" placeholder="商品编码"></el-input>
+			</el-form-item>
+			<el-form-item>
+				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
+			</el-form-item>
+		</el-form>
 		<div class="buts">
 			<div class="title">店铺款式刷单情况</div>
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
 			<el-table-column :prop="item.row_field_name" :label="item.row_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in title_list">
@@ -30,11 +57,21 @@
 }
 </style>
 <script>
+	import commonResource from '../../../api/resource.js'
 	import resource from '../../../api/auditResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
 				loading:false,
+				ks_list:[],				//款式编码列表
+				select_ks_ids:[],		//选中的款式编码列表
+				gys_list:[],			//供应商列表
+				select_gys_ids:[],		//选中的供应商
+				spbm:"",				//商品编码
+				shop_list:[],			//店铺列表
+				dpmc_ids:[],			//选中的店铺名称
 				page:1,
 				pagesize:10,
 				sort:"",
@@ -43,13 +80,53 @@
 			}
 		},
 		created(){
+			//获取店铺列表
+			this.ajaxShops();
 			//获取列表（款式）
 			this.getData();
 		},
 		methods:{
-			//获取列表(款式)
+			//获取款式编码
+			getKsbm(e){
+				if(e != ''){
+					commonResource.ajaxKsbm({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.ks_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//供应商列表
+			getGys(e){
+				if(e != ''){
+					commonResource.ajaxGys({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gys_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//获取店铺列表
+			ajaxShops(){
+				commonResource.ajaxViewStore().then(res => {
+					if(res.data.code == 1){
+						this.shop_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//获取列表
 			getData(){
 				let arg = {
+					spbm:this.spbm,
+					ksbm:this.select_ks_ids.join(','),
+					gys:this.select_gys_ids.join(','),
+					shop_name:this.dpmc_ids.join(','),
 					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
@@ -79,6 +156,32 @@
 					this.sort = "";
 				}   
 				this.getData();
+			},
+			//款式信息列表导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						spbm:this.spbm,
+						ksbm:this.select_ks_ids.join(','),
+						gys:this.select_gys_ids.join(','),
+						shop_name:this.dpmc_ids.join(','),
+						sort:this.sort
+					}
+					resource.storeSdReportExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'店铺款式刷单情况');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//分页
 			handleSizeChange(val) {

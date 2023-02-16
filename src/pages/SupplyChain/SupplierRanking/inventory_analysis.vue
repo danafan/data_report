@@ -829,9 +829,10 @@
 								// 提交导入
 								this.importFile(files[0]);
 							}).catch(() => {
+								this.$refs.csvUpload.value = null;
 								Message({
 									type: 'info',
-									message: '取消导出'
+									message: '取消'
 								});          
 							});
 						}else{

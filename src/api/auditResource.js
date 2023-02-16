@@ -63,6 +63,7 @@ let path = {
 	jbDept:'audit/jb_dept',											//降本数据报表（部门）
 	jbDeptExport:'audit/jb_dept_export',							//降本数据报表（部门）导出
 	storeSdReport:'audit/store_sd_report',							//审计刷单情况
+	storeSdReportExport:'audit/store_sd_report_export',				//审计刷单情况导出
 }						
 export default{
 	//款式编码列表
@@ -320,6 +321,10 @@ export default{
 	//审计刷单情况
 	storeSdReport(params){
 		return http.get(path.storeSdReport, params)
+	},
+	//审计刷单情况导出
+	storeSdReportExport(params){
+		return http.post(path.storeSdReportExport, params)
 	},
 }
 
