@@ -14,7 +14,7 @@ Vue.prototype.judgmentQfw = /(?=(?!(\b))(\d{3})+$)/g;			//费率正则（最多�
 Vue.prototype.isNumber = /^[0-9]+.?[0-9]*/; 					//判断是否是数字。
 Vue.prototype.isPrice = /^(([0-9]+)|([0-9]+\.[0-9]{0,2}))$/;	//正数且最多两位小数
 Vue.prototype.isZzs = /^[+]{0,1}(\d+)$/;						//正整数
-Vue.prototype.judgmentPhone = /^1[3456789]\d{9}$/;		//手机号正则
+Vue.prototype.judgmentPhone = /^1[3456789]\d{9}$/;				//手机号正则
 Vue.prototype.downLoadUrl = `${location.origin}/template`;		//下载模版前缀
 
 

@@ -23,6 +23,9 @@
       margin:0;
       padding: 0;
     }
+    html,body{
+      color: #333333;
+    }
     div{
       box-sizing: border-box;
     }
@@ -34,12 +37,237 @@
     .el-table .cell {
       white-space: pre!important;
     }
-    input::-webkit-outer-spin-button, input::-webkit-inner-spin-button{-webkit-appearance: none;}
     .prop_text{
       overflow: hidden;
       white-space: nowrap;
       text-overflow:ellipsis;
     }
+    .absolute{
+      position: absolute;
+    }
+    .relative{
+      position: relative;
+    }
+    .bottom-0{
+      bottom: 0px;
+    }
+    .right-0{
+      right: 0px;
+    }
+    .pointer{
+      cursor: pointer;
+    }
+    .primary_color{
+      color: #2A37FD;
+    }
+    .dark_color{
+      color: #666666;
+    }
+    .active_background{
+      background-color: #2A37FD;
+    }
+    .border{
+      border:1px solid red;
+    }
+    .fw-500{
+      font-weight: 500;
+    }
+    .fw-600{
+      font-weight: 600;
+    }
+    .bold{
+      font-weight: bold;
+    }
+    .f14{
+      font-size: 14px;
+    }
+    .f16{
+      font-size: 16px;
+    }
+    .f20{
+      font-size: 20px;
+    }
+    .f22{
+      font-size: 22px;
+    }
+    .ml-10{
+      margin-left: 10px;
+    }
+    .mr-6{
+      margin-right: 6px;
+    }
+    .mr-8{
+      margin-right: 8px;
+    }
+    .mr-10{
+      margin-right: 10px;
+    }
+    .mr-13{
+      margin-right: 13px;
+    }
+    .mr-15{
+      margin-right: 15px;
+    }
+    .mr-16{
+      margin-right: 16px;
+    }
+    .mr-18{
+      margin-right: 18px;
+    }
+    .mr-20{
+      margin-right: 20px;
+    }
+    .mr-25{
+      margin-right: 25px;
+    }
+    .mr-38{
+      margin-right: 38px;
+    }
+    .mr-60{
+      margin-right: 60px;
+    }
+    .mt-10{
+      margin-top: 10px;
+    }
+    .mt-24{
+      margin-top: 24px;
+    }
+    .mt-90{
+      margin-top: 90px;
+    }
+    .mb-10{
+      margin-bottom: 10px;
+    }
+    .mb-15{
+      margin-bottom: 15px;
+    }
+    .mb-17{
+      margin-bottom: 17px;
+    }
+    .mb-20{
+      margin-bottom: 20px;
+    }
+    .mb-24{
+      margin-bottom: 24px;
+    }
+    .pt-6{
+      padding-top: 6px;
+    }
+    .pt-14{
+      padding-top: 14px;
+    }
+    .pr-6{
+      padding-right: 6px;
+    }
+    .pr-20{
+      padding-right: 20px;
+    }
+    .pb-6{
+      padding-bottom: 6px;
+    }
+    .pb-14{
+      padding-bottom: 6px;
+    }
+    .pl-6{
+      padding-left: 6px;
+    }
+    .pl-18{
+      padding-left: 18px;
+    }
+    .pl-20{
+      padding-left: 20px;
+    }
+    .pl-26{
+      padding-left: 26px;
+    }
+    .container{
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+    }
+    .width-100{
+      width: 100%;
+    }
+    .height-100{
+      height: 100%;
+    }
+    .background_color{
+      background-color: #F5F7FB;
+    }
+    .flex{
+      display: flex;
+    }
+    .flex-warp{
+      flex-wrap: wrap;
+    }
+    .flex-1{
+      flex:1;
+    }
+    .fc{
+      flex-direction: column;
+    }
+    .ac{
+      align-items: center;
+    }
+    .as{
+      align-items: flex-start;
+    }
+    .jc{
+      justify-content: center;
+    }
+    .jsa{
+      justify-content: space-around;
+    }
+    .jsb{
+      justify-content: space-between;
+    }
+
+    .pre-line{
+      white-space: pre-line;
+    }
+
+    .page{
+      margin-top: 10px;
+      display:flex;
+      justify-content: flex-end;
+    }
+    /*表格头部尾部滚动条空白*/
+    .el-table__fixed-right-patch{
+      background: #f4f4f4!important;
+    }
+    /* 取消input的上下箭头 */
+    input::-webkit-inner-spin-button {
+      -webkit-appearance: none !important;
+    }
+
+    input::-webkit-outer-spin-button {
+      -webkit-appearance: none !important;
+    }
+
+    input[type="number"] {
+      -moz-appearance: textfield;
+    }
+
+    /*卡片去掉边框*/
+    .is-never-shadow{
+      border:none!important;
+    }
+    /*表单元素去掉下填充*/
+    .hide_bottom {
+      padding-bottom: 0px!important;
+    }
+    /*用作tab和顶部筛选条件的card去掉下填充*/
+    .tab_card .el-card__body{
+      padding-bottom: 0px!important;
+    }
+    .scroll-y{
+      flex:1 1 auto;
+      height: 0;
+      overflow-y: auto;
+    }
+    .hide_scrollbar::-webkit-scrollbar{display:none}
   </style>
 </head>
 <body>

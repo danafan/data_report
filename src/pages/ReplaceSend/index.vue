@@ -6,6 +6,9 @@
 				<ReturnGoods v-if="item.web_url == 'return_goods'"/>
 				<ReferenceView v-if="item.web_url == 'reference_view'"/>
 			</el-tab-pane>
+			<el-tab-pane label="代发看板" lazy name="send_view" class="tab_pane_box">
+				<SendView/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -18,6 +21,7 @@
 	import OrderList from './order_list.vue'
 	import ReturnGoods from './return_goods.vue'
 	import ReferenceView from './reference_view.vue'
+	import SendView from './send_view.vue'
 	export default{
 		data(){
 			return{
@@ -58,7 +62,8 @@
 		components:{
 			OrderList,
 			ReturnGoods,
-			ReferenceView
+			ReferenceView,
+			SendView
 		}
 	}
 </script>
