@@ -7,7 +7,7 @@
 				<ReferenceView v-if="item.web_url == 'reference_view'"/>
 			</el-tab-pane>
 			<el-tab-pane label="代发看板" lazy name="send_view" class="tab_pane_box">
-				<SendView/>
+				<SendView @callback="callback"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -36,6 +36,11 @@
 			this.getIndex();
 		},
 		methods:{
+			//点击切换订单列表
+			callback(v){
+				this.activeTab = 'order_list';
+				console.log(v)
+			},
 			forMenuList(arr) {
 				arr.map(item => {
 					if('list' in item){
