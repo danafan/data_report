@@ -4,89 +4,99 @@
 			<el-form-item label="订单号：">
 				<el-input v-model="search" placeholder="订单号/内部订单号"clearable></el-input>
 			</el-form-item>
-			<el-form-item label="订单状态：">
-				<el-select v-model="select_order_status" clearable multiple filterable reserve-keyword placeholder="请选择订单状态" collapse-tags>
-					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="供应商：">
-				<el-select v-model="select_gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
-					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺：">
-				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item>
-				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
-			</el-form-item>
-		</el-form>
-		<div class="buts">
-			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
-		</div>
-		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
-			<el-table-column :label="item.label" :prop="item.prop" :width="item.width" align="center" show-overflow-tooltip v-for="item in main_columns">
-				<template slot-scope="scope">
-					<div class="fcol" v-if="item.prop == 'labels'">
-						<el-tag class="mb5" size="mini" v-for="tag in scope.row.labels
-						">{{tag}}</el-tag>
-					</div>
-					<div v-else-if="item.prop == 'goods_name'">
-						<el-popover placement="right" trigger="hover">
-							<el-table size="small" :data="scope.row.goods_list" :show-header="false">
-								<el-table-column width="100">
-									<template slot-scope="prop">
-										<el-image :z-index="2006" class="table_image" :src="domain + prop.row.image" fit="scale-down"></el-image>
-									</template>
-								</el-table-column>
-								<el-table-column width="120">
-									<template slot-scope="prop">
-										<div class="box flex jsb col fs">
-											<div class="lan">{{prop.row.i_id}}</div>
-											<div class="ccc">{{prop.row.refund_status}}</div>
-										</div>
-									</template>
-								</el-table-column>
-								<el-table-column width="50">
-									<template slot-scope="prop">
-										<div class="box red">¥ {{prop.row.sell_price}}</div>
-									</template>
-								</el-table-column>
-								<el-table-column width="50">
-									<template slot-scope="prop">
-										<div class="box">x{{prop.row.sell_count}}</div>
-									</template>
-								</el-table-column>
-								<el-table-column width="280">
-									<template slot-scope="prop">
-										<div class="box flex col fs jsb">
-											<div class="name">{{prop.row.goods_name}}</div>
-											<div>{{prop.row.spec_name}}</div>
-										</div>
-									</template>
-								</el-table-column>
-							</el-table>
-							<div class="jsa" slot="reference">
-								<el-image :z-index="2006" class="image" :src="item" fit="scale-down" v-for="item in scope.row.goods_img_arr"></el-image>
-								<!-- <div class="num">3</div> -->
-							</div>
-						</el-popover>
-
-					</div>
-					<div v-else>{{scope.row[item.prop]}}</div>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
-			</el-pagination>
-		</div>
+			<el-form-item label="日期">
+				<el-date-picker
+				v-model="date_time"
+				type="datetimerange"
+				value-format="yyyy-MM-dd HH:mm:ss"
+				range-separator="至"
+				start-placeholder="开始日期"
+				end-placeholder="结束日期">
+			</el-date-picker>
+		</el-form-item>
+		<el-form-item label="订单状态：">
+			<el-select v-model="select_order_status" clearable multiple filterable reserve-keyword placeholder="请选择订单状态" collapse-tags>
+				<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="供应商：">
+			<el-select v-model="select_gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
+				<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="店铺：">
+			<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item>
+			<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
+		</el-form-item>
+	</el-form>
+	<div class="buts">
+		<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
+	<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
+		<el-table-column :label="item.label" :prop="item.prop" :width="item.width" align="center" show-overflow-tooltip v-for="item in main_columns">
+			<template slot-scope="scope">
+				<div class="fcol" v-if="item.prop == 'labels'">
+					<el-tag class="mb5" size="mini" v-for="tag in scope.row.labels
+					">{{tag}}</el-tag>
+				</div>
+				<div v-else-if="item.prop == 'goods_name'">
+					<el-popover placement="right" trigger="hover">
+						<el-table size="small" :data="scope.row.goods_list" :show-header="false">
+							<el-table-column width="100">
+								<template slot-scope="prop">
+									<el-image :z-index="2006" class="table_image" :src="domain + prop.row.image" fit="scale-down"></el-image>
+								</template>
+							</el-table-column>
+							<el-table-column width="120">
+								<template slot-scope="prop">
+									<div class="box flex jsb col fs">
+										<div class="lan">{{prop.row.i_id}}</div>
+										<div class="ccc">{{prop.row.refund_status}}</div>
+									</div>
+								</template>
+							</el-table-column>
+							<el-table-column width="50">
+								<template slot-scope="prop">
+									<div class="box red">¥ {{prop.row.sell_price}}</div>
+								</template>
+							</el-table-column>
+							<el-table-column width="50">
+								<template slot-scope="prop">
+									<div class="box">x{{prop.row.sell_count}}</div>
+								</template>
+							</el-table-column>
+							<el-table-column width="280">
+								<template slot-scope="prop">
+									<div class="box flex col fs jsb">
+										<div class="name">{{prop.row.goods_name}}</div>
+										<div>{{prop.row.spec_name}}</div>
+									</div>
+								</template>
+							</el-table-column>
+						</el-table>
+						<div class="jsa" slot="reference">
+							<el-image :z-index="2006" class="image" :src="item" fit="scale-down" v-for="item in scope.row.goods_img_arr"></el-image>
+							<!-- <div class="num">3</div> -->
+						</div>
+					</el-popover>
+
+				</div>
+				<div v-else>{{scope.row[item.prop]}}</div>
+			</template>
+		</el-table-column>
+	</el-table>
+	<div class="page">
+		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		</el-pagination>
+	</div>
+</div>
 </template>
 <script>
 	import resource from '../../api/resource.js'
@@ -99,6 +109,7 @@
 		data(){
 			return{
 				search:"",				//搜索的内容
+				date_time:[],			//选中的时间
 				status_list:[{
 					id:'Sent',
 					name:'发货'
@@ -197,7 +208,23 @@
 				total:0,
 			}
 		},
+		props:{
+			//传递过来的参数
+			arg:{
+				type:Object,
+				default:() => {
+					return {
+					start_date:"",
+					end_date:"",
+					order_status:[]
+				}
+				}
+			}
+		},
 		created(){
+			this.date_time.push(this.arg.start_date);
+			this.date_time.push(this.arg.end_date);
+			this.select_order_status = this.arg.order_status
 			// 获取所有店铺
 			this.getStoreList();
 			//获取列表
@@ -234,7 +261,9 @@
 					order_status:this.select_order_status.join(','),
 					supplier_name:this.select_gys_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
-					search:this.search
+					search:this.search,
+					start_date:this.date_time && this.date_time.length > 0?this.date_time[0]:"",
+					end_date:this.date_time && this.date_time.length > 0?this.date_time[1]:"",
 				}
 				this.loading = true;
 				replaceSend.orderList(arg).then(res=> {

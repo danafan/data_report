@@ -19,6 +19,16 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="结算方式：">
+				<el-select v-model="jsfs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in jsfs_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="日期：">
+				<el-date-picker v-model="sjxrrq" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+				</el-date-picker>
+			</el-form-item>
 			<el-form-item label="商品编码：">
 				<el-input clearable v-model="spbm" placeholder="商品编码"></el-input>
 			</el-form-item>
@@ -65,6 +75,8 @@
 		data(){
 			return{
 				loading:false,
+				jsfs_list:[],			//结算方式列表
+				jsfs_ids:[],			//选中的结算方式
 				ks_list:[],				//款式编码列表
 				select_ks_ids:[],		//选中的款式编码列表
 				gys_list:[],			//供应商列表
@@ -72,6 +84,7 @@
 				spbm:"",				//商品编码
 				shop_list:[],			//店铺列表
 				dpmc_ids:[],			//选中的店铺名称
+				sjxrrq:"",
 				page:1,
 				pagesize:10,
 				sort:"",
@@ -82,10 +95,22 @@
 		created(){
 			//获取店铺列表
 			this.ajaxShops();
+			//供应商结算方式
+			this.ajaxJsfs();
 			//获取列表（款式）
 			this.getData();
 		},
 		methods:{
+			//供应商结算方式
+			ajaxJsfs(){
+				commonResource.ajaxJsfs().then(res => {
+					if(res.data.code == 1){
+						this.jsfs_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取款式编码
 			getKsbm(e){
 				if(e != ''){
@@ -123,6 +148,8 @@
 			//获取列表
 			getData(){
 				let arg = {
+					jsfs:this.jsfs_ids.join(','),
+					sjxrrq:this.sjxrrq?this.sjxrrq:'',
 					spbm:this.spbm,
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),

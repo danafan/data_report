@@ -4,7 +4,7 @@
 		<div class="top_content flex ac jsa mb-10">
 			<div class="top_item background_color relative height-100 flex fc ac">
 				<img class="today_icon absolute" src="../../static/today_icon.png">
-				<div class="color_item relative flex fc ac jc fw-500 f16 dfdds" @click="$emit('callback','111')">
+				<div class="color_item relative flex fc ac jc fw-500 f16 dfdds" @click="getOrderList(1)">
 					<div class="mb-17">代发订单数</div>
 					<div>{{top_info.total_num}}</div>
 					<div class="l_line absolute"></div>
@@ -49,7 +49,7 @@
 							<div class="bold f22">{{top_info.unsent_num}}</div>
 						</div>
 					</div>
-					<div class="r_item flex ac pl-14">
+					<div class="r_item flex ac pl-14" @click="getOrderList(8)">
 						<img class="send_view_icon mr-14" src="../../static/send_view_04.png">
 						<div class="r_content flex fc as jsb">
 							<div class="dark_color f16">超48小时内发货</div>
@@ -163,6 +163,7 @@
 	</div>
 </template>
 <script>
+	import {lastXDate,getNowDate} from '../../api/nowMonth.js'
 	import resource from '../../api/replaceSend.js'
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
@@ -244,6 +245,21 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//点击跳转到订单列表页面
+			getOrderList(type){
+				switch(type){
+					case 8: //超48小时未发货订单数
+						let arg = {
+							start_date:"",
+							end_date:lastXDate(2,true),
+							order_status:['WaitOuterSent','Delivering']
+						}
+						this.$emit('callback',arg);
+						break;
+					default:
+						return;
+				}
 			},
 			//商品代发排行
 			dfSpData(){

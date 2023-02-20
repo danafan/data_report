@@ -2,12 +2,10 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<OrderList v-if="item.web_url == 'order_list'"/>
+				<OrderList :arg="arg" v-if="item.web_url == 'order_list' && activeTab == 'order_list'"/>
 				<ReturnGoods v-if="item.web_url == 'return_goods'"/>
 				<ReferenceView v-if="item.web_url == 'reference_view'"/>
-			</el-tab-pane>
-			<el-tab-pane label="代发看板" lazy name="send_view" class="tab_pane_box">
-				<SendView @callback="callback"/>
+				<SendView v-if="item.web_url == 'send_view'" @callback="callback"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -25,6 +23,7 @@
 	export default{
 		data(){
 			return{
+				arg:{},
 				activeTab:"",
 				menu_list:[],
 				ss:[]
@@ -38,8 +37,8 @@
 		methods:{
 			//点击切换订单列表
 			callback(v){
+				this.arg = v;
 				this.activeTab = 'order_list';
-				console.log(v)
 			},
 			forMenuList(arr) {
 				arr.map(item => {

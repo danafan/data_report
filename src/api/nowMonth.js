@@ -64,7 +64,7 @@ export function getNowDate(){
 	// var day7 = new Date();
 	// day7.setTime(day7.getTime()-24*60*60*1000);
 	// var currentDate = new Date(day1);
-	return formatDate(new Date()); 
+	return formatDate(new Date(),t); 
 }
 //获得30天以前的日期
 export function lastMonthDate(){
@@ -75,12 +75,12 @@ export function lastMonthDate(){
 }
 
 //获得某天以前的日期
-export function lastXDate(x){
+export function lastXDate(x,t){
 	let num = x*24;
 	var dayx = new Date();
 	dayx.setTime(dayx.getTime()-num*60*60*1000);
 	var currentDate = new Date(dayx);
-	return formatDate(currentDate); 
+	return formatDate(currentDate,t); 
 }
 
 //获得前某月的开始日期 
@@ -97,17 +97,34 @@ export function thousands(num){
 	return num.toLocaleString();
 }
 //格式化日期
-function formatDate(date) { 
+function formatDate(date,t) { 
 	var myyear = date.getFullYear(); 
 	var mymonth = date.getMonth()+1; 
 	var myweekday = date.getDate(); 
+	var hour = date.getHours(); // 时
+  	var minutes = date.getMinutes(); // 分
+  	var seconds = date.getSeconds() //秒
 	if(mymonth < 10){ 
 		mymonth = "0" + mymonth; 
 	} 
 	if(myweekday < 10){ 
 		myweekday = "0" + myweekday; 
 	}
-	return (myyear+"-"+mymonth + "-" + myweekday);
+	if(hour < 10){ 
+		hour = "0" + hour; 
+	}
+	if(minutes < 10){ 
+		minutes = "0" + minutes; 
+	}
+	if(seconds < 10){ 
+		seconds = "0" + seconds; 
+	}
+	if(t){
+		return (myyear + "-" + mymonth + "-" + myweekday + ' ' + hour + ":" + minutes + ":" + seconds);
+	}else{
+		return (myyear + "-" + mymonth + "-" + myweekday);
+	}
+	
 }
 //获取月日期信息
 export function getMonthInfo(year,month){

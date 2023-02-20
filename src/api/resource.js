@@ -251,6 +251,7 @@ let path = {
 	accountStatementZhcb:'audit/accountstatementzhcb',				//追回成本下钻
 	accountStatementZhcbExport:'audit/accountstatementzhcbexport',	//追回成本下钻导出
 	ajaxAccountStatement:'audit/ajax_accountstatement',				//获取查询条件列表
+	ajaxJsfs:'common/ajaxJsfs',										//供应商结算方式
 		
 
 }					
@@ -1290,6 +1291,10 @@ export default{
 	//获取查询条件列表
 	ajaxAccountStatement(params){
 		return http.get(path.ajaxAccountStatement, params)
+	},
+	//供应商结算方式
+	ajaxJsfs(params){
+		return http.get(path.ajaxJsfs, params)
 	},
 }
 

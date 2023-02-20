@@ -153,7 +153,7 @@
 	</div>
 	<!-- 没有数据 -->
 	<div class="data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div>
-	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_custom">
+	<el-dialog title="店铺自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_ids">
 				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
@@ -208,7 +208,7 @@
 	</div>
 	<!-- 没有数据 -->
 	<div class="data_null" v-if="week_data_list.length == 0 && loading == false">暂无数据</div>
-	<el-dialog title="店铺自定义列表（单机取消列表名保存直接修改）" :visible.sync="show_week_custom">
+	<el-dialog title="店铺自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_week_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_week_ids">
 				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_week_row">{{item.row_name}}</el-checkbox>
