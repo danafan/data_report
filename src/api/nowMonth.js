@@ -60,7 +60,7 @@ export function getCurrentDate(){
 	return formatDate(currentDate); 
 }
 //获得今日
-export function getNowDate(){
+export function getNowDate(t){
 	// var day7 = new Date();
 	// day7.setTime(day7.getTime()-24*60*60*1000);
 	// var currentDate = new Date(day1);

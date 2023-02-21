@@ -4,14 +4,14 @@
 			<el-form-item label="订单号：">
 				<el-input v-model="search" placeholder="订单号/内部订单号"clearable></el-input>
 			</el-form-item>
-			<el-form-item label="日期">
+			<el-form-item label="下单时间">
 				<el-date-picker
 				v-model="date_time"
 				type="datetimerange"
 				value-format="yyyy-MM-dd HH:mm:ss"
 				range-separator="至"
-				start-placeholder="开始日期"
-				end-placeholder="结束日期">
+				start-placeholder="开始时间"
+				end-placeholder="结束时间">
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item label="订单状态：">
@@ -210,21 +210,23 @@
 		},
 		props:{
 			//传递过来的参数
-			arg:{
+			req:{
 				type:Object,
-				default:() => {
+				default:function(){
 					return {
-					start_date:"",
-					end_date:"",
-					order_status:[]
-				}
+						start_date:"",
+						end_date:"",
+						order_status:[]
+					}
 				}
 			}
 		},
 		created(){
-			this.date_time.push(this.arg.start_date);
-			this.date_time.push(this.arg.end_date);
-			this.select_order_status = this.arg.order_status
+			console.log(this.req)
+			this.date_time.push(this.req.start_date);
+			this.date_time.push(this.req.end_date);
+			this.select_order_status = this.req.order_status;
+
 			// 获取所有店铺
 			this.getStoreList();
 			//获取列表

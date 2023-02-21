@@ -2,7 +2,7 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<OrderList :arg="arg" v-if="item.web_url == 'order_list' && activeTab == 'order_list'"/>
+				<OrderList :req="arg" v-if="item.web_url == 'order_list' && activeTab == 'order_list'"/>
 				<ReturnGoods v-if="item.web_url == 'return_goods'"/>
 				<ReferenceView v-if="item.web_url == 'reference_view'"/>
 				<SendView v-if="item.web_url == 'send_view'" @callback="callback"/>
@@ -23,7 +23,11 @@
 	export default{
 		data(){
 			return{
-				arg:{},
+				arg:{
+					start_date:"",
+					end_date:"",
+					order_status:[]
+				},
 				activeTab:"",
 				menu_list:[],
 				ss:[]

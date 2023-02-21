@@ -12,27 +12,27 @@
 				</div>
 				<div class="c_c_line"></div>
 				<div class="width-100 flex jsb">
-					<div class="color_item flex fc ac jc fw-500 f16 wsh">
+					<div class="color_item flex fc ac jc fw-500 f16 wsh" @click="getOrderList(2)">
 						<div class="mb-17">代发订单未审核</div>
 						<div>{{top_info.today_uncheck_num}}</div>
 					</div>
-					<div class="color_item flex fc ac jc fw-500 f16 fhs">
+					<div class="color_item flex fc ac jc fw-500 f16 fhs" @click="getOrderList(3)">
 						<div class="mb-17">代发订单发货数</div>
 						<div>{{top_info.today_order_sented_num}}</div>
 					</div>
-					<div class="color_item flex fc ac jc fw-500 f16 ysh">
+					<div class="color_item flex fc ac jc fw-500 f16 ysh" @click="getOrderList(4)">
 						<div class="mb-17">代发订单已审核</div>
 						<div>{{top_info.today_checked_num}}</div>
 					</div>
 				</div>
 			</div>
-			<div class="center_box flex fc ac jc">
+			<div class="center_box flex fc ac jc" @click="getOrderList(5)">
 				<div class="normal f22 white_color mb-13">{{top_info.today_sented_num}}</div>
 				<div class="f16 fw-600 white_color">代发今日已发货</div>
 			</div>
 			<div class="top_item relative background_color height-100 flex fc ac">
 				<PopoverWidget class="popover absolute" title="" keys="dfkb"/>
-				<div class="r_item relative flex ac pl-14 mb-40">
+				<div class="r_item relative flex ac pl-14 mb-40" @click="getOrderList(6)">
 					<img class="send_view_icon mr-14" src="../../static/send_view_03.png">
 					<div class="r_content flex fc as jsb">
 						<div class="dark_color f16">48小时内未发货</div>
@@ -42,7 +42,7 @@
 					<div class="r_r_line absolute"></div>
 				</div>
 				<div class="width-100 flex jsb">
-					<div class="r_item flex ac pl-14">
+					<div class="r_item flex ac pl-14" @click="getOrderList(7)">
 						<img class="send_view_icon mr-14" src="../../static/send_view_02.png">
 						<div class="r_content flex fc as jsb">
 							<div class="dark_color f16">代发今日未发货</div>
@@ -248,10 +248,67 @@
 			},
 			//点击跳转到订单列表页面
 			getOrderList(type){
+				var arg = {};
 				switch(type){
+					case 1: //代发订单数
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:[]
+						}
+						this.$emit('callback',arg);
+						break;
+					case 2: //代发订单未审核
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['WaitOuterSent','Question']
+						}
+						this.$emit('callback',arg);
+						break;
+					case 3: //代发订单发货数
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['Sent']
+						}
+						this.$emit('callback',arg);
+						break;
+					case 4: //代发订单已审核
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['WaitOuterSent','Delivering']
+						}
+						this.$emit('callback',arg);
+						break;
+					case 5: //代发今日已发货
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['Sent']
+						}
+						this.$emit('callback',arg);
+						break;
+					case 6: //48小时内未发货
+						arg = {
+							start_date:lastXDate(2,true),
+							end_date:getNowDate(true),
+							order_status:['WaitOuterSent','Delivering']
+						}
+						this.$emit('callback',arg);
+						break;
+					case 7: //代发今日未发货
+						arg = {
+							start_date:'',
+							end_date:'',
+							order_status:['WaitOuterSent','Delivering']
+						}
+						this.$emit('callback',arg);
+						break;
 					case 8: //超48小时未发货订单数
-						let arg = {
-							start_date:"",
+						arg = {
+							start_date:lastXDate(1,true),
 							end_date:lastXDate(2,true),
 							order_status:['WaitOuterSent','Delivering']
 						}
@@ -437,6 +494,7 @@
 		width: 150px;
 		height: 150px;
 		background: #5575EB;
+		cursor: pointer;
 	}
 	.today_icon{
 		top: 14px;
@@ -451,6 +509,7 @@
 		border-radius: 8px;
 		width: 144px;
 		height: 100px;
+		cursor: pointer;
 		.l_line{
 			left:-85px;
 			top:50px;
@@ -479,6 +538,7 @@
 		background: #FFFFFF;
 		box-shadow: 0px 0px 8px 0px #E2EBFF;
 		border-radius: 8px;
+		cursor: pointer;
 		.send_view_icon{
 			width: 54px;
 			height: 54px;
