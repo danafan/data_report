@@ -254,7 +254,8 @@
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
-							order_status:[]
+							order_status:[],
+							time_type:1
 						}
 						this.$emit('callback',arg);
 						break;
@@ -262,7 +263,8 @@
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
-							order_status:['WaitOuterSent','Question']
+							order_status:['WaitOuterSent','Question'],
+							time_type:1
 						}
 						this.$emit('callback',arg);
 						break;
@@ -270,7 +272,8 @@
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
-							order_status:['Sent']
+							order_status:['Sent'],
+							time_type:1
 						}
 						this.$emit('callback',arg);
 						break;
@@ -278,7 +281,8 @@
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
-							order_status:['WaitOuterSent','Delivering']
+							order_status:['WaitOuterSent','Delivering'],
+							time_type:1
 						}
 						this.$emit('callback',arg);
 						break;
@@ -286,7 +290,8 @@
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
-							order_status:['Sent']
+							order_status:['Sent'],
+							time_type:2
 						}
 						this.$emit('callback',arg);
 						break;
@@ -294,7 +299,8 @@
 						arg = {
 							start_date:lastXDate(2,true),
 							end_date:getNowDate(true),
-							order_status:['WaitOuterSent','Delivering']
+							order_status:['WaitOuterSent','Delivering'],
+							time_type:1
 						}
 						this.$emit('callback',arg);
 						break;
@@ -302,7 +308,8 @@
 						arg = {
 							start_date:'',
 							end_date:'',
-							order_status:['WaitOuterSent','Delivering']
+							order_status:['WaitOuterSent','Delivering'],
+							time_type:1
 						}
 						this.$emit('callback',arg);
 						break;
@@ -310,7 +317,8 @@
 						arg = {
 							start_date:lastXDate(1,true),
 							end_date:lastXDate(2,true),
-							order_status:['WaitOuterSent','Delivering']
+							order_status:['WaitOuterSent','Delivering'],
+							time_type:1
 						}
 						this.$emit('callback',arg);
 						break;
@@ -420,7 +428,7 @@
 					}
 					resource.dfAverageDeliveryExport(arg).then(res => {
 						if(res){
-							exportPost("\ufeff" +  + res.data,'代发看板发货平均时效统计');
+							exportPost("\ufeff" + res.data,'代发看板发货平均时效统计');
 						}
 					})
 				}).catch(() => {
@@ -458,7 +466,7 @@
 					}
 					resource.dfOverTimeExport(arg).then(res => {
 						if(res){
-							exportPost("\ufeff" +  + res.data,'代发看板发货即将超时统计');
+							exportPost("\ufeff" + res.data,'代发看板发货即将超时统计');
 						}
 					})
 				}).catch(() => {

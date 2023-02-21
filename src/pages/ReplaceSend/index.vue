@@ -26,7 +26,8 @@
 				arg:{
 					start_date:"",
 					end_date:"",
-					order_status:[]
+					order_status:[],
+					time_type:1
 				},
 				activeTab:"",
 				menu_list:[],

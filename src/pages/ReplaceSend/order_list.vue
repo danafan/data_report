@@ -4,7 +4,11 @@
 			<el-form-item label="订单号：">
 				<el-input v-model="search" placeholder="订单号/内部订单号"clearable></el-input>
 			</el-form-item>
-			<el-form-item label="下单时间">
+			<el-form-item>
+				<el-select style="width: 100px" v-model="time_type">
+					<el-option label="下单时间" :value="1"></el-option>
+					<el-option label="发货时间" :value="2"></el-option>
+				</el-select>
 				<el-date-picker
 				v-model="date_time"
 				type="datetimerange"
@@ -109,6 +113,7 @@
 		data(){
 			return{
 				search:"",				//搜索的内容
+				time_type:1,			//时间类型
 				date_time:[],			//选中的时间
 				status_list:[{
 					id:'Sent',
@@ -162,10 +167,6 @@
 					prop:"goods_name",
 					width:"160"
 				},{
-					label:"包裹重量",
-					prop:"jst_weight",
-					width:"100"
-				},{
 					label:"应付金额",
 					prop:"all_total",
 					width:"100"
@@ -210,15 +211,20 @@
 		},
 		props:{
 			//传递过来的参数
+			// req:{
+			// 	type:Object,
+			// 	default:function(){
+			// 		return {
+			// 			start_date:"",
+			// 			end_date:"",
+			// 			order_status:[],
+			// 			time_type:1
+			// 		}
+			// 	}
+			// }
 			req:{
 				type:Object,
-				default:function(){
-					return {
-						start_date:"",
-						end_date:"",
-						order_status:[]
-					}
-				}
+				default:() => {}
 			}
 		},
 		created(){
@@ -226,6 +232,7 @@
 			this.date_time.push(this.req.start_date);
 			this.date_time.push(this.req.end_date);
 			this.select_order_status = this.req.order_status;
+			this.time_type = this.req.time_type;
 
 			// 获取所有店铺
 			this.getStoreList();
@@ -264,6 +271,7 @@
 					supplier_name:this.select_gys_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					search:this.search,
+					time_type:this.time_type,
 					start_date:this.date_time && this.date_time.length > 0?this.date_time[0]:"",
 					end_date:this.date_time && this.date_time.length > 0?this.date_time[1]:"",
 				}
@@ -301,7 +309,10 @@
 						order_status:this.select_order_status.join(','),
 						supplier_name:this.select_gys_ids.join(','),
 						shop_id:this.select_store_ids.join(','),
-						search:this.search
+						search:this.search,
+						time_type:this.time_type,
+						start_date:this.date_time && this.date_time.length > 0?this.date_time[0]:"",
+						end_date:this.date_time && this.date_time.length > 0?this.date_time[1]:""
 					}
 					replaceSend.orderSkuExport(arg).then(res => {
 						if(res){
