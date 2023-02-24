@@ -8,6 +8,7 @@
 				<KeywordView v-if="item.web_url == 'keyword_view'"/>
 				<RegionalAnalysis v-if="item.web_url == 'regional_analysis'"/>
 				<WeatherAnalysis v-if="item.web_url == 'weather_analysis'"/>
+				<ExperienceScore v-if="item.web_url == 'experience_score'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -24,6 +25,7 @@
 	import KeywordView from './FineOperation/keyword_view.vue'
 	import RegionalAnalysis from './FineOperation/regional_analysis.vue'
 	import WeatherAnalysis from './FineOperation/weather_analysis.vue'
+	import ExperienceScore from './FineOperation/experience_score.vue'
 	export default{
 		data(){
 			return{
@@ -67,7 +69,8 @@
 			CostAnalysis,
 			KeywordView,
 			RegionalAnalysis,
-			WeatherAnalysis
+			WeatherAnalysis,
+			ExperienceScore
 		}
 	}
 </script>

@@ -1,7 +1,7 @@
 <template>
 	<div>
 		<!-- 头部信息 -->
-		<div class="top_content flex ac jsa mb-10">
+		<div class="top_content relative flex ac jsa mb-10">
 			<div class="top_item background_color relative height-100 flex fc ac">
 				<img class="today_icon absolute" src="../../static/today_icon.png">
 				<div class="color_item relative flex fc ac jc fw-500 f16 dfdds" @click="getOrderList(1)">
@@ -32,32 +32,33 @@
 			</div>
 			<div class="top_item relative background_color height-100 flex fc ac">
 				<PopoverWidget class="popover absolute" title="" keys="dfkb"/>
-				<div class="r_item relative flex ac pl-14 mb-40" @click="getOrderList(6)">
-					<img class="send_view_icon mr-14" src="../../static/send_view_03.png">
+				<div class="r_item relative flex ac pl-14 mb-40" @click="getOrderList(7)">
+					<img class="send_view_icon mr-14" src="../../static/send_view_02.png">
 					<div class="r_content flex fc as jsb">
-						<div class="dark_color f16">48小时内未发货</div>
-						<div class="bold f22">{{top_info.unsented_less_twodays_num}}</div>
+						<div class="dark_color f16">代发未发货</div>
+						<div class="bold f22">{{top_info.unsent_num}}</div>
 					</div>
 					<div class="r_l_line absolute"></div>
 					<div class="r_r_line absolute"></div>
 				</div>
 				<div class="width-100 flex jsb">
-					<div class="r_item flex ac pl-14" @click="getOrderList(7)">
-						<img class="send_view_icon mr-14" src="../../static/send_view_02.png">
+					<div class="r_item flex ac pl-14" @click="getOrderList(6)">
+						<img class="send_view_icon mr-14" src="../../static/send_view_03.png">
 						<div class="r_content flex fc as jsb">
-							<div class="dark_color f16">代发今日未发货</div>
-							<div class="bold f22">{{top_info.unsent_num}}</div>
+							<div class="dark_color f16">48小时内未发货</div>
+							<div class="bold f22">{{top_info.unsented_less_twodays_num}}</div>
 						</div>
 					</div>
 					<div class="r_item flex ac pl-14" @click="getOrderList(8)">
 						<img class="send_view_icon mr-14" src="../../static/send_view_04.png">
 						<div class="r_content flex fc as jsb">
-							<div class="dark_color f16">超48小时内发货</div>
+							<div class="dark_color f16">超48小时未发货</div>
 							<div class="bold f22">{{top_info.unsented_more_twodays_num}}</div>
 						</div>
 					</div>
 				</div>
 			</div>
+			<i class="refresh el-icon-refresh" @click="refreshFn"></i>
 		</div>
 		<div class="flex jsb mb-15">
 			<!-- 商品 -->
@@ -236,6 +237,42 @@
 			},
 		},
 		methods:{
+			//刷新
+			refreshFn(){
+				this.top_info = {},						//头部数据
+				this.i_date_type = "today";				//商品时间类型
+				this.sp_loading = false;
+				this.i_title_list = [];					//商品头部列表
+				this.i_table_data = [];					//商品数据列表
+				this.gys_date_type = "today";				//供应商时间类型
+				this.gys_loading = false;
+				this.gys_title_list = [];					//供应商头部列表
+				this.gys_table_data = [];					//供应商数据列表
+				this.dp_date_type = "today";				//店铺时间类型
+				this.dp_loading = false;
+				this.dp_title_list = [];					//店铺头部列表
+				this.dp_table_data = [];					//店铺数据列表
+				this.pjsx_date_type = "week";				//发货平均时效统计
+				this.pjsx_loading = false;
+				this.pjsx_title_list = [];					//发货平均时效头部列表
+				this.pjsx_table_data = [];					//发货平均时效列表
+				this.jjcs_date_type = "week";				//发货即将超时统计
+				this.jjcs_loading = false;
+				this.jjcs_title_list = [];					//发货即将超时头部列表
+				this.jjcs_table_data = [];					//发货即将超时列表
+				//头部信息
+				this.dfOrderTotal();
+				//商品代发排行
+				this.dfSpData();
+				//供应商代发排行
+				this.gysData();
+				//店铺代发排行
+				this.dpData();
+				//代发看板发货平均时效统计
+				this.dfAverageDelivery();
+				//代发看板发货超时未发统计
+				this.dfOverTime();
+			},
 			//头部信息
 			dfOrderTotal(){
 				resource.dfOrderTotal().then(res => {
@@ -251,79 +288,79 @@
 				var arg = {};
 				switch(type){
 					case 1: //代发订单数
-						arg = {
-							start_date:getNowDate() + ' 00:00:00',
-							end_date:getNowDate() + ' 23:59:59',
-							order_status:[],
-							time_type:1
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:getNowDate() + ' 00:00:00',
+						end_date:getNowDate() + ' 23:59:59',
+						order_status:[],
+						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
 					case 2: //代发订单未审核
-						arg = {
-							start_date:getNowDate() + ' 00:00:00',
-							end_date:getNowDate() + ' 23:59:59',
-							order_status:['WaitOuterSent','Question'],
-							time_type:1
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:getNowDate() + ' 00:00:00',
+						end_date:getNowDate() + ' 23:59:59',
+						order_status:['WaitConfirm','Question'],
+						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
 					case 3: //代发订单发货数
-						arg = {
-							start_date:getNowDate() + ' 00:00:00',
-							end_date:getNowDate() + ' 23:59:59',
-							order_status:['Sent'],
-							time_type:1
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:getNowDate() + ' 00:00:00',
+						end_date:getNowDate() + ' 23:59:59',
+						order_status:['Sent'],
+						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
 					case 4: //代发订单已审核
-						arg = {
-							start_date:getNowDate() + ' 00:00:00',
-							end_date:getNowDate() + ' 23:59:59',
-							order_status:['WaitOuterSent','Delivering'],
-							time_type:1
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:getNowDate() + ' 00:00:00',
+						end_date:getNowDate() + ' 23:59:59',
+						order_status:['WaitOuterSent','Delivering'],
+						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
 					case 5: //代发今日已发货
-						arg = {
-							start_date:getNowDate() + ' 00:00:00',
-							end_date:getNowDate() + ' 23:59:59',
-							order_status:['Sent'],
-							time_type:2
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:getNowDate() + ' 00:00:00',
+						end_date:getNowDate() + ' 23:59:59',
+						order_status:['Sent'],
+						time_type:2
+					}
+					this.$emit('callback',arg);
+					break;
 					case 6: //48小时内未发货
-						arg = {
-							start_date:lastXDate(2,true),
-							end_date:getNowDate(true),
-							order_status:['WaitOuterSent','Delivering'],
-							time_type:1
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:lastXDate(2,true),
+						end_date:getNowDate(true),
+						order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
+						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
 					case 7: //代发今日未发货
-						arg = {
-							start_date:'',
-							end_date:'',
-							order_status:['WaitOuterSent','Delivering'],
-							time_type:1
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:'',
+						end_date:'',
+						order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
+						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
 					case 8: //超48小时未发货订单数
-						arg = {
-							start_date:lastXDate(1,true),
-							end_date:lastXDate(2,true),
-							order_status:['WaitOuterSent','Delivering'],
-							time_type:1
-						}
-						this.$emit('callback',arg);
-						break;
+					arg = {
+						start_date:'',
+						end_date:lastXDate(2,true),
+						order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
+						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
 					default:
-						return;
+					return;
 				}
 			},
 			//商品代发排行
@@ -487,6 +524,12 @@
 	height: 332px;
 	background-color: #ECEFF8;
 	padding: 14px 24px;
+	.refresh{
+		position: absolute;
+		top: 14px;
+		right: 14px;
+		cursor: pointer;
+	}
 	.top_item{
 		padding: 22px 10px; 
 		border-radius: 8px;

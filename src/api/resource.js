@@ -252,6 +252,9 @@ let path = {
 	accountStatementZhcbExport:'audit/accountstatementzhcbexport',	//追回成本下钻导出
 	ajaxAccountStatement:'audit/ajax_accountstatement',				//获取查询条件列表
 	ajaxJsfs:'common/ajaxJsfs',										//供应商结算方式
+	storeScore:'annual/store_score',								//体验分看板表格
+	storeScoreExport:'annual/store_score_export',					//体验分看板表格导出
+	storeScoreChart:'annual/store_score_chart',						//体验分折线图接口
 		
 
 }					
@@ -1295,6 +1298,18 @@ export default{
 	//供应商结算方式
 	ajaxJsfs(params){
 		return http.get(path.ajaxJsfs, params)
+	},
+	//体验分看板表格
+	storeScore(params){
+		return http.get(path.storeScore, params)
+	},
+	//体验分看板表格导出
+	storeScoreExport(params){
+		return http.get(path.storeScoreExport, params)
+	},
+	//体验分折线图接口
+	storeScoreChart(params){
+		return http.get(path.storeScoreChart, params)
 	},
 }
 

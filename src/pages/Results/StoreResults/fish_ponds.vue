@@ -1,5 +1,5 @@
 <template>
-	<div class="container">
+	<div>
 		<!-- 单量、金额统计 -->
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
@@ -219,7 +219,6 @@
 </div>
 </template>
 <style lang="less" scoped>
-.container{
 	.tab_container{
 		margin-bottom: 30px;
 		margin-top: 10px;
@@ -274,7 +273,6 @@
 		min-width: 100%;
 		min-height: 600px;
 	}
-}
 .pc_chart{
 	position: relative;
 	width: 100%;
