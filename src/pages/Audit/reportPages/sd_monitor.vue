@@ -119,7 +119,7 @@
 		</div>
 		<!-- 下钻 -->
 		<el-dialog title="款式信息" width="65%" @close="closeDetail" :visible.sync="detailDialog">
-			<el-table :data="detail_data.data" size="mini">
+			<el-table :data="detail_data.data" @sort-change="sortDetailChange" size="mini">
 				<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in detail_title_list">
 					<template slot="header" slot-scope="scope">
 						<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
@@ -198,6 +198,7 @@
 				detail_page_size:10,
 				detail_page:1,
 				detail_data:{},
+				detail_sort:"",
 				detail_title_list:[],
 			}
 		},
@@ -456,6 +457,7 @@
 					ksbm:this.ksbm,
 					shop_name:this.shop_name,
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
+					sort:this.detail_sort,
 					page:this.detail_page,
 					pagesize:this.detail_page_size
 				}
@@ -468,6 +470,15 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//下钻排序
+			sortDetailChange({ column, prop, order }) {  
+				if(order){
+					this.detail_sort = prop + '-' + (order == 'ascending'?'1':'0');
+				} else{
+					this.detail_sort = "";
+				}   
+				this.getDetailList();
 			},
 			//关闭
 			closeDetail(){
@@ -502,11 +513,13 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
+						jsfs:this.jsfs_ids.join(','),
+						sjxrrq:this.sjxrrq?this.sjxrrq:'',
 						spbm:this.spbm,
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
 						shop_name:this.dpmc_ids.join(','),
-						sort:this.sort
+						sort:this.sort,
 					}
 					resource.storeSdReportExport(arg).then(res => {
 						if(res){
