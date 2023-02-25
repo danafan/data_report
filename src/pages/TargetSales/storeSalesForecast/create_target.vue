@@ -59,6 +59,10 @@
 				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月" style="width: 192px" :picker-options="pickerOptionsYearMonth" :disabled="closeStep1" @change="getReferenceShops">
 				</el-date-picker>
 			</el-form-item>
+			<!-- <el-form-item label="参考年份：" required>
+				<el-date-picker v-model="year" :clearable="false" value-format="yyyy" type="year" placeholder="选择年份" style="width: 192px" :picker-options="pickerOptionsYear" :disabled="closeStep1" @change="getReferenceShops">
+				</el-date-picker>
+			</el-form-item> -->
 			<el-form-item label="参考店铺：" required>
 				<el-select v-model="shop_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
 					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.shop_code">
@@ -366,7 +370,7 @@
 </style>
 <script>
 	import resource from '../../../api/targetSales.js'
-	import {getMonthInfo,getWeek} from '../../../api/nowMonth.js'
+	import {getMonthInfo,getWeek,getLastYear} from '../../../api/nowMonth.js'
 	import excel from "../../../api/excel.js";
 	export default{
 		inject:['reload'],
@@ -393,8 +397,19 @@
 				shopowner_name:"",		//店长姓名
 				manager_list:[],		//店长列表
 				date:"",				//选择的年月
+				year:getLastYear(1),	//参考年份
 				closeStep1:false,		//第一级是否禁用
 				pickerOptionsYearMonth: this.banTime(),
+				pickerOptionsYear:{
+					disabledDate(time) {
+						const date = new Date()
+						const year = date.getFullYear()
+						const currentdate = year.toString()
+						const timeyear = time.getFullYear()
+						const timedate = timeyear.toString()
+						return currentdate < timedate + 1
+					}
+				},
 				lastYearData:{},		//去年同期返回数据
 				day_percent:[],			//去年同期收入占比
 				table_data:[{
@@ -666,6 +681,7 @@
 			},
 			//获取参考店铺列表
 			getReferenceShops(){
+				console.log(this.year)
 				if(this.date == '' || this.shop_id ==""){
 					return;
 				}	
@@ -875,27 +891,27 @@
     			//当前月信息
     			let monthInfo = getMonthInfo(this.date.split('-')[0],this.date.split('-')[1]);
     			//销售收入占比平均数
-      			var average = parseInt(100/monthInfo.monthDayNum);
+    			var average = parseInt(100/monthInfo.monthDayNum);
       			//销售收入占比最后一个
       			var last_average = 100 - average*(monthInfo.monthDayNum - 1)
       			
       			let is_arr = this.day_percent.filter(item => {
       				return item == 0;
       			})
-    			var menu = [];
-    			for(var i=1;i<=monthInfo.monthDayNum;i++){
-    				var d = i < 10?'0'+i:i;
-    				let info = {
-    					day:monthInfo.month+'月'+d+'日',
-    					week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-    					mll:this.table_data[5].new_value,
-    					yxfyl:this.table_data[6].new_value,
-    					qntqsrzb:this.day_percent[i-1],
-    					xssrzb:is_arr.length >10?(i < monthInfo.monthDayNum?average:last_average):this.day_percent[i-1]
-    				}
-    				menu.push(this.setInfo(info));
-    			}
-    			this.day_table_data = menu;
+      			var menu = [];
+      			for(var i=1;i<=monthInfo.monthDayNum;i++){
+      				var d = i < 10?'0'+i:i;
+      				let info = {
+      					day:monthInfo.month+'月'+d+'日',
+      					week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+      					mll:this.table_data[5].new_value,
+      					yxfyl:this.table_data[6].new_value,
+      					qntqsrzb:this.day_percent[i-1],
+      					xssrzb:is_arr.length >10?(i < monthInfo.monthDayNum?average:last_average):this.day_percent[i-1]
+      				}
+      				menu.push(this.setInfo(info));
+      			}
+      			this.day_table_data = menu;
       			// 第二块禁用
       			this.closeStep2 = true;
       		},

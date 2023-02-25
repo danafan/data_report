@@ -64,6 +64,8 @@ let path = {
 	jbDeptExport:'audit/jb_dept_export',							//降本数据报表（部门）导出
 	storeSdReport:'audit/store_sd_report',							//审计刷单情况
 	storeSdReportExport:'audit/store_sd_report_export',				//审计刷单情况导出
+	storeSdTotal:'audit/store_sd_total',							//店铺款式刷单情况-报表头部汇总
+	storeSdSpbm:'audit/store_sd_spbm',								//店铺款式刷单情况-商品编码下钻
 }						
 export default{
 	//款式编码列表
@@ -325,6 +327,14 @@ export default{
 	//审计刷单情况导出
 	storeSdReportExport(params){
 		return http.post(path.storeSdReportExport, params)
+	},
+	//店铺款式刷单情况-报表头部汇总
+	storeSdTotal(params){
+		return http.get(path.storeSdTotal, params)
+	},
+	//店铺款式刷单情况-商品编码下钻
+	storeSdSpbm(params){
+		return http.get(path.storeSdSpbm, params)
 	},
 }
 

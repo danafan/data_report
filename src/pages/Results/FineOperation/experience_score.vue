@@ -15,14 +15,14 @@
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item>
-			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
+			<el-button type="primary" size="small" @click="getListData">搜索</el-button>
 		</el-form-item>
 	</el-form>
 	<div class="flex jse mb-15">
 		<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
-	<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="360px" @sort-change="sortChange" @row-click="rowClick" v-loading="loading">
-		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in title_list">
+	<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="360px" @row-click="rowClick" v-loading="loading">
+		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort === 1" show-overflow-tooltip v-for="item in title_list">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
 					<div class="prop_text">{{item.row_name}}</div>
@@ -35,9 +35,9 @@
 	</el-table>
 	<div class="flex jse" v-if="scoreChart">
 		<el-radio-group v-model="date_type" class="radio_group" size="mini">
-		<el-radio-button label="week">近7天</el-radio-button>
-		<el-radio-button label="month">近30天</el-radio-button>
-	</el-radio-group>
+			<el-radio-button label="week">近7天</el-radio-button>
+			<el-radio-button label="month">近30天</el-radio-button>
+		</el-radio-group>
 	</div>
 	
 	<div class="score_chart" id="score_chart">
@@ -109,17 +109,13 @@
 				this.select_plat_ids = reqObj.select_plat_ids;
 				this.select_store_ids = reqObj.select_store_ids;
 			},
-			//点击搜索
-			searchFn(){
-				//获取列表数据
-				this.getListData();
-			},
 			//获取列表数据
 			getListData(){
 				let arg = {
 					dept_id:this.select_department_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					platform:this.select_plat_ids.join(','),
+					sort:this.sort,
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
 				}
@@ -127,19 +123,20 @@
 					if(res.data.code == 1){
 						this.title_list = res.data.data.title_list;
 						this.table_data = res.data.data.data;
+						if(this.table_data.length > 0){
+							this.shop_name = this.table_data[0].dp;
+							//获取店铺体验分走势数据
+							this.getScoreChart();
+						}else{
+							if(this.scoreChart){
+								this.scoreChart.clear();
+								this.scoreChart = null;
+							}
+						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
-			},
-			//排序
-			sortChange({ column, prop, order }) {  
-				if(order){
-					this.sort = prop + '-' + (order == 'ascending'?'1':'0');
-				} else{
-					this.sort = "";
-				}   
-				this.getData();
 			},
 			//款式信息列表导出
 			commitExport(){
