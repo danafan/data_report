@@ -33,7 +33,7 @@
 				<el-input clearable v-model="spbm" placeholder="商品编码"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
+				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<!-- 两个图表 -->
@@ -46,21 +46,21 @@
 			<div class="jsfs_item">
 				<div class="f16 bold mb-10">日结-供应商</div>
 				<div class="flex jsb mb-15">
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">供应商数量</div>
 						<div class="card_num f20 bold">{{rj_info.gys_num}}个</div>
 					</el-card>
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">款式数量</div>
 						<div class="card_num f20 bold">{{rj_info.ksbm_num}}款</div>
 					</el-card>
 				</div>
 				<div class="flex jsb">
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">3天刷单量</div>
 						<div class="card_num f20 bold">{{rj_info.sd_xssl_3_sum}}件</div>
 					</el-card>
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">3天真实销量</div>
 						<div class="card_num f20 bold">{{rj_info.xssl_3_sum}}件</div>
 					</el-card>
@@ -69,21 +69,21 @@
 			<div class="jsfs_item">
 				<div class="f16 bold mb-10">现结-供应商</div>
 				<div class="flex jsb mb-15">
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">供应商数量</div>
 						<div class="card_num f20 bold">{{xj_info.gys_num}}个</div>
 					</el-card>
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">款式数量</div>
 						<div class="card_num f20 bold">{{xj_info.ksbm_num}}款</div>
 					</el-card>
 				</div>
 				<div class="flex jsb">
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">3天刷单量</div>
 						<div class="card_num f20 bold">{{xj_info.sd_xssl_3_sum}}件</div>
 					</el-card>
-					<el-card class="item_card">
+					<el-card class="item_card" v-loading="chart_loading">
 						<div class="mb-10">3天真实销量</div>
 						<div class="card_num f20 bold">{{xj_info.xssl_3_sum}}件</div>
 					</el-card>
@@ -95,7 +95,12 @@
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="sortChange" v-loading="loading">
-			<el-table-column :prop="item.row_field_name" :label="item.row_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in title_list">
+			<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in title_list">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+						<div class="prop_text">{{item.row_name}}</div>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<el-tooltip placement="top-end" v-if="item.row_field_name == 'ksbm'">
 						<div slot="content">
@@ -115,7 +120,12 @@
 		<!-- 下钻 -->
 		<el-dialog title="款式信息" width="65%" @close="closeDetail" :visible.sync="detailDialog">
 			<el-table :data="detail_data.data" size="mini">
-				<el-table-column :prop="item.row_field_name" :label="item.row_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in detail_title_list">
+				<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" show-overflow-tooltip v-for="item in detail_title_list">
+					<template slot="header" slot-scope="scope">
+						<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+							<div class="prop_text">{{item.row_name}}</div>
+						</el-tooltip>
+					</template>
 					<template slot-scope="scope">
 						<div>{{scope.row[item.row_field_name]}}</div>
 					</template>
@@ -245,6 +255,11 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			searchFn(){
+				//店铺款式刷单情况-报表头部汇总
+				this.storeSdTotal();
+				this.handleCurrentChange(1);
 			},
 			//店铺款式刷单情况-报表头部汇总
 			storeSdTotal(){
@@ -441,8 +456,8 @@
 					ksbm:this.ksbm,
 					shop_name:this.shop_name,
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
-					page:this.detail_page_size,
-					pagesize:this.detail_page
+					page:this.detail_page,
+					pagesize:this.detail_page_size
 				}
 				resource.storeSdSpbm(arg).then(res => {
 					if(res.data.code == 1){
