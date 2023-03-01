@@ -689,12 +689,12 @@
 							let data = res.data.data;
 							if(type == 'shop_name'){
 								this.store_record_title_list = data.title_list;
-								this.store_record_table_list = data.table_list;
+								this.store_record_table_list = data.table_data;
 								this.store_update_time = data.update_time;
 								this.store_record_loading = false;
 							}else{
 								this.supplier_record_title_list = data.title_list;
-								this.supplier_record_table_list = data.table_list;
+								this.supplier_record_table_list = data.table_data;
 								this.supplier_update_time = data.update_time;
 								this.supplier_record_loading = false;
 							}

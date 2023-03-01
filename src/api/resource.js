@@ -255,6 +255,7 @@ let path = {
 	storeScore:'annual/store_score',								//体验分看板表格
 	storeScoreExport:'annual/store_score_export',					//体验分看板表格导出
 	storeScoreChart:'annual/store_score_chart',						//体验分折线图接口
+	ajaxDeerShopPp:'Common/ajaxDeerShopPp',							//品牌列表
 		
 
 }					
@@ -1310,6 +1311,10 @@ export default{
 	//体验分折线图接口
 	storeScoreChart(params){
 		return http.get(path.storeScoreChart, params)
+	},
+	//品牌列表
+	ajaxDeerShopPp(params){
+		return http.get(path.ajaxDeerShopPp, params)
 	},
 }
 

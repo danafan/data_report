@@ -2,6 +2,12 @@
 	<div>
 		<dps @callBack="checkReq"></dps>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="品牌：">
+				<el-select v-model="pp_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="公司：">
 				<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
@@ -392,6 +398,8 @@
 				select_department_ids:[],			//选中的部门id列表
 				select_plat_ids:[],					//选中的平台列表
 				select_store_ids:[],				//选中的店铺id列表
+				pp_list:[],							//品牌列表
+				pp_ids:[],							//选中的品牌
 				company_list:[],					//公司列表
 				company:[],							//选中的公司
 				xssryg:{},							//销售收入预估
@@ -422,6 +430,8 @@
 			}
 		},
 		created(){
+			//品牌列表
+			this.ajaxDeerShopPp();
 			//公司列表
 			this.ajaxCompany();
 			//获取信息
@@ -435,6 +445,16 @@
 			},
 		},
 		methods:{
+			//品牌列表
+			ajaxDeerShopPp(){
+				resource.ajaxDeerShopPp().then(res => {
+					if(res.data.code == 1){
+						this.pp_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//公司列表
 			ajaxCompany(){
 				resource.ajaxCompany().then(res => {
@@ -527,7 +547,8 @@
 					start_time:this.start_time,
 					end_time:this.end_time,
 					audit_flag:this.is_assessment,
-					company:this.company.join(',')
+					company:this.company.join(','),
+					pp:this.pp_ids.join(',')
 				}
 				this.loading = true;
 				resource.performanceReport(req).then(res => {

@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="事业部：">
 				<el-select v-model="dept_name_ids" multiple filterable collapse-tags clearable placeholder="全部" @change="getStoreList">
-					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
+					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -283,6 +283,8 @@
 			}
 		},
 		created(){
+			//部门列表
+			this.getDept();
 			// 获取店铺
 			this.getStoreList();
 			//违规类型列表
@@ -303,6 +305,16 @@
 					this.big_img_url = big_img_url;
 				}
 				this.imageDialog = true;
+			},
+			//部门列表
+			getDept(){
+				resource.ajaxViewDept({from:2}).then(res => {
+					if(res.data.code == 1){
+						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			// 获取店铺
 			getStoreList(){
