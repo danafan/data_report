@@ -10,6 +10,9 @@ let path = {
 	dfAverageDeliveryExport:'replacesend/df_average_delivery_export',	//代发看板发货平均时效统计导出
 	dfOverTime:'replacesend/df_over_time',					//代发系统看板超时未发统计
 	dfOverTimeExport:'replacesend/df_over_time_export',		//代发系统看板超时未发统计导出
+	dfShopGysList:'replacesend/df_shop_gys_list',			//代发系统店铺/供应商明细表接口
+	dfShopGysExport:'replacesend/df_shop_gys_export',		//代发系统店铺/供应商明细表导出
+	dfChart:'replacesend/df_chart',							//30天和今天代发订单图表
 }						
 export default{
 	//订单列表
@@ -51,6 +54,18 @@ export default{
 	//代发系统看板超时未发统计导出
 	dfOverTimeExport(params){
 		return http.post(path.dfOverTimeExport, params)
+	},
+	//代发系统店铺/供应商明细表接口
+	dfShopGysList(params){
+		return http.get(path.dfShopGysList, params)
+	},
+	//代发系统店铺/供应商明细表导出
+	dfShopGysExport(params){
+		return http.post(path.dfShopGysExport, params)
+	},
+	//30天和今天代发订单图表
+	dfChart(params){
+		return http.get(path.dfChart, params)
 	},
 	
 }

@@ -50,11 +50,12 @@
 </template>
 <script>
 	import shelvesResource from '../../../api/shelvesResource.js'
+	import commonResource from '../../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getNowDate} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
-				dept_list:['事业二部','事业四部'],					//事业部列表
+				dept_list:[],					//事业部列表
 				dept_name_ids:[],	//选中的事业部列表
 				store_list:[],		//店铺列表
 				shop_name_ids:[],	//选中的店铺名称列表
@@ -91,12 +92,25 @@
 			}
 		},
 		created(){
+			//部门列表
+			this.getDept();
 			// 获取店铺
 			this.getStoreList();
 			//获取列表
 			this.getData();
 		},
 		methods:{
+			//部门列表
+			getDept(){
+				commonResource.ajaxViewDept({from:2}).then(res => {
+						// if(res.data.code == 1){
+						// 	this.dept_list = res.data.data;
+						// 	this.$store.commit('setDeptList',this.dept_list);
+						// }else{
+						// 	this.$message.warning(res.data.msg);
+						// }
+					})
+			},
 			// 获取店铺
 			getStoreList(){
 				let arg = {

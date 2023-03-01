@@ -9,7 +9,8 @@
 			<span class="bold">{{item.label}}</span>
 			<span>{{item.value}}</span>
 		</div>
-		<i class="icon_style el-icon-info" slot="reference"></i>
+		<img v-if="use_icon" class="popover_icon" src="../static/popover_icon.png" slot="reference">
+		<i class="icon_style el-icon-info" slot="reference" v-else></i>
 	</el-popover>
 </div>
 </template>
@@ -30,6 +31,11 @@
 			keys:{
 				type:String,
 				default:""
+			},
+			//是否使用特定图标
+			use_icon:{
+				type:Boolean,
+				default:false
 			}
 		},
 		created(){
@@ -58,6 +64,11 @@
 	.icon_style{
 		margin-left: 5px;
 		color: #E6A23C;
+	}
+	.popover_icon{
+		margin-left: 5px;
+		width: 20px;
+		height: 20px;
 	}
 }
 .row_content{
