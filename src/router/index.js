@@ -32,6 +32,7 @@ const commit_data = resolve=>require(['@/pages/FormData/my_commit/submit_log/com
 //下架款登记反馈
 const shelves_feedback = resolve=>require(['@/pages/ShelvesFeedBack/shelves_feedback'],resolve)
 const illegal_control = resolve=>require(['@/pages/ShelvesFeedBack/illegal_control'],resolve)
+const violation = resolve=>require(['@/pages/ShelvesFeedBack/violation'],resolve)
 //店铺信息
 const store_info = resolve=>require(['@/pages/StoreInfo/store_info'],resolve)
 //运营中心
@@ -108,6 +109,7 @@ const router = new Router({
     { path: '/commit_data',name:"表单数据", component: commit_data},
     { path: '/shelves_feedback',name:"下架款登记反馈", component: shelves_feedback},
     { path: '/illegal_control',name:"店铺违规管控", component: illegal_control},
+    { path: '/violation',name:"工商违规", component: violation},
     { path: '/store_info',name:"店铺信息", component: store_info},
     { path: '/new_data',name:"上新数据", component: new_data},
     { path: '/delivery_data',name:"发货数据", component: delivery_data},

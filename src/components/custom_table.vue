@@ -1,6 +1,6 @@
 <template>
-	<el-table size="mini" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :max-height="max_height">
-		<el-table-column type="index" label="序号" align="center" v-if="show_index">
+	<el-table size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" :max-height="max_height">
+		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
 		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort === 1" show-overflow-tooltip v-for="item in title_list" :width="column_width">
 			<template slot="header" slot-scope="scope">
@@ -9,7 +9,7 @@
 				</el-tooltip>
 			</template>
 			<template slot-scope="scope">
-				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == '3'"></el-image>
+				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == '3' && scope.row.images[0] != ''"></el-image>
 				<div v-else>{{scope.row[item.row_field_name]}}{{item.unit}}</div>
 			</template>
 		</el-table-column>

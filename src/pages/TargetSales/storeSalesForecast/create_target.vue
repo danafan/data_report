@@ -796,10 +796,10 @@
 			changeInput(v,item){
 				if(item.key == 'kdj'){
 					// 预估发货单数（本月销售收入/客单价）
-					this.table_data[0].new_value = this.table_data[2].new_value === '' || this.table_data[4].new_value === ''?'':(this.table_data[4].new_value/this.table_data[2].new_value).toFixed(2);
+					this.table_data[0].new_value = !this.table_data[2].new_value || !this.table_data[4].new_value == ''?'':(this.table_data[4].new_value/this.table_data[2].new_value).toFixed(2);
 				}else if(item.key == 'xssr'||item.key == 'mll'||item.key == 'yxfyl'||item.key == 'dptdfyl'||item.key == 'xmbftfyl'||item.key == 'sybftfyl'||item.key == 'lbfyl'||item.key == 'dpqtfyl'||item.key == 'wlfyl'||item.key == 'kffyl'||item.key == 'gtfyl'){	
 					// 预估发货单数（本月销售收入/客单价）
-					this.table_data[0].new_value = this.table_data[2].new_value === '' || this.table_data[4].new_value === ''?'':(this.table_data[4].new_value/this.table_data[2].new_value).toFixed(2);
+					this.table_data[0].new_value = !this.table_data[2].new_value || !this.table_data[4].new_value == ''?'':(this.table_data[4].new_value/this.table_data[2].new_value).toFixed(2);
 					// GMV（本月销售收入/（1-本月退款率））
 					this.table_data[1].new_value = this.table_data[4].new_value === ''?'':(this.table_data[4].new_value/(1 - (this.table_data[3].new_value)/100)).toFixed(2);
 					//贡献毛益率(毛利率-营销费用率-店铺团队费用率-项目部分摊费用率-事业部分摊费用率-领标费用率-店铺其他费用率)

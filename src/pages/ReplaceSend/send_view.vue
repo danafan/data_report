@@ -1,5 +1,5 @@
 <template>
-	<div class="send_view pr-20 pl-20 pb-20">
+	<div class="send_view pr-10 pl-10 pb-20">
 		<!-- 头部信息 -->
 		<div class="top_content relative flex ac jsa mb-10">
 			<div class="top_item background_color height-100 flex fc ac">
@@ -111,7 +111,7 @@
 		</div>
 		<!-- 明细 -->
 		<div class="flex jsb mb-10">
-			<div class="flex-1 white_back p10">
+			<div class="white_back p10" style="width: 50%">
 				<div class="flex ac jsb f16 mb-10">
 					<div class="bold">店铺代发明细表</div>
 					<div class="f12 red_color">更新时间：{{store_update_time}}</div>
@@ -126,7 +126,7 @@
 				</div>
 				<custom-table v-loading="store_record_loading" :show_index="true" :table_data="store_record_table_list" :title_list="store_record_title_list"/>
 			</div>
-			<div class="flex-1 ml-15 white_back p10">
+			<div class="ml-15 white_back p10" style="width: 50%">
 				<div class="flex ac jsb f16 mb-10">
 					<div class="bold">供应商代发明细表</div>
 					<div class="f12 red_color">更新时间：{{supplier_update_time}}</div>
@@ -145,7 +145,7 @@
 		<!-- 各种排行 -->
 		<div class="flex jsb mb-10">
 			<!-- 商品 -->
-			<div class="flex-1 white_back p10">
+			<div class="white_back p10" style="width: 33%">
 				<div class="flex ac jsb f16 mb-10">
 					<div class="bold">商品代发排行</div>
 					<div class="f12 red_color">实时更新</div>
@@ -163,7 +163,7 @@
 				<custom-table v-loading="sp_loading" :show_index="true" :table_data="i_table_data" :title_list="i_title_list" :is_wrap="true"/>
 			</div>
 			<!-- 供应商 -->
-			<div class="flex-1 white_back p10 ml-15 mr-15">
+			<div class="white_back p10 ml-15 mr-15" style="width: 33%">
 				<div class="flex ac jsb f16 mb-10">
 					<div class="bold">供应商代发排行</div>
 					<div class="f12 red_color">实时更新</div>
@@ -181,7 +181,7 @@
 				<custom-table v-loading="gys_loading" :show_index="true" :table_data="gys_table_data" :title_list="gys_title_list" :is_wrap="true"/>
 			</div>
 			<!-- 店铺 -->
-			<div class="flex-1 white_back p10">
+			<div class="white_back p10" style="width: 33%">
 				<div class="flex ac jsb f16 mb-10">
 					<div class="bold">店铺代发排行</div>
 					<div class="f12 red_color">实时更新</div>
@@ -282,6 +282,7 @@
 				jjcs_loading:false,
 				jjcs_title_list:[],					//发货即将超时头部列表
 				jjcs_table_data:[],					//发货即将超时列表
+				viewChart:null
 			}
 		},
 		created(){
@@ -527,10 +528,17 @@
 						trigger: 'axis',
 						formatter: function (params) {
 							let tip = "";
-							tip += `${params[0].seriesName}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp${params[0].value}</br>`;
+							if(params.length > 0){
+								tip += `${params[0].seriesName}：${params[0].value}</br>`;
+							}
+							
 							tip += `较昨日:${zb_data[params[0].dataIndex].yesterday_zb}&nbsp&nbsp&nbsp&nbsp较上周:${zb_data[params[0].dataIndex].last_week_zb}</br>`;
-							tip += `${params[1].seriesName}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp${params[1].value}</br>`;
-							tip += `${params[2].seriesName}&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp${params[2].value}</br>`;
+							if(params.length > 1){
+								tip += `${params[1].seriesName}：${params[1].value}</br>`;
+							}
+							if(params.length > 2){
+								tip += `${params[2].seriesName}：${params[2].value}</br>`;
+							}
 							return tip;
 						},
 						backgroundColor:"#ffffff",
@@ -985,7 +993,7 @@
 			border-top:1px solid #5288F8;
 			border-left:1px solid #5288F8;
 			width: 85px;
-			height: 110px;
+			height: 100px;
 		}
 		.r_line{
 			right:-85px;
@@ -993,7 +1001,7 @@
 			border-top:1px solid #5288F8;
 			border-right:1px solid #5288F8;
 			width: 85px;
-			height: 110px;
+			height: 100px;
 		}
 	}
 	.c_c_line{
@@ -1019,7 +1027,7 @@
 			left: -22px;
 			top: 55px;
 			width: 22px;
-			height: 89px;
+			height: 78px;
 			border-top:1px solid #5288F8;
 			border-left:1px solid #5288F8;
 		}
@@ -1027,7 +1035,7 @@
 			right: -22px;
 			top: 55px;
 			width: 22px;
-			height: 89px;
+			height: 78px;
 			border-top:1px solid #5288F8;
 			border-right:1px solid #5288F8;
 		}

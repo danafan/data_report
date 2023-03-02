@@ -23,6 +23,7 @@ let path = {
 	violationAnalysis:'offshelf/violation_analysis',//违规统计
 	violationExport:'offshelf/violation_export',	//信息管控列表导出
 	violationShopName:'offshelf/violation_shop_name',	//店铺列表
+	gsViolationSearch:'offshelf/gs_violation_search',	//获取工商违规-下拉筛选项接口
 
 	
 }						
@@ -118,6 +119,10 @@ export default{
 	//店铺列表
 	violationShopName(params){
 		return http.get(path.violationShopName, params)
+	},
+	//工商违规-下拉筛选项接口
+	gsViolationSearch(params){
+		return http.get(path.gsViolationSearch, params)
 	},
 }
 
