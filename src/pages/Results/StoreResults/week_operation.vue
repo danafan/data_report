@@ -254,7 +254,9 @@
 			</div>
 			<div class="flex jsb">
 				<div class="width-50 mr30">
-					<div class="title">月度</div>
+					<div class="title flex ac">月度
+						<div class="f14 red_color">（{{`${month_date}至${end_date}`}}）</div>
+					</div>
 					<div class="top_title">店铺盈利Top10</div>
 					<el-table :data="month_yl_data" size="small" style="width: 100%" :header-cell-style="{'background':'#A1161B','color':'#ffffff','text-align': 'center'}" v-loading="month_yl_loading">
 						<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
@@ -275,7 +277,9 @@
 					</el-table>
 				</div>
 				<div class="width-50">
-					<div class="title">单周</div>
+					<div class="title flex ac">单周
+						<div class="f14 red_color">（{{`${week_date}至${end_date}`}}）</div>
+					</div>
 					<div class="top_title">店铺盈利Top10</div>
 					<el-table :data="week_yl_data" size="small" style="width: 100%" :header-cell-style="{'background':'#A1161B','color':'#ffffff','text-align': 'center'}" v-loading="week_yl_loading">
 						<el-table-column :label="i.label" :prop="i.prop" v-for="i in column_list" show-overflow-tooltip align="center" :width="i.width">
@@ -301,7 +305,7 @@
 	<script>
 		import resource from '../../../api/resource.js'
 
-		import { getCurrentYear } from '../../../api/nowMonth.js'
+		import { getCurrentYear,getNextDate } from '../../../api/nowMonth.js'
 
 		import PopoverWidget from '../../../components/popover_widget.vue'
 		export default{
@@ -315,6 +319,8 @@
 				week:"",						//选中的周数
 				start_date:"",					//开始日期
 				end_date:"",					//结束日期
+				week_date:"",					//7天之前的日期
+				month_date:"",					//30天之前的日期
 				content_loading:false,
 				xssr_info:{},					//销售收入看板
 				xssr_four_week:[],				//销售收入最近四周数据走势
@@ -386,6 +392,8 @@
 						this.week = this.week_list.length == 0?"":this.week_list[0].weeks;
 						this.start_date = this.week_list.length == 0?"":this.week_list[0].start_time;
 						this.end_date = this.week_list.length == 0?"":this.week_list[0].end_time;
+						this.week_date = this.start_date.split('-')[0] + '-' + getNextDate(this.end_date,-7);
+						this.month_date =  this.start_date.split('-')[0] + '-' + getNextDate(this.end_date,-30);
 						if(type){
 							//简报内容
 							this.briefContent();

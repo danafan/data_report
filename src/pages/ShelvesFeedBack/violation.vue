@@ -42,7 +42,7 @@
 		<el-button type="primary" plain size="small" v-if="button_list.export == 1" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		<import-button ref="importButton" tempUrl="工商违规导入模板.xlsx" @importFn="importFn" v-if="button_list.import == 1"/>
 	</div>
-	<custom-table v-loading="loading" :button_list="button_list" :table_data="table_list" :title_list="title_list" :is_setting="true" @editFn="editFn" @deleteFn="deleteFn"/>
+	<custom-table v-loading="loading" max_height="9999" :button_list="button_list" :table_data="table_list" :title_list="title_list" :is_setting="true" @editFn="editFn" @deleteFn="deleteFn"/>
 	<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 	<!-- 添加或编辑 -->
 	<el-dialog :title="`${dialog_type == '1'?'添加':'编辑'}违规店铺`" @close="closeDialog" width="45%" :visible.sync="showDialog">
@@ -168,7 +168,7 @@
 			//导入
 			importFn(file){
 				resource.gsViolationImport({file:file}).then(res => {
-					this.$refs.importButton.clearValue;
+					this.$refs.importButton.clearValue();
 					if(res.data.code == 1){
 						this.$message.success(res.data.msg);
 						this.page = 1;
