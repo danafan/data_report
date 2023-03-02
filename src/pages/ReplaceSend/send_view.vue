@@ -136,7 +136,7 @@
 						<el-button slot="append" icon="el-icon-search" @click="dfShopGysList('supplier_name')"></el-button>
 					</el-input>
 					<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
-						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('supplier_name',supplier_name,'供应商代发明细表')">
+						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('supplier_name',supplier_name,'供应商代发明细表')">
 					</el-tooltip>
 				</div>
 				<custom-table v-loading="supplier_record_loading" :show_index="true" :table_data="supplier_record_table_list" :title_list="supplier_record_title_list"/>
@@ -532,7 +532,13 @@
 								tip += `${params[0].seriesName}：${params[0].value}</br>`;
 							}
 							
-							tip += `较昨日:${zb_data[params[0].dataIndex].yesterday_zb}&nbsp&nbsp&nbsp&nbsp较上周:${zb_data[params[0].dataIndex].last_week_zb}</br>`;
+							let arr = params.filter(item => {
+								return item.seriesName == '今日';
+							})
+							if(arr.length > 0){
+								tip += `较昨日:${zb_data[params[0].dataIndex].yesterday_zb}&nbsp&nbsp&nbsp&nbsp较上周:${zb_data[params[0].dataIndex].last_week_zb}</br>`;
+							}
+							
 							if(params.length > 1){
 								tip += `${params[1].seriesName}：${params[1].value}</br>`;
 							}

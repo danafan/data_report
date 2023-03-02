@@ -24,6 +24,8 @@ let path = {
 	violationExport:'offshelf/violation_export',	//信息管控列表导出
 	violationShopName:'offshelf/violation_shop_name',	//店铺列表
 	gsViolationSearch:'offshelf/gs_violation_search',	//获取工商违规-下拉筛选项接口
+	gsViolationImport:'offshelf/gs_violation_import',	//工商违规-违规记录导入接口
+	gsViolation:'offshelf/gs_violation',				//工商违规记录列表
 
 	
 }						
@@ -123,6 +125,14 @@ export default{
 	//工商违规-下拉筛选项接口
 	gsViolationSearch(params){
 		return http.get(path.gsViolationSearch, params)
+	},
+	//工商违规-违规记录导入接口
+	gsViolationImport(params){
+		return http.post(path.gsViolationImport, params)
+	},
+	//工商违规记录列表
+	gsViolation(params){
+		return http.get(path.gsViolation, params)
 	},
 }
 

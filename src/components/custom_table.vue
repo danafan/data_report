@@ -2,7 +2,7 @@
 	<el-table size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" :max-height="max_height">
 		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
-		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort === 1" show-overflow-tooltip v-for="item in title_list" :width="column_width">
+		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort === 1" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :width="column_width">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
 					<div :class="{'prop_text':is_wrap}">{{item.row_name}}</div>
