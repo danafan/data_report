@@ -26,6 +26,10 @@ let path = {
 	gsViolationSearch:'offshelf/gs_violation_search',	//获取工商违规-下拉筛选项接口
 	gsViolationImport:'offshelf/gs_violation_import',	//工商违规-违规记录导入接口
 	gsViolation:'offshelf/gs_violation',				//工商违规记录列表
+	addGsViolation:'offshelf/add_gs_violation',			//工商违规-创建违规记录接口
+	editGsViolation:'offshelf/edit_gs_violation',		//工商违规-编辑违规记录
+	delGsViolation:'offshelf/del_gs_violation',			//工商违规-删除违规记录
+	gsViolationExport:'offshelf/gs_violation_export',	//工商违规记录导出
 
 	
 }						
@@ -133,6 +137,26 @@ export default{
 	//工商违规记录列表
 	gsViolation(params){
 		return http.get(path.gsViolation, params)
+	},
+	//工商违规-创建违规记录接口
+	addGsViolation(params){
+		return http.post(path.addGsViolation, params)
+	},
+	//工商违规-编辑违规记录
+	editGsViolationGet(params){
+		return http.get(path.editGsViolation, params)
+	},
+	//工商违规-编辑违规记录
+	editGsViolationPost(params){
+		return http.post(path.editGsViolation, params)
+	},
+	//工商违规-删除违规记录
+	delGsViolation(params){
+		return http.post(path.delGsViolation, params)
+	},
+	//工商违规记录导出
+	gsViolationExport(params){
+		return http.post(path.gsViolationExport, params)
 	},
 }
 

@@ -13,6 +13,12 @@
 				<div v-else>{{scope.row[item.row_field_name]}}{{item.unit}}</div>
 			</template>
 		</el-table-column>
+		<el-table-column label="操作" align="center" v-if="is_setting">
+			<template slot-scope="scope">
+				<el-button type="text" size="small" @click="$emit('editFn',scope.row.id)" v-if='button_list.edit == 1'>编辑</el-button>
+				<el-button type="text" size="small" @click="$emit('deleteFn',scope.row.id)" v-if='button_list.del == 1'>删除</el-button>
+			</template>
+		</el-table-column>
 	</el-table>
 </template>
 <script>
@@ -52,7 +58,17 @@
 			image_size:{
 				type:String,
 				default:'50px'
-			}
+			},
+			//是否有操作列
+			is_setting:{
+				type:Boolean,
+				default:false
+			},
+			//按钮权限
+			button_list:{
+				type:Object,
+				default:()=>{}
+			},
 		}
 	}
 </script>

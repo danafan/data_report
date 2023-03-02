@@ -1,6 +1,6 @@
 <template>
-	<div>
-		<el-button type="primary" size="small" @click="import_dialog = true">
+	<div class="ml-10">
+		<el-button type="primary" plain size="small" @click="import_dialog = true">
 			导入
 			<i class="el-icon-upload el-icon--right"></i>
 		</el-button>

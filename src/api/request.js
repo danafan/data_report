@@ -8,6 +8,9 @@ export function middleWare(params,type) {
     if(typeof(params[k])=='string' && params[k] != ""){
       params[k] = params[k].toString().replace(/(^\s*)|(\s*$)/g,"");
     }
+    if(params[k] === null){
+      params[k] = '';
+    }
   }
 
   var ding_user_id = !localStorage.getItem("ding_user_id")?'':localStorage.getItem("ding_user_id");
