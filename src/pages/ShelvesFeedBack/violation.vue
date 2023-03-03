@@ -63,7 +63,7 @@
 				<el-input type="textarea" style="width: 192px" :rows="3" v-model="info.content" placeholder="请输入内容"></el-input>
 			</el-form-item>
 			<el-form-item label="投诉单：" required>
-				<uploads-file :multiple="false" :current_images="current_images" @callback="uploadCallBack"/>
+				<uploads-file :multiple="false" :current_images="current_images" @callback="uploadCallBack" v-if="showDialog"/>
 			</el-form-item>
 			<el-form-item label="投诉日期：" required>
 				<el-date-picker v-model="info.date" value-format="yyyy-MM-dd" type="date" placeholder="投诉日期">
