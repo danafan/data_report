@@ -19,7 +19,7 @@
       //单独页面刷新
       reload () {
         this.isRouterAlive = false
-        this.$nextTick(function () {
+        this.$nextTick( () => {
           this.isRouterAlive = true
         })
       }

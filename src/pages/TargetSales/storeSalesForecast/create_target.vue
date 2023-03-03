@@ -590,6 +590,7 @@
 			}
 		},
 		created(){
+
 			//获取部门列表
 			this.getDepts();
 			//获取店铺列表

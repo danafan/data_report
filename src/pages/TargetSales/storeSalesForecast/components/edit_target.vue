@@ -46,19 +46,19 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="参考店铺：">
-				<el-select v-model="reference_jst_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
-					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.jst_code">
-					</el-option>
-				</el-select>
+			<el-form-item label="年/月：">
+				<el-date-picker v-model="date" value-format="yyyy-MM" type="month" style="width: 192px" disabled>
+				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="参考年份：">
 				<el-date-picker v-model="reference_year" :clearable="false" value-format="yyyy" type="year" placeholder="选择年份" style="width: 192px" :picker-options="pickerOptionsYear" :disabled="closeStep1">
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item label="年/月：">
-				<el-date-picker v-model="date" value-format="yyyy-MM" type="month" style="width: 192px" disabled>
-				</el-date-picker>
+			<el-form-item label="参考店铺：">
+				<el-select v-model="reference_jst_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
+					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.jst_code">
+					</el-option>
+				</el-select>
 			</el-form-item>
 		</el-form>
 		<el-button type="primary" size="small" @click="getLastYearData('2')" v-if="closeStep1==false">查询</el-button>
@@ -670,7 +670,8 @@
 			getLastYearData(type){
 				let arg = {
 					shop_code:this.reference_jst_code,
-					date:this.date
+					date:this.date,
+					reference_year:this.reference_year
 				}
 				this.loading_one = true;
 				resource.lastYearData(arg).then(res => {
@@ -1023,6 +1024,7 @@
       					month:month,
       					day:new_day_table_data
       				}
+      				console.log(data)
 
       				let arg = {
       					data:JSON.stringify(data),

@@ -160,9 +160,10 @@
 				this.status = -1;
 				this.page = 1;
 				this.pagesize = 10;
-				//获取店铺列表
-				this.getShops();
+				
 			}
+			//获取店铺列表
+				this.getShops();
 			//获取列表
 			this.getData();
 			this.$route.meta.isUseCache = false;
