@@ -11,12 +11,12 @@
 		</el-table>
 		<el-table size="small" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
-			<el-table-column width="180" :label="`去年同期上月（${getLastyearLastMonth}）`" align="center">
+			<el-table-column width="180" :label="`${reference_year}年同期上月（${getLastyearLastMonth}）`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.last_month_value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column width="180" :label="`去年同期（${getLastyearCurrentMonth}）`" align="center">
+			<el-table-column width="180" :label="`${reference_year}年同期（${getLastyearCurrentMonth}）`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
@@ -344,6 +344,7 @@
 				getCurrentMonth:"",
 				getLastyearLastMonth:"",
 				getLastyearCurrentMonth:"",
+				reference_year:"",
 				dataObj:{},
 				info_data:[],			//顶部详情信息
 				table_data:[{
@@ -571,6 +572,7 @@
 						//顶部店铺详情
 						let infoData = data.data;
 
+						this.reference_year = data.reference_year;
 						this.getLastMonth = (infoData.month == 1?infoData.year-1:infoData.year) + '-' + (infoData.month == 1?12:infoData.month-1);
 						this.getCurrentMonth = infoData.year + '-' + infoData.month;
 						this.getLastyearLastMonth = (infoData.month == 1?infoData.year-2:infoData.year-1) + '-' + (infoData.month == 1?12:infoData.month-1);

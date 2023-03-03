@@ -59,10 +59,10 @@
 				<el-date-picker v-model="date" :clearable="false" value-format="yyyy-MM" type="month" placeholder="选择年月" style="width: 192px" :picker-options="pickerOptionsYearMonth" :disabled="closeStep1" @change="getReferenceShops">
 				</el-date-picker>
 			</el-form-item>
-			<!-- <el-form-item label="参考年份：" required>
-				<el-date-picker v-model="year" :clearable="false" value-format="yyyy" type="year" placeholder="选择年份" style="width: 192px" :picker-options="pickerOptionsYear" :disabled="closeStep1" @change="getReferenceShops">
+			<el-form-item label="参考年份：" required>
+				<el-date-picker v-model="reference_year" :clearable="false" value-format="yyyy" type="year" placeholder="选择年份" style="width: 192px" :picker-options="pickerOptionsYear" :disabled="closeStep1" @change="getReferenceShops">
 				</el-date-picker>
-			</el-form-item> -->
+			</el-form-item>
 			<el-form-item label="参考店铺：" required>
 				<el-select v-model="shop_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
 					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.shop_code">
@@ -76,7 +76,7 @@
 	<div class="table_box" v-if="closeStep1 == true">
 		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column width="200" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
-			<el-table-column width="180" label="去年同期" align="center">
+			<el-table-column width="180" :label="`${reference_year}年同期`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
@@ -143,8 +143,8 @@
 		</el-table-column>
 		<el-table-column width="70" show-overflow-tooltip prop="qntqsrzb" align="center">
 			<template slot="header" slot-scope="scope">
-				<el-tooltip effect="dark" content="去年同期收入占比" placement="top-start">
-					<div class="text_content">去年同期收入占比</div>
+				<el-tooltip effect="dark" :content="`${reference_year}年同期收入占比`" placement="top-start">
+					<div class="text_content">{{reference_year}}年同期收入占比</div>
 				</el-tooltip>
 			</template>
 			<template slot-scope="scope">
@@ -397,7 +397,7 @@
 				shopowner_name:"",		//店长姓名
 				manager_list:[],		//店长列表
 				date:"",				//选择的年月
-				year:getLastYear(1),	//参考年份
+				reference_year:getLastYear(1),	//参考年份
 				closeStep1:false,		//第一级是否禁用
 				pickerOptionsYearMonth: this.banTime(),
 				pickerOptionsYear:{
@@ -681,7 +681,6 @@
 			},
 			//获取参考店铺列表
 			getReferenceShops(){
-				console.log(this.year)
 				if(this.date == '' || this.shop_id ==""){
 					return;
 				}	
@@ -744,7 +743,8 @@
 				}
 				let arg = {
 					shop_code:this.reference_jst_code,
-					date:this.date
+					date:this.date,
+					reference_year:this.reference_year
 				}
 				this.loading = true;
 				resource.lastYearData(arg).then(res => {
@@ -1040,6 +1040,7 @@
       					reference_shop:this.reference_shop,
       					reference_shop_id:this.shop_code,
       					date:this.date,
+      					reference_year:this.reference_year
       				};
       				this.table_data.map(item => {
       					month[item.key] = item.new_value;

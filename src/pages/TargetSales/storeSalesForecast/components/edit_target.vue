@@ -63,7 +63,7 @@
 	<div class="table_box" v-if="closeStep1 == true">
 		<el-table size="small" :data="table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading_one">
 			<el-table-column width="150" show-overflow-tooltip prop="name" label="分类" align="center"></el-table-column>
-			<el-table-column width="120" label="去年同期" align="center">
+			<el-table-column width="120" :label="`${reference_year}年同期`" align="center">
 				<template slot-scope="scope">
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
@@ -130,8 +130,8 @@
 		</el-table-column>
 		<el-table-column width="70" show-overflow-tooltip prop="qntqsrzb" align="center">
 			<template slot="header" slot-scope="scope">
-				<el-tooltip effect="dark" content="去年同期收入占比" placement="top-start">
-					<div class="text_content">去年同期收入占比</div>
+				<el-tooltip effect="dark" :content="`${reference_year}年同期收入占比`" placement="top-start">
+					<div class="text_content">{{reference_year}}年同期收入占比</div>
 				</el-tooltip>
 			</template>
 			<template slot-scope="scope">
@@ -374,6 +374,7 @@
 				shop_type:"",			//店铺类别
 				reference_shop:"",		//选中的参考店铺名称
 				shop_code:"",			//选中的参考店铺shop_code
+				reference_year:"",//参考年份
 				reference_store_list:[],//参考店铺列表
 				shopowner_id:"",		//店长ID
 				shopowner_name:"",		//店长姓名
@@ -579,6 +580,7 @@
 				this.platform = month_obj.platform;				//平台名称
 				this.shop_type = month_obj.shop_type;			//店铺类别
 				this.reference_shop = month_obj.reference_shop;	//选中的参考店铺名称
+				this.reference_year = month_obj.reference_year;
 				this.shopowner_id = month_obj.shopowner_id;		//店长ID
 				this.shopowner_name = month_obj.shopowner_name;	//店长姓名
 				this.date = month_obj.date;						//选择的年月
@@ -992,6 +994,7 @@
       					reference_shop:this.reference_shop,
       					reference_shop_id:this.shop_code,
       					date:this.date,
+      					reference_year:this.reference_year
       				};
       				this.table_data.map(item => {
       					month[item.key] = item.new_value;
