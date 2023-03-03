@@ -52,6 +52,10 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="参考年份：">
+				<el-date-picker v-model="reference_year" :clearable="false" value-format="yyyy" type="year" placeholder="选择年份" style="width: 192px" :picker-options="pickerOptionsYear" :disabled="closeStep1">
+				</el-date-picker>
+			</el-form-item>
 			<el-form-item label="年/月：">
 				<el-date-picker v-model="date" value-format="yyyy-MM" type="month" style="width: 192px" disabled>
 				</el-date-picker>
@@ -374,7 +378,17 @@
 				shop_type:"",			//店铺类别
 				reference_shop:"",		//选中的参考店铺名称
 				shop_code:"",			//选中的参考店铺shop_code
-				reference_year:"",//参考年份
+				reference_year:"",		//参考年份
+				pickerOptionsYear:{
+					disabledDate(time) {
+						const date = new Date()
+						const year = date.getFullYear()
+						const currentdate = year.toString()
+						const timeyear = time.getFullYear()
+						const timedate = timeyear.toString()
+						return currentdate < timedate + 1
+					}
+				},
 				reference_store_list:[],//参考店铺列表
 				shopowner_id:"",		//店长ID
 				shopowner_name:"",		//店长姓名
@@ -580,7 +594,7 @@
 				this.platform = month_obj.platform;				//平台名称
 				this.shop_type = month_obj.shop_type;			//店铺类别
 				this.reference_shop = month_obj.reference_shop;	//选中的参考店铺名称
-				this.reference_year = month_obj.reference_year;
+				this.reference_year = month_obj.reference_year.toString();
 				this.shopowner_id = month_obj.shopowner_id;		//店长ID
 				this.shopowner_name = month_obj.shopowner_name;	//店长姓名
 				this.date = month_obj.date;						//选择的年月

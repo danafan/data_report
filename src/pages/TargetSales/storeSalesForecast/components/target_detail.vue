@@ -575,8 +575,8 @@
 						this.reference_year = data.reference_year;
 						this.getLastMonth = (infoData.month == 1?infoData.year-1:infoData.year) + '-' + (infoData.month == 1?12:infoData.month-1);
 						this.getCurrentMonth = infoData.year + '-' + infoData.month;
-						this.getLastyearLastMonth = (infoData.month == 1?infoData.year-2:infoData.year-1) + '-' + (infoData.month == 1?12:infoData.month-1);
-						this.getLastyearCurrentMonth = (infoData.year-1) + '-' + infoData.month;
+						this.getLastyearLastMonth = this.reference_year + '-' + (infoData.month == 1?12:infoData.month-1);
+						this.getLastyearCurrentMonth = this.reference_year + '-' + infoData.month;
 
 						this.bottom_info = infoData;		//底部信息
 						let info_item = {
