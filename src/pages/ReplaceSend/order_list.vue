@@ -315,7 +315,7 @@
 			getStore(){
 				this.select_store_ids = [];
 				let dept_id = this.select_dept_ids.join(',');
-				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
