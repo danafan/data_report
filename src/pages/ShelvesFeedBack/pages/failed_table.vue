@@ -129,7 +129,7 @@
 			},
 			//下载模版
 			downTemplate(){
-				window.open(`${this.downLoadUrl}/下架登记数据模版.xlsx`);
+				window.open(`${this.downLoadUrl}/下架登记数据模板.xlsx`);
 			},
 			//导入
 			uploadCsv(){

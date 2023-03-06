@@ -1,6 +1,24 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="项目部：">
+				<el-cascader
+				 size="mini"
+				class="input_cascader"
+				ref="cascader"
+				:options="dept_list"
+				:props="props"
+				filterable
+				@change="getIds"
+				@remove-tag="getIds"
+				clearable></el-cascader>
+			</el-form-item>
+			<el-form-item label="店铺：">
+				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="订单号：">
 				<el-input v-model="search" placeholder="订单号/内部订单号"clearable></el-input>
 			</el-form-item>
@@ -46,10 +64,21 @@
 	</div>
 </template>
 <script>
+	import resource from '../../api/resource.js'
 	import replaceSend from '../../api/replaceSend.js'
 	export default{
 		data(){
 			return{
+				dept_list:[],								//部门列表
+				select_dept_ids:[],							//选中的部门列表
+				props:{
+					multiple:true,
+					value:'dept_id',
+					label:'dept_name',
+					children:'list',
+				},
+				shop_list:[],								//店铺列表
+				select_store_ids:[],						//选中的店铺列表
 				search:"",				//搜索的内容
 				after_sales_type_list:['普通退货','其它','拒收退货','仅退款','投诉','补发','换货'],	//售后类型列表
 				after_sales_type:[],		//选中的售后类型
@@ -154,10 +183,78 @@
 			}
 		},
 		created(){
+			//部门列表
+			this.getDept();
+			//店铺列表
+			this.getStore();
 			//获取列表
 			this.getList();
 		},
 		methods:{
+			//部门列表
+			getDept(){
+				if(this.$store.state.dept_list.length == 0){  
+					resource.ajaxViewDept({from:1}).then(res => {
+						if(res.data.code == 1){
+							this.dept_list = res.data.data;
+							this.$store.commit('setDeptList',this.dept_list);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.dept_list = this.$store.state.dept_list;
+				}
+			},
+			//切换部门
+			getIds(){
+				this.$nextTick(()=>{
+					var arr = [];
+					var select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
+					select_department.map(s => {
+						if(!!s.parent){	//最后一层有父级
+							var m = s.parent;
+							if(!!m.checked){ //倒数第二层被全选了
+								if(!!m.parent){ //倒数第二层有父级
+									var d = m.parent;
+									if(!!d.checked){ //倒数第三层被全选了
+										if(arr.indexOf(d.value) == -1){
+											arr.push(d.value);
+										}
+									}else{
+										if(arr.indexOf(m.value) == -1){
+											arr.push(m.value);
+										}
+									}
+								}else{
+									if(arr.indexOf(m.value) == -1){
+										arr.push(m.value);
+									}
+								}
+							}else{
+								arr.push(s.value);
+							}
+						}else{	//只有一层
+							arr.push(s.value);
+						}
+					})
+					this.select_dept_ids = arr;
+					//店铺列表
+					this.getStore();
+				});
+			},
+			//店铺列表
+			getStore(){
+				this.select_store_ids = [];
+				let dept_id = this.select_dept_ids.join(',');
+				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
+					if(res.data.code == 1){
+						this.shop_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取列表
 			getList(){
 				let arg = {
@@ -166,6 +263,8 @@
 					after_sales_type:this.after_sales_type.join(','),
 					after_sales_status:this.after_sales_status.join(','),
 					after_sales_goods_status:this.after_sales_goods_status.join(','),
+					dept_id:this.select_dept_ids.join(','),
+					shop_id:this.select_store_ids.join(','),
 					search:this.search
 				}
 				this.loading = true;

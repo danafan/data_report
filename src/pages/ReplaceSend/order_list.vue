@@ -1,6 +1,24 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="项目部：">
+				<el-cascader
+				size="mini"
+				class="input_cascader"
+				ref="cascader"
+				:options="dept_list"
+				:props="props"
+				filterable
+				@change="getIds"
+				@remove-tag="getIds"
+				clearable></el-cascader>
+			</el-form-item>
+			<el-form-item label="店铺：">
+				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="订单号：">
 				<el-input v-model="search" placeholder="订单号/内部订单号"clearable></el-input>
 			</el-form-item>
@@ -30,12 +48,12 @@
 				</el-option>
 			</el-select>
 		</el-form-item>
-		<el-form-item label="店铺：">
+		<!-- <el-form-item label="店铺：">
 			<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
 				<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 				</el-option>
 			</el-select>
-		</el-form-item>
+		</el-form-item> -->
 		<el-form-item>
 			<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 		</el-form-item>
@@ -106,12 +124,23 @@
 	import resource from '../../api/resource.js'
 	import replaceSend from '../../api/replaceSend.js'
 	import demandResource from '../../api/demandResource.js'
+	import {getNowDate,lastXDate} from '../../api/nowMonth.js'
 
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
+				dept_list:[],								//部门列表
+				select_dept_ids:[],							//选中的部门列表
+				props:{
+					multiple:true,
+					value:'dept_id',
+					label:'dept_name',
+					children:'list',
+				},
+				shop_list:[],								//店铺列表
+				select_store_ids:[],						//选中的店铺列表
 				search:"",				//搜索的内容
 				time_type:1,			//时间类型
 				date_time:[],			//选中的时间
@@ -134,8 +163,8 @@
 				select_order_status:[],		//选中的订单状态
 				gys_list:[],								//供应商列表
 				select_gys_ids:[],							//选中的供应商
-				store_list: [],								//店铺列表	
-				select_store_ids:[],						//选中的店铺id列表
+				// store_list: [],								//店铺列表	
+				// select_store_ids:[],						//选中的店铺id列表
 				page:1,
 				pagesize:10,
 				main_columns:[{
@@ -210,41 +239,85 @@
 			}
 		},
 		props:{
-			//传递过来的参数
-			// req:{
-			// 	type:Object,
-			// 	default:function(){
-			// 		return {
-			// 			start_date:"",
-			// 			end_date:"",
-			// 			order_status:[],
-			// 			time_type:1
-			// 		}
-			// 	}
-			// }
 			req:{
 				type:Object,
-				default:() => {}
+				default:() => {
+					
+				}
 			}
 		},
 		created(){
-			console.log(this.req)
-			this.date_time.push(this.req.start_date);
-			this.date_time.push(this.req.end_date);
+			//部门列表
+			this.getDept();
+			//店铺列表
+			this.getStore();
+			this.date_time.push(this.req.start_date?this.req.start_date:`${lastXDate(3)} 00:00:00`);
+			this.date_time.push(this.req.end_date?this.req.end_date:`${getNowDate(true)}`);
 			this.select_order_status = this.req.order_status;
 			this.time_type = this.req.time_type;
-
-			// 获取所有店铺
-			this.getStoreList();
 			//获取列表
 			this.getList();
 		},
 		methods:{
-			// 获取所有店铺
-			getStoreList(){
-				demandResource.deerShop().then(res => {
+			//部门列表
+			getDept(){
+				if(this.$store.state.dept_list.length == 0){  
+					resource.ajaxViewDept({from:1}).then(res => {
+						if(res.data.code == 1){
+							this.dept_list = res.data.data;
+							this.$store.commit('setDeptList',this.dept_list);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.dept_list = this.$store.state.dept_list;
+				}
+			},
+			//切换部门
+			getIds(){
+				this.$nextTick(()=>{
+					var arr = [];
+					var select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
+					select_department.map(s => {
+						if(!!s.parent){	//最后一层有父级
+							var m = s.parent;
+							if(!!m.checked){ //倒数第二层被全选了
+								if(!!m.parent){ //倒数第二层有父级
+									var d = m.parent;
+									if(!!d.checked){ //倒数第三层被全选了
+										if(arr.indexOf(d.value) == -1){
+											arr.push(d.value);
+										}
+									}else{
+										if(arr.indexOf(m.value) == -1){
+											arr.push(m.value);
+										}
+									}
+								}else{
+									if(arr.indexOf(m.value) == -1){
+										arr.push(m.value);
+									}
+								}
+							}else{
+								arr.push(s.value);
+							}
+						}else{	//只有一层
+							arr.push(s.value);
+						}
+					})
+					this.select_dept_ids = arr;
+					//店铺列表
+					this.getStore();
+				});
+			},
+			//店铺列表
+			getStore(){
+				this.select_store_ids = [];
+				let dept_id = this.select_dept_ids.join(',');
+				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
 					if(res.data.code == 1){
-						this.store_list = res.data.data;
+						this.shop_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -269,6 +342,7 @@
 					pagesize:this.pagesize,
 					order_status:this.select_order_status.join(','),
 					supplier_name:this.select_gys_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					search:this.search,
 					time_type:this.time_type,
@@ -308,6 +382,7 @@
 					let arg = {
 						order_status:this.select_order_status.join(','),
 						supplier_name:this.select_gys_ids.join(','),
+						dept_id:this.select_dept_ids.join(','),
 						shop_id:this.select_store_ids.join(','),
 						search:this.search,
 						time_type:this.time_type,
