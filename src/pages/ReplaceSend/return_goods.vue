@@ -194,7 +194,7 @@
 			//部门列表
 			getDept(){
 				if(this.$store.state.dept_list.length == 0){  
-					resource.ajaxViewDept({from:1}).then(res => {
+					resource.ajaxViewDept().then(res => {
 						if(res.data.code == 1){
 							this.dept_list = res.data.data;
 							this.$store.commit('setDeptList',this.dept_list);
