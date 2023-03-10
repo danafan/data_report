@@ -20,7 +20,6 @@
 				<el-date-picker
 				v-model="date"
 				type="daterange"
-				:clearable="false"
 				unlink-panels
 				value-format="yyyy-MM-dd"
 				range-separator="至"
@@ -115,7 +114,7 @@
 						}
 					}]
 				},	 										
-				date:[getNowDate(),getNowDate()],	//统计日期
+				date:[],	//统计日期
 				order_no:"",					//订单编号
 				shop_list:[],					//店铺列表
 				shop_list_ids:[],				//选中的店铺列表
