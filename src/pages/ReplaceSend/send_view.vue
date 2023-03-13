@@ -107,7 +107,7 @@
 				</el-radio-group>
 				<div class="f12 red_color" v-if="charts_type == 'today'">更新时间：{{today_update_time}}</div>
 			</div>
-			<div class="charts" id="chart_view" v-loading="charts_loading"></div>
+			<div class="charts" id="send_chart_view" v-loading="charts_loading"></div>
 		</div>
 		<!-- 明细 -->
 		<div class="flex jsb mb-10">
@@ -503,9 +503,9 @@
 			//今日代发概览图表渲染
 			todayCharts(){
 				var echarts = require("echarts");
-				var chart_view = document.getElementById('chart_view');
-				this.viewChart = echarts.getInstanceByDom(chart_view)
-				this.viewChart = echarts.init(chart_view);
+				var send_chart_view = document.getElementById('send_chart_view');
+				this.viewChart = echarts.getInstanceByDom(send_chart_view)
+				this.viewChart = echarts.init(send_chart_view);
 
 				let x_data = this.today_data.hour_list;
 				let today_data = [];
@@ -605,9 +605,9 @@
 			//30天代发订单图表渲染
 			monthCharts(){
 				var echarts = require("echarts");
-				var chart_view = document.getElementById('chart_view');
-				this.viewChart = echarts.getInstanceByDom(chart_view)
-				this.viewChart = echarts.init(chart_view);
+				var send_chart_view = document.getElementById('send_chart_view');
+				this.viewChart = echarts.getInstanceByDom(send_chart_view)
+				this.viewChart = echarts.init(send_chart_view);
 
 				let x_data = this.month_data.day_list;
 				let order_num_list = this.month_data.order_num_list.list;
