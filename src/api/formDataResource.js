@@ -103,7 +103,7 @@ export default{
 	//提交记录对应的数据列表
 	submitData(params){
 		return http.get(path.submitData, params)
-	},
+	}
 }
 
 

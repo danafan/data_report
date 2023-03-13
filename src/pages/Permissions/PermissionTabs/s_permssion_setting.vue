@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form size="small" class="demo-form-inline">
-			<el-form-item label="缓冲机制-所有部门数据权限">
-				<el-select v-model="special_list" clearable multiple filterable reserve-keyword placeholder="请选择">
+			<el-form-item :label="item.title" v-for="item in list">
+				<el-select v-model="item.list" clearable multiple reserve-keyword placeholder="请选择">
 					<el-option v-for="i in user_data" :key="i.ding_user_id" :label="i.ding_user_name" :value="i.ding_user_id">
 					</el-option>
 				</el-select>
@@ -20,13 +20,14 @@
 	export default{
 		data(){
 			return{
-				user_data:[],		//钉钉用户列表
-				special_list:[],	//选中的权限列表
+				user_data:[],
+				list:[],		
 			}
 		},
 		created(){
 			//获取钉钉用户列表
 			this.ajaxUser();
+			
 		},
 		methods:{
 			//获取钉钉用户列表
@@ -34,19 +35,18 @@
 				form_data_resource.ajaxUser().then(res => {
 					if(res.data.code == 1){
 						this.user_data = res.data.data;
+						//获取详情
+						this.getInfo();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
-				}).then(() => {
-					//获取详情
-					this.specialSettingGet();
 				});
 			},
 			//获取详情
-			specialSettingGet(){
+			getInfo(){
 				resource.specialSettingGet().then(res => {
 					if(res.data.code == 1){
-						this.special_list = res.data.data;
+						this.list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -59,12 +59,15 @@
 					cancelButtonText: '取消',
 					type: 'warning'
 				}).then(() => {
-					let req = {
-						buffer_manager:this.special_list.join(',')
-					}
+					let req = {}
+					this.list.map(item => {
+						req[item.field] = item.list.join(',')
+					})
 					resource.specialSettingPost(req).then(res => {
 						if(res.data.code == 1){
 							this.$message.success(res.data.msg);
+							//获取详情
+							this.getInfo();
 						}else{
 							this.$message.warning(res.data.msg);
 						}

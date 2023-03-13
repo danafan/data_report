@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="项目部：">
 				<el-cascader
-				 size="mini"
+				size="mini"
 				class="input_cascader"
 				ref="cascader"
 				:options="dept_list"
@@ -194,7 +194,7 @@
 			//部门列表
 			getDept(){
 				if(this.$store.state.dept_list.length == 0){  
-					resource.ajaxViewDept().then(res => {
+					resource.ajaxViewDept({from:3}).then(res => {
 						if(res.data.code == 1){
 							this.dept_list = res.data.data;
 							this.$store.commit('setDeptList',this.dept_list);
@@ -247,7 +247,7 @@
 			getStore(){
 				this.select_store_ids = [];
 				let dept_id = this.select_dept_ids.join(',');
-				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
+				resource.ajaxViewStore({dept_id:dept_id,from:3}).then(res => {
 					if(res.data.code == 1){
 						this.shop_list = res.data.data;
 					}else{
