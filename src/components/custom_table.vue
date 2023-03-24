@@ -10,6 +10,7 @@
 			</template>
 			<template slot-scope="scope">
 				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == '3' && scope.row.images[0] != ''"></el-image>
+				<el-button type="text" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
 				<div v-else>{{scope.row[item.row_field_name]}}{{item.unit}}</div>
 			</template>
 		</el-table-column>
@@ -53,6 +54,16 @@
 			title_list:{
 				type:Array,
 				default:()=>[]
+			},
+			//下钻时取的参数
+			fieldName:{
+				type:String,
+				default:''
+			},
+			//表格名称（用于区分点击的哪个表格）
+			tableName:{
+				type:String,
+				default:''
 			},
 			//图片宽高
 			image_size:{

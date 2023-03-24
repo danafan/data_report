@@ -22,6 +22,9 @@
 			<el-form-item label="订单号：">
 				<el-input v-model="search" placeholder="订单号/内部订单号"clearable></el-input>
 			</el-form-item>
+			<el-form-item label="款式编码：">
+				<el-input v-model="ksbm" placeholder="款式编码"clearable></el-input>
+			</el-form-item>
 			<el-form-item>
 				<el-select style="width: 100px" v-model="time_type">
 					<el-option label="下单时间" :value="1"></el-option>
@@ -142,6 +145,7 @@
 				shop_list:[],								//店铺列表
 				select_store_ids:[],						//选中的店铺列表
 				search:"",				//搜索的内容
+				ksbm:"",				//款式编码
 				time_type:1,			//时间类型
 				date_time:[],			//选中的时间
 				status_list:[{
@@ -253,8 +257,10 @@
 			this.getStore();
 			this.date_time.push(this.req.start_date?this.req.start_date:`${lastXDate(3)} 00:00:00`);
 			this.date_time.push(this.req.end_date?this.req.end_date:`${getNowDate(true)}`);
-			this.select_order_status = this.req.order_status;
-			this.time_type = this.req.time_type;
+			this.select_order_status = this.req.order_status?this.req.order_status:[];
+			this.time_type = this.req.time_type?this.req.time_type:1;
+			//点击看板的列表下钻跳转过来的
+			this.ksbm = this.req.ksbm?this.req.ksbm:'';
 			//获取列表
 			this.getList();
 		},
@@ -345,6 +351,7 @@
 					dept_id:this.select_dept_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					search:this.search,
+					ksbm:this.ksbm,
 					time_type:this.time_type,
 					start_date:this.date_time && this.date_time.length > 0?this.date_time[0]:"",
 					end_date:this.date_time && this.date_time.length > 0?this.date_time[1]:"",
@@ -385,6 +392,7 @@
 						dept_id:this.select_dept_ids.join(','),
 						shop_id:this.select_store_ids.join(','),
 						search:this.search,
+						ksbm:this.ksbm,
 						time_type:this.time_type,
 						start_date:this.date_time && this.date_time.length > 0?this.date_time[0]:"",
 						end_date:this.date_time && this.date_time.length > 0?this.date_time[1]:""

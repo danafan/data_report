@@ -124,7 +124,7 @@
 						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('shop_name',store_name,'店铺代发明细表')">
 					</el-tooltip>
 				</div>
-				<custom-table v-loading="store_record_loading" :show_index="true" :table_data="store_record_table_list" :title_list="store_record_title_list"/>
+				<custom-table v-loading="store_record_loading" :show_index="true" :table_data="store_record_table_list" :title_list="store_record_title_list" fieldName="name" tableName="shop" @tableCallBack="tableCallBack"/>
 			</div>
 			<div class="ml-15 white_back p10" style="width: 50%">
 				<div class="flex ac jsb f16 mb-10">
@@ -139,7 +139,7 @@
 						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('supplier_name',supplier_name,'供应商代发明细表')">
 					</el-tooltip>
 				</div>
-				<custom-table v-loading="supplier_record_loading" :show_index="true" :table_data="supplier_record_table_list" :title_list="supplier_record_title_list"/>
+				<custom-table v-loading="supplier_record_loading" :show_index="true" :table_data="supplier_record_table_list" :title_list="supplier_record_title_list" fieldName="name" tableName="supplier" @tableCallBack="tableCallBack"/>
 			</div>
 		</div>
 		<!-- 各种排行 -->
@@ -214,7 +214,7 @@
 					<img class="export_icon" src="../../static/export_icon.png" @click="exportPjsxFn">
 				</el-tooltip>
 			</div>
-			<custom-table v-loading="pjsx_loading" :show_index="true" :table_data="pjsx_table_data" :title_list="pjsx_title_list"/>
+			<custom-table v-loading="pjsx_loading" :show_index="true" :table_data="pjsx_table_data" :title_list="pjsx_title_list" fieldName="name" tableName="three_supplier" @tableCallBack="tableCallBack"/>
 		</div>
 		<!-- 发货即将超时统计 -->
 		<div class="white_back p10">
@@ -231,9 +231,25 @@
 					<img class="export_icon" src="../../static/export_icon.png" @click="exportJjcsFn">
 				</el-tooltip>
 			</div>
-			<custom-table v-loading="jjcs_loading" :show_index="true" :table_data="jjcs_table_data" :title_list="jjcs_title_list"/>
+			<custom-table v-loading="jjcs_loading" :show_index="true" :table_data="jjcs_table_data" :title_list="jjcs_title_list" fieldName="name" tableName="fore_supplier" @tableCallBack="tableCallBack"/>
 		</div>
-	</div>
+		<!-- 下钻弹窗 -->
+		<el-dialog :title="first_title" :visible.sync="firstDialog">
+			<custom-table :show_index="true" :table_data="first_table_list" :title_list="first_title_list" fieldName="name" :tableName="tableName" @tableCallBack="tableCallBack"/>
+			<el-dialog
+			title="款式"
+			:visible.sync="twoDialog"
+			append-to-body>
+			<custom-table :show_index="true" :table_data="two_table_list" :title_list="two_title_list" fieldName="name" tableName="three_shop" @tableCallBack="tableCallBack"/>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="twoDialog = false">关闭</el-button>
+			</div>
+		</el-dialog>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="firstDialog = false">关闭</el-button>
+		</div>
+	</el-dialog>
+</div>
 </template>
 <script>
 	import {lastXDate,getNowDate} from '../../api/nowMonth.js'
@@ -282,7 +298,16 @@
 				jjcs_loading:false,
 				jjcs_title_list:[],					//发货即将超时头部列表
 				jjcs_table_data:[],					//发货即将超时列表
-				viewChart:null
+				viewChart:null,
+				shop_name:"",						//店铺明细点击下钻时的店铺名称
+				firstDialog:false,					//第一个弹窗
+				first_title_list:[],
+				first_table_list:[],
+				twoDialog:false,					//第二个弹窗
+				two_title_list:[],
+				two_table_list:[],
+				tableName:"",
+				first_title:"",
 			}
 		},
 		created(){
@@ -401,7 +426,7 @@
 				})
 			},
 			//点击跳转到订单列表页面
-			getOrderList(type){
+			getOrderList(type,filed){
 				var arg = {};
 				switch(type){
 					case 1: //代发订单数
@@ -473,6 +498,12 @@
 						end_date:lastXDate(2,true),
 						order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
 						time_type:1
+					}
+					this.$emit('callback',arg);
+					break;
+					case 9: //列表下钻的跳转
+					arg = {
+						ksbm:filed
 					}
 					this.$emit('callback',arg);
 					break;
@@ -717,6 +748,121 @@
 						}
 					})
 				})
+			},
+			//明细下钻
+			tableCallBack(filed,tableName){
+				switch(tableName){
+					case 'shop': 	//点击店铺明细查看供应商
+					this.shop_name = filed;
+					this.tableName = 'two_shop';
+					this.first_title = '供应商';
+					let arg = {
+						type:'shop_name',
+						shop_name:this.shop_name
+					}
+					resource.dfShopGysList(arg).then(res => {
+						if(res.data.code == 1){
+							let data = res.data.data;
+							this.first_title_list = data.title_list;
+							this.first_table_list = data.table_data;
+							this.firstDialog = true;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+					break;
+					case 'two_shop': 		//店铺明细第二层
+					let arg_two = {
+						type:'shop_name',
+						shop_name:this.shop_name,
+						supplier_name:filed
+					}
+					resource.dfShopGysList(arg_two).then(res => {
+						if(res.data.code == 1){
+							let data = res.data.data;
+							this.two_title_list = data.title_list;
+							this.two_table_list = data.table_data;
+							this.twoDialog = true;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+					break;
+					case 'three_shop': 		//店铺明细第三层（款-订单）
+					this.firstDialog = false;
+					this.twoDialog = false;
+					this.getOrderList(9,filed);
+					break;
+					case 'supplier': 		//供应商第一层
+					this.tableName = 'two_supplier';
+					this.first_title = '款式';
+					let arg_three = {
+						type:'supplier_name',
+						supplier_name:filed
+					}
+					resource.dfShopGysList(arg_three).then(res => {
+						if(res.data.code == 1){
+							let data = res.data.data;
+							this.first_title_list = data.title_list;
+							this.first_table_list = data.table_data;
+							this.firstDialog = true;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+					break;
+					case 'two_supplier': 		//供应商第二层（款-订单）
+					this.firstDialog = false;
+					this.twoDialog = false;
+					this.getOrderList(9,filed);
+					break;
+					case 'three_supplier': 		//第三个供应商
+					this.tableName = 'five_supplier';
+					let arg_fore = {
+						date_type:this.pjsx_date_type,
+						supplier_name:filed
+					}
+					resource.dfAverageDelivery(arg_fore).then(res => {
+						if(res.data.code == 1){
+							let data = res.data.data;
+							this.first_title_list = data.title_list;
+							this.first_table_list = data.table_data;
+							this.firstDialog = true;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+					break;
+					case 'fore_supplier': 		//第四个供应商
+					this.tableName = 'six_supplier';
+					let arg_five = {
+						date_type:this.pjsx_date_type,
+						supplier_name:filed
+					}
+					resource.dfOverTime(arg_five).then(res => {
+						if(res.data.code == 1){
+							let data = res.data.data;
+							this.first_title_list = data.title_list;
+							this.first_table_list = data.table_data;
+							this.firstDialog = true;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+					break;
+					case 'five_supplier': 		//第三个供应商（款-订单）
+					this.firstDialog = false;
+					this.twoDialog = false;
+					this.getOrderList(9,filed);
+					break;
+					case 'six_supplier': 		//第四个供应商（款-订单）
+					this.firstDialog = false;
+					this.twoDialog = false;
+					this.getOrderList(9,filed);
+					break;
+					default:
+					return;
+				}
 			},
 			//店铺/供应商代发明细导出
 			exportRecordFn(type,search,title){

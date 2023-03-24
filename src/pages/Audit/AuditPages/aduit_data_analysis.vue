@@ -15,7 +15,7 @@
 				<div class="column_item">调价</div>
 				<div class="column_item">零成本</div>
 			</div>
-			<div class="row" v-for="item in table_list">
+			<div class="row" :key="index" v-for="(item,index) in table_list">
 				<div class="column_item">{{item.dept_name}}</div>
 				<div class="column_item">{{item.no_zero_num}}</div>
 				<div class="column_item">{{item.zero_num}}</div>
@@ -92,7 +92,7 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[getCurrentDate(),getCurrentDate()],									//选中的时间
+				date:[getCurrentDate(),getCurrentDate()],	//选中的时间
 				table_list:[],								//表格数据
 				tj_axisChart:null,							//调价
 				loading:false,
@@ -124,7 +124,7 @@
 							dept_list.push(item.name);
 							item['type'] = 'line';
 							item['lineStyle'] = { 
-								 width:3.6
+								width:3.6
 							};
 						})
 						var tj_axis = document.getElementById('tj_axis');
@@ -139,7 +139,7 @@
 						zero_list.map(item => {
 							item['type'] = 'line';
 							item['lineStyle'] = { 
-								 width:3.6
+								width:3.6
 							};
 						})
 						var lcb_axis = document.getElementById('lcb_axis');
