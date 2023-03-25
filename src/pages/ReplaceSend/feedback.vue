@@ -14,7 +14,7 @@
 		<div class="flex jse mb-10" v-if="button_list.export == 1">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<custom-table :show_index="true" :table_data="table_data" :title_list="title_list" :is_setting="true" :button_list="button_list" @detailFn="detailFn" @handleFn="handleFn"/>
+		<custom-table :show_index="true" :table_data="table_data" :title_list="title_list" :is_setting="true" max_height="860px" :button_list="button_list" @detailFn="detailFn" @handleFn="handleFn"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 		<el-dialog :title="`${dialog_type == '1'?'详情':'处理'}`" :visible.sync="show_dialog" width="45%">
 			<el-form size="small">
