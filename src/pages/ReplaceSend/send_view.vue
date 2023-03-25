@@ -235,55 +235,44 @@
 		</div>
 		<!-- 下钻弹窗 -->
 		<el-dialog :title="first_title" :visible.sync="firstDialog">
+			<div class="flex jse mb-10">
+				<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
+					<img class="export_icon" src="../../static/export_icon.png"  @click="detailExport('1')">
+				</el-tooltip>
+			</div>
 			<custom-table :show_index="true" :table_data="first_table_list" :title_list="first_title_list" fieldName="name" :tableName="tableName" @tableCallBack="tableCallBack" :is_setting="first_title == '款式'" @feekbackFn="feekbackFirstFn"/>
-			<el-dialog
-			title="反馈"
-			:visible.sync="feekbackFirstDialog"
-			@close="remark = ''"
-			append-to-body>
-			<el-input
-			type="textarea"
-			size="small"
-			:rows="3"
-			placeholder="请输入反馈内容..."
-			v-model="remark">
-		</el-input>
-		<div slot="footer" class="dialog-footer">
-			<el-button size="small" @click="feekbackFirstDialog = false">取消</el-button>
-			<el-button type="primary" size="small" @click="commitFn">提交</el-button>
-		</div>
-	</el-dialog>
-	<el-dialog
-	title="款式"
-	:visible.sync="twoDialog"
-	append-to-body>
-	<custom-table :show_index="true" :table_data="two_table_list" :title_list="two_title_list" fieldName="name" tableName="three_shop" @tableCallBack="tableCallBack" :is_setting="true" @feekbackFn="feekbackFn" />
-	<el-dialog
-	title="反馈"
-	:visible.sync="feekbackDialog"
-	@close="remark = ''"
-	append-to-body>
-	<el-input
-	type="textarea"
-	size="small"
-	:rows="3"
-	placeholder="请输入反馈内容..."
-	v-model="remark">
-	</el-input>
-	<div slot="footer" class="dialog-footer">
-		<el-button size="small" @click="feekbackDialog = false">取消</el-button>
-		<el-button type="primary" size="small" @click="commitFn">提交</el-button>
+			<el-dialog title="反馈" :visible.sync="feekbackFirstDialog" @close="remark = ''" append-to-body>
+				<el-input type="textarea" size="small" :rows="3" placeholder="请输入反馈内容..." v-model="remark">
+				</el-input>
+				<div slot="footer" class="dialog-footer">
+					<el-button size="small" @click="feekbackFirstDialog = false">取消</el-button>
+					<el-button type="primary" size="small" @click="commitFn">提交</el-button>
+				</div>
+			</el-dialog>
+			<el-dialog title="款式" :visible.sync="twoDialog" append-to-body>
+				<div class="flex jse mb-10">
+					<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
+						<img class="export_icon" src="../../static/export_icon.png"  @click="detailExport('2')">
+					</el-tooltip>
+				</div>
+				<custom-table :show_index="true" :table_data="two_table_list" :title_list="two_title_list" fieldName="name" tableName="three_shop" @tableCallBack="tableCallBack" :is_setting="true" @feekbackFn="feekbackFn" />
+				<el-dialog title="反馈" :visible.sync="feekbackDialog" @close="remark = ''" append-to-body>
+					<el-input type="textarea" size="small" :rows="3" placeholder="请输入反馈内容..." v-model="remark">
+					</el-input>
+					<div slot="footer" class="dialog-footer">
+						<el-button size="small" @click="feekbackDialog = false">取消</el-button>
+						<el-button type="primary" size="small" @click="commitFn">提交</el-button>
+					</div>
+				</el-dialog>
+				<div slot="footer" class="dialog-footer">
+					<el-button size="small" @click="twoDialog = false">关闭</el-button>
+				</div>
+			</el-dialog>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="firstDialog = false">关闭</el-button>
+			</div>
+		</el-dialog>
 	</div>
-</el-dialog>
-<div slot="footer" class="dialog-footer">
-	<el-button size="small" @click="twoDialog = false">关闭</el-button>
-</div>
-</el-dialog>
-<div slot="footer" class="dialog-footer">
-	<el-button size="small" @click="firstDialog = false">关闭</el-button>
-</div>
-</el-dialog>
-</div>
 </template>
 <script>
 	import {lastXDate,getNowDate} from '../../api/nowMonth.js'
@@ -334,6 +323,7 @@
 				jjcs_table_data:[],					//发货即将超时列表
 				viewChart:null,
 				shop_name:"",						//店铺明细点击下钻时的店铺名称
+				supp_name:"",						//店铺明细点击下钻时的供应商名称
 				firstDialog:false,					//第一个弹窗
 				first_title_list:[],
 				first_table_list:[],
@@ -580,10 +570,10 @@
 							this.month_data = res.data.data;
 							//30天代发订单图表渲染
 							this.monthCharts()
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 				})
 			},
 			//今日代发概览图表渲染
@@ -827,10 +817,11 @@
 					})
 					break;
 					case 'two_shop': 		//店铺明细第二层
+					this.supp_name = filed;
 					let arg_two = {
 						type:'shop_name',
 						shop_name:this.shop_name,
-						supplier_name:filed
+						supplier_name:this.supp_name
 					}
 					resource.dfShopGysList(arg_two).then(res => {
 						if(res.data.code == 1){
@@ -853,10 +844,11 @@
 					break;
 					case 'supplier': 		//供应商第一层
 					this.tableName = 'two_supplier';
+					this.supp_name = filed;
 					this.first_title = '款式';
 					let arg_three = {
 						type:'supplier_name',
-						supplier_name:filed
+						supplier_name:this.supp_name
 					}
 					resource.dfShopGysList(arg_three).then(res => {
 						if(res.data.code == 1){
@@ -879,9 +871,11 @@
 					break;
 					case 'three_supplier': 		//第三个供应商
 					this.tableName = 'five_supplier';
+					this.supp_name = filed;
+					this.first_title = '款式';
 					let arg_fore = {
 						date_type:this.pjsx_date_type,
-						supplier_name:filed
+						supplier_name:this.supp_name 
 					}
 					resource.dfAverageDelivery(arg_fore).then(res => {
 						if(res.data.code == 1){
@@ -899,9 +893,11 @@
 					break;
 					case 'fore_supplier': 		//第四个供应商
 					this.tableName = 'six_supplier';
+					this.supp_name = filed;
+					this.first_title = '款式';
 					let arg_five = {
 						date_type:this.pjsx_date_type,
-						supplier_name:filed
+						supplier_name:this.supp_name 
 					}
 					resource.dfOverTime(arg_five).then(res => {
 						if(res.data.code == 1){
@@ -930,6 +926,67 @@
 					default:
 					return;
 				}
+			},
+			//下钻导出
+			detailExport(type){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					if(type == '1'){	//第一层 
+						let arg = {};
+						if(this.tableName == 'two_shop'){
+							arg['type'] = 'shop_name';
+							arg['shop_name'] = this.shop_name;
+							resource.dfShopGysExport(arg).then(res => {
+								if(res){
+									exportPost("\ufeff" + res.data,'供应商列表');
+								}
+							})
+						}else if(this.tableName == 'two_supplier'){
+							arg['type'] = 'supplier_name';
+							arg['supplier_name'] = this.supp_name;
+							resource.dfShopGysExport(arg).then(res => {
+								if(res){
+									exportPost("\ufeff" + res.data,'款式列表1');
+								}
+							})
+						}else if(this.tableName == 'five_supplier'){
+							arg['date_type'] = this.pjsx_date_type;
+							arg['supplier_name'] = this.supp_name;
+							resource.dfAverageDeliveryExport(arg).then(res => {
+								if(res){
+									exportPost("\ufeff" + res.data,'款式列表2');
+								}
+							})
+						}else if(this.tableName == 'six_supplier'){
+							arg['date_type'] = this.jjcs_date_type;
+							arg['supplier_name'] = this.supp_name;
+							resource.dfOverTimeExport(arg).then(res => {
+								if(res){
+									exportPost("\ufeff" + res.data,'款式列表3');
+								}
+							})
+						}
+					}else{				//第二层
+						let arg = {
+							type:'shop_name',
+							shop_name:this.shop_name,
+							supplier_name:this.supp_name
+						}
+						resource.dfShopGysExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'款式列表4列表');
+							}
+						})
+					}
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//点击第一个反馈
 			feekbackFirstFn(name){
