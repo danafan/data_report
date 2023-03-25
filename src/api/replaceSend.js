@@ -12,8 +12,14 @@ let path = {
 	dfOverTimeExport:'replacesend/df_over_time_export',		//代发系统看板超时未发统计导出
 	dfShopGysList:'replacesend/df_shop_gys_list',			//代发系统店铺/供应商明细表接口
 	dfShopGysExport:'replacesend/df_shop_gys_export',		//代发系统店铺/供应商明细表导出
-	dfChart:'replacesend/df_chart',							//30天和今天代发订单图表
-}						
+	todayChart:'replacesend/df_chart_today',				//今天代发订单图表
+	monthChart:'replacesend/df_chart_month',				//30天代发订单图表
+	ksbmFeedbackList:'replacesend/ksbm_feedback_list',		//反馈列表
+	getFeedbackInfo:'replacesend/get_ksbm_feedback_info',	//获取反馈详情
+	handleKsbmFeedback:'replacesend/handle_ksbm_feedback',	//提交处理
+	ksbmFeedbackExport:'replacesend/ksbm_feedback_export',	//反馈列表导出
+	addKsbmFeedback:'replacesend/add_ksbm_feedback',		//提交反馈
+}							
 export default{
 	//订单列表
 	orderList(params){
@@ -63,11 +69,34 @@ export default{
 	dfShopGysExport(params){
 		return http.post(path.dfShopGysExport, params)
 	},
-	//30天和今天代发订单图表
-	dfChart(params){
-		return http.get(path.dfChart, params)
+	//今天代发订单图表
+	todayChart(params){
+		return http.get(path.todayChart, params)
 	},
-	
+	//30天代发订单图表
+	monthChart(params){
+		return http.get(path.monthChart, params)
+	},
+	//代发反馈列表
+	ksbmFeedbackList(params){
+		return http.get(path.ksbmFeedbackList, params)
+	},
+	//获取反馈详情
+	getFeedbackInfo(params){
+		return http.get(path.getFeedbackInfo, params)
+	},
+	//处理反馈
+	handleKsbmFeedback(params){
+		return http.post(path.handleKsbmFeedback, params)
+	},
+	//反馈列表导出
+	ksbmFeedbackExport(params){
+		return http.post(path.ksbmFeedbackExport, params)
+	},
+	//创建反馈
+	addKsbmFeedback(params){
+		return http.post(path.addKsbmFeedback, params)
+	},
 }
 
 

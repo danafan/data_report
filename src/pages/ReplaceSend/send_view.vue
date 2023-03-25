@@ -235,20 +235,54 @@
 		</div>
 		<!-- 下钻弹窗 -->
 		<el-dialog :title="first_title" :visible.sync="firstDialog">
-			<custom-table :show_index="true" :table_data="first_table_list" :title_list="first_title_list" fieldName="name" :tableName="tableName" @tableCallBack="tableCallBack"/>
+			<custom-table :show_index="true" :table_data="first_table_list" :title_list="first_title_list" fieldName="name" :tableName="tableName" @tableCallBack="tableCallBack" :is_setting="first_title == '款式'" @feekbackFn="feekbackFirstFn"/>
 			<el-dialog
-			title="款式"
-			:visible.sync="twoDialog"
+			title="反馈"
+			:visible.sync="feekbackFirstDialog"
+			@close="remark = ''"
 			append-to-body>
-			<custom-table :show_index="true" :table_data="two_table_list" :title_list="two_title_list" fieldName="name" tableName="three_shop" @tableCallBack="tableCallBack"/>
-			<div slot="footer" class="dialog-footer">
-				<el-button size="small" @click="twoDialog = false">关闭</el-button>
-			</div>
-		</el-dialog>
+			<el-input
+			type="textarea"
+			size="small"
+			:rows="3"
+			placeholder="请输入反馈内容..."
+			v-model="remark">
+		</el-input>
 		<div slot="footer" class="dialog-footer">
-			<el-button size="small" @click="firstDialog = false">关闭</el-button>
+			<el-button size="small" @click="feekbackFirstDialog = false">取消</el-button>
+			<el-button type="primary" size="small" @click="commitFn">提交</el-button>
 		</div>
 	</el-dialog>
+	<el-dialog
+	title="款式"
+	:visible.sync="twoDialog"
+	append-to-body>
+	<custom-table :show_index="true" :table_data="two_table_list" :title_list="two_title_list" fieldName="name" tableName="three_shop" @tableCallBack="tableCallBack" :is_setting="true" @feekbackFn="feekbackFn" />
+	<el-dialog
+	title="反馈"
+	:visible.sync="feekbackDialog"
+	@close="remark = ''"
+	append-to-body>
+	<el-input
+	type="textarea"
+	size="small"
+	:rows="3"
+	placeholder="请输入反馈内容..."
+	v-model="remark">
+	</el-input>
+	<div slot="footer" class="dialog-footer">
+		<el-button size="small" @click="feekbackDialog = false">取消</el-button>
+		<el-button type="primary" size="small" @click="commitFn">提交</el-button>
+	</div>
+</el-dialog>
+<div slot="footer" class="dialog-footer">
+	<el-button size="small" @click="twoDialog = false">关闭</el-button>
+</div>
+</el-dialog>
+<div slot="footer" class="dialog-footer">
+	<el-button size="small" @click="firstDialog = false">关闭</el-button>
+</div>
+</el-dialog>
 </div>
 </template>
 <script>
@@ -308,6 +342,10 @@
 				two_table_list:[],
 				tableName:"",
 				first_title:"",
+				feekbackFirstDialog:false,
+				feekbackDialog:false,
+				ksbm:"",
+				remark:"",
 			}
 		},
 		created(){
@@ -395,8 +433,10 @@
 				this.jjcs_table_data = [];					//发货即将超时列表
 				//头部信息
 				await this.dfOrderTotal();
-				//30天和今天代发订单图表
-				await this.dfChart();
+				//今天代发订单图表
+				await this.todayChart();
+				//30天代发订单图表
+				await this.monthChart();
 				//店铺代发明细
 				await this.dfShopGysList('shop_name');
 				//供应商代发明细
@@ -511,20 +551,33 @@
 					return;
 				}
 			},
-			//30天和今天代发订单图表
-			dfChart(){
+			//今天代发订单图表
+			todayChart(){
 				this.charts_loading = true;
 				return new Promise((resolve)=>{
-					resource.dfChart().then(res => {
+					resource.todayChart().then(res => {
 						resolve();
 						if(res.data.code == 1){
 							this.charts_loading = false;
-							let data = res.data.data;
-							this.month_data = data.month;
-							this.today_data = data.today;
+							this.today_data = res.data.data;
 							this.today_update_time = this.today_data.update_time;
 						//今日代发概览图表渲染
 						this.todayCharts();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+				})
+			},
+			//30天代发订单图表
+			monthChart(){
+				this.charts_loading = true;
+				return new Promise((resolve)=>{
+					resource.monthChart().then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.charts_loading = false;
+							this.month_data = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -782,6 +835,9 @@
 							let data = res.data.data;
 							this.two_title_list = data.title_list;
 							this.two_table_list = data.table_data;
+							this.two_table_list.map(item => {
+								item['feekback'] = true;
+							})
 							this.twoDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
@@ -805,6 +861,9 @@
 							let data = res.data.data;
 							this.first_title_list = data.title_list;
 							this.first_table_list = data.table_data;
+							this.first_table_list.map(item => {
+								item['feekback'] = true;
+							})
 							this.firstDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
@@ -827,6 +886,9 @@
 							let data = res.data.data;
 							this.first_title_list = data.title_list;
 							this.first_table_list = data.table_data;
+							this.first_table_list.map(item => {
+								item['feekback'] = true;
+							})
 							this.firstDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
@@ -844,6 +906,9 @@
 							let data = res.data.data;
 							this.first_title_list = data.title_list;
 							this.first_table_list = data.table_data;
+							this.first_table_list.map(item => {
+								item['feekback'] = true;
+							})
 							this.firstDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
@@ -863,6 +928,33 @@
 					default:
 					return;
 				}
+			},
+			//点击第一个反馈
+			feekbackFirstFn(name){
+				this.feekbackFirstDialog = true;
+				this.ksbm = name;
+			},
+			//点击反馈
+			feekbackFn(name){
+				this.feekbackDialog = true;
+				this.ksbm = name;
+			},
+			//提交反馈
+			commitFn(){
+				let arg = {
+					ksbm:this.ksbm,
+					remark:this.remark
+				}
+				resource.addKsbmFeedback(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.feekbackFirstDialog = false;
+						this.feekbackDialog = false;
+
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//店铺/供应商代发明细导出
 			exportRecordFn(type,search,title){

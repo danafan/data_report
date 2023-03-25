@@ -18,6 +18,9 @@
 			<template slot-scope="scope">
 				<el-button type="text" size="small" @click="$emit('editFn',scope.row.id)" v-if='button_list.edit == 1'>编辑</el-button>
 				<el-button type="text" size="small" @click="$emit('deleteFn',scope.row.id)" v-if='button_list.del == 1'>删除</el-button>
+				<el-button type="text" size="small" @click="$emit('detailFn',scope.row.id)" v-if='scope.row.detail'>详情</el-button>
+				<el-button type="text" size="small" @click="$emit('handleFn',scope.row.id)" v-if='scope.row.handle'>处理</el-button>
+				<el-button type="text" size="small" @click="$emit('feekbackFn',scope.row[fieldName])" v-if='scope.row.feekback'>反馈</el-button>
 			</template>
 		</el-table-column>
 	</el-table>
@@ -78,7 +81,12 @@
 			//按钮权限
 			button_list:{
 				type:Object,
-				default:()=>{}
+				default:() => {
+					return {
+						edit:0,
+						del:0
+					}
+				}
 			},
 		}
 	}
