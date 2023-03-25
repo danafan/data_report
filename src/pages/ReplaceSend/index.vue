@@ -8,9 +8,6 @@
 				<SendView v-if="item.web_url == 'send_view'" @callback="callback"/>
 				<FeedBack v-if="item.web_url == 'feedback'"/>
 			</el-tab-pane>
-			<!-- <el-tab-pane label="代发反馈" name="feedback" class="tab_pane_box">
-				<FeedBack/>
-			</el-tab-pane> -->
 		</el-tabs>
 	</div>
 </template>

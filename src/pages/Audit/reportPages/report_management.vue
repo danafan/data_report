@@ -309,6 +309,8 @@
 							//获取列表
 							this.getList();
 						}else{
+							this.file = null;
+							this.filename = "";
 							this.$message.warning(res.data.msg);
 						}
 					})

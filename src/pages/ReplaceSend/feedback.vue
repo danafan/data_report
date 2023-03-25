@@ -33,7 +33,7 @@
 				<el-form-item label="反馈原因：">
 					{{feedback_remark}}
 				</el-form-item>
-				<el-form-item label="处理结果：">
+				<el-form-item label="处理结果：" required>
 					<el-input
 					style="width: 200px"
 					type="textarea"

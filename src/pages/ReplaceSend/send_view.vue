@@ -360,10 +360,10 @@
 				}
 				if(n == 'today'){	//今日
 					//今日代发概览图表渲染
-					this.todayCharts();
+					this.todayChart();
 				}else{				//30日
 					//30天代发订单图表渲染
-					this.monthCharts();
+					this.monthChart();
 				}
 			},
 			//切换商品时间类型
@@ -435,8 +435,8 @@
 				await this.dfOrderTotal();
 				//今天代发订单图表
 				await this.todayChart();
-				//30天代发订单图表
-				await this.monthChart();
+				// //30天代发订单图表
+				// await this.monthChart();
 				//店铺代发明细
 				await this.dfShopGysList('shop_name');
 				//供应商代发明细
@@ -578,6 +578,8 @@
 						if(res.data.code == 1){
 							this.charts_loading = false;
 							this.month_data = res.data.data;
+							//30天代发订单图表渲染
+							this.monthCharts()
 					}else{
 						this.$message.warning(res.data.msg);
 					}
