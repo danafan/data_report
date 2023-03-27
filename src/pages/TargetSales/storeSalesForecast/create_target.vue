@@ -955,7 +955,7 @@
       			//贡献毛益
       			info.gxmy = (info.xssr*(this.table_data[12].new_value/100)).toFixed(2);
       			//净利润额
-      			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy-info.sybftfy).toFixed(2);
+      			info.jlr = (info.xssr-info.cpcb-info.dptdfy-info.xmbftfy-info.wlfy-info.kffy-info.gtfy-info.yxfy-info.sybftfy-info.lbfy).toFixed(2);
       			//净利润率（日净利润额/日销售收入）
       			if(info.xssr == 0){
       				info.jlrl = 0;
