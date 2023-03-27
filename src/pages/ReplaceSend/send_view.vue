@@ -124,7 +124,7 @@
 						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('shop_name',store_name,'店铺代发明细表')">
 					</el-tooltip>
 				</div>
-				<custom-table v-loading="store_record_loading" :show_index="true" :table_data="store_record_table_list" :title_list="store_record_title_list" fieldName="name" tableName="shop" @tableCallBack="tableCallBack"/>
+				<custom-table v-loading="store_record_loading" :show_index="true" :table_data="store_record_table_list" :title_list="store_record_title_list" fieldName="shop_id" tableName="shop" @tableCallBack="tableCallBack"/>
 			</div>
 			<div class="ml-15 white_back p10" style="width: 50%">
 				<div class="flex ac jsb f16 mb-10">
