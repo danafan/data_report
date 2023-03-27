@@ -240,7 +240,7 @@
 					<img class="export_icon" src="../../static/export_icon.png"  @click="detailExport('1')">
 				</el-tooltip>
 			</div>
-			<custom-table :show_index="true" :table_data="first_table_list" :title_list="first_title_list" fieldName="name" :tableName="tableName" @tableCallBack="tableCallBack" :is_setting="first_title == '款式'" @feekbackFn="feekbackFirstFn"/>
+			<custom-table :show_index="true" :table_data="first_table_list" :title_list="first_title_list" fieldName="name" :tableName="tableName" @tableCallBack="tableCallBack" :is_setting="first_title == '款式'" v-loading="firstLoading" @feekbackFn="feekbackFirstFn"/>
 			<el-dialog title="反馈" :visible.sync="feekbackFirstDialog" @close="remark = ''" append-to-body>
 				<el-input type="textarea" size="small" :rows="3" placeholder="请输入反馈内容..." v-model="remark">
 				</el-input>
@@ -255,7 +255,7 @@
 						<img class="export_icon" src="../../static/export_icon.png"  @click="detailExport('2')">
 					</el-tooltip>
 				</div>
-				<custom-table :show_index="true" :table_data="two_table_list" :title_list="two_title_list" fieldName="name" tableName="three_shop" @tableCallBack="tableCallBack" :is_setting="true" @feekbackFn="feekbackFn" />
+				<custom-table :show_index="true" :table_data="two_table_list" :title_list="two_title_list" fieldName="name" tableName="three_shop" @tableCallBack="tableCallBack" v-loading="twoLoading" :is_setting="true" @feekbackFn="feekbackFn" />
 				<el-dialog title="反馈" :visible.sync="feekbackDialog" @close="remark = ''" append-to-body>
 					<el-input type="textarea" size="small" :rows="3" placeholder="请输入反馈内容..." v-model="remark">
 					</el-input>
@@ -333,7 +333,9 @@
 				tableName:"",
 				first_title:"",
 				feekbackFirstDialog:false,
+				firstLoading:false,
 				feekbackDialog:false,
+				twoLoading:false,
 				ksbm:"",
 				remark:"",
 			}
@@ -456,7 +458,7 @@
 				})
 			},
 			//点击跳转到订单列表页面
-			getOrderList(type,filed){
+			getOrderList(type,params){
 				var arg = {};
 				switch(type){
 					case 1: //代发订单数
@@ -533,7 +535,8 @@
 					break;
 					case 9: //列表下钻的跳转
 					arg = {
-						ksbm:filed
+						ksbm:params.ksbm,
+						order_status:params.order_status
 					}
 					this.$emit('callback',arg);
 					break;
@@ -805,12 +808,14 @@
 						type:'shop_name',
 						shop_name:this.shop_name
 					}
+					this.firstDialog = true;
+					this.firstLoading = true;
 					resource.dfShopGysList(arg).then(res => {
 						if(res.data.code == 1){
+							this.firstLoading = false;
 							let data = res.data.data;
 							this.first_title_list = data.title_list;
 							this.first_table_list = data.table_data;
-							this.firstDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -823,8 +828,11 @@
 						shop_name:this.shop_name,
 						supplier_name:this.supp_name
 					}
+					this.twoLoading = true;
+					this.twoDialog = true;
 					resource.dfShopGysList(arg_two).then(res => {
 						if(res.data.code == 1){
+							this.twoLoading = false;
 							let data = res.data.data;
 							this.two_title_list = data.title_list;
 							this.two_table_list = data.table_data;
@@ -840,7 +848,7 @@
 					case 'three_shop': 		//店铺明细第三层（款-订单）
 					this.firstDialog = false;
 					this.twoDialog = false;
-					this.getOrderList(9,filed);
+					this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
 					break;
 					case 'supplier': 		//供应商第一层
 					this.tableName = 'two_supplier';
@@ -850,15 +858,17 @@
 						type:'supplier_name',
 						supplier_name:this.supp_name
 					}
+					this.firstDialog = true;
+					this.firstLoading = true;
 					resource.dfShopGysList(arg_three).then(res => {
 						if(res.data.code == 1){
+							this.firstLoading = false;
 							let data = res.data.data;
 							this.first_title_list = data.title_list;
 							this.first_table_list = data.table_data;
 							this.first_table_list.map(item => {
 								item['feekback'] = true;
 							})
-							this.firstDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -867,7 +877,7 @@
 					case 'two_supplier': 		//供应商第二层（款-订单）
 					this.firstDialog = false;
 					this.twoDialog = false;
-					this.getOrderList(9,filed);
+					this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
 					break;
 					case 'three_supplier': 		//第三个供应商
 					this.tableName = 'five_supplier';
@@ -877,15 +887,17 @@
 						date_type:this.pjsx_date_type,
 						supplier_name:this.supp_name 
 					}
+					this.firstDialog = true;
+					this.firstLoading = true;
 					resource.dfAverageDelivery(arg_fore).then(res => {
 						if(res.data.code == 1){
+							this.firstLoading = false;
 							let data = res.data.data;
 							this.first_title_list = data.title_list;
 							this.first_table_list = data.table_data;
 							this.first_table_list.map(item => {
 								item['feekback'] = true;
 							})
-							this.firstDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -899,15 +911,17 @@
 						date_type:this.pjsx_date_type,
 						supplier_name:this.supp_name 
 					}
+					this.firstDialog = true;
+					this.firstLoading = true;
 					resource.dfOverTime(arg_five).then(res => {
 						if(res.data.code == 1){
+							this.firstLoading = false;
 							let data = res.data.data;
 							this.first_title_list = data.title_list;
 							this.first_table_list = data.table_data;
 							this.first_table_list.map(item => {
 								item['feekback'] = true;
 							})
-							this.firstDialog = true;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -916,12 +930,12 @@
 					case 'five_supplier': 		//第三个供应商（款-订单）
 					this.firstDialog = false;
 					this.twoDialog = false;
-					this.getOrderList(9,filed);
+					this.getOrderList(9,{ksbm:filed,order_status:['Sent']});
 					break;
 					case 'six_supplier': 		//第四个供应商（款-订单）
 					this.firstDialog = false;
 					this.twoDialog = false;
-					this.getOrderList(9,filed);
+					this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
 					break;
 					default:
 					return;
