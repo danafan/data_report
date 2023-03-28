@@ -35,8 +35,8 @@
 			</el-form-item>
 		</el-form>
 		<div class="flex jsb afe">
-			<PopoverWidget class="margin_bottom" title="退货率-部门每日明细" keys="thl_bmmrmx" v-if="tab_index == '1'"/>
-			<PopoverWidget class="margin_bottom" title="退货率-部门累加" keys="thl_bmlj" v-if="tab_index == '2'"/>
+			<PopoverWidget class="margin_bottom" title="退款率-部门每日明细" keys="thl_bmmrmx" v-if="tab_index == '1'"/>
+			<PopoverWidget class="margin_bottom" title="退款率-部门累加" keys="thl_bmlj" v-if="tab_index == '2'"/>
 			<div class="flex">
 				<div class="tab_item" :class="{'active_tab_item':tab_index == '1'}" @click="tab_index = '1'">每日明细</div>
 				<div class="tab_item" :class="{'active_tab_item':tab_index == '2'}" @click="tab_index = '2'">累加</div>

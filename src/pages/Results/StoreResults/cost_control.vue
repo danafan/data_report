@@ -2,6 +2,12 @@
 	<div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
+			<el-form-item label="品牌：">
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入品牌" :remote-method="ajaxPp" collapse-tags>
+					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="发货日期:">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
@@ -171,6 +177,8 @@
 					}]
 				},	 										
 				date:[getMonthStartDate(),getNowDate()],			//时间区间
+				pp_list:[],									//品牌列表
+				select_pp_list:[],							//选中的品牌列表
 				colorList: ['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc'],
 				blChart:null,				//经营状况趋势图
 				empty_option:{
@@ -336,6 +344,18 @@
 			this.searchFn();
 		},
 		methods: {
+			//品牌列表
+			ajaxPp(e){
+				if(e != ''){
+					resource.ajaxPp({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.pp_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
 			//子组件传递过来的参数
 			checkReq(reqObj){
 				this.dept_name = reqObj.select_department_ids;
@@ -362,6 +382,7 @@
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					pp:this.select_pp_list.join(','),
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
@@ -645,6 +666,7 @@
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					pp:this.select_pp_list.join(','),
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
@@ -670,6 +692,7 @@
 					let arg = {
 						start_time:this.date && this.date.length> 0?this.date[0]:"",
 						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						pp:this.select_pp_list.join(','),
 						platform:this.pl.join(','),
 						dept_id:this.dept_name.join(','),
 						shop_id:this.shop_code.join(','),
@@ -691,6 +714,7 @@
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					pp:this.select_pp_list.join(','),
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
@@ -719,6 +743,7 @@
 					let arg = {
 						start_time:this.date && this.date.length> 0?this.date[0]:"",
 						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						pp:this.select_pp_list.join(','),
 						platform:this.pl.join(','),
 						dept_id:this.dept_name.join(','),
 						shop_id:this.shop_code.join(','),
@@ -749,6 +774,7 @@
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					pp:this.select_pp_list.join(','),
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),

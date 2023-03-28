@@ -814,7 +814,7 @@
 						this.table_data[13].new_value = (this.table_data[4].new_value*(this.table_data[12].new_value)/100).toFixed(2);
 					}
 					// 净利润率
-					this.table_data[18].new_value = (this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[14].new_value - this.table_data[15].new_value - this.table_data[16].new_value).toFixed(2);
+					this.table_data[18].new_value = (this.table_data[5].new_value - this.table_data[6].new_value - this.table_data[7].new_value - this.table_data[8].new_value - this.table_data[9].new_value - this.table_data[10].new_value - this.table_data[14].new_value - this.table_data[15].new_value - this.table_data[16].new_value).toFixed(2);
 					//净利润(销售收入*（贡献毛益率-物流费用率-客服费用率-公摊费用率))
 					this.table_data[17].new_value = (this.table_data[4].new_value*(this.table_data[18].new_value/100)).toFixed(2);
 				}
