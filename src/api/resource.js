@@ -256,6 +256,8 @@ let path = {
 	storeScoreExport:'annual/store_score_export',					//体验分看板表格导出
 	storeScoreChart:'annual/store_score_chart',						//体验分折线图接口
 	ajaxDeerShopPp:'Common/ajaxDeerShopPp',							//品牌列表
+	mlreportList:'mlreport/list',									//毛利分析
+	ajaxPpgBbid:'mlreport/ajax_ppg_bbid',							//胖胖哥宝贝id
 		
 
 }					
@@ -1315,6 +1317,14 @@ export default{
 	//品牌列表
 	ajaxDeerShopPp(params){
 		return http.get(path.ajaxDeerShopPp, params)
+	},
+	//毛利分析
+	mlreportList(params){
+		return http.get(path.mlreportList, params)
+	},
+	//胖胖哥宝贝id列表
+	ajaxPpgBbid(params){
+		return http.get(path.ajaxPpgBbid, params)
 	},
 }
 

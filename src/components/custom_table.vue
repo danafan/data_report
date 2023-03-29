@@ -1,17 +1,33 @@
 <template>
-	<el-table size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" :max-height="max_height">
+	<el-table size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :cell-style="rowStyle" :max-height="max_height" @sort-change="sortChange">
 		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
-		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort === 1" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :width="column_width">
+		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div :class="{'prop_text':is_wrap}">{{item.row_name}}</div>
+					<div :style="{background:`${item.color}`}" :class="{'prop_text':is_wrap}">{{item.row_name}}</div>
 				</el-tooltip>
 			</template>
-			<template slot-scope="scope">
+			<!-- 多级表头 -->
+			<el-table-column :prop="i.row_field_name" align="center" :sortable="i.is_sort?'custom':false" :fixed="i.is_fixed == 1" show-overflow-tooltip v-for="i in item.list" :column-key="i.color" :width="i.type == '8'?180:column_width" v-if="item.list">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
+						<div :class="{'prop_text':is_wrap}">{{i.row_name}}</div>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="i.type == '3' && scope.row.images[0] != ''"></el-image>
+					<el-button type="text" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
+					<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
+					<div v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
+				</template>
+			</el-table-column>
+			<!-- 单级表头 -->
+			<template slot-scope="scope" v-else>
 				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == '3' && scope.row.images[0] != ''"></el-image>
 				<el-button type="text" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
-				<div v-else>{{scope.row[item.row_field_name]}}{{item.unit}}</div>
+				<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
+				<div v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
 			</template>
 		</el-table-column>
 		<el-table-column label="操作" align="center" v-if="is_setting">
@@ -27,6 +43,11 @@
 </template>
 <script>
 	export default{
+		data(){
+			return{
+				show_chart_filed:[],		//需要展示图表的字段列表
+			}
+		},
 		props:{
 			//是否显示序号
 			show_index:{
@@ -58,6 +79,11 @@
 				type:Array,
 				default:()=>[]
 			},
+			//第一行是否是总计行
+			total_row:{
+				type:Boolean,
+				default:false
+			},
 			//下钻时取的参数
 			fieldName:{
 				type:String,
@@ -88,11 +114,120 @@
 					}
 				}
 			},
+		},
+		watch:{
+			table_data:function(n,o){
+				this.$nextTick(() => {
+					this.getShowChartFiled(this.title_list);
+					var echarts = require("echarts");
+					n.map(n_item => {
+						this.show_chart_filed.map((item) => {
+							if(n_item.id != ''){
+								var ele = document.getElementById(`${item}-${n_item.id}`);
+								let myChart = echarts.getInstanceByDom(ele)
+								if (myChart == null) { 
+									myChart = echarts.init(ele);
+								}
+								let x_axis = [];
+								let series_data = n_item[item].split(',');
+								series_data.map(i => {
+									x_axis.push('');
+								})
+								myChart.setOption(this.chartsOptions(x_axis,series_data))
+							}
+
+						})
+					})
+				})
+			}
+		},
+		methods:{
+			//排序
+			sortChange({ column, prop, order }) {  
+				let sort = "";
+				if(order){
+					sort = prop + '-' + (order == 'ascending'?'1':'0');
+				} else{
+					sort = "";
+				}   
+				this.$emit('sortCallBack',sort);
+			},
+			//递归找到需要展示图标的字段
+			getShowChartFiled(list) {
+				list.map(item => {
+					if(item.list && item.list.length > 0){
+						if(item.type == 8){
+							this.show_chart_filed.push(item.row_field_name);
+						}
+						this.getShowChartFiled(item.list)
+					}else{
+						if(item.type == 8){
+							this.show_chart_filed.push(item.row_field_name);
+						}
+					}
+				})
+			},
+			columnStyle({ row, column, rowIndex, columnIndex }) {
+				if(column.columnKey){
+					return `background: ${column.columnKey};color:#333333`;
+				}
+			},
+			rowStyle({ row, column, rowIndex, columnIndex }) {
+				if(this.total_row && rowIndex == 0){
+					return 'color:#333333;fontSize:14px;fontWeight:bold';
+				}
+			},
+			//图表绘制
+			chartsOptions(x_axis,series_data){
+				return {
+					xAxis: {
+						type: 'category',
+						data: x_axis,
+						axisLine: {
+							show: false, 
+						},
+						axisTick: {
+							show: false,  
+						}
+					},
+					yAxis: {
+						type: 'value',
+						axisTick: {
+							show: false,  
+						},
+						axisLine: {
+							show: false, 
+						},
+						axisLabel: {
+							show: false, 
+						},
+						splitLine: {
+							show: true,
+							lineStyle: {
+								type: 'dashed',
+							},
+						}
+					},
+					series: [
+					{
+						data: series_data,
+						type: 'line',
+					}
+					]
+				}
+			},
 		}
 	}
 </script>
 <style lang="less" scoped>
 .prop_text{
 	white-space: pre-wrap;
+}
+.chart{
+	width: 120px;
+	height: 80px;
+}
+.total_style{
+	color: red;
 }
 </style>
