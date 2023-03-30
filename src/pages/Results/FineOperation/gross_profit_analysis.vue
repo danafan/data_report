@@ -49,7 +49,7 @@
 		<div class="flex jse mb-10">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" max_height="9999" :table_data="table_data" :title_list="title_list" :total_row="true" @sortCallBack="sortCallBack"/>
+		<custom-table v-loading="loading" max_height="750" :table_data="table_data" :title_list="title_list" :is_wrap="true" :total_row="true" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 	</div>
 </template>

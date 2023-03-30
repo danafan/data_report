@@ -5,29 +5,41 @@
 		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div class="table_header_text">{{item.row_name}}</div>
+					<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{item.row_name}}</div>
 				</el-tooltip>
 			</template>
 			<!-- 多级表头 -->
-			<el-table-column :prop="i.row_field_name" align="center" :sortable="i.is_sort?'custom':false" :fixed="i.is_fixed == 1" show-overflow-tooltip v-for="i in item.list" :column-key="i.color" :width="i.type == '8'?180:column_width" v-if="item.list">
+			<el-table-column :prop="i.row_field_name" align="center" :sortable="i.is_sort?'custom':false" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:column_width" v-for="i in item.list">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-						<div class="table_header_text">{{i.row_name}}</div>
+						<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
+					<!-- 图片 -->
 					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="i.type == '3' && scope.row.images[0] != ''"></el-image>
+					<!-- 链接 -->
 					<el-button type="text" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
+					<!-- 图表 -->
 					<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
-					<div v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] != ''?i.unit:''}}</div>
+					<!-- 正负颜色 -->
+					<div :class="[{'red_color':scope.row[i.row_field_name] >= 0},{'green_color':scope.row[i.row_field_name] < 0}]" v-else-if="i.type == '2'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
+					<!-- 普通文字 -->
+					<div class="table_header_text" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
 				</template>
 			</el-table-column>
 			<!-- 单级表头 -->
-			<template slot-scope="scope" v-else>
+			<template slot-scope="scope">
+				<!-- 图片 -->
 				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == '3' && scope.row.images[0] != ''"></el-image>
+				<!-- 链接 -->
 				<el-button type="text" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
+				<!-- 图表 -->
 				<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
-				<div v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[i.row_field_name] != ''?item.unit:''}}</div>
+				<!-- 正负颜色 -->
+				<div :class="[{'red_color':scope.row[item.row_field_name] >= 0},{'green_color':scope.row[item.row_field_name] < 0}]" v-else-if="item.type == '2'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+				<!-- 普通文字 -->
+				<div class="table_header_text" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
 			</template>
 		</el-table-column>
 		<el-table-column label="操作" align="center" v-if="is_setting">
@@ -212,6 +224,12 @@
 							},
 						}
 					},
+					grid:{
+						bottom:'10px',
+						top:'10px',
+						left:'5px',
+						right:'5px',
+					},
 					series: [
 					{
 						data: series_data,
@@ -228,10 +246,13 @@
 	white-space: pre-wrap;
 }
 .chart{
-	width: 120px;
+	width: 160px;
 	height: 80px;
 }
-.total_style{
+.red_color{
 	color: red;
+}
+.green_color{
+	color: green;
 }
 </style>
