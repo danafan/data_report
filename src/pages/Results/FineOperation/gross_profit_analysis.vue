@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
 			<el-form-item label="统计日期：">
-				<el-date-picker v-model="day" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+				<el-date-picker v-model="day" type="date" :clearable="false" value-format="yyyy-MM-dd" placeholder="选择日期">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="供应商：">
@@ -37,7 +37,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="日均销：">
-				<el-select v-model="limit_type" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请选择日均销" :remote-method="getGys" collapse-tags >
+				<el-select v-model="limit_type" clearable placeholder="请选择日均销">
 					<el-option v-for="item in limit_type_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
@@ -46,6 +46,9 @@
 				<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<custom-table v-loading="loading" max_height="9999" :table_data="table_data" :title_list="title_list" :total_row="true" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 	</div>
@@ -56,8 +59,10 @@
 	import PageWidget from '../../../components/pagination_widget.vue'
 
 	import resource from '../../../api/resource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {getNowDate} from '../../../api/nowMonth.js'
 	export default{
 		data(){
 			return{
@@ -66,7 +71,7 @@
 				select_store_ids:[],						//选中的店铺列表
 				select_department_ids:[],					//选中的部门id列表
 				select_plat_ids:[],							//选中的平台列表
-				day:"",										//统计日期
+				day:getNowDate(),							//统计日期
 				gys_list:[],								//供应商列表
 				select_gys_ids:[],							//选中的供应商
 				gyshh_list:[],								//供应商货号
@@ -75,7 +80,7 @@
 				select_pl_ids:[],							//选中的品类列表
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
-				limit_type:[],								//选中的日均销列表
+				limit_type:"",								//选中的日均销列表
 				limit_type_list:[{
 					id:'1',
 					name:'日销 1-20'
@@ -99,6 +104,8 @@
 			}
 		},
 		created(){
+			//品类列表
+			this.getPl();
 			//获取列表
 			this.mlreportList();
 		},
@@ -178,12 +185,15 @@
 				let arg = {
 					page:this.page,
 					pagesize:this.pagesize,
+					dept_id:this.select_department_ids.join(','),
+					platform:this.select_plat_ids.join(','),
+					shop_id:this.select_store_ids.join(','),
 					day:this.day?this.day:'',
 					gys:this.select_gys_ids.join(','),
 					gyshh:this.select_gyshh_ids.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
-					limit_type:this.limit_type.join(','),
+					limit_type:this.limit_type,
 					bbid:this.bbid.join(','),
 					sort:this.sort
 				}
@@ -195,11 +205,45 @@
 						this.table_data = data.table_data.data;
 						this.total = data.table_data.total;
 						let table_total_data = data.table_total_data[0];
-						this.table_data.unshift(table_total_data);
+						if(this.table_data.length > 0){
+							this.table_data.unshift(table_total_data);
+						}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						dept_id:this.select_department_ids.join(','),
+						platform:this.select_plat_ids.join(','),
+						shop_id:this.select_store_ids.join(','),
+						day:this.day?this.day:'',
+						gys:this.select_gys_ids.join(','),
+						gyshh:this.select_gyshh_ids.join(','),
+						cpfl:this.select_pl_ids.join(','),
+						ksbm:this.select_ks_ids.join(','),
+						limit_type:this.limit_type,
+						bbid:this.bbid.join(','),
+						sort:this.sort
+					}
+					resource.mlreportExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'单品毛利分析');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//排序回调
 			sortCallBack(sort){

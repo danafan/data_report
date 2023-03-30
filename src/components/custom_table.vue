@@ -1,25 +1,25 @@
 <template>
-	<el-table size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :cell-style="rowStyle" :max-height="max_height" @sort-change="sortChange">
+	<el-table border size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :cell-style="rowStyle" :max-height="max_height" @sort-change="sortChange">
 		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
 		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div :style="{background:`${item.color}`}" :class="{'prop_text':is_wrap}">{{item.row_name}}</div>
+					<div class="table_header_text">{{item.row_name}}</div>
 				</el-tooltip>
 			</template>
 			<!-- 多级表头 -->
 			<el-table-column :prop="i.row_field_name" align="center" :sortable="i.is_sort?'custom':false" :fixed="i.is_fixed == 1" show-overflow-tooltip v-for="i in item.list" :column-key="i.color" :width="i.type == '8'?180:column_width" v-if="item.list">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-						<div :class="{'prop_text':is_wrap}">{{i.row_name}}</div>
+						<div class="table_header_text">{{i.row_name}}</div>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
 					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="i.type == '3' && scope.row.images[0] != ''"></el-image>
 					<el-button type="text" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
 					<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
-					<div v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
+					<div v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] != ''?i.unit:''}}</div>
 				</template>
 			</el-table-column>
 			<!-- 单级表头 -->
@@ -27,7 +27,7 @@
 				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == '3' && scope.row.images[0] != ''"></el-image>
 				<el-button type="text" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
 				<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
-				<div v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
+				<div v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[i.row_field_name] != ''?item.unit:''}}</div>
 			</template>
 		</el-table-column>
 		<el-table-column label="操作" align="center" v-if="is_setting">
@@ -167,11 +167,15 @@
 					}
 				})
 			},
+			//表头加特殊背景色
 			columnStyle({ row, column, rowIndex, columnIndex }) {
 				if(column.columnKey){
 					return `background: ${column.columnKey};color:#333333`;
+				}else{
+					return `background: #f4f4f4`;
 				}
 			},
+			// 总计行样式
 			rowStyle({ row, column, rowIndex, columnIndex }) {
 				if(this.total_row && rowIndex == 0){
 					return 'color:#333333;fontSize:14px;fontWeight:bold';
