@@ -2,14 +2,14 @@
 	<el-table border size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :cell-style="rowStyle" :max-height="max_height" @sort-change="sortChange">
 		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
-		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort?'custom':false" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
+		<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
 					<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{item.row_name}}</div>
 				</el-tooltip>
 			</template>
 			<!-- 多级表头 -->
-			<el-table-column :prop="i.row_field_name" align="center" :sortable="i.is_sort?'custom':false" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:column_width" v-for="i in item.list">
+			<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:column_width" v-for="i in item.list">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
 						<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
@@ -96,6 +96,11 @@
 				type:Boolean,
 				default:false
 			},
+			//是否自定义排序
+			is_custom_sort:{
+				type:Boolean,
+				default:true
+			},
 			//下钻时取的参数
 			fieldName:{
 				type:String,
@@ -163,6 +168,18 @@
 					sort = "";
 				}   
 				this.$emit('sortCallBack',sort);
+			},
+			sortableFn(bool){
+				if(bool){
+					if(this.is_custom_sort){
+						return true;
+					}else{
+						return 'custom';
+					}
+				}else{
+					return false;
+				}
+				// item.is_sort?is_custom_sort?'custom':true:false
 			},
 			//递归找到需要展示图标的字段
 			getShowChartFiled(list) {
@@ -246,7 +263,7 @@
 	white-space: pre-wrap;
 }
 .chart{
-	width: 160px;
+	width: 150px;
 	height: 80px;
 }
 .red_color{
