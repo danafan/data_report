@@ -49,7 +49,7 @@
 		<div class="flex jse mb-10">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" max_height="750" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" @sortCallBack="sortCallBack"/>
+		<custom-table v-loading="loading" max_height="750" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 	</div>
 </template>
@@ -100,6 +100,7 @@
 				title_list:[],								//表头数据
 				table_data:[],								//表格数据
 				total:0,									//数据总数
+				table_total_data:{},
 				loading:false,
 			}
 		},
@@ -204,10 +205,7 @@
 						this.title_list = data.title_list;
 						this.table_data = data.table_data.data;
 						this.total = data.table_data.total;
-						let table_total_data = data.table_total_data[0];
-						if(this.table_data.length > 0){
-							this.table_data.unshift(table_total_data);
-						}
+						this.table_total_data = this.table_data.length > 0?data.table_total_data[0]:{};
 					}else{
 						this.$message.warning(res.data.msg);
 					}
