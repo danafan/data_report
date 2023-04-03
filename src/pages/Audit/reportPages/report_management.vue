@@ -189,6 +189,16 @@
 			<el-button size="small" type="primary" @click="confirmFn">确 认</el-button>
 		</div>
 	</el-dialog>
+	<!-- 不存在的线上订单号 -->
+	<el-dialog title="本次导入不存在的线上订单号" :visible.sync="bczDialog" width="30%">
+		<div class="mb-5 flex ac" v-for="item in bcz_list">
+			<div class="yuan mr-6"></div>
+			<div>{{item}}</div>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" type="primary" @click="bczDialog = false">知道了</el-button>
+		</div>
+	</el-dialog>
 </div>
 </template>
 <script>
@@ -244,7 +254,9 @@
 				page:1,
 				pagesize:10,
 				dataObj:{},									//列表数据
-				loading:false
+				loading:false,
+				bcz_list:[],
+				bczDialog:false,		//导入不存在的线上订单号提示
 			}
 		},
 		created(){
@@ -308,6 +320,10 @@
 							this.ykbDialog = false;
 							//获取列表
 							this.getList();
+							if(res.data.data.length > 0){
+								this.bcz_list = res.data.data;
+								this.bczDialog = true;
+							}
 						}else{
 							this.file = null;
 							this.filename = "";
@@ -541,5 +557,11 @@
 			opacity: 0;
 		}
 	}
+}
+.yuan{
+	background:#333333;
+	border-radius:50%;
+	width: 10px;
+	height: 10px;
 }
 </style>

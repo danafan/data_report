@@ -44,6 +44,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="供应商：">
+				<el-select v-model="select_gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
+					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="性别：">
 				<el-select v-model="select_xb_id" clearable :popper-append-to-body="false" placeholder="全部">
 					<el-option label="男" value="男"></el-option>
@@ -234,6 +240,8 @@
 				select_ks_ids:[],		//选中的款式编码列表
 				pl_list:[],				//品类列表
 				select_pl_ids:[],		//选中的品类列表
+				gys_list:[],								//供应商列表
+				select_gys_ids:[],							//选中的供应商
 				select_xb_id:"",		//选中的性别	
 				date:getNowDate(),		//库存日期
 				is_retreat:"",			//是否可退
@@ -293,6 +301,18 @@
 					}
 				})
 			},
+			//供应商列表
+			getGys(e){
+				if(e != ''){
+					resource.ajaxGys({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.gys_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
 			//款式编码
 			getKsbm(e){
 				if(e != ''){
@@ -340,7 +360,8 @@
 					xb:this.select_xb_id,
 					cpfl:this.select_pl_ids.join(','),
 					is_retreat:this.is_retreat,
-					labels:this.labels
+					labels:this.labels,
+					gys:this.select_gys_ids.join(',')
 				}
 				this.analysis_row_loading = true;
 				resource.stockAnalysis(arg).then(res => {
@@ -541,6 +562,7 @@
         			cpfl:this.select_pl_ids.join(','),
         			is_retreat:this.is_retreat,
         			labels:this.labels,
+        			gys:this.select_gys_ids.join(','),
         			page:this.page,
         			pagesize:this.pagesize
         		}
@@ -617,7 +639,8 @@
         				xb:this.select_xb_id,
         				cpfl:this.select_pl_ids.join(','),
         				is_retreat:this.is_retreat,
-        				labels:this.labels
+        				labels:this.labels,
+        				gys:this.select_gys_ids.join(',')
         			}
         			if(this.sort != ''){
         				arg.sort = this.sort;

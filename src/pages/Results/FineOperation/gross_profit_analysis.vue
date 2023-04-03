@@ -46,7 +46,8 @@
 				<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="flex jse mb-10">
+		<div class="flex jsb mb-10">
+			<PopoverWidget title="指标解释" keys="gross_profit_analysis"/>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<custom-table v-loading="loading" max_height="750" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack"/>
@@ -57,6 +58,7 @@
 	import dps from '../../../components/results_components/dps.vue'
 	import CustomTable from '../../../components/custom_table.vue'
 	import PageWidget from '../../../components/pagination_widget.vue'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 
 	import resource from '../../../api/resource.js'
 	import {exportPost} from '../../../api/export.js'
@@ -264,7 +266,8 @@
 		components:{
 			dps,
 			CustomTable,
-			PageWidget
+			PageWidget,
+			PopoverWidget
 		}
 	}
 </script>

@@ -12,7 +12,7 @@
 		<div class="table_row">
 			<div class="left_table">
 				<div class="table_title">事业部上架统计</div>
-				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="width: 100%" max-height="260px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="syb_loading">
+				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="width: 100%" max-height="410px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="syb_loading">
 					<el-table-column prop="title" label="事业部" align="center" width="155" show-overflow-tooltip>
 					</el-table-column>
 					<el-table-column prop="lower_shelves_num" label="未上架款数" align="center" width="155" show-overflow-tooltip>

@@ -66,10 +66,13 @@
 				<div class="column_line"></div>
 			</div>
 		</div>
+		<div class="flex jse mt-10">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<div class="table_content">
 			<div class="left_menu">
 				<div class="menu_item" :class="{'active_color':active_index == index}" v-for="(item,index) in menu_list" @click="active_index = index">
-					<div>{{item}}</div>
+					<div>{{item.name}}</div>
 					<div class="active_line" v-if="active_index == index"></div>
 				</div>
 			</div>
@@ -89,6 +92,9 @@
 	import resource from '../../../../api/resource.js'
 	import operationResource from '../../../../api/operationResource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../../api/nowMonth.js'
+
+	import {exportPost} from '../../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -138,8 +144,15 @@
 				},	 										//时间区间
 				date:[],									//发货日期
 				top_list_data:[],							//顶部数据
-				menu_list:['店铺','品类','店铺品类','款式','供应商','颜色','尺码'],	//左侧导航列表
-				active_index:0,		//当前选中的导航下标
+				menu_list:[
+				{name:'店铺',id:'store'},
+				{name:'品类',id:'cpfl'},
+				{name:'店铺品类',id:'store_cpfl'},
+				{name:'款式',id:'ksbm'},
+				{name:'供应商',id:'gys'},
+				{name:'颜色',id:'color'},
+				{name:'尺码',id:'size'}],	//左侧导航列表
+				active_index:0,						//当前选中的导航下标
 				table_list:[],						//列表数据
 				title_list:[],						//列
 				total:[],
@@ -503,6 +516,39 @@
 					}
 				})
 			},
+			//导出
+			commitExport(){
+				let str = this.menu_list[this.active_index].name;
+				let type = this.menu_list[this.active_index].id;
+				MessageBox.confirm(`确认按${str}类型导出?`, '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						dept_id:this.select_dept_ids.join(','),
+						shop_id:this.select_store_ids.join(','),
+						cpfl:this.select_pl_ids.join(','),
+						spid:this.select_spid_list.join(','),
+						gyskh:this.select_gyshh_ids.join(','),
+						gys:this.select_gys_ids.join(','),
+						ksbm:this.select_ks_ids.join(','),
+						start_date:this.date && this.date.length > 0?this.date[0]:"",
+						end_date:this.date && this.date.length > 0?this.date[1]:"",
+						type:type
+					}
+					operationResource.mlExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,`毛利分析-${str}`);
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//表格总计行
 			getWeekSummaries(param) {
 				return this.total;
@@ -577,7 +623,7 @@
 	}
 }
 .table_content{
-	margin-top: 25px;
+	margin-top: 10px;
 	width: 100%;
 	display: flex;
 	align-items: flex-start;

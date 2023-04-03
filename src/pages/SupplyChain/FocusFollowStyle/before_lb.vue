@@ -1,6 +1,28 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="项目部:">
+				<el-cascader
+				ref="cascader"
+				:options="dept_list"
+				:props="props"
+				@change="getIds"
+				filterable
+				collapse-tags
+				clearable></el-cascader>
+			</el-form-item>
+			<el-form-item label="平台:">
+				<el-select v-model="select_plat_ids" clearable @change="getStoreList" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="店铺名称：">
+				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="款式：">
 				<el-select v-model="select_ks_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
 					<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
@@ -22,12 +44,6 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="店铺名称：">
-				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
-					</el-option>
-				</el-select>
-			</el-form-item>
 			<el-form-item label="统计日期：">
 				<el-date-picker v-model="sjxrrq" type="date" value-format="yyyy-MM-dd" placeholder="选择日期">
 				</el-date-picker>
@@ -36,6 +52,7 @@
 				<el-select v-model="type" clearable placeholder="请选择类型">
 					<el-option label="款式Top200" value="1"></el-option>
 					<el-option label="近三天每天销量大于10" value="2"></el-option>
+					<el-option label="近三天每天销量大于5" value="3"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -69,7 +86,7 @@
 			<el-table-column :index="index" :label="item.label" :prop="item.prop" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip>
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
-						<div class="text_style">{{item.label}}</div>
+						<div class="pre-line">{{item.label}}</div>
 					</el-tooltip>
 				</template>
 				<div v-if="item.prop == 'qhghqk'">
@@ -135,8 +152,19 @@
 				gys_list:[],								//供应商列表
 				select_gys_ids:[],							//选中的供应商
 				gyshh:"",									//供应商货号
-				gys_cate_list:[],			//供应商分类列表
-				gys_cate_ids:[],			//选中的供应商分类
+				gys_cate_list:[],							//供应商分类列表
+				gys_cate_ids:[],							//选中的供应商分类
+				select_store_ids:[],						//选中的店铺列表
+				dept_list:[],
+				select_department_ids:[],					//选中的部门id列表
+				props:{
+					multiple:true,
+					value:'dept_id',
+					label:'dept_name',
+					children:'list',
+				},
+				plat_list:[],
+				select_plat_ids:[],							//选中的平台列表
 				store_list: [],								//店铺列表	
 				select_store_ids:[],						//选中的店铺id列表
 				sjxrrq:getNowDate(),
@@ -250,14 +278,86 @@
 		},
 		created(){
 			this.nowDate = getNowDate();
+			//部门列表
+			this.AjaxViewDept();
+			//平台列表
+			this.ajaxPlat();
+			// 获取所有店铺
+			this.getStoreList()
 			//获取供应商分类
 			this.getGysfl();
-			// 获取所有店铺
-			this.getStoreList();
 			//获取列表
 			this.getData();
 		},
 		methods:{
+			//部门列表
+			AjaxViewDept(){
+				resource.ajaxViewDept().then(res => {
+					if(res.data.code == 1){
+						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},	
+			//平台列表
+			ajaxPlat(){
+				resource.ajaxPlat().then(res => {
+					if(res.data.code == 1){
+						this.plat_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			getIds(){
+				this.$nextTick(()=>{
+					var arr = [];
+					let select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
+					select_department.map(s => {
+					if(s.parent){	//最后一层有父级
+						var m = s.parent;
+						if(m.checked){ //倒数第二层被全选了
+							if(m.parent){ //倒数第二层有父级
+								var d = m.parent;
+								if(d.checked){ //倒数第三层被全选了
+									if(arr.indexOf(d.value) == -1){
+										arr.push(d.value);
+									}
+								}else{
+									if(arr.indexOf(m.value) == -1){
+										arr.push(m.value);
+									}
+								}
+							}else{
+								if(arr.indexOf(m.value) == -1){
+									arr.push(m.value);
+								}
+							}
+						}else{
+							arr.push(s.value);
+						}
+					}else{	//只有一层
+						arr.push(s.value);
+					}
+				})
+					this.select_department_ids = arr;
+					//店铺列表
+					this.getStoreList();
+				});
+			},
+			// 获取所有店铺
+			getStoreList(){
+				this.select_store_ids = [];
+				let dept_id = this.select_department_ids.join(',');
+				resource.ajaxViewStore({dept_id:dept_id,platform:this.select_plat_ids.join(',')}).then(res => {
+					if(res.data.code == 1){
+						this.store_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//表格前几天到货数
 			filterLabel(num,type){
 				return `${getNextDate(this.sjxrrq,num).split('-')[1]}日${type == '1'?'到货数':''}`
@@ -297,16 +397,6 @@
 					}
 				})
 			},
-			// 获取所有店铺
-			getStoreList(){
-				demandResource.deerShop().then(res => {
-					if(res.data.code == 1){
-						this.store_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
 			//导入
 			uploadCsv(){
 				if (this.$refs.csvUpload.files.length > 0) {
@@ -332,6 +422,8 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
+						dept_id:this.select_department_ids.join(','),
+						platform:this.select_plat_ids.join(','),
 						jst_code:this.select_store_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
 						gys:this.select_gys_ids.join(','),
@@ -373,8 +465,11 @@
 				}
 				this.getData();
 			}, 
+			//获取列表
 			getData(){
 				let arg = {
+					dept_id:this.select_department_ids.join(','),
+					platform:this.select_plat_ids.join(','),
 					jst_code:this.select_store_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
 					gys:this.select_gys_ids.join(','),

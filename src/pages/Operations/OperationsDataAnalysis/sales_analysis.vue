@@ -20,6 +20,7 @@
 		<el-table size="small" :data="tableData" tooltip-effect="dark" style="margin-bottom: 30px;width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="500" show-summary :summary-method="getSummaries" v-loading="loading">
 			<el-table-column prop="shop_name" width="160" label="店铺" show-overflow-tooltip></el-table-column>
 			<el-table-column prop="xsds" label="支付单数" align="center" sortable></el-table-column>
+			<el-table-column prop="ksbm_num" label="支付款数" align="center" sortable></el-table-column>
 			<el-table-column prop="xsje" label="支付金额" width="120" align="center" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.xsje}}万</div>
@@ -104,6 +105,7 @@
 				},	 								//时间区间
 				tab_index:'1',						//图表默认类型（1:销售数据；2:鱼塘数据）
 				tableData:[],						//表格数据
+				total_ksbm_num:0,					//款式总数量
 				day_list:[],						//日期列表
 				saleDataList:[],					//销售数据图表列表
 				ytDataList:[],						//鱼塘数据图表列表
@@ -173,7 +175,9 @@
 				operationResource.saleAnalysisTable(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
-						this.tableData = res.data.data;
+						let data = res.data.data;
+						this.tableData = data.list;
+						this.total_ksbm_num = data.total_ksbm_num;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -192,21 +196,23 @@
 					sums[index] = values.reduce((prev, curr) => {
 						return prev + curr;
 					}, 0);
-					console.log(sums)
 					if(index == 2){
+						sums[index] = this.total_ksbm_num;
+					}
+					if(index == 3){
 						let rr = sums[index].toFixed(2);
 						sums[index] = rr += '万';
 					}
-					if(index == 5){
-						let gg = ((sums[4]/sums[3])*100).toFixed(2);
+					if(index == 6){
+						let gg = ((sums[5]/sums[4])*100).toFixed(2);
 						sums[index] = gg += '%';
 					}
-					if(index == 7){
-						let cc =  (parseFloat(sums[2].split('万')[0]*10000)/sums[1]).toFixed(2);
+					if(index == 8){
+						let cc =  (parseFloat(sums[3].split('万')[0]*10000)/sums[1]).toFixed(2);
 						sums[index] = cc + '元';
 					}
-					if(index == 9){
-						let dd =  ((sums[8]/(sums[8] + sums[1]))*100).toFixed(2);
+					if(index == 10){
+						let dd =  ((sums[9]/(sums[9] + sums[1]))*100).toFixed(2);
 						sums[index] = dd += '%';
 					}
 				});
