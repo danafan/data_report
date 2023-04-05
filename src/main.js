@@ -5,7 +5,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 import store from './store'
 import VueContextMenu from 'vue-contextmenu'
+import Vue2OrgTree from 'vue2-org-tree'
+import './styles/org-tree.less'
 
+Vue.use(Vue2OrgTree)
 Vue.use(VueContextMenu)
 Vue.use(ElementUI);
 

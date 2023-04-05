@@ -99,9 +99,9 @@
 					<i class="el-icon-s-promotion"></i>
 					<span slot="title">代发系统</span>
 				</el-menu-item> -->
-				<!-- <el-menu-item index="/refund_status">
+				<!-- <el-menu-item index="/human_effect">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">退款情况看板</span>
+					<span slot="title">人效看板</span>
 				</el-menu-item> -->
 			</el-menu>
 		</div>

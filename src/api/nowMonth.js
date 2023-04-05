@@ -2,6 +2,7 @@ var now = new Date(); 				//当前日期
 var nowDay = now.getDate(); 		//当前日 
 var nowMonth = now.getMonth(); 		//当前月 
 var nowYear = now.getYear(); 		//当前年 
+const nowTime = now.getTime()
 nowYear += (nowYear < 2000) ? 1900 : 0; 
 
 //获得本月的开始日期 
@@ -13,6 +14,17 @@ export function getMonthStartDate(){
 		monthStartDate = new Date(nowYear, nowMonth, 1);
 	}
 	return formatDate(monthStartDate); 
+}
+//获得本周的开始日期 
+export function getWeekStartDate(){
+const day = now.getDay() > 0 ? now.getDay() : 7 // 表示当前是周几
+const oneDayTime = 24 * 60 * 60 * 1000 // 一天的总ms
+// 本周一时间戳
+const MondayTime = nowTime - (day - 1) * oneDayTime
+// 格式化时间
+const monday = new Date(MondayTime)
+// 可以通过自定义函数（format）格式化时间戳
+return formatDate(monday)
 }
 //获得前几年
 export function getLastYear(n){ 
@@ -44,12 +56,12 @@ export function getNextMonth(){
 }
 //获取某日期的前几日日期
 export function getNextDate(date, day) { 
-　　var dd = new Date(date);
-　　dd.setDate(dd.getDate() + day);
-　　var y = dd.getFullYear();
-　　var m = dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
-　　var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
-　　return m + "-" + d;
+	　　var dd = new Date(date);
+	　　dd.setDate(dd.getDate() + day);
+	　　var y = dd.getFullYear();
+	　　var m = dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
+	　　var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
+	　　return m + "-" + d;
 }
 
 //获得昨日日期（包括上月末日期）
@@ -104,28 +116,28 @@ function formatDate(date,t) {
 	var hour = date.getHours(); // 时
   	var minutes = date.getMinutes(); // 分
   	var seconds = date.getSeconds() //秒
-	if(mymonth < 10){ 
-		mymonth = "0" + mymonth; 
-	} 
-	if(myweekday < 10){ 
-		myweekday = "0" + myweekday; 
-	}
-	if(hour < 10){ 
-		hour = "0" + hour; 
-	}
-	if(minutes < 10){ 
-		minutes = "0" + minutes; 
-	}
-	if(seconds < 10){ 
-		seconds = "0" + seconds; 
-	}
-	if(t){
-		return (myyear + "-" + mymonth + "-" + myweekday + ' ' + hour + ":" + minutes + ":" + seconds);
-	}else{
-		return (myyear + "-" + mymonth + "-" + myweekday);
-	}
-	
-}
+  	if(mymonth < 10){ 
+  		mymonth = "0" + mymonth; 
+  	} 
+  	if(myweekday < 10){ 
+  		myweekday = "0" + myweekday; 
+  	}
+  	if(hour < 10){ 
+  		hour = "0" + hour; 
+  	}
+  	if(minutes < 10){ 
+  		minutes = "0" + minutes; 
+  	}
+  	if(seconds < 10){ 
+  		seconds = "0" + seconds; 
+  	}
+  	if(t){
+  		return (myyear + "-" + mymonth + "-" + myweekday + ' ' + hour + ":" + minutes + ":" + seconds);
+  	}else{
+  		return (myyear + "-" + mymonth + "-" + myweekday);
+  	}
+  	
+  }
 //获取月日期信息
 export function getMonthInfo(year,month){
 	let callObj = {
@@ -138,7 +150,7 @@ export function getMonthInfo(year,month){
 // 获取当月天数
 function mGetDate(y,m){
 	var thisDate = new Date(y,m,0);  
-    return thisDate.getDate();
+	return thisDate.getDate();
 }
 // 获取星期
 export function getWeek(dateString) {

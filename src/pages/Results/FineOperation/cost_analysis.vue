@@ -45,18 +45,22 @@
 			<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getSummaries" show-summary v-loading="loading">
-			<el-table-column label="制单日期" prop="month" width="160" sortable>
+			<el-table-column label="制单日期" align="center" prop="month" width="160" sortable>
 			</el-table-column>
-			<el-table-column label="店铺ID" prop="dpid" width="160" show-overflow-tooltip sortable>
+			<el-table-column label="店铺ID" align="center" prop="dpid" width="160" show-overflow-tooltip sortable>
 			</el-table-column>
-			<el-table-column label="用友店铺ID" prop="cdepname" width="160" show-overflow-tooltip sortable>
+			<el-table-column label="用友店铺ID" align="center" prop="cdepname" width="160" show-overflow-tooltip sortable>
 			</el-table-column>
 			<el-table-column label="使用金额" prop="md" width="160" sortable>
 				<template slot-scope="scope">
 					<div class="background_box" :style="{width:`${max_list.max_md == 0?0:(160/max_list.max_md)*Math.abs(scope.row.md)}px`,background:'#FEDB6F'}">{{scope.row.md}}万</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="月目标" prop="ymb_yxfy" width="160" sortable>
+			<el-table-column label="差额" align="center" prop="yxfy_diff" width="160" show-overflow-tooltip sortable>
+			</el-table-column>
+			<el-table-column label="差率" align="center" prop="ljrmbdcl_diff" width="160" show-overflow-tooltip sortable>
+			</el-table-column>
+			<el-table-column label="月目标" align="center" prop="ymb_yxfy" width="160" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.ymb_yxfy}}万</div>
 				</template>
@@ -66,7 +70,7 @@
 					<div class="background_box" :style="{width:`${max_list.max_ymb_syl == 0?0:(160/max_list.max_ymb_syl)*Math.abs(scope.row.ymb_syl)}px`,background:'#F7AFAC'}">{{scope.row.ymb_syl}}%</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="累计目标" prop="rmb_yxfy" width="160" sortable>
+			<el-table-column label="累计目标" align="center" prop="rmb_yxfy" width="160" sortable>
 				<template slot-scope="scope">
 					<div>{{scope.row.rmb_yxfy}}万</div>
 				</template>
@@ -133,6 +137,8 @@
 					</el-form-item>
 				</el-form>
 				<el-table :data="mx_table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='500' :summary-method="mxSummary" show-summary>
+					<el-table-column label="店铺名称" prop="shop_name" width="160" show-overflow-tooltip>
+					</el-table-column>
 					<el-table-column label="店铺ID" prop="dpid" width="160" show-overflow-tooltip>
 					</el-table-column>
 					<el-table-column label="项目大类" prop="citemcname" width="160" show-overflow-tooltip>

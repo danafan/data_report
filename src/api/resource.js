@@ -259,6 +259,7 @@ let path = {
 	mlreportList:'mlreport/list',									//毛利分析
 	mlreportExport:'mlreport/export',								//毛利分析导出
 	ajaxPpgBbid:'mlreport/ajax_ppg_bbid',							//胖胖哥宝贝id
+	humanEffectData:'human_efficiency/rx_list',						//人效看板
 		
 
 }					
@@ -1330,6 +1331,10 @@ export default{
 	//胖胖哥宝贝id列表
 	ajaxPpgBbid(params){
 		return http.get(path.ajaxPpgBbid, params)
+	},
+	//人效看板
+	humanEffectData(params){
+		return http.get(path.humanEffectData, params)
 	},
 }
 

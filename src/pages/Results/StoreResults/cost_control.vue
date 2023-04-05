@@ -38,23 +38,8 @@
 				<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-
 		<custom-table v-if="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
 		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
-
-		<!-- <el-table :data="dept_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
-			<el-table-column :label="i.row_name" v-for="i in dept_title_list" show-overflow-tooltip :fixed="i.row_field_name == 'dept_name' || i.row_field_name == 'dept_2'">
-				<template slot="header" slot-scope="scope">
-					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-						<div class="text_content">{{i.row_name}}</div>
-					</el-tooltip>
-				</template>
-				<template slot-scope="scope">
-					<div class="text_content" :class="[{'red_style':i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20},{'bold_style':scope.$index == 0}]" v-if="scope.$index == 0 || i.type == 0">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
-					<div :class="{'red_style':i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20}" :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
-				</template>
-			</el-table-column>
-		</el-table> -->
 		<!-- 店铺--营销费用投产情况 -->
 		<div class="flex ac jsb mb-10 mt-10">
 			<div class="custom_title">店铺--营销费用投产情况</div>
@@ -63,28 +48,9 @@
 				<el-button type="primary" plain size="small" @click="storeExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-
 		<custom-table v-if="show_shop" v-loading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
 		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
 		<page-widget :page="store_page" :pagesize="store_pagesize" :total="store_total" @handleSizeChange="storeSizeChange" @handlePageChange="storePageChange"/>
-
-		<!-- <el-table :data="shop_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560'>
-			<el-table-column :label="i.row_name" v-for="i in shop_title_list" show-overflow-tooltip :fixed="i.row_field_name == 'shop_code' || i.row_field_name == 'shop_name'">
-				<template slot="header" slot-scope="scope">
-					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-						<div class="text_content">{{i.row_name}}</div>
-					</el-tooltip>
-				</template>
-				<template slot-scope="scope">
-					<div class="text_content" :class="[{'red_style':(i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20) || (i.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[i.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[i.row_field_name] > 20)))},{'bold_style':scope.$index == 0}]" v-if="scope.$index == 0 || i.type == 0">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
-					<div :class="{'red_style':(i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20) || (i.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[i.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[i.row_field_name] > 20)))}" :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
-				</template>
-			</el-table-column>
-		</el-table> -->
-		<!-- <div class="page">
-			<el-pagination @size-change="storeSizeChange" @current-change="storePageChange" :current-page="store_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="store_total">
-			</el-pagination>
-		</div> -->
 		<!-- 店铺日数据 -->
 		<div class="flex ac jsb mb-10 mt-10">
 			<div class="custom_title">店铺日数据</div>

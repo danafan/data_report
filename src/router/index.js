@@ -76,6 +76,8 @@ const thp_table = resolve=>require(['@/pages/SupplyChain/thp_table'],resolve)
 const erdept_internal = resolve=>require(['@/pages/SupplyChain/erdept_internal'],resolve)
 //代发系统
 const replace_send = resolve=>require(['@/pages/ReplaceSend/index'],resolve)
+//人效看板
+const human_effect = resolve=>require(['@/pages/HumanEffect/human_effect'],resolve)
 
 Vue.use(Router)
 
@@ -172,7 +174,8 @@ const router = new Router({
         keepAlive:true
     }, component: demand_report},
     { path: '/created_demand',name:"新建外采需求", component: created_demand},
-    { path: '/procurement_info',name:"运营外采信息", component: procurement_info}
+    { path: '/procurement_info',name:"运营外采信息", component: procurement_info},
+    { path: '/human_effect',name:"人效看板", component: human_effect}
     ]
 }
 ]
