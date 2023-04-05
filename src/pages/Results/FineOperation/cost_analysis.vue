@@ -283,6 +283,7 @@
 					item.md = item.md + '万';
 					item.ymb_yxfy = item.ymb_yxfy + '万';
 					item.ymb_syl = item.ymb_syl + '%';
+					item.ljrmbdcl_diff = item.ljrmbdcl_diff + '%';
 					item.rmb_yxfy = item.rmb_yxfy + '万';
 					item.ljrmbdcl = item.ljrmbdcl + '%';
 				})
@@ -291,10 +292,12 @@
 					dpid:this.total_data[1],
 					cdepname:this.total_data[2],
 					md:this.total_data[3],
-					ymb_yxfy:this.total_data[4],
-					ymb_syl:this.total_data[5],
-					rmb_yxfy:this.total_data[6],
-					ljrmbdcl:this.total_data[7]
+					yxfy_diff:this.total_data[4],
+					ljrmbdcl_diff:this.total_data[5],
+					ymb_yxfy:this.total_data[6],
+					ymb_syl:this.total_data[7],
+					rmb_yxfy:this.total_data[8],
+					ljrmbdcl:this.total_data[9]
 				};
 				data_list.push(total_data);
 				var data_obj = {
