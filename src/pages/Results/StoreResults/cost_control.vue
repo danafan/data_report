@@ -31,11 +31,18 @@
 			</div>
 		</div>
 		<!-- 事业部项目部--营销费用投产情况 -->
-		<div class="button_rows">
+		<div class="flex ac jsb mb-10">
 			<PopoverWidget class="margin_bottom" title="事业部项目部--营销费用投产情况" keys="sybxmbyxfytcqk"/>
-			<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<div class="flex ac">
+				<el-button type="primary" size="small" @click="customFn('dept')">自定义列表</el-button>
+				<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
 		</div>
-		<el-table :data="dept_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
+
+		<custom-table v-if="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
+		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
+
+		<!-- <el-table :data="dept_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
 			<el-table-column :label="i.row_name" v-for="i in dept_title_list" show-overflow-tooltip :fixed="i.row_field_name == 'dept_name' || i.row_field_name == 'dept_2'">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
@@ -47,13 +54,21 @@
 					<div :class="{'red_style':i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20}" :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
 				</template>
 			</el-table-column>
-		</el-table>
+		</el-table> -->
 		<!-- 店铺--营销费用投产情况 -->
-		<div class="button_rows">
+		<div class="flex ac jsb mb-10 mt-10">
 			<div class="custom_title">店铺--营销费用投产情况</div>
-			<el-button type="primary" plain size="small" @click="storeExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<div class="flex ac">
+				<el-button type="primary" size="small" @click="customFn('shop')">自定义列表</el-button>
+				<el-button type="primary" plain size="small" @click="storeExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
 		</div>
-		<el-table :data="shop_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="shop_loading">
+
+		<custom-table v-if="show_shop" v-loading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
+		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
+		<page-widget :page="store_page" :pagesize="store_pagesize" :total="store_total" @handleSizeChange="storeSizeChange" @handlePageChange="storePageChange"/>
+
+		<!-- <el-table :data="shop_business" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560'>
 			<el-table-column :label="i.row_name" v-for="i in shop_title_list" show-overflow-tooltip :fixed="i.row_field_name == 'shop_code' || i.row_field_name == 'shop_name'">
 				<template slot="header" slot-scope="scope">
 					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
@@ -65,29 +80,32 @@
 					<div :class="{'red_style':(i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20) || (i.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[i.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[i.row_field_name] > 20)))}" :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
 				</template>
 			</el-table-column>
-		</el-table>
-		<div class="page">
+		</el-table> -->
+		<!-- <div class="page">
 			<el-pagination @size-change="storeSizeChange" @current-change="storePageChange" :current-page="store_page" :pager-count="5" :page-sizes="[5, 10, 15, 20]" :page-size="10" layout="total, sizes, prev, pager, next, jumper" :total="store_total">
 			</el-pagination>
-		</div>
+		</div> -->
 		<!-- 店铺日数据 -->
-		<div class="custom_title">店铺日数据</div>
-		<el-table :data="day_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' @sort-change="daySortChange" v-loading="day_loading">
-			<el-table-column :width="i.width" :prop="i.prop" v-for="i in day_title_list" show-overflow-tooltip align="center" sortable="custom">
-				<template slot="header" slot-scope="scope">
-					<el-tooltip class="item" effect="dark" :content="i.label" placement="top-start">
-						<div class="text_content">{{i.label}}</div>
-					</el-tooltip>
-				</template>
-				<template slot-scope="scope">
-					<div>{{scope.row[i.prop]}}</div>
-				</template>
-			</el-table-column>
-		</el-table>
-		<div class="page">
-			<el-pagination @size-change="daySizeChange($event,'store')" @current-change="dayPageChange($event,'store')" :current-page="day_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="day_total">
-			</el-pagination>
+		<div class="flex ac jsb mb-10 mt-10">
+			<div class="custom_title">店铺日数据</div>
+			<el-button type="primary" size="small" @click="customFn('day')">自定义列表</el-button>
 		</div>
+		<custom-table v-if="show_day" v-loading="day_loading" max_height="560" :table_data="day_data" :title_list="day_title_list" :sort_num="false" @sortCallBack="sortCallBack"/>
+		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
+		<page-widget :page="day_page" :pagesize="day_pagesize" :total="day_total" @handleSizeChange="daySizeChange" @handlePageChange="dayPageChange"/>
+		<!-- 自定义列表 -->
+		<el-dialog title="（单机取消列表名保存直接修改）" :visible.sync="show_custom">
+			<div class="select_box">
+				<el-checkbox-group v-model="selected_ids">
+					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+				</el-checkbox-group>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="Restore">恢复默认</el-button>
+				<el-button size="small" @click="Restore('is_close')">取消</el-button>
+				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 
@@ -100,55 +118,11 @@
 	import resource from '../../../api/resource.js'
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+	import CustomTable from '../../../components/custom_table.vue'
+	import PageWidget from '../../../components/pagination_widget.vue'
 	export default {
 		data() {
 			return {
-				toast_list:[
-				'退款率：售前售后退款/GMV（排刷单）',
-				'销售收入（已发货）：具有发货时间订单',
-				'销售收入（未发货）：订单状态为 发货中（打单拣货），已付款待审核，异常',
-				'充值-营销费用：财务每日做账的充值金额',
-				'实际-营销费用：店铺后台获取的实际花费金额',
-				'差额-营销费用：充值-实际，存在充值金额大于实际花费金额情况，由于店铺帐号有余额',
-				'ROI：实际营销费用/GMV',
-				'营销费用占比：实际营销费用/销售收入（已发货），淘系C店参考线定为15%，天猫定为20%，高于则标记红色',
-				'鱼塘开支：包含鱼塘快递，鱼塘佣金，买家秀佣金，淘宝客佣金，海外刷单佣金',
-				'报销费用：包含事业部费用，项目部费用',
-				'毛利率-营销费用占比：将20%作为参考线，低于则标记红色',
-				'贡献毛益：毛利额-实际营销费用-事业部费用-项目部费用-店铺团队费用',
-				'贡献毛益率：贡献毛益/销售收入（已发货）',
-				],
-				jyzkqst_list:[{
-					label:"1.横坐标：",
-					value:"发货日期"
-				},{
-					label:"2.指标解释：",
-					value:""
-				},{
-					label:"GMV：",
-					value:"包含刷单的销售金额"
-				},{
-					label:"GMV(排刷单)：",
-					value:"排除刷单的销售金额"
-				},{
-					label:"销售收入-已发货：",
-					value:"即销售收入，销售收入=销售发货金额-售后退款金额-线下退款金额预估+冲减收入"
-				},{
-					label:"毛利额：",
-					value:"销售收入-销售成本，其中：销售收入=销售发货金额-售后退款金额-线下退款金额预估+冲减收入；销售成本=发货成本-退货进仓成本预估+成本差异金额"
-				},{
-					label:"实际-营销费用：",
-					value:"店铺后台获取的实际花费金额"
-				},{
-					label:"毛利率：",
-					value:"（销售收入-销售成本）/销售收入"
-				},{
-					label:"营销费用占比：",
-					value:"实际营销费用/销售收入，淘系C店参考线定为15%，天猫定为20%，高于则标记红色"
-				},{
-					label:"贡献毛利率：",
-					value:"贡献毛益/销售收入，贡献毛益=毛利额-实际营销费用-事业部费用-项目部费用-店铺团队费用"
-				}],
 				dept_name:[],								//项目部
 				pl:[],										//平台
 				shop_code:[],								//店铺
@@ -199,144 +173,35 @@
 				chart_loading:false,
 				dept_business:[],			//项目部-营销费用投产情况
 				dept_title_list:[],			//表头
+				dept_view_row:[],			//自定义表头
+				dept_selected_ids:[],		//当前选中ID
+				dept_total_data:{},			//项目部-营销费用投产情况（总计行）
 				dept_loading:false,
 				shop_business:[],			//店铺-营销费用投产情况
 				store_total:0,
 				shop_title_list:[],			//表头
+				shop_view_row:[],			//自定义表头
+				shop_selected_ids:[],		//当前选中ID
+				shop_total_data:{},			//店铺-营销费用投产情况（总计行）
+				show_shop:false,
 				shop_loading:false,
 				store_pagesize:10,
 				store_page:1,
 				day_data:[],				//店铺日数据
-				day_title_list:[{
-					label:'发货日期',
-					prop:'fhrq',
-					width:'100',
-				},{
-					label:'事业部',
-					prop:'dept_name',
-					width:'100',
-				},{
-					label:'项目部',
-					prop:'dept_2',
-					width:'100',
-				},{
-					label:'店铺名称',
-					prop:'shop_name',
-					width:'120',
-				},{
-					label:'店铺ID',
-					prop:'shop_code',
-					width:'120',
-				},{
-					label:'GMV',
-					prop:'xsje',
-					width:'120',
-				},{
-					label:'GMV（排刷单）',
-					prop:'qd_xsje',
-					width:'120',
-				},{
-					label:'鱼塘金额',
-					prop:'sd_xsje',
-					width:'120',
-				},{
-					label:'鱼塘金额占比',
-					prop:'sd_rate',
-					width:'120',
-				},{
-					label:'退款率',
-					prop:'tkl',
-					width:'120',
-				},{
-					label:'销售收入-已发货',
-					prop:'xssr',
-					width:'120',
-				},{
-					label:'销售收入-未发货',
-					prop:'wait_xsje',
-					width:'120',
-				},{
-					label:'毛利率',
-					prop:'mlv',
-					width:'120',
-				},{
-					label:'充值-营销费用',
-					prop:'recharge_yxfy',
-					width:'120',
-				},{
-					label:'实际-营销费用',
-					prop:'actual_yxfy',
-					width:'120',
-				},{
-					label:'差额-营销费用',
-					prop:'ce_yxfy',
-					width:'120',
-				},{
-					label:'ROI(GMV/实际营销费用)',
-					prop:'roi',
-					width:'120',
-				},{
-					label:'营销费用占比(营销费用/销售收入已发货)',
-					prop:'yx_rate',
-					width:'120',
-				},{
-					label:'天猫扣点',
-					prop:'tmyj',
-					width:'120',
-				},{
-					label:'天猫扣点占比',
-					prop:'tmkdzb',
-					width:'120',
-				},{
-					label:'鱼塘开支',
-					prop:'yt_cost',
-					width:'120',
-				},{
-					label:'鱼塘开支占比',
-					prop:'yt_rate',
-					width:'120',
-				},{
-					label:'毛利率-营销费用占比',
-					prop:'mlv_rate',
-					width:'120',
-				},{
-					label:'报销费用',
-					prop:'bxyj',
-					width:'120',
-				},{
-					label:'贡献毛益',
-					prop:'mlv_gx',
-					width:'120',
-				},{
-					label:'贡献毛益率',
-					prop:'mlv_gx_rate',
-					width:'120',
-				},{
-					label:'鱼塘订单',
-					prop:'yt_dd',
-					width:'120',
-				},{
-					label:'发货订单',
-					prop:'fh_dd',
-					width:'120',
-				},{
-					label:'未发货订单',
-					prop:'wait_dd',
-					width:'120',
-				},{
-					label:'多件订单占比',
-					prop:'multiple_rate',
-					width:'120',
-				},{
-					label:'拆分订单占比',
-					prop:'split_rate',
-					width:'120',
-				}],
+				show_day:false,
+				day_title_list:[],
+				day_view_row:[],			//自定义表头
+				day_selected_ids:[],		//当前选中ID
 				day_total:0,
 				day_loading:false,
 				day_page:1,
 				day_pagesize:10,
-				sort:""
+				sort:"",
+				show_custom:false,			//自定义列表弹窗
+				menu_id:'',					//菜单ID
+				custom_type:'',	//自定义类型(dept:部门;shop:店铺;day:日数据）
+				selected_ids:[],			//当前选中的所有ID
+				view_row:[],				//当前的列表
 			};
 		},
 		created(){
@@ -363,19 +228,22 @@
 				this.shop_code = reqObj.select_store_ids;
 			},
 			//点击搜索
-			searchFn(){
+			async searchFn(){
 				//上面三个图表数据
-				this.businessChart();
+				await this.businessChart();
 				//项目部-营销费用投产情况
-				this.deptBusiness();
+				await this.deptBusiness();
 				//店铺—营销费用投产情况
 				this.store_page = 1;
 				this.store_pagesize = 10;
-				this.shopBusiness();
+				this.show_shop = false;
+				await this.shopBusiness();
 				//店铺日数据
 				this.day_page = 1;
 				this.day_pagesize = 10;
-				this.shopDayBusiness()
+				this.sort = "";
+				this.show_day = false;
+				await this.shopDayBusiness()
 			}, 
 			//上面三个图表数据
 			businessChart(){
@@ -388,11 +256,13 @@
 					shop_id:this.shop_code.join(','),
 				}
 				this.chart_loading = true;
-				resource.businessChart(arg).then(res => {
-					if(res.data.code == 1){
-						this.chart_loading = false;
-						var echarts = require("echarts");
-						let data = res.data.data;
+				return new Promise((resolve)=>{
+					resource.businessChart(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.chart_loading = false;
+							var echarts = require("echarts");
+							let data = res.data.data;
 						//经营状况趋势图
 						let x_axis = data.date;	//横坐标
 						let legend = [];		//图例名称
@@ -428,13 +298,6 @@
 						this.blChart.setOption(this.setOptions(legend,x_axis,series_data));
 						//部门圆形图
 						let dept_custom_data = data.dept_chart;
-						// let dept_custom_data = [{
-						// 	dept_2:"测试1",
-						// 	xssr:-150
-						// },{
-						// 	dept_2:"测试12",
-						// 	xssr:100
-						// }];
 						dept_custom_data.map(item => {
 							item['id'] = `dept.${item.dept_2}`;
 							item['name'] = item.dept_2;
@@ -487,6 +350,7 @@
 					}else{
 						this.$message.warning(res.data.msg);
 					}
+				})
 				})
 			},
 			//排序
@@ -671,15 +535,32 @@
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
 				}
-				this.dept_loading = true;
-				resource.deptBusiness(arg).then(res => {
-					if(res.data.code == 1){
-						this.dept_loading = false;
-						this.dept_business = res.data.data.data;
-						this.dept_title_list = res.data.data.table_title;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
+				this.dept_loading = false;
+				return new Promise((resolve)=>{
+					resource.deptBusiness(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.dept_loading = true;
+							let data = res.data.data;
+							let dept_business = data.data;
+							this.dept_view_row = data.all_rows;
+							this.dept_selected_ids = data.selected_ids;
+							let dept_title_list = data.table_title;
+							dept_title_list.map(item => {
+								if(item.row_field_name == 'mlv_rate'){
+									item.type = '99';
+								}
+							})
+							this.dept_title_list = dept_title_list;
+							if(dept_business.length > 0){
+								this.dept_total_data = dept_business[0];
+								dept_business.splice(0,1);
+							}
+							this.dept_business = dept_business;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 				})
 			},
 			//项目部-导出
@@ -722,15 +603,34 @@
 					pagesize:this.store_pagesize
 				}
 				this.shop_loading = true;
-				resource.shopBusiness(arg).then(res => {
-					if(res.data.code == 1){
-						this.shop_loading = false;
-						this.shop_business = res.data.data.data.data;
-						this.store_total = res.data.data.data.total;
-						this.shop_title_list = res.data.data.table_title;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
+				return new Promise((resolve)=>{
+					resource.shopBusiness(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.shop_loading = false;
+							this.show_shop = true;
+							let data = res.data.data;
+							this.shop_view_row = data.all_rows;
+							this.shop_selected_ids = data.selected_ids;
+							let shop_business = data.data.data;
+							if(shop_business.length > 0){
+								this.shop_total_data = shop_business[0];
+								shop_business.splice(0,1);
+							}
+							this.shop_business = shop_business;
+							this.store_total = data.data.total;
+
+							let shop_title_list = data.table_title;
+							shop_title_list.map(item => {
+								if(item.row_field_name == 'mlv_rate' || item.row_field_name == 'yx_rate'){
+									item.type = '98';
+								}
+							})
+							this.shop_title_list = shop_title_list;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 				})
 			},
 			//店铺-导出
@@ -783,26 +683,31 @@
 					sort:this.sort
 				}
 				this.day_loading = true;
-				resource.shopDayBusiness(arg).then(res => {
-					if(res.data.code == 1){
-						this.day_loading = false;
-						this.day_data = res.data.data.data;
-						this.day_total = res.data.data.total;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
+				return new Promise((resolve)=>{
+					resource.shopDayBusiness(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.day_loading = false;
+							this.show_day = true;
+							let data = res.data.data;
+							this.day_view_row = data.all_rows;
+							this.day_selected_ids = data.selected_ids;
+							this.day_data = data.data.data;
+							this.day_total = data.data.total;
+							this.day_title_list = data.table_title;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
 				})
 			},
-			//排序    
-			daySortChange({ column, prop, order }) {  
-				if(order){
-					this.sort = prop + '-' + (order == 'ascending'?'asc':'desc');
-				} else{
-					this.sort = "";
-				}   
+			//排序回调
+			sortCallBack(sort){
+				this.sort = sort;
+				//获取列表
 				this.shopDayBusiness();
-			}, 
-			//店铺—营销费用投产情况分页
+			},
+			//店铺日数据
 			daySizeChange(val) {
 				this.day_pagesize = val;
 				this.shopDayBusiness();
@@ -811,10 +716,77 @@
 				this.day_page = val;
 				this.shopDayBusiness();
 			},
+			//点击自定义列
+			customFn(type){
+				this.custom_type = type;
+				if(this.custom_type == 'dept'){
+					this.view_row = this.dept_view_row;
+					this.selected_ids = this.dept_selected_ids;
+					this.menu_id = '144';
+				}else if(this.custom_type == 'shop'){
+					this.view_row = this.shop_view_row;
+					this.selected_ids = this.shop_selected_ids;
+					this.menu_id = '100005';
+				}else if(this.custom_type == 'day'){
+					this.view_row = this.day_view_row;
+					this.selected_ids = this.day_selected_ids;
+					this.menu_id = '100006';
+				}
+				this.show_custom = true;
+			},
+			//恢复默认
+			Restore(type){
+				this.selected_ids = [];
+				if(this.custom_type == 'dept'){
+					this.dept_view_row.map(item => {
+						this.selected_ids.push(item.row_id)
+					})
+				}else if(this.custom_type == 'shop'){
+					this.shop_view_row.map(item => {
+						this.selected_ids.push(item.row_id)
+					})
+				}else if(this.custom_type == 'day'){
+					this.day_view_row.map(item => {
+						this.selected_ids.push(item.row_id)
+					})
+				}
+				if(type == 'is_close'){
+					this.show_custom = false;
+				}
+			},
+			//自定义列
+			setColumns(){
+				var row_ids = this.selected_ids.join(',');
+				resource.setColumns({menu_id:this.menu_id,row_ids:row_ids}).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.show_custom = false;
+						//获取列表
+						if(this.custom_type == 'dept'){
+							this.deptBusiness();
+						}else if(this.custom_type == 'shop'){
+							this.store_page = 1;
+							this.store_pagesize = 10;
+							this.show_shop = false;
+							this.shopBusiness();
+						}else if(this.custom_type == 'day'){
+							this.day_page = 1;
+							this.day_pagesize = 10;
+							this.sort = "";
+							this.show_day = false;
+							this.shopDayBusiness()
+						}
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
+			},
 		},
 		components:{
 			dps,
-			PopoverWidget
+			PopoverWidget,
+			CustomTable,
+			PageWidget
 		}
 	}
 
@@ -828,8 +800,6 @@
 </style>
 <style lang="less" scoped>
 .custom_title{
-	margin-top: 15px;
-	margin-bottom: 15px;
 	font-weight: bold;
 	color: #333333;
 }
@@ -867,10 +837,5 @@
 }
 .red_style{
 	color: red;
-}
-.button_rows{
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
 }
 </style>
