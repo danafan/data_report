@@ -38,7 +38,7 @@
 				<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-if="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
+		<custom-table v-if="show_dept" v-loading="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
 		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
 		<!-- 店铺--营销费用投产情况 -->
 		<div class="flex ac jsb mb-10 mt-10">
@@ -143,6 +143,7 @@
 				dept_selected_ids:[],		//当前选中ID
 				dept_total_data:{},			//项目部-营销费用投产情况（总计行）
 				dept_loading:false,
+				show_dept:false,
 				shop_business:[],			//店铺-营销费用投产情况
 				store_total:0,
 				shop_title_list:[],			//表头
@@ -198,6 +199,7 @@
 				//上面三个图表数据
 				await this.businessChart();
 				//项目部-营销费用投产情况
+				this.show_dept = false;
 				await this.deptBusiness();
 				//店铺—营销费用投产情况
 				this.store_page = 1;
@@ -501,12 +503,13 @@
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
 				}
-				this.dept_loading = false;
+				this.dept_loading = true;
 				return new Promise((resolve)=>{
 					resource.deptBusiness(arg).then(res => {
 						resolve();
 						if(res.data.code == 1){
-							this.dept_loading = true;
+							this.dept_loading = false;
+							this.show_dept = true;
 							let data = res.data.data;
 							let dept_business = data.data;
 							this.dept_view_row = data.all_rows;
@@ -729,6 +732,7 @@
 						this.show_custom = false;
 						//获取列表
 						if(this.custom_type == 'dept'){
+							this.show_dept = false;
 							this.deptBusiness();
 						}else if(this.custom_type == 'shop'){
 							this.store_page = 1;

@@ -59,6 +59,9 @@
 			<el-table-column label="差额" align="center" prop="yxfy_diff" width="160" show-overflow-tooltip sortable>
 			</el-table-column>
 			<el-table-column label="差率" align="center" prop="ljrmbdcl_diff" width="160" show-overflow-tooltip sortable>
+				<template slot-scope="scope">
+					<div>{{scope.row.ljrmbdcl_diff}}%</div>
+				</template>
 			</el-table-column>
 			<el-table-column label="月目标" align="center" prop="ymb_yxfy" width="160" sortable>
 				<template slot-scope="scope">
@@ -296,8 +299,8 @@
 				data_list.push(total_data);
 				var data_obj = {
 					table_title:"营销费用分析",
-					table_title_list:['制单日期','店铺ID','用友店铺ID','使用金额','月目标','月目标使用率','累计目标','累计目标达成率'],
-					field_name_list:['month','dpid','cdepname','md','ymb_yxfy','ymb_syl','rmb_yxfy','ljrmbdcl'],
+					table_title_list:['制单日期','店铺ID','用友店铺ID','使用金额','差额','差率','月目标','月目标使用率','累计目标','累计目标达成率'],
+					field_name_list:['month','dpid','cdepname','md','yxfy_diff','ljrmbdcl_diff','ymb_yxfy','ymb_syl','rmb_yxfy','ljrmbdcl'],
 					data_list:data_list
 				};
 				exportExcel(data_obj);

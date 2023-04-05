@@ -60,7 +60,6 @@
 			}
 		},
 		created(){
-			getWeekStartDate();
 			//获取数据
 			this.humanEffectData();
 		},
@@ -99,10 +98,10 @@
     				<div class="line"></div>
     				<div class="f12 pp">
     				<div class="flex">
-    				<div class="bold">销售费用：</div>
+    				<div class="bold">营销费用：</div>
     				<div>{data.yxfy}</div>
     				</div>
-    				<div class="red_color">{data.yxfy_rx}</div>
+    				<div class="green_color">{data.yxfy_rx}</div>
     				</div>
     				</div>
     				</div>
