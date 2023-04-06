@@ -57,6 +57,9 @@
 				</template>
 			</el-table-column>
 			<el-table-column label="差额" align="center" prop="yxfy_diff" width="160" show-overflow-tooltip sortable>
+				<template slot-scope="scope">
+					<div>{{scope.row.yxfy_diff}}万</div>
+				</template>
 			</el-table-column>
 			<el-table-column label="差率" align="center" prop="ljrmbdcl_diff" width="160" show-overflow-tooltip sortable>
 				<template slot-scope="scope">
@@ -283,6 +286,7 @@
 					item.md = item.md + '万';
 					item.ymb_yxfy = item.ymb_yxfy + '万';
 					item.ymb_syl = item.ymb_syl + '%';
+					item.yxfy_diff = item.yxfy_diff + '万';
 					item.ljrmbdcl_diff = item.ljrmbdcl_diff + '%';
 					item.rmb_yxfy = item.rmb_yxfy + '万';
 					item.ljrmbdcl = item.ljrmbdcl + '%';

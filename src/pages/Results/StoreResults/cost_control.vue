@@ -200,17 +200,17 @@
 				await this.businessChart();
 				//项目部-营销费用投产情况
 				this.show_dept = false;
+				this.show_shop = false;
+				this.show_day = false;
 				await this.deptBusiness();
 				//店铺—营销费用投产情况
 				this.store_page = 1;
 				this.store_pagesize = 10;
-				this.show_shop = false;
 				await this.shopBusiness();
 				//店铺日数据
 				this.day_page = 1;
 				this.day_pagesize = 10;
 				this.sort = "";
-				this.show_day = false;
 				await this.shopDayBusiness()
 			}, 
 			//上面三个图表数据
