@@ -55,13 +55,18 @@ export function getNextMonth(){
 	return (myyear+"-"+mymonth);
 }
 //获取某日期的前几日日期
-export function getNextDate(date, day) { 
+export function getNextDate(date, day,t) { 
 	　　var dd = new Date(date);
 	　　dd.setDate(dd.getDate() + day);
 	　　var y = dd.getFullYear();
 	　　var m = dd.getMonth() + 1 < 10 ? "0" + (dd.getMonth() + 1) : dd.getMonth() + 1;
 	　　var d = dd.getDate() < 10 ? "0" + dd.getDate() : dd.getDate();
-	　　return m + "-" + d;
+	if(t){
+		return y + '-' + m + "-" + d;
+	}else{
+		return m + "-" + d;
+	}
+	　　
 }
 
 //获得昨日日期（包括上月末日期）
@@ -94,7 +99,11 @@ export function lastXDate(x,t){
 	var currentDate = new Date(dayx);
 	return formatDate(currentDate,t); 
 }
-
+//获得某月的开始日期 
+export function getNullMonthStartDate(month){ 
+	var nullMonthStartDate = new Date(nowYear, month-1, 1); 
+	return formatDate(nullMonthStartDate); 
+}
 //获得前某月的开始日期 
 export function getLastMonthStartDate(month_num){ 
 	var lastMonthStartDate = new Date(nowYear, nowMonth - month_num, 1); 

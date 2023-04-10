@@ -13,6 +13,9 @@
 				<CostControl v-if="item.web_url == 'cost_control'"/>
 				<WeekOperation v-if="item.web_url == 'week_operation'"/>
 			</el-tab-pane>
+			<el-tab-pane label="公摊费用日报" lazy name="public_expense" class="tab_pane_box">
+				<PublicExpense/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -32,6 +35,7 @@
 	import SalesTrend from './StoreResults/sales_trend.vue'
 	import IntervalData from './StoreResults/interval_data.vue'
 	import Overseas from './StoreResults/overseas.vue'
+	import PublicExpense from './StoreResults/public_expense.vue'
 	export default{
 		data(){
 			return{
@@ -79,7 +83,8 @@
 			StoreData,
 			SalesTrend,
 			IntervalData,
-			Overseas
+			Overseas,
+			PublicExpense
 		}
 	}
 </script>

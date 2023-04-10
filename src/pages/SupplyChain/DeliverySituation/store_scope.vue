@@ -276,6 +276,8 @@
 						var order_data = res.data.data.orderChart;
 						//近七天发货率
 						var seven_send_data = res.data.data.sevenSendChart;
+						//近七天订单数
+						var seven_sendo_order = res.data.data.sevenSendOrderChart;
 
 						this.$nextTick(() => {
 							//部门饼状图
@@ -306,11 +308,15 @@
 							}
 							this.djddblChart.setOption(this.categoryOptions(series_data,x_data));
 							//近七天发货率
+							var jr_dd_data = [];
 							var jr_data = [];
 							var lr_data = [];
 							var sr_data = [];
 							var si_data = [];
 							var ax_data = [];
+							seven_sendo_order.map(item => {
+								jr_dd_data.push(item.dd_0);
+							})
 							seven_send_data.map(item => {
 								jr_data.push(item.fhl_0);
 								lr_data.push(item.fhl_1);
@@ -323,7 +329,7 @@
 							if (this.jqtfhlChart == null) { 
 								this.jqtfhlChart = echarts.init(jqtfhl_chart);
 							}
-							this.jqtfhlChart.setOption(this.axisOption(jr_data,lr_data,sr_data,si_data,ax_data));
+							this.jqtfhlChart.setOption(this.axisOption(jr_dd_data,jr_data,lr_data,sr_data,si_data,ax_data));
 						})
 						window.addEventListener('resize',() => {
 							this.deptZbChart.resize();
@@ -388,7 +394,7 @@
 				}
 			},
 			//折线图配置
-			axisOption(jr_data,lr_data,sr_data,si_data,ax_data){
+			axisOption(jr_dd_data,jr_data,lr_data,sr_data,si_data,ax_data){
 				return {
 					title: {
 						text: '近七天发货率',
@@ -399,10 +405,11 @@
 						formatter (params) {
 							var date = params[0].axisValue;
 							return '付款日期：' + date + '</br>' 
-							+ "今日发货率：" + params[0].value + '%</br>'
-							+ "两日发货率：" + params[1].value + '%</br>'
-							+ "三日发货率：" + params[2].value + '%</br>'
-							+ "四日发货率：" + params[3].value + '%</br>';
+							+ "今日订单数：" + params[0].value + '</br>'
+							+ "今日发货率：" + params[1].value + '%</br>'
+							+ "两日发货率：" + params[2].value + '%</br>'
+							+ "三日发货率：" + params[3].value + '%</br>'
+							+ "四日发货率：" + params[4].value + '%</br>';
 						},
 						backgroundColor:"rgba(0,0,0,.8)",
 						textStyle:{
@@ -421,7 +428,7 @@
 					},
 					legend: {
 						top:'30',
-						data: ['今日发货率','两日发货率','三日发货率','四日发货率',]
+						data: ['今日订单数','今日发货率','两日发货率','三日发货率','四日发货率',]
 					},
 					xAxis: {
 						type: 'category',
@@ -432,16 +439,28 @@
 							rotate:70
 						}
 					},
-					yAxis:{
+					yAxis:[{
 						type: 'value',
 						name:'度量值',
 						axisLabel: {
 							formatter: '{value}%'
 						}
-					},
+					},{
+						type: 'value',
+						name:'订单数'
+					}],
 					series: [{
+						name:'今日订单数',
+						type: 'line',
+						yAxisIndex:1,
+						lineStyle:{
+							width:3.6
+						},
+						data: jr_dd_data
+					},{
 						name:'今日发货率',
 						type: 'line',
+						yAxisIndex:0,
 						lineStyle:{
 							width:3.6
 						},
@@ -449,6 +468,7 @@
 					},{
 						name:'两日发货率',
 						type: 'line',
+						yAxisIndex:0,
 						lineStyle:{
 							width:3.6
 						},
@@ -456,6 +476,7 @@
 					},{
 						name:'三日发货率',
 						type: 'line',
+						yAxisIndex:0,
 						lineStyle:{
 							width:3.6
 						},
@@ -463,6 +484,7 @@
 					},{
 						name:'四日发货率',
 						type: 'line',
+						yAxisIndex:0,
 						lineStyle:{
 							width:3.6
 						},

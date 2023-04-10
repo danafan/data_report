@@ -260,6 +260,9 @@ let path = {
 	mlreportExport:'mlreport/export',								//毛利分析导出
 	ajaxPpgBbid:'mlreport/ajax_ppg_bbid',							//胖胖哥宝贝id
 	humanEffectData:'human_efficiency/rx_list',						//人效看板
+	dayGtfyChart:'ml_analysis/day_gtfy_chart',						//公摊费用每日波动
+	dayGtfyList:'ml_analysis/day_gtfy_list',						//公摊费用变动
+	dayGtfyDetial:'ml_analysis/day_gtfy_detial',					//公摊费用明细
 		
 
 }					
@@ -1335,6 +1338,18 @@ export default{
 	//人效看板
 	humanEffectData(params){
 		return http.get(path.humanEffectData, params)
+	},
+	//公摊费用每日波动
+	dayGtfyChart(params){
+		return http.get(path.dayGtfyChart, params)
+	},
+	//公摊费用变动
+	dayGtfyList(params){
+		return http.get(path.dayGtfyList, params)
+	},
+	//公摊费用明细
+	dayGtfyDetial(params){
+		return http.get(path.dayGtfyDetial, params)
 	},
 }
 

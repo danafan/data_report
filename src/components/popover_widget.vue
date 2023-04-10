@@ -4,7 +4,7 @@
 		<el-popover
 		placement="top-start"
 		width="500"
-		trigger="hover">
+		trigger="hover" v-if="show_popover">
 		<div class="row_content" v-for="item in list">
 			<span class="bold">{{item.label}}</span>
 			<span>{{item.value}}</span>
@@ -23,6 +23,11 @@
 			}
 		},
 		props:{
+			//是否显示感叹号
+			show_popover:{
+				type:Boolean,
+				default:true
+			},
 			//标题名称
 			title:{
 				type:String,
@@ -39,6 +44,9 @@
 			}
 		},
 		created(){
+			if(!this.show_popover){
+				return;
+			}
 			var new_list = [];
 			let list = popover[this.keys];
 			list.map(item => {

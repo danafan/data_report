@@ -184,9 +184,13 @@
 			}
 		},
 		mounted(){
-			this.showSummariesPosition();
+			//如果显示总计行，将总计行置于第一行
+			if(this.total_row){
+				this.showSummariesPosition();
+			}
 		},
 		methods:{
+			//如果显示总计行，将总计行置于第一行
 			showSummariesPosition() {
 				const table = document.querySelector('.customTable') 
 				const footer = document.querySelector(
@@ -318,11 +322,11 @@
 </script>
 <style type="text/css">
 .customTable .el-table__fixed-body-wrapper {
-	top: 154px !important;
+	top: 129px !important;
 }
 .customTable .el-table__fixed-footer-wrapper {
 	z-index: 0;
-	top: 117px !important;
+	top: 94px !important;
 }
 </style>
 <style lang="less" scoped>

@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="项目部：">
+			<dps @callBack="checkReq"></dps>
+			<!-- <el-form-item label="项目部：">
 				<el-cascader
 				size="mini"
 				class="input_cascader"
@@ -18,7 +19,7 @@
 					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item label="品类：">
 				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
@@ -92,21 +93,15 @@
 	import resource from '../../../../api/resource.js'
 	import operationResource from '../../../../api/operationResource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../../api/nowMonth.js'
+	import dps from '../../../../components/results_components/dps.vue'
 
 	import {exportPost} from '../../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
-				dept_list:[],								//部门列表
-				props:{
-					multiple:true,
-					value:'dept_id',
-					label:'dept_name',
-					children:'list',
-				},
-				select_dept_ids:[],							//选中的部门列表
-				shop_list:[],								//店铺列表
+				select_department_ids:[],					//选中的部门列表
+				select_plat_ids:[],							//选中的平台列表
 				select_store_ids:[],						//选中的店铺列表
 				gys_list:[],								//供应商列表
 				select_gys_ids:[],							//选中的供应商
@@ -160,10 +155,6 @@
 			}
 		},
 		created(){
-			//部门列表
-			this.getDept();
-			//店铺列表
-			this.getStore();
 			//品类列表
 			this.getPl();
 			//点击搜索
@@ -193,69 +184,11 @@
 						),
 					]);
 			},
-			//部门列表
-			getDept(){
-				if(this.$store.state.dept_list.length == 0){  
-					resource.ajaxViewDept({from:1}).then(res => {
-						if(res.data.code == 1){
-							this.dept_list = res.data.data;
-							this.$store.commit('setDeptList',this.dept_list);
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{
-					this.dept_list = this.$store.state.dept_list;
-				}
-			},
-			//切换部门
-			getIds(){
-				this.$nextTick(()=>{
-					var arr = [];
-					var select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
-					select_department.map(s => {
-						if(!!s.parent){	//最后一层有父级
-							var m = s.parent;
-							if(!!m.checked){ //倒数第二层被全选了
-								if(!!m.parent){ //倒数第二层有父级
-									var d = m.parent;
-									if(!!d.checked){ //倒数第三层被全选了
-										if(arr.indexOf(d.value) == -1){
-											arr.push(d.value);
-										}
-									}else{
-										if(arr.indexOf(m.value) == -1){
-											arr.push(m.value);
-										}
-									}
-								}else{
-									if(arr.indexOf(m.value) == -1){
-										arr.push(m.value);
-									}
-								}
-							}else{
-								arr.push(s.value);
-							}
-						}else{	//只有一层
-							arr.push(s.value);
-						}
-					})
-					this.select_dept_ids = arr;
-					//店铺列表
-					this.getStore();
-				});
-			},
-			//店铺列表
-			getStore(){
-				this.select_store_ids = [];
-				let dept_id = this.select_dept_ids.join(',');
-				resource.ajaxViewStore({dept_id:dept_id,from:1}).then(res => {
-					if(res.data.code == 1){
-						this.shop_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.select_department_ids = reqObj.select_department_ids;
+				this.select_plat_ids = reqObj.select_plat_ids;
+				this.select_store_ids = reqObj.select_store_ids;
 			},
 			//品类列表
 			getPl(){
@@ -323,7 +256,8 @@
 			//点击搜索
 			getList(type){
 				let arg = {
-					dept_id:this.select_dept_ids.join(','),
+					dept_id:this.select_department_ids.join(','),
+					platform:this.select_plat_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					spid:this.select_spid_list.join(','),
@@ -526,7 +460,8 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						dept_id:this.select_dept_ids.join(','),
+						dept_id:this.select_department_ids.join(','),
+						platform:this.select_plat_ids.join(','),
 						shop_id:this.select_store_ids.join(','),
 						cpfl:this.select_pl_ids.join(','),
 						spid:this.select_spid_list.join(','),
@@ -553,6 +488,9 @@
 			getWeekSummaries(param) {
 				return this.total;
 			},
+		},
+		components:{
+			dps
 		}
 	}
 </script>

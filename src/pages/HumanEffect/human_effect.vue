@@ -16,9 +16,6 @@
 				<el-button type="primary" size="mini" @click="humanEffectData">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<!-- <div>
-			<el-switch v-model="horizontal" :width="50" active-text="横排" inactive-text="竖排" style="margin-top:8px;"/>
-		</div> -->
 		<vue2-org-tree
 		v-loading="loading"
 		:data="newData"
@@ -103,6 +100,14 @@
     				</div>
     				<div class="green_color">{data.yxfy_rx}</div>
     				</div>
+    				<div class="line"></div>
+    				<div class="f12 pp">
+    				<div class="flex">
+    				<div class="bold">销售收入：</div>
+    				<div>{data.xssr}</div>
+    				</div>
+    				<div class="huang_color">{data.xssr_rx}</div>
+    				</div>
     				</div>
     				</div>
     				);
@@ -159,6 +164,9 @@
 }
 .pp{
 	padding:5px 10px;
+}
+.huang_color{
+	color: #F3B214;
 }
 </style>
 
