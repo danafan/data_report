@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-table :class="{'customTable':total_row}" border size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :max-height="max_height" @sort-change="sortChange" :show-summary="total_row" :summary-method="getSummaries">
+		<el-table :class="[{'customTable':total_row},commonClass]" border size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :max-height="max_height" @sort-change="sortChange" :show-summary="total_row" :summary-method="getSummaries">
 			<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 			</el-table-column>
 			<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
@@ -71,6 +71,7 @@
 	export default{
 		data(){
 			return{
+				commonClass:"",				//动态类名
 				show_chart_filed:[],		//需要展示图表的字段列表
 			}
 		},
@@ -184,23 +185,28 @@
 			}
 		},
 		mounted(){
+			this.commonClass = `table_${this.tableName}`;
 			//如果显示总计行，将总计行置于第一行
 			if(this.total_row){
-				this.showSummariesPosition();
+				this.$nextTick(() => {
+					this.showSummariesPosition();
+				})
 			}
 		},
 		methods:{
 			//如果显示总计行，将总计行置于第一行
 			showSummariesPosition() {
-				const table = document.querySelector('.customTable') 
+				this.$nextTick(() => {
+    			const table = document.querySelector(`.table_${this.tableName}`)
 				const footer = document.querySelector(
-					'.customTable .el-table__footer-wrapper'
+					`.table_${this.tableName} .el-table__footer-wrapper`
 					)
 				const body = document.querySelector(
-					'.customTable .el-table__body-wrapper'
+					`.table_${this.tableName} .el-table__body-wrapper`
 					)
       			table.removeChild(footer) // 移除表格最下方的合计行
       			table.insertBefore(footer, body) // 把合计行插入到表格body的上面
+      		})
       		},
 			//排序
 			sortChange({ column, prop, order }) {  

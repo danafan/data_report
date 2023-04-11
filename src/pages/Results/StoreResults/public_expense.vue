@@ -20,10 +20,10 @@
 			</el-form-item>
 		</el-form>
 		<PopoverWidget class="mb-10" title="公摊费用变动" keys="gtfybd"/>
-		<custom-table v-loading="bd_loading" max_height="750" :table_data="bd_table_data" :title_list="bd_title_list" @sortCallBack="bdSortCallBack"/>
+		<custom-table tableName="bdTable" v-loading="bd_loading" max_height="750" :table_data="bd_table_data" :title_list="bd_title_list" :is_custom_sort="false" :total_row="true" :table_total_data="bd_total_data" @sortCallBack="bdSortCallBack"/>
 		<page-widget :page="bd_page" :pagesize="bd_pagesize" :total="bd_total" @handleSizeChange="handleBdSizeChange" @handlePageChange="handleBdPageChange"/>
 		<PopoverWidget class="mb-10" title="公摊费用明细" :show_popover="false"/>
-		<custom-table v-loading="mx_loading" max_height="750" :table_data="mx_table_data" :title_list="mx_title_list" @sortCallBack="mxSortCallBack"/>
+		<custom-table tableName="mxTable" v-loading="mx_loading" max_height="750" :table_data="mx_table_data" :title_list="mx_title_list" :is_custom_sort="false" :total_row="true" :table_total_data="mx_total_data" @sortCallBack="mxSortCallBack"/>
 		<page-widget :page="mx_page" :pagesize="mx_pagesize" :total="mx_total" @handleSizeChange="handleMxSizeChange" @handlePageChange="handleMxPageChange"/>
 	</div>
 </template>
@@ -67,6 +67,7 @@
 				bd_loading:false,						//公摊费用变动
 				bd_table_data:[],
 				bd_title_list:[],
+				bd_total_data:{},
 				bd_sort:"",
 				bd_page:1,
 				bd_pagesize:10,
@@ -74,6 +75,7 @@
 				mx_loading:false,						//公摊费用明细
 				mx_table_data:[],
 				mx_title_list:[],
+				mx_total_data:{},
 				mx_sort:"",
 				mx_page:1,
 				mx_pagesize:10,
@@ -194,9 +196,15 @@
 					if(res.data.code == 1){
 						this.bd_loading = false;
 						let data = res.data.data;
-						this.bd_table_data = data.table_data.data;
+						let bd_table_data = data.table_data.data;
+						if(bd_table_data.length > 0){
+							this.bd_total_data = bd_table_data[0];
+							bd_table_data.splice(0,1);
+						}
+						this.bd_table_data = bd_table_data;
 						this.bd_total = data.table_data.total;
 						this.bd_title_list = data.title_list;
+						
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -233,7 +241,14 @@
 					if(res.data.code == 1){
 						this.mx_loading = false;
 						let data = res.data.data;
-						this.mx_table_data = data.table_data.data;
+						let mx_table_data = data.table_data.data;
+						if(mx_table_data.length > 0){
+							this.mx_total_data = mx_table_data[0];
+							mx_table_data.splice(0,1);
+							
+						}
+						this.mx_table_data = mx_table_data;
+
 						this.mx_total = data.table_data.total;
 						this.mx_title_list = data.title_list;
 					}else{

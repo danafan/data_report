@@ -58,6 +58,7 @@ let path = {
 	getKsbmFhqkExport:'supply_chain/get_ksbm_fhqk_export',			//二部内部款列表导出
 	getEbzhkTwo:'supply_chain/get_ebzhk_two',						//二部下面的表格
 	getEbzhkTwoExport:'supply_chain/get_ebzhk_two_export',			//二部下面的表格导出
+	sendFhlChart:'supplier/send_fhl_chart',							//仓库发货图表-7天发货率和订单数
 	
 }						
 export default{
@@ -292,6 +293,10 @@ export default{
 	//二部下面的表格导出
 	getEbzhkTwoExport(params){
 		return http.post(path.getEbzhkTwoExport, params)
+	},
+	//仓库发货图表-7天发货率和订单数
+	sendFhlChart(params){
+		return http.get(path.sendFhlChart, params)
 	},
 	
 }

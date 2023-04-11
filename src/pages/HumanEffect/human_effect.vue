@@ -9,7 +9,7 @@
 				</el-radio-group>
 			</el-form-item>
 			<el-form-item label="查询日期:">
-				<el-date-picker v-model="date" type="daterange" :clearable="false" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期">
+				<el-date-picker v-model="date" type="daterange" :clearable="false" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="day_type = null">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -48,10 +48,14 @@
 					case 1:
 					this.date.splice(0,1)
 					this.date.unshift(getMonthStartDate());
+					this.date.splice(1,1)
+					this.date.push(getNowDate());
 					break;
 					case 2:
 					this.date.splice(0,1)
 					this.date.unshift(getWeekStartDate());
+					this.date.splice(1,1)
+					this.date.push(getNowDate());
 					break;
 				}
 			}
@@ -87,26 +91,66 @@
     				<div class="flex jsa">
     				<div class="f12 pp">
     				<div class="flex">
-    				<div class="bold">GMV：</div>
-    				<div>{data.gmv}</div>
+    				<div class="bold space-nowrap">GMV：</div>
+    				<div class="space-nowrap">{data.gmv}</div>
     				</div>
-    				<div class="red_color">{data.gmv_rx}</div>
+    				<div class="gmv_color">{data.gmv_rx}</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">环比上月：</div>
+    				<div class={data.gxmy_hb>0?'red_color':data.gxmy_hb==0?'':'green_color'}>{data.gxmy_hb}%</div>
+    				</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">同比去年：</div>
+    				<div class={data.gmv_tb>0?'red_color':data.gmv_tb==0?'':'green_color'}>{data.gmv_tb}%</div>
+    				</div>
     				</div>
     				<div class="line"></div>
     				<div class="f12 pp">
     				<div class="flex">
-    				<div class="bold">营销费用：</div>
+    				<div class="bold space-nowrap">营销费用：</div>
     				<div>{data.yxfy}</div>
     				</div>
-    				<div class="green_color">{data.yxfy_rx}</div>
+    				<div class="huang_color">{data.yxfy_rx}</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">环比上月：</div>
+    				<div class={data.yxfy_hb>0?'red_color':data.yxfy_hb==0?'':'green_color'}>{data.yxfy_hb}%</div>
+    				</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">同比去年：</div>
+    				<div class={data.yxfy_tb>0?'red_color':data.yxfy_tb==0?'':'green_color'}>{data.yxfy_tb}%</div>
+    				</div>
     				</div>
     				<div class="line"></div>
     				<div class="f12 pp">
     				<div class="flex">
-    				<div class="bold">销售收入：</div>
+    				<div class="bold space-nowrap">销售收入：</div>
     				<div>{data.xssr}</div>
     				</div>
-    				<div class="huang_color">{data.xssr_rx}</div>
+    				<div class="yxfy_color">{data.xssr_rx}</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">环比上月：</div>
+    				<div class={data.xssr_hb>0?'red_color':data.xssr_hb==0?'':'green_color'}>{data.xssr_hb}%</div>
+    				</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">同比去年：</div>
+    				<div class={data.xssr_tb>0?'red_color':data.xssr_tb==0?'':'green_color'}>{data.xssr_tb}%</div>
+    				</div>
+    				</div>
+    				<div class="line"></div>
+    				<div class="f12 pp">
+    				<div class="flex">
+    				<div class="bold space-nowrap">贡献毛益额：</div>
+    				<div>{data.gxmy}</div>
+    				</div>
+    				<div class="lan_color">{data.gxmy_rx}</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">环比上月：</div>
+    				<div class={data.gxmy_hb>0?'red_color':data.gxmy_hb==0?'':'green_color'}>{data.gxmy_hb}%</div>
+    				</div>
+    				<div class="flex ac">
+    				<div class="bold space-nowrap">同比去年：</div>
+    				<div class={data.gxmy_tb>0?'red_color':data.gxmy_tb==0?'':'green_color'}>{data.gxmy_tb}%</div>
+    				</div>
     				</div>
     				</div>
     				</div>
@@ -160,13 +204,22 @@
 .line{
 	background-color: #dcdcdc;
 	width: 1px;
-	height: 44px;
+	height: 78px;
 }
 .pp{
 	padding:5px 10px;
 }
+.gmv_color{
+	color:#dd2cc7;
+}
+.yxfy_color{
+	color:#872cdd;
+}
 .huang_color{
 	color: #F3B214;
+}
+.lan_color{
+	color: #1296db;
 }
 </style>
 

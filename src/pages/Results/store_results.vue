@@ -12,9 +12,7 @@
 				<Overseas v-if="item.web_url == 'overseas'"/>
 				<CostControl v-if="item.web_url == 'cost_control'"/>
 				<WeekOperation v-if="item.web_url == 'week_operation'"/>
-			</el-tab-pane>
-			<el-tab-pane label="公摊费用日报" lazy name="public_expense" class="tab_pane_box">
-				<PublicExpense/>
+				<PublicExpense v-if="item.web_url == 'public_expense'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

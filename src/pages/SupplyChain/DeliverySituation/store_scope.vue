@@ -23,7 +23,11 @@
 		</div>
 		<div class="table_title">店铺发货情况</div>
 		<el-table size="small" :data="store_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="storeSortChange" v-loading="store_loading">
-			<el-table-column prop="name" label="店铺名称" width="120" show-overflow-tooltip align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="name" label="店铺名称" width="120" show-overflow-tooltip align="center" sortable="custom">
+				<template slot-scope="scope">
+					<el-button type="text" size="small" @click="sendFhlChart(scope.row.dpbh,scope.row.name)">{{scope.row.name}}</el-button>
+				</template>
+			</el-table-column>
 			<el-table-column prop="fh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="dd_0" label="今日订单总数" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_0" label="今日发货率" align="center" sortable="custom"></el-table-column>
@@ -41,7 +45,7 @@
 		</div>
 		<div class="chart_row">
 			<div class="djddbl" id="djddbl" v-loading="chart_loading"></div>
-			<div class="jqtfhl" id="jqtfhl" v-loading="chart_loading"></div>
+			<div class="jqtfhl" id="jqtfhl" v-loading="jqt_loading"></div>
 		</div>
 		<div class="table_chart">
 			<div class="table_box">
@@ -164,6 +168,7 @@
 				deptZbChart:null,	
 				platformZbChart:null,
 				djddblChart:null,
+				jqt_loading:false,
 				jqtfhlChart:null,
 				chart_loading:false
 			}
@@ -195,6 +200,8 @@
 				this.getTableList('platform');
 				//仓库发货图表
 				this.sendChart();
+				//仓库发货图表-7天发货率和订单数
+				this.sendFhlChart()
 			}, 
 			//店铺排序    
 			storeSortChange({ column, prop, order }) {  
@@ -274,11 +281,6 @@
 						var platform_data = res.data.data.platformChart;
 						//多件订单比例
 						var order_data = res.data.data.orderChart;
-						//近七天发货率
-						var seven_send_data = res.data.data.sevenSendChart;
-						//近七天订单数
-						var seven_sendo_order = res.data.data.sevenSendOrderChart;
-
 						this.$nextTick(() => {
 							//部门饼状图
 							var dept_zb_chart = document.getElementById('dept_zb');
@@ -307,6 +309,40 @@
 								this.djddblChart = echarts.init(djddbl_chart);
 							}
 							this.djddblChart.setOption(this.categoryOptions(series_data,x_data));
+						})
+						window.addEventListener('resize',() => {
+							this.deptZbChart.resize();
+							this.platformZbChart.resize();
+							this.djddblChart.resize();
+						});
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//仓库发货图表-7天发货率和订单数
+			sendFhlChart(dpbh,chart_title){
+				this.chart_title = chart_title;
+				let arg = {
+					start_time:this.date && this.date.length> 0?this.date[0]:"",
+					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					platform:this.pl.join(','),
+					dept_id:this.dept_name.join(','),
+					shop_id:this.shop_code.join(','),
+				}
+				if(dpbh){
+					arg['target_dpbh'] = dpbh;
+				}
+				this.jqt_loading = true;
+				demandResource.sendFhlChart(arg).then(res => {
+					if(res.data.code == 1){
+						this.jqt_loading = false;
+						var echarts = require("echarts");
+						//近七天发货率
+						var seven_send_data = res.data.data.sevenSendChart;
+						//近七天订单数
+						var seven_sendo_order = res.data.data.sevenSendOrderChart;
+						this.$nextTick(() => {
 							//近七天发货率
 							var jr_dd_data = [];
 							var jr_data = [];
@@ -332,9 +368,6 @@
 							this.jqtfhlChart.setOption(this.axisOption(jr_dd_data,jr_data,lr_data,sr_data,si_data,ax_data));
 						})
 						window.addEventListener('resize',() => {
-							this.deptZbChart.resize();
-							this.platformZbChart.resize();
-							this.djddblChart.resize();
 							this.jqtfhlChart.resize();
 						});
 					}else{
@@ -397,19 +430,17 @@
 			axisOption(jr_dd_data,jr_data,lr_data,sr_data,si_data,ax_data){
 				return {
 					title: {
-						text: '近七天发货率',
+						text: this.chart_title?`近七天发货率（${this.chart_title}）`:'近七天发货率',
 						left:'center'
 					},
 					tooltip: {
 						trigger: 'axis',
 						formatter (params) {
-							var date = params[0].axisValue;
-							return '付款日期：' + date + '</br>' 
-							+ "今日订单数：" + params[0].value + '</br>'
-							+ "今日发货率：" + params[1].value + '%</br>'
-							+ "两日发货率：" + params[2].value + '%</br>'
-							+ "三日发货率：" + params[3].value + '%</br>'
-							+ "四日发货率：" + params[4].value + '%</br>';
+							var str = '付款日期：' + params[0].axisValue + '</br>';
+							params.map(item => {
+								str += `${item.seriesName}：${item.value}${item.seriesName.indexOf('率') > -1?'%':''}</br>`
+							})
+							return str
 						},
 						backgroundColor:"rgba(0,0,0,.8)",
 						textStyle:{

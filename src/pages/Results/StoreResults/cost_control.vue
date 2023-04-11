@@ -38,7 +38,7 @@
 				<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-if="show_dept" v-loading="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
+		<custom-table tableName="costControlDept" v-if="show_dept" v-loading="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
 		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
 		<!-- 店铺--营销费用投产情况 -->
 		<div class="flex ac jsb mb-10 mt-10">
@@ -48,7 +48,7 @@
 				<el-button type="primary" plain size="small" @click="storeExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-if="show_shop" v-loading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
+		<custom-table tableName="costControlShop" v-if="show_shop" v-loading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
 		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
 		<page-widget :page="store_page" :pagesize="store_pagesize" :total="store_total" @handleSizeChange="storeSizeChange" @handlePageChange="storePageChange"/>
 		<!-- 店铺日数据 -->
@@ -60,7 +60,7 @@
 		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
 		<page-widget :page="day_page" :pagesize="day_pagesize" :total="day_total" @handleSizeChange="daySizeChange" @handlePageChange="dayPageChange"/>
 		<!-- 自定义列表 -->
-		<el-dialog title="（单机取消列表名保存直接修改）" :visible.sync="show_custom">
+		<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
 			<div class="select_box">
 				<el-checkbox-group v-model="selected_ids">
 					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
