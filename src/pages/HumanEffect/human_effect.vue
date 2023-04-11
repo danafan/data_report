@@ -16,15 +16,18 @@
 				<el-button type="primary" size="mini" @click="humanEffectData">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<vue2-org-tree
-		v-loading="loading"
-		:data="newData"
-		:horizontal="!horizontal"
-		:collapsable="collapsable"
-		:render-content="renderContent"
-		name="organ"
-		@on-expand="onExpand"
-		/>
+        <div style="width:100%;overflow-x: scroll">
+            <vue2-org-tree
+        v-loading="loading"
+        :data="newData"
+        :horizontal="!horizontal"
+        :collapsable="collapsable"
+        :render-content="renderContent"
+        name="organ"
+        @on-expand="onExpand"
+        />
+        </div>
+		
 	</div>
 </template>
 <script>
@@ -108,7 +111,7 @@
     				<div class="f12 pp">
     				<div class="flex">
     				<div class="bold space-nowrap">营销费用：</div>
-    				<div>{data.yxfy}</div>
+    				<div class="space-nowrap">{data.yxfy}</div>
     				</div>
     				<div class="huang_color">{data.yxfy_rx}</div>
     				<div class="flex ac">
@@ -124,7 +127,7 @@
     				<div class="f12 pp">
     				<div class="flex">
     				<div class="bold space-nowrap">销售收入：</div>
-    				<div>{data.xssr}</div>
+    				<div class="space-nowrap">{data.xssr}</div>
     				</div>
     				<div class="yxfy_color">{data.xssr_rx}</div>
     				<div class="flex ac">
@@ -140,7 +143,7 @@
     				<div class="f12 pp">
     				<div class="flex">
     				<div class="bold space-nowrap">贡献毛益额：</div>
-    				<div>{data.gxmy}</div>
+    				<div class="space-nowrap">{data.gxmy}</div>
     				</div>
     				<div class="lan_color">{data.gxmy_rx}</div>
     				<div class="flex ac">

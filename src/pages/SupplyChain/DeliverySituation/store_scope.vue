@@ -29,12 +29,14 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="fh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fh_je_0" label="今日发货金额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="dd_0" label="今日订单总数" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_0" label="今日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_1" label="两日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_2" label="三日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_3" label="四日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="xtsy" label="系统剩余订单数" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="xtsy_je" label="系统剩余金额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="yc_dp" label="系统异常订单" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="rate" label="多件订单比例" align="center" sortable="custom">
 			</el-table-column>
