@@ -25,7 +25,7 @@
 		<el-table-column :prop="item.row_field_name" align="center" :sortable="item.is_sort === 1" show-overflow-tooltip v-for="item in title_list">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div class="prop_text">{{item.row_name}}</div>
+					<div class="pre-line">{{item.row_name}}</div>
 				</el-tooltip>
 			</template>
 			<template slot-scope="scope">

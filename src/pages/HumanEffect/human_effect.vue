@@ -100,7 +100,7 @@
     				<div class="gmv_color">{data.gmv_rx}</div>
     				<div class="flex ac">
     				<div class="bold space-nowrap">环比上月：</div>
-    				<div class={data.gxmy_hb>0?'red_color':data.gxmy_hb==0?'':'green_color'}>{data.gxmy_hb}%</div>
+    				<div class={data.gmv_hb>0?'red_color':data.gmv_hb==0?'':'green_color'}>{data.gmv_hb}%</div>
     				</div>
     				<div class="flex ac">
     				<div class="bold space-nowrap">同比去年：</div>

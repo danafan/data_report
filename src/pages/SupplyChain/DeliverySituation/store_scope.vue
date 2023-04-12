@@ -22,7 +22,7 @@
 			</div>
 		</div>
 		<div class="table_title">店铺发货情况</div>
-		<el-table size="small" :data="store_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="storeSortChange" v-loading="store_loading">
+		<el-table size="small" :data="store_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','white-space': 'pre-line'}" @sort-change="storeSortChange" v-loading="store_loading">
 			<el-table-column prop="name" label="店铺名称" width="120" show-overflow-tooltip align="center" sortable="custom">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="sendFhlChart(scope.row.dpbh,scope.row.name)">{{scope.row.name}}</el-button>

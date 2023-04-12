@@ -116,7 +116,7 @@
 							<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
 						</el-table>
 						<div class="page">
-							<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="total">
+							<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="tableObj.total">
 							</el-pagination>
 						</div>
 						<el-button slot="reference" type="text" size="mini">查看</el-button>
@@ -267,7 +267,7 @@
 				table_id:"",
 				edit_id:"",
 				data:[],
-				ks_shortage_day_list:[],					//款式缺货情况对应日期数组
+				ks_shortage_day_list:[],			//款式缺货情况对应日期数组
 				total:0,
 				table_sort:"",
 				table_page:1,

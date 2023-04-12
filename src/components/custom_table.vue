@@ -84,7 +84,7 @@
 			//表头是否换行
 			is_wrap:{
 				type:Boolean,
-				default:false
+				default:true
 			},
 			//表格最大高度
 			max_height:{

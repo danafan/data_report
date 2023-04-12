@@ -48,10 +48,20 @@
 		<div class="table_title">部门GMV详情</div>
 		<el-table :data="dept_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
 			<el-table-column :label="item.row_name" v-for="item in dept_title_list">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+						<div class="pre-line">{{item.row_name}}</div>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<div :class="{'bold_style':scope.$index == 0}">{{scope.row[item.row_field_name]}}</div>
 				</template>
 				<el-table-column :label="i.row_name" :prop="i.row_field_name" v-for="i in item.list">
+					<template slot="header" slot-scope="scope">
+						<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
+							<div class="pre-line">{{i.row_name}}</div>
+						</el-tooltip>
+					</template>
 					<template slot-scope="scope">
 						<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="i.type == 1 && scope.$index > 0">{{scope.row[i.row_field_name]}}{{i.unit}}</div>
 						<div class="text_content" :class="{'bold_style':scope.$index == 0}" v-else>{{i.num_type == 1?getQianNumber(scope.row[i.row_field_name]):scope.row[i.row_field_name]}}{{i.unit}}</div>
@@ -63,10 +73,20 @@
 		<div class="table_title">平台GMV详情</div>
 		<el-table :data="platform_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="dept_loading">
 			<el-table-column :label="item.row_name" v-for="item in platform_title_list">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+						<div class="pre-line">{{item.row_name}}</div>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<div :class="{'bold_style':scope.$index == 0}">{{scope.row[item.row_field_name]}}</div>
 				</template>
 				<el-table-column :label="i.row_name" :prop="i.row_field_name" v-for="i in item.list">
+					<template slot="header" slot-scope="scope">
+						<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
+							<div class="pre-line">{{i.row_name}}</div>
+						</el-tooltip>
+					</template>
 					<template slot-scope="scope">
 						<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="i.type == 1 && scope.$index > 0">{{scope.row[i.row_field_name]}}{{i.unit}}</div>
 						<div class="text_content" :class="{'bold_style':scope.$index == 0}" v-else>{{i.num_type == 1?getQianNumber(scope.row[i.row_field_name]):scope.row[i.row_field_name]}}{{i.unit}}</div>
@@ -78,10 +98,20 @@
 		<div class="table_title">品类GMV详情</div>
 		<el-table :data="cpfl_gmv_data" size="small" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','text-align': 'center'}" max-height='560' v-loading="cpfl_loading">
 			<el-table-column :label="item.row_name" v-for="item in cpfl_title_list">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+						<div class="pre-line">{{item.row_name}}</div>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<div :class="{'bold_style':scope.$index == 0}">{{scope.row[item.row_field_name]}}</div>
 				</template>
 				<el-table-column :label="i.row_name" :prop="i.row_field_name" v-for="i in item.list">
+					<template slot="header" slot-scope="scope">
+						<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
+							<div class="pre-line">{{i.row_name}}</div>
+						</el-tooltip>
+					</template>
 					<template slot-scope="scope">
 						<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="i.type == 1 && scope.$index > 0">{{scope.row[i.row_field_name]}}{{i.unit}}</div>
 						<div class="text_content" :class="{'bold_style':scope.$index == 0}" v-else>{{i.num_type == 1?getQianNumber(scope.row[i.row_field_name]):scope.row[i.row_field_name]}}{{i.unit}}</div>
@@ -156,6 +186,11 @@
 		<!-- 表格 -->
 		<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' @sort-change="sortChange" v-loading="goods_loading">
 			<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1?'custom':false" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
+				<template slot="header" slot-scope="scope">
+					<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+						<div class="pre-line">{{item.row_name}}</div>
+					</el-tooltip>
+				</template>
 				<template slot-scope="scope">
 					<el-image :z-index="2008" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="item.type == 3 && scope.$index > 0"></el-image>
 					<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1 && scope.$index > 0">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] != ''?item.unit:''}}</div>

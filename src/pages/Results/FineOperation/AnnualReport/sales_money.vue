@@ -228,15 +228,21 @@
 						//每次数据变化重新渲染比表格
 						this.refreshTable();
 						//每日销售金额年同比
-						this.xsje_day_ntb = res.data.data.xsje_day_ntb;
-						console.log(this.xsje_day_ntb)
-						// let markPoint = {
-						// 	data: [
-						// 	{type: 'max', name: '最大值'},
-						// 	{type: 'min', name: '最小值'},
-						// 	]
-						// }
-						// this.xsje_day_ntb[this.xsje_day_ntb.length - 1].markPoint = markPoint;
+						let xsje_day_ntb = res.data.data.xsje_day_ntb;
+						if(xsje_day_ntb.length > 0){
+							this.xsje_day_ntb = xsje_day_ntb;
+						}else{
+							let arr = [];
+							this.year_list.map(item => {
+								let obj = {
+									name: item,
+									type: "line",
+									data:[]
+								}
+								arr.push(obj);
+							})
+							this.xsje_day_ntb = arr;
+						}
 						var axis_01 = document.getElementById('axis_01');
 						this.axis_01Chart = echarts.init(axis_01);
 						this.axis_01Chart.setOption({
@@ -292,8 +298,21 @@
 							series:this.xsje_day_ntb
 						});
 						//每月销售金额年同比
-						this.xsje_month_ntb = res.data.data.xsje_month_ntb;
-						console.log(this.xsje_month_ntb)
+						let xsje_month_ntb = res.data.data.xsje_month_ntb;
+						if(xsje_month_ntb.length > 0){
+							this.xsje_month_ntb = xsje_month_ntb;
+						}else{
+							let arr = [];
+							this.year_list.map(item => {
+								let obj = {
+									name: item,
+									type: "line",
+									data:[]
+								}
+								arr.push(obj);
+							})
+							this.xsje_month_ntb = arr;
+						}
 						this.xsje_year_ntb = res.data.data.xsje_year_ntb;
 						this.xsje_month_ntb.map(item => {
 							item.label = {
@@ -357,14 +376,21 @@
 							series:this.xsje_month_ntb
 						});
 						//每日鱼塘金额年同比（按金额）
-						this.yt_amount_day_ntb = res.data.data.yt_amount_day_ntb;
-						// let yt_amount_day_markPoint = {
-						// 	data: [
-						// 	{type: 'max', name: '最大值'},
-						// 	{type: 'min', name: '最小值'},
-						// 	]
-						// }
-						// this.yt_amount_day_ntb[this.yt_amount_day_ntb.length - 1].markPoint = yt_amount_day_markPoint;
+						let yt_amount_day_ntb = res.data.data.yt_amount_day_ntb;
+						if(yt_amount_day_ntb.length > 0){
+							this.yt_amount_day_ntb = yt_amount_day_ntb;
+						}else{
+							let arr = [];
+							this.year_list.map(item => {
+								let obj = {
+									name: item,
+									type: "line",
+									data:[]
+								}
+								arr.push(obj);
+							})
+							this.yt_amount_day_ntb = arr;
+						}
 						var axis_03 = document.getElementById('axis_03');
 						this.axis_03Chart = echarts.init(axis_03);
 						this.axis_03Chart.setOption({
@@ -420,14 +446,21 @@
 							series:this.yt_amount_day_ntb
 						});
 						//每日鱼塘金额年同比（按占比）
-						this.yt_percent_day_ntb = res.data.data.yt_percent_day_ntb;
-						// let yt_day_percent_markPoint = {
-						// 	data: [
-						// 	{type: 'max', name: '最大值'},
-						// 	{type: 'min', name: '最小值'},
-						// 	]
-						// }
-						// this.yt_day_percent_ntb[this.yt_day_percent_ntb.length - 1].markPoint = yt_day_percent_markPoint;
+						let yt_percent_day_ntb = res.data.data.yt_percent_day_ntb;
+						if(yt_percent_day_ntb.length > 0){
+							this.yt_percent_day_ntb = yt_percent_day_ntb;
+						}else{
+							let arr = [];
+							this.year_list.map(item => {
+								let obj = {
+									name: item,
+									type: "line",
+									data:[]
+								}
+								arr.push(obj);
+							})
+							this.yt_percent_day_ntb = arr;
+						}
 						var axis_05 = document.getElementById('axis_05');
 						this.axis_05Chart = echarts.init(axis_05);
 						this.axis_05Chart.setOption({
@@ -483,7 +516,21 @@
 							series:this.yt_percent_day_ntb
 						});
 						//每月鱼塘金额年同比
-						this.yt_month_ntb = res.data.data.yt_amount_month_ntb;
+						let yt_month_ntb = res.data.data.yt_amount_month_ntb;
+						if(yt_month_ntb.length > 0){
+							this.yt_month_ntb = yt_month_ntb;
+						}else{
+							let arr = [];
+							this.year_list.map(item => {
+								let obj = {
+									name: item,
+									type: "line",
+									data:[]
+								}
+								arr.push(obj);
+							})
+							this.yt_month_ntb = arr;
+						}
 						this.yt_year_ntb = res.data.data.yt_amount_year_ntb;
 						this.yt_month_ntb.map(item => {
 							item.label = {
@@ -547,7 +594,21 @@
 							series:this.yt_month_ntb
 						});
 						//每月鱼塘金额占比年同比
-						this.yt_percent_month_ntb = res.data.data.yt_percent_month_ntb;
+						let yt_percent_month_ntb = res.data.data.yt_percent_month_ntb;
+						if(yt_percent_month_ntb.length > 0){
+							this.yt_percent_month_ntb = yt_percent_month_ntb;
+						}else{
+							let arr = [];
+							this.year_list.map(item => {
+								let obj = {
+									name: item,
+									type: "line",
+									data:[]
+								}
+								arr.push(obj);
+							})
+							this.yt_percent_month_ntb = arr;
+						}
 						this.yt_percent_year_ntb = res.data.data.yt_percent_year_ntb;
 						this.yt_percent_month_ntb.map(item => {
 							item.label = {
@@ -610,14 +671,13 @@
 							}],
 							series:this.yt_percent_month_ntb
 						});
-						var _this = this;
 						window.addEventListener('resize',() => {
-							_this.axis_01Chart.resize();
-							_this.axis_02Chart.resize();
-							_this.axis_03Chart.resize();
-							_this.axis_04Chart.resize();
-							_this.axis_05Chart.resize();
-							_this.axis_06Chart.resize();
+							this.axis_01Chart.resize();
+							this.axis_02Chart.resize();
+							this.axis_03Chart.resize();
+							this.axis_04Chart.resize();
+							this.axis_05Chart.resize();
+							this.axis_06Chart.resize();
 						})
 					}else{
 						this.$messgae.warning(res.data.msg);
