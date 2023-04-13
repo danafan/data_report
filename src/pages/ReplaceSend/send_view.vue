@@ -160,7 +160,7 @@
 						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('i_id',i_date_type,'商品代发排行')">
 					</el-tooltip>
 				</div>
-				<custom-table v-loading="sp_loading" :show_index="true" :table_data="i_table_data" :title_list="i_title_list" :is_wrap="true"/>
+				<custom-table v-loading="sp_loading" :isLoading="sp_loading" :show_index="true" :table_data="i_table_data" :title_list="i_title_list" :is_wrap="true"/>
 			</div>
 			<!-- 供应商 -->
 			<div class="white_back p10 ml-15 mr-15" style="width: 33%">

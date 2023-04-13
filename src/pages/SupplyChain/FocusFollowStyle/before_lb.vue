@@ -56,6 +56,18 @@
 					<el-option label="近三天销量大于3" value="4"></el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="品类：">
+				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="品牌：">
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入品牌" :remote-method="ajaxPp" collapse-tags>
+					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 			</el-form-item>
@@ -170,6 +182,10 @@
 				select_store_ids:[],						//选中的店铺id列表
 				sjxrrq:getNowDate(),
 				type:"1",
+				pl_list:[],									//品类列表
+				select_pl_ids:[],							//选中的品类列表
+				pp_list:[],									//品牌列表
+				select_pp_list:[],							//选中的品牌列表
 				page:1,
 				pagesize:10,
 				update_time:"",				//缺货更新时间
@@ -217,6 +233,10 @@
 				},{
 					label:'7天到货率',
 					prop:'dhl_7',
+					is_sort:true
+				},{
+					label:'一周前15天实退率',
+					prop:'stl_15_7',
 					is_sort:true
 				},{
 					label:'7天到货率(排除备货)',
@@ -273,6 +293,7 @@
 				table_page:1,
 				table_pagesize:10,
 				ksbm:"",
+				loading:false,
 				detail_loading:false,
 				tableObj:{}
 			}
@@ -287,6 +308,8 @@
 			this.getStoreList()
 			//获取供应商分类
 			this.getGysfl();
+			//品类
+			this.getPl();
 			//获取列表
 			this.getData();
 		},
@@ -358,6 +381,33 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//品类列表
+			getPl(){
+				if(this.$store.state.pl_list.length == 0){  //品类列表是空的
+					resource.ajaxPl().then(res => {
+						if(res.data.code == 1){
+							this.pl_list = res.data.data;
+							this.$store.commit('setPlList',this.pl_list);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.pl_list = this.$store.state.pl_list;
+				}
+			},
+			//品牌列表
+			ajaxPp(e){
+				if(e != ''){
+					resource.ajaxPp({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.pp_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//表格前几天到货数
 			filterLabel(num,type){
@@ -432,6 +482,8 @@
 						gys_type:this.gys_cate_ids.join(','),
 						sjxrrq:this.sjxrrq?this.sjxrrq:'',
 						type:this.type,
+						pp:this.select_pp_list.join(','),
+						mc:this.select_pl_ids.join(','),
 						sort:this.table_sort,
 					}
 					demandResource.deforeLbExport(arg).then(res => {
@@ -479,6 +531,8 @@
 					sjxrrq:this.sjxrrq?this.sjxrrq:'',
 					type:this.type,
 					sort:this.table_sort,
+					pp:this.select_pp_list.join(','),
+					mc:this.select_pl_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -491,11 +545,21 @@
 						this.ks_shortage_day_list = [];
 						for(let i = -3;i <= 0;i++){
 							let ff = {
-								label:this.filterLabel(i,'2'),
+								label:'截止到' + this.filterLabel(i,'2'),
 								prop:i < 0?`qhs_${i*-1}`:'qhs',
 								is_sort:i == 0?true:false
 							}
 							this.ks_shortage_day_list.push(ff)
+						}
+						let ooo = {
+							label:`${res.data.data.qhs_update_time}缺货数`,
+							prop:'today_qhs',
+							is_sort:true
+						}
+						if(this.column_list.length == 28){
+							this.column_list.splice(5,1,ooo)
+						}else{
+							this.column_list.splice(5,0,ooo);
 						}
 						// 这里不知道为啥顺序会乱
 						let dd = this.ks_shortage_day_list[3];
@@ -511,7 +575,7 @@
 							}
 							sss.push(ddd)
 						}
-						this.column_list.splice(5,this.column_list.length>26?3:0,...sss);
+						this.column_list.splice(6,this.column_list.length>27?3:0,...sss);
 
 						let data = res.data.data;
 						let table_data = data.data;

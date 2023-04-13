@@ -263,6 +263,9 @@ let path = {
 	dayGtfyChart:'ml_analysis/day_gtfy_chart',						//公摊费用每日波动
 	dayGtfyList:'ml_analysis/day_gtfy_list',						//公摊费用变动
 	dayGtfyDetial:'ml_analysis/day_gtfy_detial',					//公摊费用明细
+	dpNewAnalysis:'annual/dp_new_analysis',							//新-单品分析---指标汇总
+	dpNewAnalysisExport:'annual/dp_new_analysis_export',			//新-单品分析---指标汇总导出
+	dpNewAnalysisTotal:'annual/dp_new_analysis_total',				//新-单品分析头部汇总
 		
 
 }					
@@ -1350,6 +1353,18 @@ export default{
 	//公摊费用明细
 	dayGtfyDetial(params){
 		return http.get(path.dayGtfyDetial, params)
+	},
+	//新-单品分析---指标汇总
+	dpNewAnalysis(params){
+		return http.get(path.dpNewAnalysis, params)
+	},
+	//新-单品分析---指标汇总导出
+	dpNewAnalysisExport(params){
+		return http.get(path.dpNewAnalysisExport, params)
+	},
+	//新-单品分析头部汇总
+	dpNewAnalysisTotal(params){
+		return http.get(path.dpNewAnalysisTotal, params)
 	},
 }
 

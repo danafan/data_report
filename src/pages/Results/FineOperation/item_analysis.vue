@@ -114,7 +114,7 @@
 		<el-table-column :prop="item.row_field_name" :width="item.type == 3 || zbhzFixed(item.row_field_name)?110:widthColumn(item.row_field_name)?90:70" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div class="text_content">{{item.row_name}}</div>
+					<div class="pre-line">{{item.row_name}}</div>
 				</el-tooltip>
 			</template>
 			<template slot-scope="scope">

@@ -10,6 +10,7 @@
 				<WeatherAnalysis v-if="item.web_url == 'weather_analysis'"/>
 				<ExperienceScore v-if="item.web_url == 'experience_score'"/>
 				<GrossProfitAnalysis v-if="item.web_url == 'gross_profit_analysis'"/>
+				<NewItemAnalysis v-if="item.web_url == 'new_item_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -22,6 +23,7 @@
 <script>
 	import AnnualReport from './FineOperation/annual_report.vue'
 	import ItemAnalysis from './FineOperation/item_analysis.vue'
+	import NewItemAnalysis from './FineOperation/new_item_analysis.vue'
 	import CostAnalysis from './FineOperation/cost_analysis.vue'
 	import KeywordView from './FineOperation/keyword_view.vue'
 	import RegionalAnalysis from './FineOperation/regional_analysis.vue'
@@ -67,6 +69,7 @@
 		},
 		components:{
 			AnnualReport,
+			NewItemAnalysis,
 			ItemAnalysis,
 			CostAnalysis,
 			KeywordView,

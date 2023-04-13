@@ -38,8 +38,7 @@
 				<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table tableName="costControlDept" v-if="show_dept" v-loading="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
-		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
+		<custom-table v-loading="dept_loading" :isLoading="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
 		<!-- 店铺--营销费用投产情况 -->
 		<div class="flex ac jsb mb-10 mt-10">
 			<div class="custom_title">店铺--营销费用投产情况</div>
@@ -48,16 +47,14 @@
 				<el-button type="primary" plain size="small" @click="storeExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table tableName="costControlShop" v-if="show_shop" v-loading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
-		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
+		<custom-table v-loading="shop_loading" :isLoading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
 		<page-widget :page="store_page" :pagesize="store_pagesize" :total="store_total" @handleSizeChange="storeSizeChange" @handlePageChange="storePageChange"/>
 		<!-- 店铺日数据 -->
 		<div class="flex ac jsb mb-10 mt-10">
 			<div class="custom_title">店铺日数据</div>
 			<el-button type="primary" size="small" @click="customFn('day')">自定义列表</el-button>
 		</div>
-		<custom-table v-if="show_day" v-loading="day_loading" max_height="560" :table_data="day_data" :title_list="day_title_list" :sort_num="false" @sortCallBack="sortCallBack"/>
-		<div style="height: 30px;width: 100%" v-loading="true" v-else></div>
+		<custom-table v-loading="day_loading" :isLoading="day_loading" max_height="560" :table_data="day_data" :title_list="day_title_list" :sort_num="false" :total_row="false" @sortCallBack="sortCallBack"/>
 		<page-widget :page="day_page" :pagesize="day_pagesize" :total="day_total" @handleSizeChange="daySizeChange" @handlePageChange="dayPageChange"/>
 		<!-- 自定义列表 -->
 		<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -143,19 +140,16 @@
 				dept_selected_ids:[],		//当前选中ID
 				dept_total_data:{},			//项目部-营销费用投产情况（总计行）
 				dept_loading:false,
-				show_dept:false,
 				shop_business:[],			//店铺-营销费用投产情况
 				store_total:0,
 				shop_title_list:[],			//表头
 				shop_view_row:[],			//自定义表头
 				shop_selected_ids:[],		//当前选中ID
 				shop_total_data:{},			//店铺-营销费用投产情况（总计行）
-				show_shop:false,
 				shop_loading:false,
 				store_pagesize:10,
 				store_page:1,
 				day_data:[],				//店铺日数据
-				show_day:false,
 				day_title_list:[],
 				day_view_row:[],			//自定义表头
 				day_selected_ids:[],		//当前选中ID
@@ -199,9 +193,6 @@
 				//上面三个图表数据
 				await this.businessChart();
 				//项目部-营销费用投产情况
-				this.show_dept = false;
-				this.show_shop = false;
-				this.show_day = false;
 				await this.deptBusiness();
 				//店铺—营销费用投产情况
 				this.store_page = 1;
@@ -448,7 +439,6 @@
 					textContent: {
 						type: 'text',
 						style: {
-							// text: idx < 5 || (value >= 100 && idx >= 5)?name + '\n' + `${value}万`:'',
 							text: idx < 5 || (value >= 100 && idx >= 5)?name + '\n' + `${show_value}万`:'',
 							fill: '#fff',
 							fontFamily: 'Arial',
@@ -504,12 +494,12 @@
 					shop_id:this.shop_code.join(','),
 				}
 				this.dept_loading = true;
+				this.dept_title_list = [];
 				return new Promise((resolve)=>{
 					resource.deptBusiness(arg).then(res => {
 						resolve();
 						if(res.data.code == 1){
 							this.dept_loading = false;
-							this.show_dept = true;
 							let data = res.data.data;
 							let dept_business = data.data;
 							this.dept_view_row = data.all_rows;
@@ -521,11 +511,13 @@
 								}
 							})
 							this.dept_title_list = dept_title_list;
-							if(dept_business.length > 0){
-								this.dept_total_data = dept_business[0];
-								dept_business.splice(0,1);
-							}
 							this.dept_business = dept_business;
+							if(this.dept_business.length > 0){
+								this.dept_total_data = this.dept_business[0];
+								this.dept_business.splice(0,1);
+							}else{
+								this.dept_total_data = {};
+							}
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -572,12 +564,12 @@
 					pagesize:this.store_pagesize
 				}
 				this.shop_loading = true;
+				this.shop_title_list = [];
 				return new Promise((resolve)=>{
 					resource.shopBusiness(arg).then(res => {
 						resolve();
 						if(res.data.code == 1){
 							this.shop_loading = false;
-							this.show_shop = true;
 							let data = res.data.data;
 							this.shop_view_row = data.all_rows;
 							this.shop_selected_ids = data.selected_ids;
@@ -585,6 +577,8 @@
 							if(shop_business.length > 0){
 								this.shop_total_data = shop_business[0];
 								shop_business.splice(0,1);
+							}else{
+								this.shop_total_data = {};
 							}
 							this.shop_business = shop_business;
 							this.store_total = data.data.total;
@@ -652,12 +646,12 @@
 					sort:this.sort
 				}
 				this.day_loading = true;
+				this.day_title_list = [];
 				return new Promise((resolve)=>{
 					resource.shopDayBusiness(arg).then(res => {
 						resolve();
 						if(res.data.code == 1){
 							this.day_loading = false;
-							this.show_day = true;
 							let data = res.data.data;
 							this.day_view_row = data.all_rows;
 							this.day_selected_ids = data.selected_ids;
@@ -732,18 +726,15 @@
 						this.show_custom = false;
 						//获取列表
 						if(this.custom_type == 'dept'){
-							this.show_dept = false;
 							this.deptBusiness();
 						}else if(this.custom_type == 'shop'){
 							this.store_page = 1;
 							this.store_pagesize = 10;
-							this.show_shop = false;
 							this.shopBusiness();
 						}else if(this.custom_type == 'day'){
 							this.day_page = 1;
 							this.day_pagesize = 10;
 							this.sort = "";
-							this.show_day = false;
 							this.shopDayBusiness()
 						}
 					}else{
