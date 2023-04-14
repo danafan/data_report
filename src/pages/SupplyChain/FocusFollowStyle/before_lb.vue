@@ -63,7 +63,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品牌：">
-				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入品牌" :remote-method="ajaxPp" collapse-tags>
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -310,6 +310,8 @@
 			this.getGysfl();
 			//品类
 			this.getPl();
+			//品牌列表
+			this.ajaxPp();
 			//获取列表
 			this.getData();
 		},
@@ -398,16 +400,14 @@
 				}
 			},
 			//品牌列表
-			ajaxPp(e){
-				if(e != ''){
-					resource.ajaxPp({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.pp_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
+			ajaxPp(){
+				resource.ajaxDeerShopPp().then(res => {
+					if(res.data.code == 1){
+						this.pp_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//表格前几天到货数
 			filterLabel(num,type){

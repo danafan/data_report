@@ -1,21 +1,16 @@
 <template>
 	<div>
-		<el-table ref="total_table" border class="total_table" size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
+		<el-table ref="total_table" class="total_table" size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
 			<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 			</el-table-column>
 			<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:column_width">
 				<template slot="header" slot-scope="scope">
-					<!-- <el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start"> -->
-						<div class="width-100 pre-line">{{item.row_name}}</div>
-					<!-- </el-tooltip> -->
+					<div class="width-100 pre-line">{{item.row_name}}</div>
 				</template>
 				<!-- 多级表头 -->
 				<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:column_width" v-for="i in item.list">
 					<template slot="header" slot-scope="scope">
 						<div class="width-100 pre-line">{{i.row_name}}</div>
-						<!-- <el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-							<div class="pl-6 pr-6" :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
-						</el-tooltip> -->
 					</template>
 					<template slot-scope="scope">
 						<!-- 普通文字 -->
@@ -41,17 +36,11 @@
 		<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:column_width">
 			<template slot="header" slot-scope="scope">
 				<div class="width-100 pre-line">{{item.row_name}}</div>
-				<!-- <el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div class="pl-6 pr-6" :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{item.row_name}}</div>
-				</el-tooltip> -->
 			</template>
 			<!-- 多级表头 -->
 			<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:column_width" v-for="i in item.list">
 				<template slot="header" slot-scope="scope">
 					<div class="width-100 pre-line">{{i.row_name}}</div>
-					<!-- <el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-						<div class="pl-6 pr-6" :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
-					</el-tooltip> -->
 				</template>
 				<template slot-scope="scope">
 					<!-- 营销费用经营管控-事业部项目部营销费用投产情况-毛利率-营销费用占比 -->

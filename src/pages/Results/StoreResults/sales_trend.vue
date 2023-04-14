@@ -55,7 +55,7 @@
 							<div>{{scope.row.bhl.toFixed(2)}}%</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday" width="90px" sortable="custom">
+					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday_gmv" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.pre_day}(GMV)`}}</div>
@@ -65,7 +65,7 @@
 							<div>{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.today}(GMV)`" prop="today" width="90px" sortable="custom">
+					<el-table-column :label="`${date.today}(GMV)`" prop="today_gmv" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.today}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.today}(GMV)`}}</div>
@@ -75,7 +75,7 @@
 							<div>{{scope.row.today_gmv.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="变化率(GMV)" prop="bhl" show-overflow-tooltip sortable="custom">
+					<el-table-column label="变化率(GMV)" prop="bhl_gmv" show-overflow-tooltip sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" content="变化率(GMV)" placement="top-start">
 								<div class="pre-line">变化率(GMV)</div>
@@ -128,7 +128,7 @@
 							<div>{{scope.row.bhl.toFixed(2)}}%</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday" width="90px" sortable="custom">
+					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday_gmv" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.pre_day}(GMV)`}}</div>
@@ -138,7 +138,7 @@
 							<div class="background_box" :style="{width:`${max_list.yesterday_gmv_max == 0?0:(80/max_list.yesterday_gmv_max)*Math.abs(scope.row.yesterday_gmv)}px`,background:'#FEDB6F'}">{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.today}(GMV)`" prop="today" width="90px" sortable="custom">
+					<el-table-column :label="`${date.today}(GMV)`" prop="today_gmv" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.today}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.today}(GMV)`}}</div>
@@ -148,7 +148,7 @@
 							<div class="background_box" :style="{width:`${max_list.max_today_gmv == 0?0:(80/max_list.max_today_gmv)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}">{{scope.row.today_gmv.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="变化率(GMV)" prop="bhl" show-overflow-tooltip sortable="custom">
+					<el-table-column label="变化率(GMV)" prop="bhl_gmv" show-overflow-tooltip sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" content="变化率(GMV)" placement="top-start">
 								<div class="pre-line">变化率(GMV)</div>
