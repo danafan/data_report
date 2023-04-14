@@ -25,7 +25,7 @@
 					</el-table-column>
 					<el-table-column label="平台" prop="platform" show-overflow-tooltip sortable="custom">
 					</el-table-column>
-					<el-table-column :label="`${date.pre_day}(减未发货退款)`" prop="yesterday"  sortable="custom">
+					<el-table-column :label="`${date.pre_day}(减未发货退款)`" prop="yesterday"  width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(减未发货退款)`" placement="top-start">
 								<div class="pre-line">{{`${date.pre_day}(减未发货退款)`}}</div>
@@ -35,7 +35,7 @@
 							<div>{{scope.row.yesterday.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.today}(减未发货退款)`" prop="today" sortable="custom">
+					<el-table-column :label="`${date.today}(减未发货退款)`" prop="today" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.today}(减未发货退款)`" placement="top-start">
 								<div class="pre-line">{{`${date.today}(减未发货退款)`}}</div>
@@ -55,7 +55,7 @@
 							<div>{{scope.row.bhl.toFixed(2)}}%</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday" sortable="custom">
+					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.pre_day}(GMV)`}}</div>
@@ -65,7 +65,7 @@
 							<div>{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.today}(GMV)`" prop="today" sortable="custom">
+					<el-table-column :label="`${date.today}(GMV)`" prop="today" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.today}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.today}(GMV)`}}</div>
@@ -98,26 +98,24 @@
 					</el-table-column>
 					<el-table-column label="平台" prop="platform" show-overflow-tooltip sortable="custom">
 					</el-table-column>
-					<el-table-column :label="`${date.pre_day}(减未发货退款)`" prop="yesterday"  sortable="custom">
+					<el-table-column :label="`${date.pre_day}(减未发货退款)`" prop="yesterday" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(减未发货退款)`" placement="top-start">
 								<div class="pre-line">{{`${date.pre_day}(减未发货退款)`}}</div>
 							</el-tooltip>
 						</template>
 						<template slot-scope="scope">
-							<div class="background_box" :style="{width:`${max_list.yesterday_max == 0?0:(140/max_list.yesterday_max)*Math.abs(scope.row.yesterday)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.yesterday.toFixed(2)}}万</div>
-							<div v-else>{{scope.row.yesterday.toFixed(2)}}万</div>
+							<div class="background_box" :style="{width:`${max_list.yesterday_max == 0?0:(80/max_list.yesterday_max)*Math.abs(scope.row.yesterday)}px`,background:'#FEDB6F'}">{{scope.row.yesterday.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.today}(减未发货退款)`" prop="today" sortable="custom">
+					<el-table-column :label="`${date.today}(减未发货退款)`" prop="today" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.today}(减未发货退款)`" placement="top-start">
 								<div class="pre-line">{{`${date.today}(减未发货退款)`}}</div>
 							</el-tooltip>
 						</template>
 						<template slot-scope="scope">
-							<div class="background_box" :style="{width:`${max_list.max_today == 0?0:(140/max_list.max_today)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.today.toFixed(2)}}万</div>
-							<div v-else>{{scope.row.today.toFixed(2)}}万</div>
+							<div class="background_box" :style="{width:`${max_list.max_today == 0?0:(80/max_list.max_today)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}">{{scope.row.today.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
 					<el-table-column label="变化率(减未发货退款)" prop="bhl" show-overflow-tooltip  sortable="custom">
@@ -130,26 +128,24 @@
 							<div>{{scope.row.bhl.toFixed(2)}}%</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday"  sortable="custom">
+					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.pre_day}(GMV)`}}</div>
 							</el-tooltip>
 						</template>
 						<template slot-scope="scope">
-							<div class="background_box" :style="{width:`${max_list.yesterday_gmv_max == 0?0:(140/max_list.yesterday_gmv_max)*Math.abs(scope.row.yesterday_gmv)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
-							<div v-else>{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
+							<div class="background_box" :style="{width:`${max_list.yesterday_gmv_max == 0?0:(80/max_list.yesterday_gmv_max)*Math.abs(scope.row.yesterday_gmv)}px`,background:'#FEDB6F'}">{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="`${date.today}(GMV)`" prop="today"  sortable="custom">
+					<el-table-column :label="`${date.today}(GMV)`" prop="today" width="90px" sortable="custom">
 						<template slot="header" slot-scope="scope">
 							<el-tooltip class="item" effect="dark" :content="`${date.today}(GMV)`" placement="top-start">
 								<div class="pre-line">{{`${date.today}(GMV)`}}</div>
 							</el-tooltip>
 						</template>
 						<template slot-scope="scope">
-							<div class="background_box" :style="{width:`${max_list.max_today_gmv == 0?0:(140/max_list.max_today_gmv)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.today_gmv.toFixed(2)}}万</div>
-							<div v-else>{{scope.row.today_gmv.toFixed(2)}}万</div>
+							<div class="background_box" :style="{width:`${max_list.max_today_gmv == 0?0:(80/max_list.max_today_gmv)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}">{{scope.row.today_gmv.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
 					<el-table-column label="变化率(GMV)" prop="bhl" show-overflow-tooltip sortable="custom">

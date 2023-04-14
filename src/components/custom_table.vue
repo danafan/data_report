@@ -1,57 +1,57 @@
 <template>
 	<div>
-		<div>
-			<el-table ref="total_table" class="total_table" border size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
-				<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
-				</el-table-column>
-				<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
+		<el-table ref="total_table" border class="total_table" size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
+			<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
+			</el-table-column>
+			<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:column_width">
+				<template slot="header" slot-scope="scope">
+					<!-- <el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start"> -->
+						<div class="width-100 pre-line">{{item.row_name}}</div>
+					<!-- </el-tooltip> -->
+				</template>
+				<!-- 多级表头 -->
+				<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:column_width" v-for="i in item.list">
 					<template slot="header" slot-scope="scope">
-						<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-							<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{item.row_name}}</div>
-						</el-tooltip>
+						<div class="width-100 pre-line">{{i.row_name}}</div>
+						<!-- <el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
+							<div class="pl-6 pr-6" :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
+						</el-tooltip> -->
 					</template>
-					<!-- 多级表头 -->
-					<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:column_width" v-for="i in item.list">
-						<template slot="header" slot-scope="scope">
-							<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-								<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
-							</el-tooltip>
-						</template>
-						<template slot-scope="scope">
-							<!-- 普通文字 -->
-							<div class="table_header_text">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
-						</template>
-					</el-table-column>
-					<!-- 单级表头 -->
 					<template slot-scope="scope">
 						<!-- 普通文字 -->
-						<div class="table_header_text">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+						<div class="table_header_text">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
 					</template>
 				</el-table-column>
-				<el-table-column label="操作" align="center" v-if="is_setting">
-					<template slot-scope="scope">
-
-					</template>
-				</el-table-column>
+				<!-- 单级表头 -->
+				<template slot-scope="scope">
+					<!-- 普通文字 -->
+					<div class="table_header_text">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+				</template>
 			</el-table-column>
-		</el-table>
-	</div>
+			<el-table-column label="操作" align="center" v-if="is_setting">
+				<template slot-scope="scope">
 
-	<el-table ref="data_table" border size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :max-height="max_height" :show-header="!total_row" v-if="!total_row || (total_row && table_data.length > 0)">
+				</template>
+			</el-table-column>
+		</el-table-column>
+	</el-table>
+	<el-table ref="data_table" size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" :max-height="max_height" :show-header="!total_row" v-if="!total_row || (total_row && table_data.length > 0)">
 		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
-		<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
+		<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:column_width">
 			<template slot="header" slot-scope="scope">
-				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{item.row_name}}</div>
-				</el-tooltip>
+				<div class="width-100 pre-line">{{item.row_name}}</div>
+				<!-- <el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
+					<div class="pl-6 pr-6" :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{item.row_name}}</div>
+				</el-tooltip> -->
 			</template>
 			<!-- 多级表头 -->
-			<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:column_width" v-for="i in item.list">
+			<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:column_width" v-for="i in item.list">
 				<template slot="header" slot-scope="scope">
-					<el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
-						<div :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
-					</el-tooltip>
+					<div class="width-100 pre-line">{{i.row_name}}</div>
+					<!-- <el-tooltip class="item" effect="dark" :content="i.row_name" placement="top-start">
+						<div class="pl-6 pr-6" :class="[{'pre-line':is_wrap},{'table_header_text':!is_wrap}]">{{i.row_name}}</div>
+					</el-tooltip> -->
 				</template>
 				<template slot-scope="scope">
 					<!-- 营销费用经营管控-事业部项目部营销费用投产情况-毛利率-营销费用占比 -->
@@ -383,6 +383,12 @@
 .total_table .el-table__body-wrapper::-webkit-scrollbar {
 	display: none!important;
 	height: 0!important;
+}
+.total_table .el-table__fixed{
+	height: 100%!important;
+}
+.el-table__fixed-right::before, .el-table__fixed::before{
+	z-index: 1;
 }
 </style>
 <style lang="less" scoped>

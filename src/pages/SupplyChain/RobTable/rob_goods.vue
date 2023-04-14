@@ -90,7 +90,7 @@
 				<el-table-column align="center" prop="size" label="尺码" sortable="custom"></el-table-column>
 				<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
-				<el-table-column prop="df_qhs" label="缺货数(包含代发)" align="center" show-overflow-tooltip sortable="custom">
+				<el-table-column prop="df_qhs" label="缺货数(包含代发)" align="center" width="120px" show-overflow-tooltip sortable="custom">
 				</el-table-column>
 				<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
@@ -98,11 +98,11 @@
 				</el-table-column>
 				<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
-				<el-table-column prop="dhs" label="今日到货数" align="center" show-overflow-tooltip sortable="custom">
+				<el-table-column prop="dhs" label="今日到货数" width="120px" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
 				<el-table-column label="sfq200" align="center" show-overflow-tooltip  sortable="custom">
 				</el-table-column>
-				<el-table-column prop="sfcxqh" label="是否持续缺货" align="center" show-overflow-tooltip sortable="custom">
+				<el-table-column prop="sfcxqh" label="是否持续缺货" width="100px" align="center" show-overflow-tooltip sortable="custom">
 				</el-table-column>
 				
 			</el-table>

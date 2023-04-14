@@ -148,8 +148,8 @@
 		</div>
 		<div class="table_list">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
-				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item">
-					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 1 || i.id == 183">
+				<div class="column_item_text" :class="[{'toast_red':i.id == 769 || i.id == 750},{'toast_yellow':i.id == 753 || i.id == 760 || i.id == 771}]" v-for="i in item">
+					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 745 || i.id == 746">
 						<el-button type="text" class="tooltip_but">{{i.val}}</el-button>
 					</el-tooltip>
 					<div class='tab_text' v-else>{{i.val}}</div>
@@ -204,7 +204,7 @@
 		<div class="table_list">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in week_data_list" :key="index">
 				<div class="column_item_text" v-for="i in item">
-					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 170 || i.id == 171">
+					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 772 || i.id == 773">
 						<el-button type="text" class="tooltip_but">{{i.val}}</el-button>
 					</el-tooltip>
 					<div class='tab_text' v-else>{{i.val}}</div>

@@ -85,7 +85,7 @@
 				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="new_item_analysis" max_height="750" :table_data="table_data" :title_list="title_list" :total_row="true" :table_total_data="table_total_data" :is_custom_sort="false" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url'/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="new_item_analysis" max_height="750" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url'/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 		<!-- 自定义列表 -->
 		<el-dialog title="自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -142,8 +142,7 @@
 	import PageWidget from '../../../components/pagination_widget.vue'
 	import PopoverWidget from '../../../components/popover_widget.vue'
 
-	import {exportPost} from '../../../api/export.js'
-	import { MessageBox,Message } from 'element-ui';
+	import {exportUp} from '../../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -235,7 +234,6 @@
 					sort_type:this.sort_type,
 				}
 				this.loading = true;
-				this.title_list = [];
 				resource.dpNewAnalysis(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
@@ -296,29 +294,19 @@
 			},
 			//导出
 			commitExport(){
-				MessageBox.confirm('确认导出?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					let arg = {
-						tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
-						tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
-						tgzrr:this.tgfzr,
-						sort:this.sort,
-						sort_type:this.sort_type,
-					}
-					resource.dpNewAnalysisExport(arg).then(res => {
-						if(res){
-							exportPost("\ufeff" + res.data,'单品综合分析');
-						}
-					})
-				}).catch(() => {
-					Message({
-						type: 'info',
-						message: '取消导出'
-					});          
-				});
+				let req = {
+					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
+					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
+					tgzrr:this.tgfzr,
+					sort:this.sort,
+					sort_type:this.sort_type,
+				}
+				var export_arr = [];
+				for(let key in req){
+					export_arr.push(`${key}=${req[key]}`);
+				}
+				let url = "annual/dp_new_analysis_export?" + export_arr.join("&");
+				exportUp(url)
 			},
 			//跳转商品链接
 			tableCallBack(url,table_name){
