@@ -3,6 +3,7 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<PerformanceAnalysis v-if="item.web_url == 'performance_analysis'"/>
+				<NewPerformanceAnalysis v-if="item.web_url == 'new_performance_analysis'"/>
 				<TargetComplete v-if="item.web_url == 'target_complete'"/>
 				<DailyPerformance v-if="item.web_url == 'daily_performance'"/>
 				<FishPonds v-if="item.web_url == 'fish_ponds'"/>
@@ -24,6 +25,7 @@
 </style>
 <script>
 	import PerformanceAnalysis from './StoreResults/performance_analysis_test.vue'
+	import NewPerformanceAnalysis from './StoreResults/new_performance_analysis.vue'
 	import CostControl from './StoreResults/cost_control.vue'
 	import WeekOperation from './StoreResults/week_operation.vue'
 	import TargetComplete from './StoreResults/target_complete.vue'
@@ -73,6 +75,7 @@
 		},
 		components:{
 			PerformanceAnalysis,
+			NewPerformanceAnalysis,
 			CostControl,
 			WeekOperation,
 			TargetComplete,

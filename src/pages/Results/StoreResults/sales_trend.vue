@@ -13,61 +13,153 @@
 		<div class="row_box">
 			<div class="left_box">
 				<div class="title">各店目标达成情况</div>
-				<el-table :data="total_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" width="50%" :row-class-name="tableRowClassName" :cell-style="columnStyle" @sort-change="sortChange" v-if="total_data.length > 0" v-loading="loading">
+				<el-table :data="total_data" ref="total_table" class="total_table" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" :row-class-name="tableRowClassName" :cell-style="columnStyle" @sort-change="sortChange" v-show="total_data.length > 0" v-loading="loading">
 					<el-table-column label="序号" width="60">
 						<template>
 							<div>总计</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip>
+					<el-table-column label="店铺ID" prop="dpid" show-overflow-tooltip>
 					</el-table-column>
-					<el-table-column label="店铺名称" prop="dpname" width="140" show-overflow-tooltip>
+					<el-table-column label="店铺名称" prop="dpname" show-overflow-tooltip>
 					</el-table-column>
-					<el-table-column label="平台" prop="platform" width="140" show-overflow-tooltip sortable="custom">
+					<el-table-column label="平台" prop="platform" show-overflow-tooltip sortable="custom">
 					</el-table-column>
-					<el-table-column :label="date.pre_day" prop="yesterday" width="140"  sortable="custom">
+					<el-table-column :label="`${date.pre_day}(减未发货退款)`" prop="yesterday"  sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(减未发货退款)`" placement="top-start">
+								<div class="pre-line">{{`${date.pre_day}(减未发货退款)`}}</div>
+							</el-tooltip>
+						</template>
 						<template slot-scope="scope">
 							<div>{{scope.row.yesterday.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="date.today" prop="today" width="140"  sortable="custom">
+					<el-table-column :label="`${date.today}(减未发货退款)`" prop="today" sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.today}(减未发货退款)`" placement="top-start">
+								<div class="pre-line">{{`${date.today}(减未发货退款)`}}</div>
+							</el-tooltip>
+						</template>
 						<template slot-scope="scope">
 							<div>{{scope.row.today.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="变化率" prop="bhl" width="140" show-overflow-tooltip  sortable="custom">
+					<el-table-column label="变化率(减未发货退款)" prop="bhl" show-overflow-tooltip  sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" content="变化率(减未发货退款)" placement="top-start">
+								<div class="pre-line">变化率(减未发货退款)</div>
+							</el-tooltip>
+						</template>
 						<template slot-scope="scope">
 							<div>{{scope.row.bhl.toFixed(2)}}%</div>
 						</template>
 					</el-table-column>
+					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday" sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(GMV)`" placement="top-start">
+								<div class="pre-line">{{`${date.pre_day}(GMV)`}}</div>
+							</el-tooltip>
+						</template>
+						<template slot-scope="scope">
+							<div>{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column :label="`${date.today}(GMV)`" prop="today" sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.today}(GMV)`" placement="top-start">
+								<div class="pre-line">{{`${date.today}(GMV)`}}</div>
+							</el-tooltip>
+						</template>
+						<template slot-scope="scope">
+							<div>{{scope.row.today_gmv.toFixed(2)}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="变化率(GMV)" prop="bhl" show-overflow-tooltip sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" content="变化率(GMV)" placement="top-start">
+								<div class="pre-line">变化率(GMV)</div>
+							</el-tooltip>
+						</template>
+						<template slot-scope="scope">
+							<div>{{scope.row.bhl_gmv.toFixed(2)}}%</div>
+						</template>
+					</el-table-column>
 				</el-table>
-				<el-table :data="table_data" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' width="50%" :cell-style="columnStyle" @sort-change="sortChange" :show-header="total_data.length == 0" v-loading="loading">
+				<el-table :data="table_data" ref="data_table" size="mini" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='1000' :cell-style="columnStyle" @sort-change="sortChange" :show-header="total_data.length == 0" v-loading="loading">
 					<el-table-column label="序号" width="60">
 						<template slot-scope="scope">
 							<div>{{scope.$index + 1}}</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="店铺ID" prop="dpid" width="140" show-overflow-tooltip>
+					<el-table-column label="店铺ID" prop="dpid" show-overflow-tooltip>
 					</el-table-column>
-					<el-table-column label="店铺名称" prop="dpname" width="140" show-overflow-tooltip>
+					<el-table-column label="店铺名称" prop="dpname" show-overflow-tooltip>
 					</el-table-column>
-					<el-table-column label="平台" prop="platform" width="140" show-overflow-tooltip sortable="custom">
+					<el-table-column label="平台" prop="platform" show-overflow-tooltip sortable="custom">
 					</el-table-column>
-					<el-table-column :label="date.pre_day" prop="yesterday" width="140"  sortable="custom">
+					<el-table-column :label="`${date.pre_day}(减未发货退款)`" prop="yesterday"  sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(减未发货退款)`" placement="top-start">
+								<div class="pre-line">{{`${date.pre_day}(减未发货退款)`}}</div>
+							</el-tooltip>
+						</template>
 						<template slot-scope="scope">
 							<div class="background_box" :style="{width:`${max_list.yesterday_max == 0?0:(140/max_list.yesterday_max)*Math.abs(scope.row.yesterday)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.yesterday.toFixed(2)}}万</div>
 							<div v-else>{{scope.row.yesterday.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column :label="date.today" prop="today" width="140"  sortable="custom">
+					<el-table-column :label="`${date.today}(减未发货退款)`" prop="today" sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.today}(减未发货退款)`" placement="top-start">
+								<div class="pre-line">{{`${date.today}(减未发货退款)`}}</div>
+							</el-tooltip>
+						</template>
 						<template slot-scope="scope">
 							<div class="background_box" :style="{width:`${max_list.max_today == 0?0:(140/max_list.max_today)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.today.toFixed(2)}}万</div>
 							<div v-else>{{scope.row.today.toFixed(2)}}万</div>
 						</template>
 					</el-table-column>
-					<el-table-column label="变化率" prop="bhl" width="140" show-overflow-tooltip  sortable="custom">
+					<el-table-column label="变化率(减未发货退款)" prop="bhl" show-overflow-tooltip  sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" content="变化率(减未发货退款)" placement="top-start">
+								<div class="pre-line">变化率(减未发货退款)</div>
+							</el-tooltip>
+						</template>
 						<template slot-scope="scope">
 							<div>{{scope.row.bhl.toFixed(2)}}%</div>
+						</template>
+					</el-table-column>
+					<el-table-column :label="`${date.pre_day}(GMV)`" prop="yesterday"  sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.pre_day}(GMV)`" placement="top-start">
+								<div class="pre-line">{{`${date.pre_day}(GMV)`}}</div>
+							</el-tooltip>
+						</template>
+						<template slot-scope="scope">
+							<div class="background_box" :style="{width:`${max_list.yesterday_gmv_max == 0?0:(140/max_list.yesterday_gmv_max)*Math.abs(scope.row.yesterday_gmv)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
+							<div v-else>{{scope.row.yesterday_gmv.toFixed(2)}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column :label="`${date.today}(GMV)`" prop="today"  sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" :content="`${date.today}(GMV)`" placement="top-start">
+								<div class="pre-line">{{`${date.today}(GMV)`}}</div>
+							</el-tooltip>
+						</template>
+						<template slot-scope="scope">
+							<div class="background_box" :style="{width:`${max_list.max_today_gmv == 0?0:(140/max_list.max_today_gmv)*Math.abs(scope.row.today)}px`,background:'#FEDB6F'}" v-if="scope.$index > 0">{{scope.row.today_gmv.toFixed(2)}}万</div>
+							<div v-else>{{scope.row.today_gmv.toFixed(2)}}万</div>
+						</template>
+					</el-table-column>
+					<el-table-column label="变化率(GMV)" prop="bhl" show-overflow-tooltip sortable="custom">
+						<template slot="header" slot-scope="scope">
+							<el-tooltip class="item" effect="dark" content="变化率(GMV)" placement="top-start">
+								<div class="pre-line">变化率(GMV)</div>
+							</el-tooltip>
+						</template>
+						<template slot-scope="scope">
+							<div>{{scope.row.bhl_gmv.toFixed(2)}}%</div>
 						</template>
 					</el-table-column>
 				</el-table>
@@ -92,9 +184,19 @@
 	padding: 5px 0!important;
 }
 .el-table .warning-row {
-    background: #f0f9eb;
-  }
+	background: #f0f9eb;
+}
+.total_table .el-table__body-wrapper::-webkit-scrollbar {
+	display: none!important;
+	height: 0!important;
+}
 </style>
+<!-- <style type="text/css">
+.total_table .el-table__body-wrapper::-webkit-scrollbar {
+	display: none!important;
+	height: 0!important;
+}
+</style> -->
 <style lang="less" scoped>
 .title{
 	margin-bottom: 20px;
@@ -104,6 +206,10 @@
 .row_box{
 	width: 100%;
 	display:flex;
+}
+.left_box{
+	width: 70%;
+	overflow-x: scroll;
 }
 .background_box{
 	padding-left: 3px;
@@ -165,14 +271,39 @@
 				day_list:[],								//所有日期列表
 				right_list:[],	
 				date:{},
-				loading:false
+				loading:false,
+				total_table:null,
+				data_table:null
 			}
 		},
 		created(){	
 			//获取列表
 			this.getData();
+			
+		},
+		mounted(){
+			//设置监听滚动事件
+			this.setScroll();
 		},
 		methods:{
+			//设置监听滚动事件
+			setScroll(){
+				this.$nextTick(() => {
+					console.log(this.$refs.total_table)
+					this.total_table = this.$refs.total_table.bodyWrapper;
+					this.total_table.addEventListener(
+						"scroll",(e)=>{
+							this.data_table.scrollLeft = this.total_table.scrollLeft;
+						}
+						);
+					this.data_table = this.$refs.data_table.bodyWrapper;
+					this.data_table.addEventListener(
+						"scroll",(e)=>{
+							this.total_table.scrollLeft = this.data_table.scrollLeft;
+						}
+						);
+				});
+			},
 			tableRowClassName({rowIndex}) {
 				if (rowIndex === 0) {
 					return 'warning-row';

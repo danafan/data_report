@@ -266,6 +266,7 @@ let path = {
 	dpNewAnalysis:'annual/dp_new_analysis',							//新-单品分析---指标汇总
 	dpNewAnalysisExport:'annual/dp_new_analysis_export',			//新-单品分析---指标汇总导出
 	dpNewAnalysisTotal:'annual/dp_new_analysis_total',				//新-单品分析头部汇总
+	PerformanceReportYeJi:'PerformanceReport/yeji',					//业绩分析报表（新）接口
 		
 
 }					
@@ -1365,6 +1366,10 @@ export default{
 	//新-单品分析头部汇总
 	dpNewAnalysisTotal(params){
 		return http.get(path.dpNewAnalysisTotal, params)
+	},
+	//业绩分析报表（新）接口
+	PerformanceReportYeJi(params){
+		return http.get(path.PerformanceReportYeJi, params)
 	},
 }
 

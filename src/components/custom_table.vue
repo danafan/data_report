@@ -1,7 +1,7 @@
 <template>
 	<div>
-		<div class="total_table">
-			<el-table ref="total_table" border size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
+		<div>
+			<el-table ref="total_table" class="total_table" border size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
 				<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 				</el-table-column>
 				<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:column_width">
@@ -65,7 +65,7 @@
 					<!-- 图片 -->
 					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-else-if="i.type == '3' && scope.row.images[0] != ''"></el-image>
 					<!-- 链接 -->
-					<el-button type="text" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
+					<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
 					<!-- 图表 -->
 					<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
 					<!-- 普通文字 -->
@@ -85,7 +85,7 @@
 				<!-- 图片 -->
 				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-else-if="item.type == '3' && scope.row.images[0] != ''"></el-image>
 				<!-- 链接 -->
-				<el-button type="text" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
+				<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
 				<!-- 图表 -->
 				<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
 				<!-- 普通文字 -->
@@ -381,7 +381,8 @@
 </script>
 <style type="text/css">
 .total_table .el-table__body-wrapper::-webkit-scrollbar {
-	display: none;
+	display: none!important;
+	height: 0!important;
 }
 </style>
 <style lang="less" scoped>

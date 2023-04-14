@@ -85,7 +85,7 @@
 				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="new_item_analysis" max_height="750" :table_data="table_data" :title_list="title_list" :total_row="true" :table_total_data="table_total_data" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="new_item_analysis" max_height="750" :table_data="table_data" :title_list="title_list" :total_row="true" :table_total_data="table_total_data" :is_custom_sort="false" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url'/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 		<!-- 自定义列表 -->
 		<el-dialog title="自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -319,6 +319,10 @@
 						message: '取消导出'
 					});          
 				});
+			},
+			//跳转商品链接
+			tableCallBack(url,table_name){
+				window.open(url)
 			},
 			//排序回调
 			sortCallBack(sort){

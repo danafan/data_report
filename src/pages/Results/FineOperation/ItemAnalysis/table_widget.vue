@@ -9,7 +9,7 @@
 		<el-table-column :prop="item.row_field_name" :width="item.row_field_name == 'tjrq'?90:80" v-for="item in title_list" :sortable="item.is_sort == 1?true:false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
-					<div class="text_content">{{item.row_name}}</div>
+					<div class="pre-line">{{item.row_name}}</div>
 				</el-tooltip>
 			</template>
 			<template slot-scope="scope">
