@@ -556,11 +556,13 @@
 							prop:'today_qhs',
 							is_sort:true
 						}
+						console.log(this.column_list.length)
 						if(this.column_list.length == 28){
 							this.column_list.splice(5,1,ooo)
 						}else{
 							this.column_list.splice(5,0,ooo);
 						}
+						console.log(this.column_list.length)
 						// 这里不知道为啥顺序会乱
 						let dd = this.ks_shortage_day_list[3];
 						this.ks_shortage_day_list.splice(3,1);
@@ -575,7 +577,8 @@
 							}
 							sss.push(ddd)
 						}
-						this.column_list.splice(6,this.column_list.length>27?3:0,...sss);
+						this.column_list.splice(9,this.column_list.length>27?3:0,...sss);
+						// this.column_list.splice(9,0,...sss);
 
 						let data = res.data.data;
 						let table_data = data.data;

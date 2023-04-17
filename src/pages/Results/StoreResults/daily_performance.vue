@@ -38,7 +38,10 @@
 	</div>
 	<!-- 表格 -->
 	<el-table :data="table_list" size="small" style="width: 100%;margin-bottom: 30px" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :summary-method="getWeekSummaries" show-summary v-loading="loading">
-		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :render-header="renderHeader" :fixed="item.is_fixed == 1">
+		<el-table-column :label="item.row_name" :prop="item.row_field_name" v-for="item in title_list" :sortable="item.is_sort == 1" show-overflow-tooltip :fixed="item.is_fixed == 1">
+			<template slot="header" slot-scope="scope">
+					<div class="width-100 pre-line">{{item.row_name}}</div>
+				</template>
 			<template slot-scope="scope">
 				<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == 1">{{scope.row[item.row_field_name]}}{{item.unit}}</div>
 				<div class="text_content" v-else>{{item.num_type == 1?getQianNumber(scope.row[item.row_field_name]):scope.row[item.row_field_name]}}{{item.unit}}</div>
@@ -181,22 +184,22 @@
 		},
 		methods:{
 			//顶部悬浮
-			renderHeader(h, data) {
-				return h("span", [
-					h(
-						"el-tooltip",
-						{
-							attrs: {
-								class: "item",
-								effect: "dark",
-								content: data.column.label,
-								placement: "top",
-							},
-						},
-						[h("span", data.column.label)]
-						),
-					]);
-			},
+			// renderHeader(h, data) {
+			// 	return h("span", [
+			// 		h(
+			// 			"el-tooltip",
+			// 			{
+			// 				attrs: {
+			// 					class: "item",
+			// 					effect: "dark",
+			// 					content: data.column.label,
+			// 					placement: "top",
+			// 				},
+			// 			},
+			// 			[h("span", data.column.label)]
+			// 			),
+			// 		]);
+			// },
 			//千分位展示
 			getQianNumber(number) {
 				const num = String(number)

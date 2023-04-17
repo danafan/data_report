@@ -146,7 +146,7 @@
 				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
-		<div class="table_list">
+		<div class="table_list" v-if="data_list.length > 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
 				<div class="column_item_text" :class="[{'toast_red':i.id == 769 || i.id == 750},{'toast_yellow':i.id == 753 || i.id == 760 || i.id == 771}]" v-for="i in item">
 					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 745 || i.id == 746">
@@ -156,9 +156,10 @@
 				</div>
 			</div>
 		</div>
+		<div class="flex-1 data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div>
 	</div>
 	<!-- 没有数据 -->
-	<div class="data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div>
+	<!-- <div class="data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div> -->
 	<el-dialog title="店铺自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_ids">
@@ -171,7 +172,6 @@
 			<el-button size="small" type="primary" @click="setColumns('172')">保存</el-button>
 		</div>
 	</el-dialog>
-	<!-- <div style="margin-top: 30px;margin-bottom: 10px;font-size: 22;font-weight: bold">营销周报</div> -->
 	<!-- 营销周报 -->
 	<div class="table_setting">
 		<PopoverWidget title="营销周报" keys="week_data"/>
@@ -201,7 +201,7 @@
 				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
-		<div class="table_list">
+		<div class="table_list" v-if="week_data_list.length > 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in week_data_list" :key="index">
 				<div class="column_item_text" v-for="i in item">
 					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 772 || i.id == 773">
@@ -211,6 +211,7 @@
 				</div>
 			</div>
 		</div>
+		<div class="flex-1 data_null" v-if="week_data_list.length == 0 && loading == false">暂无数据</div>
 	</div>
 	<!-- 没有数据 -->
 	<div class="data_null" v-if="week_data_list.length == 0 && loading == false">暂无数据</div>
@@ -272,6 +273,7 @@
 	margin-top: 5px;
 	width: 100%;
 	display: flex;
+	align-items:center;
 	font-size:14px;
 	.table_header{
 		border-top:1px solid #fff;
@@ -348,12 +350,7 @@
 }
 //暂无数据
 .data_null{
-	margin-top: 20px;
-	border:1px solid #D9D9D9;
-	width:100%;
 	text-align: center;
-	height: 80px;
-	line-height: 80px;
 	font-size:18px;
 	color: #D9D9D9;
 }
