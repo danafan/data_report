@@ -126,7 +126,7 @@
 		</div>
 	</div>
 	<!-- 表格 -->
-	<div class="table_container" v-loading="loading">
+	<div class="table_container" :class="{'ac':data_list.length == 0 && loading == false}" v-loading="loading">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in label_list" :key="index" @mouseenter="CheckShow(index)" @mouseleave="CheckShow(index)">
 				<div class="label_title">{{item.row_name}}
@@ -179,7 +179,7 @@
 		</div>
 	</div>
 	<!-- 表格 -->
-	<div class="table_container" v-loading="loading">
+	<div class="table_container" :class="{'ac':week_data_list.length == 0 && loading == false}" v-loading="loading">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in week_label_list" :key="index" @mouseenter="CheckWeekShow(index)" @mouseleave="CheckWeekShow(index)">
 				<div class="label_title">{{item.row_name}}
@@ -264,12 +264,15 @@
 	display: flex;
 	justify-content: space-between;
 }
+.ac{
+	align-items:center;
+}
 // 表格
 .table_container{
 	margin-top: 5px;
 	width: 100%;
 	display: flex;
-	align-items:center;
+	
 	font-size:14px;
 	.table_header{
 		border-top:1px solid #fff;

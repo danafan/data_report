@@ -126,7 +126,7 @@
 		</div>
 	</div>
 	<!-- 表格 -->
-	<div class="table_container" v-loading="loading">
+	<div class="table_container" :class="{'ac':data_list.length == 0 && loading == false}" v-loading="loading">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in label_list" :key="index" @mouseenter="CheckShow(index)" @mouseleave="CheckShow(index)">
 				<div class="label_title">{{item.row_name}}
@@ -158,8 +158,6 @@
 		</div>
 		<div class="flex-1 data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div>
 	</div>
-	<!-- 没有数据 -->
-	<!-- <div class="data_null" v-if="data_list.length == 0 && loading == false">暂无数据</div> -->
 	<el-dialog title="店铺自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_custom">
 		<div class="select_box">
 			<el-checkbox-group v-model="selected_ids">
@@ -181,7 +179,7 @@
 		</div>
 	</div>
 	<!-- 表格 -->
-	<div class="table_container" v-loading="loading">
+	<div class="table_container" :class="{'ac':week_data_list.length == 0 && loading == false}" v-loading="loading">
 		<div class="table_header">
 			<div class="header_item" v-for="(item,index) in week_label_list" :key="index" @mouseenter="CheckWeekShow(index)" @mouseleave="CheckWeekShow(index)">
 				<div class="label_title">{{item.row_name}}
@@ -268,12 +266,15 @@
 	display: flex;
 	justify-content: space-between;
 }
+.ac{
+	align-items:center;
+}
 // 表格
 .table_container{
 	margin-top: 5px;
 	width: 100%;
 	display: flex;
-	align-items:center;
+	
 	font-size:14px;
 	.table_header{
 		border-top:1px solid #fff;
