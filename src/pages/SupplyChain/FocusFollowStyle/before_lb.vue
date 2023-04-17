@@ -556,8 +556,8 @@
 							prop:'today_qhs',
 							is_sort:true
 						}
-						console.log(this.column_list.length)
-						if(this.column_list.length == 28){
+						console.log(this.column_list[5].props)
+						if(this.column_list[5].prop == 'today_qhs'){
 							this.column_list.splice(5,1,ooo)
 						}else{
 							this.column_list.splice(5,0,ooo);
@@ -577,8 +577,11 @@
 							}
 							sss.push(ddd)
 						}
-						this.column_list.splice(9,this.column_list.length>27?3:0,...sss);
-						// this.column_list.splice(9,0,...sss);
+						if(this.column_list[9].prop.indexOf('dhs_') > -1){
+							this.column_list.splice(9,3,...sss)
+						}else{
+							this.column_list.splice(9,0,...sss);
+						}
 
 						let data = res.data.data;
 						let table_data = data.data;
