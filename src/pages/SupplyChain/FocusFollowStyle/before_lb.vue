@@ -556,13 +556,11 @@
 							prop:'today_qhs',
 							is_sort:true
 						}
-						console.log(this.column_list[5].props)
 						if(this.column_list[5].prop == 'today_qhs'){
 							this.column_list.splice(5,1,ooo)
 						}else{
 							this.column_list.splice(5,0,ooo);
 						}
-						console.log(this.column_list.length)
 						// 这里不知道为啥顺序会乱
 						let dd = this.ks_shortage_day_list[3];
 						this.ks_shortage_day_list.splice(3,1);

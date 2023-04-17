@@ -141,12 +141,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="column_item column_item_odd" v-if="data_list.length > 1">
+		<div class="column_item column_item_odd" v-if="data_list.length >= 1">
 			<div class="column_item_text" v-for="i in total_shop_data">
 				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
-		<div class="table_list" v-if="data_list.length > 1">
+		<div class="table_list" v-if="data_list.length >= 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
 				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item">
 					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 1 || i.id == 183">
@@ -194,12 +194,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="column_item column_item_odd" v-if="week_data_list.length > 1">
+		<div class="column_item column_item_odd" v-if="week_data_list.length >= 1">
 			<div class="column_item_text" v-for="i in total_week_data">
 				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
-		<div class="table_list" v-if="week_data_list.length > 1">
+		<div class="table_list" v-if="week_data_list.length >= 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in week_data_list" :key="index">
 				<div class="column_item_text" v-for="i in item">
 					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 170 || i.id == 171">
@@ -665,6 +665,9 @@
 					})
 					this.data_list.push(arr)
 				});
+				console.log(this.data_list)
+				console.log(this.data_list.length)
+				console.log(this.data_list.length > 1)
 			},
 			//处理下面面表格的数据
 			clTableWeekData(table_data){

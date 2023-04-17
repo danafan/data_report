@@ -141,12 +141,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="column_item column_item_odd" v-if="data_list.length > 1">
+		<div class="column_item column_item_odd" v-if="data_list.length >= 1">
 			<div class="column_item_text" v-for="i in total_shop_data">
 				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
-		<div class="table_list" v-if="data_list.length > 1">
+		<div class="table_list" v-if="data_list.length >= 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
 				<div class="column_item_text" :class="[{'toast_red':i.id == 769 || i.id == 750},{'toast_yellow':i.id == 753 || i.id == 760 || i.id == 771}]" v-for="i in item">
 					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 745 || i.id == 746">
@@ -194,12 +194,12 @@
 				</div>
 			</div>
 		</div>
-		<div class="column_item column_item_odd" v-if="week_data_list.length > 1">
+		<div class="column_item column_item_odd" v-if="week_data_list.length >= 1">
 			<div class="column_item_text" v-for="i in total_week_data">
 				<div class='total_text'>{{i}}</div>
 			</div>
 		</div>
-		<div class="table_list" v-if="week_data_list.length > 1">
+		<div class="table_list" v-if="week_data_list.length >= 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in week_data_list" :key="index">
 				<div class="column_item_text" v-for="i in item">
 					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 772 || i.id == 773">
