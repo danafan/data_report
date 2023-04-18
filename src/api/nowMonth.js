@@ -80,9 +80,13 @@ export function getNextDate(date, day,t) {
 }
 
 //获得昨日日期（包括上月末日期）
-export function getCurrentDate(){
+export function getCurrentDate(num){
 	var day1 = new Date();
-	day1.setTime(day1.getTime()-24*60*60*1000);
+	if(num){
+		day1.setTime(day1.getTime()-num*24*60*60*1000);
+	}else{
+		day1.setTime(day1.getTime()-24*60*60*1000);
+	}
 	var currentDate = new Date(day1);
 	return formatDate(currentDate); 
 }

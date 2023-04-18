@@ -29,6 +29,12 @@
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item>
+			<el-button type="primary" @click="dayData(1)">昨天</el-button>
+		</el-form-item>
+		<el-form-item>
+			<el-button type="primary" @click="dayData(2)">前天</el-button>
+		</el-form-item>
+		<el-form-item>
 			<el-checkbox v-model="is_assessment" true-label="1" false-label="0" border size="small">考核店铺</el-checkbox>
 		</el-form-item>
 		<el-form-item>
@@ -387,11 +393,23 @@
 							const end = getLastMonthEndDate(1);
 							picker.$emit('pick', [start, end]);
 						}
+					}, {
+						text: '昨天',
+						onClick(picker) {
+							const start = getCurrentDate();
+							const end = getCurrentDate();
+							picker.$emit('pick', [start, end]);
+						}
+					}, {
+						text: '前天',
+						onClick(picker) {
+							const start = getCurrentDate(2);
+							const end = getCurrentDate(2);
+							picker.$emit('pick', [start, end]);
+						}
 					}]
 				},	 								//时间区间
 				date:[getMonthStartDate(),getCurrentDate()],//发货时间
-				start_time:getMonthStartDate(),		//开始时间
-				end_time:getCurrentDate(),			//结束时间
 				is_assessment:'0',					//是否考核店铺
 				select_department_ids:[],			//选中的部门id列表
 				select_plat_ids:[],					//选中的平台列表
@@ -434,13 +452,6 @@
 			this.ajaxCompany();
 			//获取信息
 			this.GetData();
-		},
-		watch:{
-			//发货时间
-			date:function(n){
-				this.start_time = n && n.length> 0?n[0]:"";
-				this.end_time = n && n.length> 0?n[1]:"";
-			},
 		},
 		methods:{
 			//品牌列表
@@ -536,14 +547,21 @@
 					}
 				});
 			},
+			//昨天或前天的数据
+			dayData(num){
+				this.date.splice(0,1,getCurrentDate(num))
+				this.date.splice(1,1,getCurrentDate(num))
+				//获取信息
+				this.GetData();
+			},
 			//获取信息
 			GetData(){
 				let req = {
 					platform:this.select_plat_ids.join(','),
 					dept_id:this.select_department_ids.join(','),
 					shop_id:this.select_store_ids.join(','),
-					start_time:this.start_time,
-					end_time:this.end_time,
+					start_time:this.date[0],
+					end_time:this.date[1],
 					audit_flag:this.is_assessment,
 					company:this.company.join(','),
 					pp:this.pp_ids.join(',')
