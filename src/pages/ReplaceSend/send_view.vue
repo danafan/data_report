@@ -677,9 +677,9 @@
 						data: last_week_data
 					}]
 				});
-				window.addEventListener('resize',() => {
-					this.viewChart.resize();
-				});
+				// window.addEventListener('resize',() => {
+				// 	this.viewChart.resize();
+				// });
 			},
 			//30天代发订单图表渲染
 			monthCharts(){
@@ -758,9 +758,9 @@
 						data: money_list
 					}]
 				});
-				window.addEventListener('resize',() => {
-					this.viewChart.resize();
-				});
+				// window.addEventListener('resize',() => {
+				// 	this.viewChart.resize();
+				// });
 			},
 			//店铺/供应商代发明细
 			dfShopGysList(type){

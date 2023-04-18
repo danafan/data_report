@@ -2,68 +2,40 @@
 	<div>
 		<div class="custom_title mb-15">人效看板</div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
-			<el-form-item>
-				<el-radio-group v-model="day_type">
-					<el-radio-button :label="1">本月</el-radio-button>
-					<el-radio-button :label="2">本周</el-radio-button>
-				</el-radio-group>
-			</el-form-item>
-			<el-form-item label="查询日期:">
-				<el-date-picker v-model="date" type="daterange" :clearable="false" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" @change="day_type = null">
-				</el-date-picker>
-			</el-form-item>
-			<el-form-item>
-				<el-button type="primary" size="mini" @click="humanEffectData">搜索</el-button>
-			</el-form-item>
-		</el-form>
+			<el-form-item label="查询月份:">
+                <el-date-picker v-model="date" :clearable="false" type="month" value-format="yyyy-MM" placeholder="选择月份">
+                </el-date-picker>
+            </el-form-item>
+            <el-form-item>
+                <el-button type="primary" size="mini" @click="humanEffectData">搜索</el-button>
+            </el-form-item>
+        </el-form>
         <div style="width:100%;overflow-x: scroll">
             <vue2-org-tree
-        v-loading="loading"
-        :data="newData"
-        :horizontal="!horizontal"
-        :collapsable="collapsable"
-        :render-content="renderContent"
-        name="organ"
-        @on-expand="onExpand"
-        />
+            v-loading="loading"
+            :data="newData"
+            :horizontal="true"
+            :collapsable="true"
+            :render-content="renderContent"
+            name="organ"
+            @on-expand="onExpand"
+            />
         </div>
-		
-	</div>
+
+    </div>
 </template>
 <script>
 	import resource from '../../api/resource.js'
-	import {getMonthStartDate,getWeekStartDate,getNowDate} from '../../api/nowMonth.js'
+	import {getLastMonth} from '../../api/nowMonth.js'
 	export default {
 		data() {
 			return {
-				day_type:1,
-				date:[getMonthStartDate(),getNowDate()],
-				newData:{},
-			    horizontal: false, //横版 竖版
-			    collapsable: true,
-			    expandAll: true, //是否全部展开
-			    loading:false,
-			}
-		},
-		watch:{
-			day_type:function(n,o){
-				switch(n){
-					case 1:
-					this.date.splice(0,1)
-					this.date.unshift(getMonthStartDate());
-					this.date.splice(1,1)
-					this.date.push(getNowDate());
-					break;
-					case 2:
-					this.date.splice(0,1)
-					this.date.unshift(getWeekStartDate());
-					this.date.splice(1,1)
-					this.date.push(getNowDate());
-					break;
-				}
-			}
-		},
-		created(){
+                date:getLastMonth(),                     //上月
+                newData:{},
+                loading:false,
+            }
+        },
+        created(){
 			//获取数据
 			this.humanEffectData();
 		},
@@ -71,8 +43,7 @@
 			//获取数据
 			humanEffectData() {
 				let arg = {
-					start_date:this.date[0],
-					end_date:this.date[1],
+					date:this.date
 				}
 				this.loading = true;
 				resource.humanEffectData(arg).then(res => {
@@ -80,7 +51,7 @@
 						this.loading = false;
 						let data = JSON.parse(JSON.stringify(res.data.data).replace(/list/g, 'children'))
 						this.newData = data[0];
-						this.toggleExpand(this.newData, this.expandAll)
+						this.toggleExpand(this.newData, true)
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -88,77 +59,127 @@
 			},
     		//渲染节点
     		renderContent(h, data) {
-    			return (
-    				<div>
-    				<div class="dept_name">{data.dept_name}（{data.user_num}人）</div>
-    				<div class="flex jsa">
-    				<div class="f12 pp">
-    				<div class="flex">
-    				<div class="bold space-nowrap">GMV：</div>
-    				<div class="space-nowrap">{data.gmv}</div>
-    				</div>
-    				<div class="gmv_color">{data.gmv_rx}</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">环比上月：</div>
-    				<div class={data.gmv_hb>0?'red_color':data.gmv_hb==0?'':'green_color'}>{data.gmv_hb}%</div>
-    				</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">同比去年：</div>
-    				<div class={data.gmv_tb>0?'red_color':data.gmv_tb==0?'':'green_color'}>{data.gmv_tb}%</div>
-    				</div>
-    				</div>
-    				<div class="line"></div>
-    				<div class="f12 pp">
-    				<div class="flex">
-    				<div class="bold space-nowrap">营销费用：</div>
-    				<div class="space-nowrap">{data.yxfy}</div>
-    				</div>
-    				<div class="huang_color">{data.yxfy_rx}</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">环比上月：</div>
-    				<div class={data.yxfy_hb>0?'red_color':data.yxfy_hb==0?'':'green_color'}>{data.yxfy_hb}%</div>
-    				</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">同比去年：</div>
-    				<div class={data.yxfy_tb>0?'red_color':data.yxfy_tb==0?'':'green_color'}>{data.yxfy_tb}%</div>
-    				</div>
-    				</div>
-    				<div class="line"></div>
-    				<div class="f12 pp">
-    				<div class="flex">
-    				<div class="bold space-nowrap">销售收入：</div>
-    				<div class="space-nowrap">{data.xssr}</div>
-    				</div>
-    				<div class="yxfy_color">{data.xssr_rx}</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">环比上月：</div>
-    				<div class={data.xssr_hb>0?'red_color':data.xssr_hb==0?'':'green_color'}>{data.xssr_hb}%</div>
-    				</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">同比去年：</div>
-    				<div class={data.xssr_tb>0?'red_color':data.xssr_tb==0?'':'green_color'}>{data.xssr_tb}%</div>
-    				</div>
-    				</div>
-    				<div class="line"></div>
-    				<div class="f12 pp">
-    				<div class="flex">
-    				<div class="bold space-nowrap">贡献毛益额：</div>
-    				<div class="space-nowrap">{data.gxmy}</div>
-    				</div>
-    				<div class="lan_color">{data.gxmy_rx}</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">环比上月：</div>
-    				<div class={data.gxmy_hb>0?'red_color':data.gxmy_hb==0?'':'green_color'}>{data.gxmy_hb}%</div>
-    				</div>
-    				<div class="flex ac">
-    				<div class="bold space-nowrap">同比去年：</div>
-    				<div class={data.gxmy_tb>0?'red_color':data.gxmy_tb==0?'':'green_color'}>{data.gxmy_tb}%</div>
-    				</div>
-    				</div>
-    				</div>
-    				</div>
-    				);
-    		},
+                if(data.type == 1){
+                    return (
+                        <div>
+                        <div class="dept_name">{data.dept_name}（{data.user_num}人）</div>
+                        <div class="flex jsa bottom_line">
+                        <div class="f12 pp">
+                        <div class="flex">
+                        <div class="bold space-nowrap">GMV：</div>
+                        <div class="space-nowrap">{data.gmv}</div>
+                        </div>
+                        <div class="gmv_color">{data.gmv_rx}</div>
+                        <div class="flex ac">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.gmv_hb>0?'red_color':data.gmv_hb==0?'':'green_color'}>{data.gmv_hb>0?'+':''}{data.gmv_hb}%</div>
+                        </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="f12 pp">
+                        <div class="flex">
+                        <div class="bold space-nowrap">营销费用：</div>
+                        <div class="space-nowrap">{data.yxfy}</div>
+                        </div>
+                        <div class="huang_color">{data.yxfy_rx}</div>
+                        <div class="flex ac">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.yxfy_hb>0?'red_color':data.yxfy_hb==0?'':'green_color'}>{data.yxfy_hb>0?'+':''}{data.yxfy_hb}%</div>
+                        </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="f12 pp">
+                        <div class="flex">
+                        <div class="bold space-nowrap">销售收入：</div>
+                        <div class="space-nowrap">{data.xssr}</div>
+                        </div>
+                        <div class="yxfy_color">{data.xssr_rx}</div>
+                        <div class="flex ac">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.xssr_hb>0?'red_color':data.xssr_hb==0?'':'green_color'}>{data.xssr_hb>0?'+':''}{data.xssr_hb}%</div>
+                        </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="f12 pp">
+                        <div class="flex">
+                        <div class="bold space-nowrap">贡献毛益额：</div>
+                        <div class="space-nowrap">{data.gxmy}</div>
+                        </div>
+                        <div class="lan_color">{data.gxmy_rx}</div>
+                        <div class="flex ac">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.gxmy_hb>0?'red_color':data.gxmy_hb==0?'':'green_color'}>{data.gxmy_hb>0?'+':''}{data.gxmy_hb}%</div>
+                        </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="f12 pp">
+                        <div class="flex">
+                        <div class="bold space-nowrap">付款订单量：</div>
+                        <div class="space-nowrap">{data.dl}</div>
+                        </div>
+                        <div class="fkddl">{data.dl_rx}</div>
+                        <div class="flex ac">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.dl_hb>0?'red_color':data.dl_hb==0?'':'green_color'}>{data.dl_hb>0?'+':''}{data.dl_hb}%</div>
+                        </div>
+                        </div>
+                        </div>
+
+                        <div class="flex jsa">
+                        <div class="flex fc ac jc">
+                        <div class="flex f12 mb-3">
+                        <div class="bold space-nowrap">每单公摊费用：</div>
+                        <div class="space-nowrap">¥{data.mdgtfy}</div>
+                        </div>
+
+                        <div class="flex f12">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.mdgtfy_hb>0?'red_color':data.mdgtfy_hb==0?'':'green_color'}>{data.mdgtfy_hb>0?'+':''}{data.mdgtfy_hb}%</div>
+                        </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="flex fc ac jc">
+                        <div class="flex f12 mb-3">
+                        <div class="bold space-nowrap">每单综合成本：</div>
+                        <div class="space-nowrap">¥{data.mdzhcb}</div>
+                        </div>
+                        <div class="flex f12">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.mdzhcb_hb>0?'red_color':data.mdzhcb_hb==0?'':'green_color'}>{data.mdzhcb_hb>0?'+':''}{data.mdzhcb_hb}%</div>
+                        </div>
+                        </div>
+                        <div class="line"></div>
+                        <div class="flex fc ac jc">
+                        <div class="flex f12 mb-3">
+                        <div class="bold space-nowrap">团队人均费用(工资)：</div>
+                        <div class="space-nowrap">¥{data.tdrjfy_rx}</div>
+                        </div>
+                        <div class="flex f12">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.tdrjfy_hb>0?'red_color':data.tdrjfy_hb==0?'':'green_color'}>{data.tdrjfy_hb>0?'+':''}{data.tdrjfy_hb}%</div>
+                        </div>
+                        </div>
+                        </div>
+                        </div>
+                        );
+                }else{
+                    return (
+                        <div>
+                        <div class="dept_name">{data.dept_name}（{data.user_num}人）</div>
+                        <div class="flex fc ac pp">
+                        <div class="flex f12 mb-3">
+                        <div class="bold space-nowrap">团队人均费用：</div>
+                        <div class="space-nowrap">¥{data.tdrjfy_rx}</div>
+                        </div>
+                        <div class="flex f12">
+                        <div class="bold space-nowrap">环比上月：</div>
+                        <div class={data.tdrjfy_hb>0?'red_color':data.tdrjfy_hb==0?'':'green_color'}>{data.tdrjfy_hb>0?'+':''}{data.tdrjfy_hb}%</div>
+                        </div>
+                        </div>
+                        </div>
+                        )
+                }
+            },
     		//默认展开
     		toggleExpand(data, val) {
     			this.$set(data, "expand", val);
@@ -204,16 +225,22 @@
 	font-weight: bold;
 	padding:5px 0;
 }
+.bottom_line{
+    border-bottom:1px solid #dcdcdc;
+}
 .line{
 	background-color: #dcdcdc;
 	width: 1px;
-	height: 78px;
+	height: 64px;
 }
 .pp{
 	padding:5px 10px;
 }
 .gmv_color{
 	color:#dd2cc7;
+}
+.fkddl{
+    color: #13227a;
 }
 .yxfy_color{
 	color:#872cdd;

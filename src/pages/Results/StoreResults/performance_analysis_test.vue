@@ -665,9 +665,6 @@
 					})
 					this.data_list.push(arr)
 				});
-				console.log(this.data_list)
-				console.log(this.data_list.length)
-				console.log(this.data_list.length > 1)
 			},
 			//处理下面面表格的数据
 			clTableWeekData(table_data){

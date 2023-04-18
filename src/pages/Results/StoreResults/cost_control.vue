@@ -303,9 +303,9 @@
 							this.storeCustomChart = echarts.init(store_custom);
 						}
 						this.storeCustomChart.setOption(store_custom_data.length == 1?this.empty_option:this.setChartOptions(this.store_custom_data,'store'));
-						window.addEventListener('resize',() => {
-							this.blChart.resize();
-						});
+						// window.addEventListener('resize',() => {
+						// 	this.blChart.resize();
+						// });
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -767,9 +767,9 @@
 .b_l_chart{
 	width: 100%;
 	height: 480px;
-	display: flex;
-	align-items: center;
-	justify-content: center;
+	// display: flex;
+	// align-items: center;
+	// justify-content: center;
 }
 .custom_row{
 	width: 100%;

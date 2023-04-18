@@ -34,6 +34,16 @@ export function getLastYear(n){
 export function getCurrentYear(){ 
 	return nowYear.toString();
 }
+//获得上月
+export function getLastMonth(){ 
+	var currentMonth = new Date(nowYear, nowMonth, 1); 
+	var myyear = currentMonth.getFullYear(); 
+	var mymonth = currentMonth.getMonth(); 
+	if(mymonth < 10){ 
+		mymonth = "0" + mymonth; 
+	} 
+	return (myyear+"-"+mymonth);
+}
 //获得本月
 export function getCurrentMonth(){ 
 	var currentMonth = new Date(nowYear, nowMonth, 1); 
