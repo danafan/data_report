@@ -78,7 +78,13 @@ export function getNextDate(date, day,t) {
 	}
 	　　
 }
-
+//获取某一天
+export function getSomeDay(c_d,num){
+	let day = new Date(c_d);
+	day.setTime(day.getTime()+num*24*60*60*1000);
+	var someDate = new Date(day);
+	return formatDate(someDate); 
+}
 //获得昨日日期（包括上月末日期）
 export function getCurrentDate(num){
 	var day1 = new Date();

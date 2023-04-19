@@ -4,6 +4,8 @@
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<StoreScope v-if="item.web_url == 'store_scope'"/>
 				<WarehouseScope v-if="item.web_url == 'warehouse_scope'"/>
+				<KsScope v-if="item.web_url == 'ks_scope'"/>
+				<StoreKsScope v-if="item.web_url == 'store_ks_scope'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -16,6 +18,8 @@
 <script>
 	import StoreScope from './DeliverySituation/store_scope.vue'
 	import WarehouseScope from './DeliverySituation/warehouse_scope.vue'
+	import KsScope from './DeliverySituation/ks_scope.vue'
+	import StoreKsScope from './DeliverySituation/store_ks_scope.vue'
 	export default{
 		data(){
 			return{
@@ -54,7 +58,9 @@
 		},
 		components:{
 			StoreScope,
-			WarehouseScope
+			WarehouseScope,
+			KsScope,
+			StoreKsScope
 		}
 	}
 </script>

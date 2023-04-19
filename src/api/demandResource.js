@@ -59,6 +59,8 @@ let path = {
 	getEbzhkTwo:'supply_chain/get_ebzhk_two',						//二部下面的表格
 	getEbzhkTwoExport:'supply_chain/get_ebzhk_two_export',			//二部下面的表格导出
 	sendFhlChart:'supplier/send_fhl_chart',							//仓库发货图表-7天发货率和订单数
+	ksbmSend:'supplier/send_ksbm',									//款式编码维度
+	sendDpKsbm:'supplier/send_dp_ksbm',								//店铺款式编码维度列表
 	
 }						
 export default{
@@ -297,6 +299,14 @@ export default{
 	//仓库发货图表-7天发货率和订单数
 	sendFhlChart(params){
 		return http.get(path.sendFhlChart, params)
+	},
+	//款式编码维度
+	ksbmSend(params){
+		return http.get(path.ksbmSend, params)
+	},
+	//店铺款式编码维度列表
+	sendDpKsbm(params){
+		return http.get(path.sendDpKsbm, params)
 	},
 	
 }

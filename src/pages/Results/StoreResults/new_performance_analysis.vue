@@ -29,10 +29,10 @@
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item>
-			<el-button type="primary" @click="dayData(1)">昨天</el-button>
-		</el-form-item>
-		<el-form-item>
-			<el-button type="primary" @click="dayData(2)">前天</el-button>
+			<el-button-group>
+				<el-button type="primary" icon="el-icon-arrow-left" @click="dayData(-1)">上一天</el-button>
+				<el-button type="primary" @click="dayData(1)">下一天<i class="el-icon-arrow-right el-icon--right"></i></el-button>
+			</el-button-group>
 		</el-form-item>
 		<el-form-item>
 			<el-checkbox v-model="is_assessment" true-label="1" false-label="0" border size="small">考核店铺</el-checkbox>
@@ -364,7 +364,7 @@
 </style>
 <script>
 	import resource from '../../../api/resource.js'
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getSomeDay} from '../../../api/nowMonth.js'
 	import {exportExcel} from '../../../api/export.js'
 	import dps from '../../../components/results_components/dps.vue'
 	import PopoverWidget from '../../../components/popover_widget.vue'
@@ -549,8 +549,8 @@
 			},
 			//昨天或前天的数据
 			dayData(num){
-				this.date.splice(0,1,getCurrentDate(num))
-				this.date.splice(1,1,getCurrentDate(num))
+				this.date.splice(0,1,getSomeDay(this.date[1],num))
+				this.date.splice(1,1,getSomeDay(this.date[1],num))
 				//获取信息
 				this.GetData();
 			},
