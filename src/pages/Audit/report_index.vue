@@ -5,6 +5,9 @@
 				<ReportManagement v-if="item.web_url == 'report_management'"/>
 				<SdMonitor v-if="item.web_url == 'sd_monitor'"/>
 			</el-tab-pane>
+			<el-tab-pane label="sd转交处理表" lazy name="sd_handle" class="tab_pane_box">
+				<SdHandle/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -16,6 +19,7 @@
 <script>
 	import ReportManagement from './reportPages/report_management.vue'
 	import SdMonitor from './reportPages/sd_monitor.vue'
+	import SdHandle from './reportPages/sd_handle.vue'
 	export default{
 		data(){
 			return{
@@ -55,7 +59,8 @@
 		},
 		components:{
 			ReportManagement,
-			SdMonitor
+			SdMonitor,
+			SdHandle
 		}
 	}
 </script>

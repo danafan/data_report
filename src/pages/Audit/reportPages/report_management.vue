@@ -51,6 +51,19 @@
 		<el-form-item label="申请人：">
 			<el-input v-model="arg_apply_user_name" placeholder="申请人"></el-input>
 		</el-form-item>
+		<el-form-item label="转交处理状态：">
+			<el-select v-model="handle_status" clearable placeholder="转交处理状态">
+				<el-option label="待处理" value="1"></el-option>
+				<el-option label="待审核" value="2"></el-option>
+				<el-option label="已审核" value="3"></el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="追回状态：">
+			<el-select v-model="recover_status" clearable placeholder="追回状态">
+				<el-option label="已追回" value="1"></el-option>
+				<el-option label="未追回" value="2"></el-option>
+			</el-select>
+		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 		</el-form-item>
@@ -155,6 +168,25 @@
 		</el-table-column>
 		<el-table-column prop="ykbdh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
 		<el-table-column prop="apply_user_name" label="申请人" width="100" show-overflow-tooltip align="center"></el-table-column>
+		<el-table-column label="转交处理状态" width="100" align="center">
+			<template slot-scope="scope">
+				<div v-if="scope.row.is_weight == '是'">{{scope.row.handle_status | handleStatus}}</div>
+			</template>
+		</el-table-column>
+		<el-table-column label="追回状态" width="100" align="center">
+			<template slot-scope="scope">
+				<div>{{scope.row.recover_status | recoverStatus}}</div>
+			</template>
+		</el-table-column>
+		<el-table-column label="操作" width="160" align="center">
+			<template slot-scope="scope">
+				<div v-if="scope.row.is_weight == '是'">
+					<el-button type="text" size="small" v-if="scope.row.handle_status == 0" @click="transmitFn(scope.row.id)">转交</el-button>
+					<el-button type="text" size="small" v-if="scope.row.handle_status == 1 || scope.row.handle_status == 3" @click="getDetail(scope.row.id)">查看</el-button>
+					<el-button type="text" size="small" v-if="scope.row.handle_status == 2">审核</el-button>
+				</div>
+			</template>
+		</el-table-column>
 	</el-table>
 	<div class="page">
 		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -199,6 +231,44 @@
 			<el-button size="small" type="primary" @click="bczDialog = false">知道了</el-button>
 		</div>
 	</el-dialog>
+	<!-- 转交 -->
+	<el-dialog title="转交处理人" :visible.sync="zjDialog" width="30%">
+		<div>
+			<el-select size="small" clearable v-model="handle_user_id" filterable placeholder="请选择转交人">
+				<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
+				</el-option>
+			</el-select>
+		</div>
+		<div slot="footer" class="dialog-footer">
+			<el-button size="small" @click="zjDialog = false">取 消</el-button>
+			<el-button size="small" type="primary" @click="transmitCommit">确 认</el-button>
+		</div>
+	</el-dialog>
+	<!-- 转交结果查看和处理 -->
+	<el-dialog title="公用弹窗" :visible.sync="handleDialog" width="45%">
+		<div>
+			<el-form size="mini">
+				<el-form-item label="线上订单号：">
+					<div>{{info.xsddh}}</div>
+				</el-form-item>
+				<el-form-item label="转交时间：">
+					<div>{{info.add_time}}</div>
+				</el-form-item>
+				<el-form-item label="委托人：">
+					<div>{{info.add_user_name}}</div>
+				</el-form-item>
+				<el-divider></el-divider>
+				<div v-if="info.handle_status == 1">
+					<el-form-item label="处理人：">
+						<div>{{info.handle_user_name}}</div>
+					</el-form-item>
+				</div>
+			</el-form>
+		</div>
+		<div slot="footer" class="dialog-footer" v-if="info.handle_status == 2">
+			<el-button size="small" type="primary" @click="handleCommit">提交</el-button>
+		</div>
+	</el-dialog>
 </div>
 </template>
 <script>
@@ -207,6 +277,7 @@
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	import resource from '../../../api/auditResource.js'
+	import commonResource from '../../../api/targetSales.js'
 	export default{
 		data(){
 			return{
@@ -225,6 +296,8 @@
 				arg_xsddh:"",									//线上订单号
 				arg_ykbdh:"",									//易快报单号
 				arg_apply_user_name:"",							//申请人
+				handle_status:"",							//处理状态
+				recover_status:"",							//追回状态
 				pickerOptions: {
 					shortcuts: [{
 						text: '当月',
@@ -256,7 +329,14 @@
 				dataObj:{},									//列表数据
 				loading:false,
 				bcz_list:[],
-				bczDialog:false,		//导入不存在的线上订单号提示
+				bczDialog:false,			//导入不存在的线上订单号提示
+				zjDialog:false,							//转交弹窗
+				id:"",									//点击某行的ID
+				user_list:[],							//转交人列表
+				handle_user_id:"",						//选择的转交人
+				handleDialog:true,						//公用弹窗
+				info:{},								//详情数据
+				refund_list:[],							//拒绝记录
 			}
 		},
 		created(){
@@ -347,6 +427,8 @@
 					xsddh:this.arg_xsddh,
 					ykbdh:this.arg_ykbdh,
 					apply_user_name:this.arg_apply_user_name,
+					handle_status:this.handle_status,						
+					recover_status:this.recover_status						
 				}
 				resource.ytReportTotal(arg).then(res => {
 					if(res.data.code == 1){
@@ -382,6 +464,8 @@
 					xsddh:this.arg_xsddh,
 					ykbdh:this.arg_ykbdh,
 					apply_user_name:this.arg_apply_user_name,
+					handle_status:this.handle_status,						
+					recover_status:this.recover_status,	
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -416,6 +500,8 @@
 						xsddh:this.arg_xsddh,
 						ykbdh:this.arg_ykbdh,
 						apply_user_name:this.arg_apply_user_name,
+						handle_status:this.handle_status,					
+						recover_status:this.recover_status,	
 					}
 					resource.ytReportExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'审计SD分析');
@@ -426,6 +512,94 @@
 						message: '取消导出'
 					});          
 				});
+			},
+			//点击转交
+			transmitFn(id){
+				this.id = id;
+				this.zjDialog = true;
+				//获取转交人
+				this.getUserList();
+			},
+			//获取转交人
+			getUserList(){
+				commonResource.ajaxUser().then(res => {
+					if(res.data.code == 1){
+						this.user_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//点击提交转交
+			transmitCommit(){
+				if(this.handle_user_id == ''){	
+					this.$message.warning('请选择转交人')
+				}else{
+					let arg = {
+						id:this.id,
+						handle_user_id:this.handle_user_id
+					}
+					resource.ytTransmit(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.zjDialog = false;
+							//获取列表
+							this.getList();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//点击查看获取详情
+			getDetail(id){
+				this.id = id;
+				this.handleDialog = true;
+				let arg = {
+					id:id,
+					type:'1'
+				}
+				resource.ytHandleDetail(arg).then(res => {
+					if(res.data.code == 1){
+						let data = res.data.data;
+						this.info = data.info;
+						this.refund_list = data.refund_list;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//提交
+			handleCommit(){
+
+			}
+		},
+		filters:{
+			//转交处理状态
+			handleStatus:function(v){
+				switch(v){
+					case 0:
+					return '待转交';
+					case 1:
+					return '待处理';
+					case 2:
+					return '待审核';
+					case 3:
+					return '已审核';
+					default:
+					return;
+				}
+			},
+			//追回状态
+			recoverStatus:function(v){
+				switch(v){
+					case 1:
+					return '已追回';
+					case 2:
+					return '未追回';
+					default:
+					return;
+				}
 			},
 		},
 		components:{

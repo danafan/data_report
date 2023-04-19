@@ -66,6 +66,9 @@ let path = {
 	storeSdReportExport:'audit/store_sd_report_export',				//审计刷单情况导出
 	storeSdTotal:'audit/store_sd_total',							//店铺款式刷单情况-报表头部汇总
 	storeSdSpbm:'audit/store_sd_spbm',								//店铺款式刷单情况-商品编码下钻
+	ytTransmit:'audit/yt_transmit',									//提交转交
+	ytHandleDetail:'audit/yt_handle_detail',						//SD处理反馈和SD表详情
+	ytHandleList:'audit/yt_handle_list',							//SD处理反馈表
 }						
 export default{
 	//款式编码列表
@@ -335,6 +338,18 @@ export default{
 	//店铺款式刷单情况-商品编码下钻
 	storeSdSpbm(params){
 		return http.get(path.storeSdSpbm, params)
+	},
+	//提交转交
+	ytTransmit(params){
+		return http.post(path.ytTransmit, params)
+	},
+	//SD处理反馈和SD表详情
+	ytHandleDetail(params){
+		return http.get(path.ytHandleDetail, params)
+	},
+	//SD处理反馈表
+	ytHandleList(params){
+		return http.get(path.ytHandleList, params)
 	},
 }
 

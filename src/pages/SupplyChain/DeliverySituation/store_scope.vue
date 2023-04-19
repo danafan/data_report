@@ -28,10 +28,10 @@
 					<el-button type="text" size="small" @click="sendFhlChart(scope.row.dpbh,scope.row.name)">{{scope.row.name}}</el-button>
 				</template>
 			</el-table-column>
-			<el-table-column prop="fh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="fh_je_0" label="今日发货金额" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="dd_0" label="今日订单总数" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="fhl_0" label="今日发货率" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fh_0" label="当日已发货" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fh_je_0" label="当日发货金额" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="dd_0" label="当日订单总数" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fhl_0" label="当日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_1" label="两日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_2" label="三日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_3" label="四日发货率" align="center" sortable="custom"></el-table-column>
@@ -54,9 +54,9 @@
 				<div class="table_title">部门发货情况</div>
 				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="deptSortChange" v-loading="dept_loading">
 					<el-table-column prop="name" label="部门" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
-					<el-table-column prop="fh_0" label="今日已发货" width="110" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="dd_0" label="今日订单总数" width="120" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="fhl_0" label="今日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fh_0" label="当日已发货" width="110" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="dd_0" label="当日订单总数" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_0" label="当日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_1" label="两日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_2" label="三日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_3" label="四日发货率" width="120" align="center" sortable="custom"></el-table-column>
@@ -77,10 +77,10 @@
 				<div class="table_title">平台发货情况</div>
 				<el-table size="small" :data="platform_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="platformSortChange" v-loading="platform_loading">
 					<el-table-column prop="name" label="平台" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
-					<el-table-column prop="fh_0" label="今日已发货" width="110" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="dd_0" label="今日订单总数" width="120" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="fhl_0" label="今日发货率" width="120" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="fhl_1" label="两日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fh_0" label="当日已发货" width="110" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="dd_0" label="当日订单总数" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_0" label="当日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_1" label="当日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_2" label="三日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_3" label="四日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="xtsy" label="系统剩余订单数" width="130" align="center" sortable="custom"></el-table-column>
@@ -108,9 +108,9 @@
 				toast_list:[
 				'本报告数据源为实时数据源，展示订单发货情况',
 				'数据更新方式：每小时一更新',
-				'今日发货数：付款日期为数据写入日期当天的已发货的内部订单号数',
-				'今日订单总数：付款日期为数据写入日期当天的所有的内部订单号数',
-				'今日发货率：今日发货数/今日订单总数',
+				'当日发货数：付款日期为数据写入日期当天的已发货的内部订单号数',
+				'当日订单总数：付款日期为数据写入日期当天的所有的内部订单号数',
+				'当日发货率：当日发货数/当日订单总数',
 				'两日发货率：昨日发货数/昨日订单总数',
 				'三日发货率：前天发货数/前天订单总数',
 				'四日发货率：大前天发货数/大前天订单总数',
@@ -461,7 +461,7 @@
 					},
 					legend: {
 						top:'30',
-						data: ['今日订单数','今日发货率','两日发货率','三日发货率','四日发货率',]
+						data: ['当日订单数','当日发货率','两日发货率','三日发货率','四日发货率',]
 					},
 					xAxis: {
 						type: 'category',
@@ -483,7 +483,7 @@
 						name:'订单数'
 					}],
 					series: [{
-						name:'今日订单数',
+						name:'当日订单数',
 						type: 'line',
 						yAxisIndex:1,
 						lineStyle:{
@@ -491,7 +491,7 @@
 						},
 						data: jr_dd_data
 					},{
-						name:'今日发货率',
+						name:'当日发货率',
 						type: 'line',
 						yAxisIndex:0,
 						lineStyle:{
