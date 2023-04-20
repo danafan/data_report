@@ -28,11 +28,11 @@
 					<el-button type="text" size="small" @click="sendFhlChart(scope.row.dpbh,scope.row.name)">{{scope.row.name}}</el-button>
 				</template>
 			</el-table-column>
-			<el-table-column prop="jrfh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="jrfh_je_0" label="今日发货金额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fh_0" label="当日已发货" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fh_je_0" label="当日发货金额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="dd_0" label="当日订单总数" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="jrfh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="jrfh_je_0" label="今日发货金额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_0" label="当日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_1" label="两日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_2" label="三日发货率" align="center" sortable="custom"></el-table-column>
