@@ -303,7 +303,8 @@
 				let req = {
 					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
-					tgzrr:this.tgfzr,
+					tgfzr:this.tgfzr,
+					empty_tgzrr_flag:this.wtgfzr,
 					sort:this.sort,
 					sort_type:this.sort_type,
 				}
