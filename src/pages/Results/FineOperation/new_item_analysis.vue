@@ -43,7 +43,7 @@
 					<div class="height-100 flex fc ac jc relative">
 						<div class="f14 bold mb-5">直通车</div>
 						<div class="f22 bold money" v-loading="top_loading">{{top_data.ztc_hf}}</div>
-						<div class="absolute space-nowrap zb">占比：{{top_data.ylmf_xh_zb}}</div>
+						<div class="absolute space-nowrap zb">占比：{{top_data.ztc_hf_zb}}</div>
 					</div>
 					<div class="height-100 flex fc ac jc relative">
 						<div class="f14 bold mb-5">引力魔方</div>
