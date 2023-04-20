@@ -50,6 +50,7 @@
 			<PopoverWidget title="指标解释" keys="gross_profit_analysis"/>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
+		<div class="f12 red_color mb-10">更新时间：{{update_time}}</div>
 		<custom-table v-loading="loading" :isLoading="loading" tableName="gross_profit" max_height="350" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 	</div>
@@ -103,7 +104,8 @@
 				table_data:[],								//表格数据
 				total:0,									//数据总数
 				table_total_data:{},
-				loading:false
+				loading:false,
+				update_time:""
 			}
 		},
 		created(){
@@ -209,6 +211,7 @@
 						this.table_data = data.table_data.data;
 						this.total = data.table_data.total;
 						this.table_total_data = this.table_data.length > 0?data.table_total_data[0]:{};
+						this.update_time = data.update_time;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

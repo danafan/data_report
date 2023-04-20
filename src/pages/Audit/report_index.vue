@@ -2,11 +2,9 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<ReportManagement v-if="item.web_url == 'report_management'"/>
-				<SdMonitor v-if="item.web_url == 'sd_monitor'"/>
-			</el-tab-pane>
-			<el-tab-pane label="sd转交处理表" lazy name="sd_handle" class="tab_pane_box">
-				<SdHandle/>
+				<ReportManagement v-if="item.web_url == 'report_management' && activeTab == 'report_management'"/>
+				<SdMonitor v-if="item.web_url == 'sd_monitor' && activeTab == 'sd_monitor'"/>
+				<SdHandle v-if="item.web_url == 'sd_handle' && activeTab == 'sd_handle'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

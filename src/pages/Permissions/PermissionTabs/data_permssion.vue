@@ -24,6 +24,8 @@
 			</el-table-column>
 			<el-table-column prop="create_time" label="创建时间" align="center"></el-table-column>
 			<el-table-column prop="ding_user_name" label="创建人" align="center"></el-table-column>
+			<el-table-column prop="update_time" label="更新时间" align="center"></el-table-column>
+			<el-table-column prop="last_update_user_name" label="上次更新人姓名" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="editFun(scope.row.data_role_id)" v-if="dataObj.button_list.edit == '1' && scope.row.is_disable == '0'">编辑</el-button>

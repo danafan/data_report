@@ -9,7 +9,8 @@
 			<el-table-column prop="job_no" label="工号" width="120" align="center"></el-table-column>
 			<el-table-column prop="dept_name" show-overflow-tooltip label="所属部门" align="center"></el-table-column>
 			<el-table-column prop="position" show-overflow-tooltip label="岗位名称" align="center"></el-table-column>
-			<el-table-column prop="ding_user_name" label="姓名" align="center"></el-table-column><el-table-column prop="data_role_name" label="数据权限" align="center"></el-table-column>
+			<el-table-column prop="ding_user_name" label="姓名" align="center"></el-table-column>
+			<el-table-column prop="data_role_name" label="数据权限" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="settingFun(scope.row.user_id)" v-if="dataObj.button_list.setting == '1' && scope.row.is_self == '0'">设置</el-button>

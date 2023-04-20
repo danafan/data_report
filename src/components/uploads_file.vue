@@ -6,7 +6,7 @@
 				<img src="../static/deleteImg.png" @click="deteleFile(item.urls,index)">
 			</div>
 		</div>
-		<div class="imgBox" v-if="show_img.length < max_num">
+		<div class="imgBox" v-if="show_img.length < max_num && !onlyView">
 			<img class="upload_icon" src="../static/upload_icon.png">
 			<div class="upload_text">上传图片</div>
 			<input type="file" ref="imgUpload" class="upload_file" accept="image/*" :multiple="multiple" @change="uploadFn">
@@ -32,6 +32,11 @@
 				type:Number,
 				default:1
 			},
+			//是否只读
+			onlyView:{
+				type:Boolean,
+				default:false
+			},
 			//是否多选
 			multiple:{
 				type:Boolean,
@@ -40,6 +45,7 @@
 		},
 		created(){
 			this.show_img = this.current_images;
+			console.log(this.show_img)
 		},
 		methods:{
 			// 上传图片

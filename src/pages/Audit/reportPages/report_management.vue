@@ -183,7 +183,7 @@
 				<div v-if="scope.row.is_weight == '是'">
 					<el-button type="text" size="small" v-if="scope.row.handle_status == 0" @click="transmitFn(scope.row.id)">转交</el-button>
 					<el-button type="text" size="small" v-if="scope.row.handle_status == 1 || scope.row.handle_status == 3" @click="getDetail(scope.row.id)">查看</el-button>
-					<el-button type="text" size="small" v-if="scope.row.handle_status == 2">审核</el-button>
+					<el-button type="text" size="small" v-if="scope.row.handle_status == 2" @click="getDetail(scope.row.id)">审核</el-button>
 				</div>
 			</template>
 		</el-table-column>
@@ -232,7 +232,7 @@
 		</div>
 	</el-dialog>
 	<!-- 转交 -->
-	<el-dialog title="转交处理人" :visible.sync="zjDialog" width="30%">
+	<el-dialog title="转交处理人" :visible.sync="zjDialog" @close="handle_user_id = ''" width="30%">
 		<div>
 			<el-select size="small" clearable v-model="handle_user_id" filterable placeholder="请选择转交人">
 				<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
@@ -245,7 +245,7 @@
 		</div>
 	</el-dialog>
 	<!-- 转交结果查看和处理 -->
-	<el-dialog title="公用弹窗" :visible.sync="handleDialog" width="45%">
+	<el-dialog :title="info.handle_status == 1?'待处理':info.handle_status == 2?'待审核':'已审核'" :visible.sync="handleDialog" @close="closeDetailDialog" width="45%">
 		<div>
 			<el-form size="mini">
 				<el-form-item label="线上订单号：">
@@ -258,17 +258,86 @@
 					<div>{{info.add_user_name}}</div>
 				</el-form-item>
 				<el-divider></el-divider>
+				<!-- 拒绝列表 -->
+				<div v-for="item in refund_list">
+					<el-form-item label="凭证：">
+						<uploads-file :onlyView="true" :current_images="item.current_images"/>
+					</el-form-item>
+					<el-form-item label="处理结果：">
+						<div>{{item.handle_remark}}</div>
+					</el-form-item>
+					<el-form-item label="处理时间：">
+						<div>{{item.handle_time}}</div>
+					</el-form-item>
+					<el-form-item label="处理人：">
+						<div>{{item.handle_user_name}}</div>
+					</el-form-item>
+					<el-form-item label="拒绝状态：">
+						<div>已拒绝</div>
+					</el-form-item>
+					<el-form-item label="拒绝原因：">
+						<div>{{item.refund_reason}}</div>
+					</el-form-item>
+					<el-form-item label="审核人：">
+						<div>{{item.audit_user_name}}</div>
+					</el-form-item>
+					<el-form-item label="审核时间：">
+						<div>{{item.audit_time}}</div>
+					</el-form-item>
+					<el-divider></el-divider>
+				</div>
+				<!-- 待处理 -->
 				<div v-if="info.handle_status == 1">
 					<el-form-item label="处理人：">
 						<div>{{info.handle_user_name}}</div>
 					</el-form-item>
 				</div>
-			</el-form>
-		</div>
-		<div slot="footer" class="dialog-footer" v-if="info.handle_status == 2">
-			<el-button size="small" type="primary" @click="handleCommit">提交</el-button>
-		</div>
-	</el-dialog>
+				<!-- 待审核 -->
+				<div v-else-if="info.handle_status == 2 || info.handle_status == 3">
+					<el-form-item label="凭证：">
+						<uploads-file :onlyView="true" :current_images="current_images"/>
+					</el-form-item>
+					<el-form-item label="处理结果：">
+						<div>{{info.handle_remark}}</div>
+					</el-form-item>
+					<el-form-item label="处理时间：">
+						<div>{{info.handle_time}}</div>
+					</el-form-item>
+					<el-form-item label="处理人：">
+						<div>{{info.handle_user_name}}</div>
+					</el-form-item>
+					<el-divider></el-divider>
+					<el-form-item label="审核：" v-if="info.handle_status == 2">
+						<el-radio-group v-model="type">
+							<el-radio :label="1">通过</el-radio>
+							<el-radio :label="2">拒绝</el-radio>
+						</el-radio-group>
+					</el-form-item>
+					<el-form-item label="拒绝原因：" required v-if="type == 2 && info.handle_status == 2">
+						<el-input
+						style="width: 200px"
+						type="textarea"
+						:autosize="{ minRows: 2, maxRows: 5}"
+						placeholder="最多150字"
+						maxlength="150"
+						show-word-limit
+						v-model="remark">
+					</el-input>
+				</el-form-item>
+				<el-form-item label="审核人：" v-if="info.handle_status == 3">
+					<div>{{info.audit_user_name}}</div>
+				</el-form-item>
+				<el-form-item label="审核时间：" v-if="info.handle_status == 3">
+					<div>{{info.audit_time}}</div>
+				</el-form-item>
+			</div>
+
+		</el-form>
+	</div>
+	<div slot="footer" class="dialog-footer" v-if="info.handle_status == 2">
+		<el-button size="small" type="primary" @click="handleCommit">提交</el-button>
+	</div>
+</el-dialog>
 </div>
 </template>
 <script>
@@ -278,6 +347,7 @@
 	import { MessageBox,Message } from 'element-ui';
 	import resource from '../../../api/auditResource.js'
 	import commonResource from '../../../api/targetSales.js'
+	import UploadsFile from '../../../components/uploads_file.vue'
 	export default{
 		data(){
 			return{
@@ -334,9 +404,12 @@
 				id:"",									//点击某行的ID
 				user_list:[],							//转交人列表
 				handle_user_id:"",						//选择的转交人
-				handleDialog:true,						//公用弹窗
+				handleDialog:false,						//公用弹窗
 				info:{},								//详情数据
 				refund_list:[],							//拒绝记录
+				current_images:[],
+				type:1,									//审核状态
+				remark:"",								//拒绝原因
 			}
 		},
 		created(){
@@ -554,7 +627,6 @@
 			//点击查看获取详情
 			getDetail(id){
 				this.id = id;
-				this.handleDialog = true;
 				let arg = {
 					id:id,
 					type:'1'
@@ -563,7 +635,33 @@
 					if(res.data.code == 1){
 						let data = res.data.data;
 						this.info = data.info;
+						this.current_images = [];
+						if(this.info.images != ''){
+							let dd = this.info.images.split(',');
+							dd.map(item => {
+								let o = {
+									domain:data.domain,
+									urls:item
+								}
+								this.current_images.push(o)
+							})
+						}
 						this.refund_list = data.refund_list;
+						this.refund_list.map(item => {
+							let n_current_images = [];
+							if(item.images != ''){
+								let cc = item.images.split(',');
+								cc.map(i => {
+									let g = {
+										domain:data.domain,
+										urls:i
+									}
+									n_current_images.push(g)
+								})
+							}
+							item['current_images'] = n_current_images
+						})
+						this.handleDialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -571,7 +669,35 @@
 			},
 			//提交
 			handleCommit(){
-
+				if(this.type == 2 && this.remark == ''){
+					this.$message.warning('请输入拒绝原因');
+					return;
+				}
+				let arg = {
+					id:this.id,
+					type:this.type
+				}
+				if(this.type == 2){
+					arg['remark'] = this.remark;
+				}
+				resource.ytSudit(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.handleDialog = false;
+						//获取列表
+						this.getList();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//关闭详情弹窗
+			closeDetailDialog(){
+				this.info = {};								//详情数据
+				this.refund_list = [];							//拒绝记录
+				this.current_images = [];
+				this.type = 1;									//审核状态
+				this.remark = "";								//拒绝原因
 			}
 		},
 		filters:{
@@ -603,7 +729,8 @@
 			},
 		},
 		components:{
-			dps
+			dps,
+			UploadsFile
 		}
 	}
 </script>

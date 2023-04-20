@@ -3,15 +3,15 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="转交处理状态：">
 				<el-select v-model="handle_status" clearable placeholder="转交处理状态">
-					<el-option label="待处理" value="1"></el-option>
-					<el-option label="待审核" value="2"></el-option>
-					<el-option label="已审核" value="3"></el-option>
+					<el-option label="待处理" :value="1"></el-option>
+					<el-option label="待审核" :value="2"></el-option>
+					<el-option label="已审核" :value="3"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="追回状态：">
-				<el-select v-model="recover_status" clearable placeholder="追回状态">
-					<el-option label="已追回" value="1"></el-option>
-					<el-option label="未追回" value="2"></el-option>
+				<el-select v-model="arg_recover_status" clearable placeholder="追回状态">
+					<el-option label="已追回" :value="1"></el-option>
+					<el-option label="未追回" :value="2"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -65,7 +65,7 @@
 			</el-pagination>
 		</div>
 		<!-- 转交结果查看和处理 -->
-		<el-dialog title="公用弹窗" :visible.sync="handleDialog" width="45%">
+		<el-dialog :title="info.handle_status == 1?'待处理':info.handle_status == 2?'待审核':'已审核'" :visible.sync="handleDialog" @close="closeDialog" width="45%">
 			<div>
 				<el-form size="mini">
 					<el-form-item label="线上订单号：">
@@ -78,26 +78,99 @@
 						<div>{{info.add_user_name}}</div>
 					</el-form-item>
 					<el-divider></el-divider>
+					<!-- 拒绝列表 -->
+				<div v-for="item in refund_list">
+					<el-form-item label="凭证：">
+						<uploads-file :onlyView="true" :current_images="item.current_images"/>
+					</el-form-item>
+					<el-form-item label="处理结果：">
+						<div>{{item.handle_remark}}</div>
+					</el-form-item>
+					<el-form-item label="处理时间：">
+						<div>{{item.handle_time}}</div>
+					</el-form-item>
+					<el-form-item label="处理人：">
+						<div>{{item.handle_user_name}}</div>
+					</el-form-item>
+					<el-form-item label="拒绝状态：">
+						<div>已拒绝</div>
+					</el-form-item>
+					<el-form-item label="拒绝原因：">
+						<div>{{item.refund_reason}}</div>
+					</el-form-item>
+					<el-form-item label="审核人：">
+						<div>{{item.audit_user_name}}</div>
+					</el-form-item>
+					<el-form-item label="审核时间：">
+						<div>{{item.audit_time}}</div>
+					</el-form-item>
+					<el-divider></el-divider>
+				</div>
 					<div v-if="info.handle_status == 1">
-						<el-form-item label="处理人：">
-							<div>{{info.handle_user_name}}</div>
+						<div class="f12 red_color mb-10">提示：请将您的处理情况进行上传反馈</div>
+						<el-form-item label="上传凭证(最多9张)：" required>
+							<uploads-file :max_num="9" :current_images="current_images" @callback="uploadCallBack"/>
 						</el-form-item>
-					</div>
-				</el-form>
-			</div>
-			<div slot="footer" class="dialog-footer">
-				<el-button size="small" type="primary" @click="handleCommit">提交</el-button>
-			</div>
-		</el-dialog>
-	</div>
+						<el-form-item label="处理结果：">
+							<el-input
+							style="width: 200px"
+							type="textarea"
+							:autosize="{ minRows: 2, maxRows: 5}"
+							placeholder="最多150字"
+							maxlength="150"
+							show-word-limit
+							v-model="remark">
+						</el-input>
+					</el-form-item>
+					<el-form-item label="追回状态：">
+						<el-radio-group v-model="recover_status">
+							<el-radio :label="1">已追回</el-radio>
+							<el-radio :label="2">未追回</el-radio>
+						</el-radio-group>
+					</el-form-item>
+				</div>
+				<div v-if="info.handle_status == 2 || info.handle_status == 3">
+					<el-form-item label="凭证：">
+						<uploads-file :onlyView="true" :current_images="current_images"/>
+					</el-form-item>
+					<el-form-item label="处理结果：">
+						<div>{{info.handle_remark}}</div>
+					</el-form-item>
+					<el-form-item label="处理时间：">
+						<div>{{info.handle_time}}</div>
+					</el-form-item>
+					<el-form-item label="处理人：">
+						<div>{{info.handle_user_name}}</div>
+					</el-form-item>
+					<el-form-item label="追回状态：">
+						<div>{{info.recover_status == 1?'已追回':'未追回'}}</div>
+					</el-form-item>
+				</div>
+				<div v-if="info.handle_status == 3">
+					<el-divider></el-divider>
+					<el-form-item label="审核人：" v-if="info.handle_status == 3">
+						<div>{{info.audit_user_name}}</div>
+					</el-form-item>
+					<el-form-item label="审核时间：" v-if="info.handle_status == 3">
+						<div>{{info.audit_time}}</div>
+					</el-form-item>
+				</div>
+			</el-form>
+		</div>
+		<div slot="footer" class="dialog-footer" v-if="info.handle_status == 1">
+			<el-button size="small" type="primary" @click="handleCommit">提交</el-button>
+		</div>
+	</el-dialog>
+</div>
 </template>
 <script>
 	import resource from '../../../api/auditResource.js'
+	import UploadsFile from '../../../components/uploads_file.vue'
 	export default{
 		data(){
 			return{
 				handle_status:"",							//处理状态
-				recover_status:"",							//追回状态
+				arg_recover_status:"",							//追回状态
 				page:1,
 				pagesize:10,
 				dataObj:{},									//列表数据
@@ -106,6 +179,9 @@
 				info:{},								//详情数据
 				refund_list:[],							//拒绝记录
 				handleDialog:false,
+				current_images:[],						//当前图片列表
+				remark:"",								//处理结果
+				recover_status:1,						//追回状态
 			}
 		},
 		created(){
@@ -113,11 +189,15 @@
 			this.getList();
 		},
 		methods:{
+			//监听图片变化并赋值
+			uploadCallBack(v){
+				this.current_images = v;
+			},
 			//获取列表
 			getList(){
 				let arg = {
 					handle_status:this.handle_status,						
-					recover_status:this.recover_status,	
+					recover_status:this.arg_recover_status,	
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -153,7 +233,34 @@
 					if(res.data.code == 1){
 						let data = res.data.data;
 						this.info = data.info;
+						this.current_images = [];
+						if(this.info.images != ''){
+							let dd = this.info.images.split(',');
+							dd.map(item => {
+								let o = {
+									domain:data.domain,
+									urls:item
+								}
+								this.current_images.push(o)
+							})
+						}
+						
 						this.refund_list = data.refund_list;
+						this.refund_list.map(item => {
+							let n_current_images = [];
+							if(item.images != ''){
+								let cc = item.images.split(',');
+								cc.map(i => {
+									let g = {
+										domain:data.domain,
+										urls:i
+									}
+									n_current_images.push(g)
+								})
+							}
+							item['current_images'] = n_current_images
+						})
+						this.handleDialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -161,7 +268,35 @@
 			},
 			//提交
 			handleCommit(){
-				
+				if(this.current_images.length == 0){
+					this.$message.warning('至少上传一个凭证！');
+					return;
+				}
+				let arg = {
+					id:this.id,
+					recover_status:this.recover_status,
+					remark:this.remark,
+					image:this.current_images.join(',')
+				}
+				resource.ytHandle(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.handleDialog = false;
+						//获取列表
+						this.getList();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//关闭弹窗
+			closeDialog(){
+				this.info = {};								//详情数据
+				this.refund_list = [];							//拒绝记录
+				this.handleDialog = false;
+				this.current_images = [];						//当前图片列表
+				this.remark = "";								//处理结果
+				this.recover_status = 1;						//追回状态
 			}
 		},
 		filters:{
@@ -191,6 +326,9 @@
 					return;
 				}
 			},
+		},
+		components:{
+			UploadsFile
 		}
 	}
 </script>

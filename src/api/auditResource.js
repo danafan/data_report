@@ -69,6 +69,8 @@ let path = {
 	ytTransmit:'audit/yt_transmit',									//提交转交
 	ytHandleDetail:'audit/yt_handle_detail',						//SD处理反馈和SD表详情
 	ytHandleList:'audit/yt_handle_list',							//SD处理反馈表
+	ytHandle:'audit/yt_handle',										//提交处理
+	ytSudit:'audit/yt_audit',										//提交审核
 }						
 export default{
 	//款式编码列表
@@ -350,6 +352,14 @@ export default{
 	//SD处理反馈表
 	ytHandleList(params){
 		return http.get(path.ytHandleList, params)
+	},
+	//提交处理
+	ytHandle(params){
+		return http.post(path.ytHandle, params)
+	},
+	//提交审核
+	ytSudit(params){
+		return http.post(path.ytSudit, params)
 	},
 }
 
