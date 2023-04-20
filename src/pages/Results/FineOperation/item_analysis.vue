@@ -33,7 +33,7 @@
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
-					<div>整体ROI：总坑产 / 总花费</div>
+					<div>整体ROI：GMV / 总花费</div>
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
@@ -166,7 +166,7 @@
 		<el-tab-pane label="访客分析" name="visitors_analysis" class="tab_pane_box">
 			<div id="visitors_analysis" class="complete_line" v-loading="zxt_loading"></div>
 		</el-tab-pane>
-		<el-tab-pane label="买家坑产分析" name="production_analysis" class="tab_pane_box">
+		<el-tab-pane label="买家GMV分析" name="production_analysis" class="tab_pane_box">
 			<div class="flex_box">
 				<div id="production_analysis_left" class="half_line" v-loading="zxt_loading"></div>
 				<div id="production_analysis_right" class="half_line" v-loading="zxt_loading"></div>

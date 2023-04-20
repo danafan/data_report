@@ -135,13 +135,16 @@
 		</el-card>
 	</div>
 	<div class="buts">
+		<el-button type="primary" plain size="small" @click="allTransmit">批量转交</el-button>
 		<el-button type="primary" size="small" @click="ykbDialog = true">
 			导入
 			<i class="el-icon-upload el-icon--right"></i>
 		</el-button>
 		<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
-	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
+	<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading" @selection-change="handleSelectionChange">
+		<el-table-column type="selection" width="55" fixed :selectable="checkboxInit">
+		</el-table-column>
 		<el-table-column prop="fhrq" label="日期" width="100" align="center"></el-table-column>
 		<el-table-column prop="xsddh" label="线上订单号" show-overflow-tooltip align="center"></el-table-column>
 		<el-table-column prop="ysxsddh" label="原始线上订单号" show-overflow-tooltip align="center"></el-table-column>
@@ -306,6 +309,9 @@
 					<el-form-item label="处理人：">
 						<div>{{info.handle_user_name}}</div>
 					</el-form-item>
+					<el-form-item label="追回状态：">
+						<div>{{info.recover_status == 1?'已追回':'未追回'}}</div>
+					</el-form-item>
 					<el-divider></el-divider>
 					<el-form-item label="审核：" v-if="info.handle_status == 2">
 						<el-radio-group v-model="type">
@@ -397,6 +403,7 @@
 				page:1,
 				pagesize:10,
 				dataObj:{},									//列表数据
+				multiple_selection:[],
 				loading:false,
 				bcz_list:[],
 				bczDialog:false,			//导入不存在的线上订单号提示
@@ -452,6 +459,18 @@
 				this.sqr = "";
 				this.filename = '';
 				this.file = null;
+			},
+			//设置不可勾选
+			checkboxInit(row) {
+				if(row.is_weight == '是' && row.handle_status == 0) { 
+					return 1 
+				} else { 
+					return 0
+				}
+			},
+			//切换多选
+			handleSelectionChange(val) {
+				this.multiple_selection = val;
 			},
 			//导入提交
 			confirmFn(){
@@ -586,8 +605,20 @@
 					});          
 				});
 			},
+			//点击批量转交
+			allTransmit(){
+				if(this.multiple_selection.length == 0){
+					this.$message.warning('请先选择要转交的数据！')
+				}else{
+					this.zj_type = 2;
+					this.zjDialog = true;
+					//获取转交人
+					this.getUserList();
+				}
+			},
 			//点击转交
 			transmitFn(id){
+				this.zj_type = 1;
 				this.id = id;
 				this.zjDialog = true;
 				//获取转交人
@@ -608,8 +639,11 @@
 				if(this.handle_user_id == ''){	
 					this.$message.warning('请选择转交人')
 				}else{
+					let ids = this.multiple_selection.map(item => {
+						return item.id;
+					})
 					let arg = {
-						id:this.id,
+						id:this.zj_type == 1?this.id:ids.join(','),
 						handle_user_id:this.handle_user_id
 					}
 					resource.ytTransmit(arg).then(res => {

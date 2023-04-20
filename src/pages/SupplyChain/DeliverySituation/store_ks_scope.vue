@@ -12,12 +12,16 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="供应商货号：">
+				<el-input v-model="gyshh" clearable placeholder="请输入供应商货号"></el-input>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="flex jsb mb-10">
 			<PopoverWidget title="指标解释" :show_popover="false"/>
+			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<custom-table v-loading="loading" :isLoading="loading" max_height="650" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
@@ -28,6 +32,9 @@
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
 	import demandResource from '../../../api/demandResource.js'
+
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 
 	import CustomTable from '../../../components/custom_table.vue'
 	import PageWidget from '../../../components/pagination_widget.vue'
@@ -65,6 +72,7 @@
 				date:[getNowDate(),getNowDate()],			//时间区间
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
+				gyshh:"",
 				page:1,			//店铺分页
 				pagesize:10,			//店铺分页
 				sort:"",
@@ -104,6 +112,7 @@
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
 					ksbm:this.select_ks_ids.join(','),
+					gyshh:this.gyshh,
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
@@ -123,6 +132,35 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//导出
+			exportFn(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_date:this.date && this.date.length> 0?this.date[0]:"",
+						end_date:this.date && this.date.length> 0?this.date[1]:"",
+						ksbm:this.select_ks_ids.join(','),
+						gyshh:this.gyshh,
+						platform:this.pl.join(','),
+						dept_id:this.dept_name.join(','),
+						shop_id:this.shop_code.join(','),
+						sort:this.sort
+					}
+					demandResource.sendDpKsbmExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'仓库发货情况统计-店铺款式维度');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//排序回调
 			sortCallBack(sort){
