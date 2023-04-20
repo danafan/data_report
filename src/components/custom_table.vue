@@ -248,30 +248,33 @@
   				this.$nextTick(() => {
   					if(this.total_row){
   						this.total_table = this.$refs.total_table.bodyWrapper;
-  						this.total_table.addEventListener(
-  							"scroll",(e)=>{
-  								if(this.table_data.length > 0){
-  									this.data_table.scrollLeft = this.total_table.scrollLeft;
-  								}
-
+  						this.total_table.addEventListener('scroll', this.debounce((e)=>{
+  							if(this.table_data.length > 0){
+  								this.data_table.scrollLeft = this.total_table.scrollLeft;
   							}
-  							);
+
+  						}, 50));
   					}else{
   						this.total_table = null;
   					}
   					if(!this.total_row || (this.total_row && this.table_data.length > 0)){
   						this.data_table = this.$refs.data_table.bodyWrapper;
-  						this.data_table.addEventListener(
-  							"scroll",(e)=>{
-  								if(this.total_row){
-  									this.total_table.scrollLeft = this.data_table.scrollLeft;
-  								}
+  						this.data_table.addEventListener('scroll', this.debounce((e)=>{
+  							if(this.total_row){
+  								this.total_table.scrollLeft = this.data_table.scrollLeft;
   							}
-  							);
+  						}, 50));
   					}else{
   						this.data_table = null;
   					}
   				})
+  			},
+  			debounce(fn, wait) {
+  				var timeout = null; 
+  				return function() { 
+  					if(timeout !== null) clearTimeout(timeout); 
+  					timeout = setTimeout(fn, wait); 
+  				} 
   			},
   			setBackground({row, rowIndex}){
   				return {'background':'#F5F7FA','color':'#333333'}

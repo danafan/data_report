@@ -9,6 +9,9 @@
 				<el-input v-model="tgfzr" clearable placeholder="请输入推广负责人姓名"></el-input>
 			</el-form-item>
 			<el-form-item>
+				<el-checkbox v-model="wtgfzr" :true-label="1" :false-label="0" @change="searchFun">无推广负责人</el-checkbox>
+			</el-form-item>
+			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
 			</el-form-item>
 		</el-form>
@@ -65,14 +68,14 @@
 				</div>
 			</div>
 			<div class="top_box mytj flex fc">
-				<div class="table_title flex ac jc bold f14">毛益统计</div>
+				<div class="table_title flex ac jc bold f14">营销费用贡献毛益统计</div>
 				<div class="flex-1 flex jsa ac top_content">
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">贡献毛益</div>
+						<div class="f14 bold mb-5">营销费用贡献毛益</div>
 						<div class="f22 bold money" v-loading="top_loading">{{top_data.gxmy}}</div>
 					</div>
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">贡献毛益率</div>
+						<div class="f14 bold mb-5">营销费用贡献毛益率</div>
 						<div class="f22 bold money" v-loading="top_loading">{{top_data.gxmyl}}</div>
 					</div>
 				</div>
@@ -172,6 +175,7 @@
 				},	 										//时间区间
 				date:[getMonthStartDate(),getCurrentDate()],//统计日期
 				tgfzr:"",
+				wtgfzr:0,
 				top_loading:false,
 				top_data:{},
 				page:1,
@@ -210,7 +214,8 @@
 				let arg = {
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
-					tgfzr:this.tgfzr
+					tgfzr:this.tgfzr,
+					empty_tgzrr_flag:this.wtgfzr
 				}
 				this.top_loading = true;
 				resource.dpNewAnalysisTotal(arg).then(res => {
@@ -228,6 +233,7 @@
 					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
 					tgzrr:this.tgfzr,
+					empty_tgzrr_flag:this.wtgfzr,
 					page:this.page,
 					pagesize:this.pagesize,
 					sort:this.sort,
