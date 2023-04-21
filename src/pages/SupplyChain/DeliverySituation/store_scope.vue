@@ -54,7 +54,7 @@
 		<div class="table_chart">
 			<div class="table_box">
 				<PopoverWidget class="mb-10 mt-10" title="部门发货情况" :show_popover="false" :update_time="dept_update_time"/>
-				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="deptSortChange" v-loading="dept_loading">
+				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="280" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="deptSortChange" v-loading="dept_loading">
 					<el-table-column prop="name" label="部门" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
 					<el-table-column prop="fh_0" label="当日发货数" width="110" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="dd_0" label="当日订单总数" width="120" align="center" sortable="custom"></el-table-column>
@@ -77,7 +77,7 @@
 		<div class="table_chart">
 			<div class="table_box">
 				<PopoverWidget class="mb-10 mt-10" title="平台发货情况" :show_popover="false" :update_time="platform_update_time"/>
-				<el-table size="small" :data="platform_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="platformSortChange" v-loading="platform_loading">
+				<el-table size="small" :data="platform_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="280" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="platformSortChange" v-loading="platform_loading">
 					<el-table-column prop="name" label="平台" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
 					<el-table-column prop="fh_0" label="当日已发货" width="110" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="dd_0" label="当日订单总数" width="120" align="center" sortable="custom"></el-table-column>
