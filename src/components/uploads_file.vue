@@ -1,7 +1,8 @@
 <template>
 	<div class="img_list">
 		<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
-			<img class="img" :src="item.domain + item.urls">
+			<!-- <img class="img" :src="item.domain + item.urls"> -->
+			<el-image :z-index="2006" class="img" :src="item.domain + item.urls" fit="scale-down" :preview-src-list="show_images" @click.stop="handleClickStop"></el-image>
 			<div class="modal" v-if="item.is_del == true">
 				<img src="../static/deleteImg.png" @click="deteleFile(item.urls,index)">
 			</div>
@@ -19,6 +20,7 @@
 		data(){
 			return{
 				show_img:[],		//当前已上传的图片列表
+				show_images:[]
 			}
 		},
 		props:{
@@ -45,7 +47,11 @@
 		},
 		created(){
 			this.show_img = this.current_images;
-			console.log(this.show_img)
+			this.show_images = [];
+			this.show_img.map(item => {
+				let url = item.domain + item.urls;
+				this.show_images.push(url)
+			}) 
 		},
 		methods:{
 			// 上传图片
@@ -95,7 +101,20 @@
 					return item.urls;
 				})
 				this.$emit('callback',arr)
-			}
+			},
+			//大图点击关闭
+			handleClickStop() {
+				this.$nextTick(() => {
+		          let domImageView = document.querySelector(".el-image-viewer__mask"); // 获取遮罩层dom
+		          if (!domImageView) {
+		          	return;
+		          }
+		          domImageView.addEventListener("click", () => {
+		            // 点击遮罩层时调用关闭按钮的 click 事件
+		            document.querySelector(".el-image-viewer__close").click();
+		        });
+		      });
+			},
 		}
 	}
 </script>

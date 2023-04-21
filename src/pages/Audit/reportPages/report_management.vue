@@ -38,7 +38,6 @@
 				range-separator="至"
 				start-placeholder="开始日期"
 				end-placeholder="结束日期"
-				:append-to-body="false"
 				:picker-options="pickerOptions">
 			</el-date-picker>
 		</el-form-item>

@@ -11,6 +11,7 @@
 				<ExperienceScore v-if="item.web_url == 'experience_score'"/>
 				<GrossProfitAnalysis v-if="item.web_url == 'gross_profit_analysis'"/>
 				<NewItemAnalysis v-if="item.web_url == 'new_item_analysis'"/>
+				<HumanEffect v-if="item.web_url == 'human_effect'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -30,6 +31,7 @@
 	import WeatherAnalysis from './FineOperation/weather_analysis.vue'
 	import ExperienceScore from './FineOperation/experience_score.vue'
 	import GrossProfitAnalysis from './FineOperation/gross_profit_analysis.vue'
+	import HumanEffect from '../HumanEffect/human_effect.vue'
 	export default{
 		data(){
 			return{
@@ -76,7 +78,8 @@
 			RegionalAnalysis,
 			WeatherAnalysis,
 			ExperienceScore,
-			GrossProfitAnalysis
+			GrossProfitAnalysis,
+			HumanEffect
 		}
 	}
 </script>

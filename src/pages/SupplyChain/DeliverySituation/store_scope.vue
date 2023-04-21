@@ -11,7 +11,7 @@
 			<div class="form_box">
 				<el-form :inline="true" size="mini" class="demo-form-inline">
 					<dps @callBack="checkReq"></dps>
-					<el-form-item label="付款日期:">
+					<el-form-item label="统计日期:">
 						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 						</el-date-picker>
 					</el-form-item>
@@ -21,17 +21,17 @@
 				</el-form>
 			</div>
 		</div>
-		<div class="table_title">店铺发货情况</div>
+		<PopoverWidget class="mb-10 mt-10" title="店铺发货情况" :show_popover="false" :update_time="store_update_time"/>
 		<el-table size="small" :data="store_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4','white-space': 'pre-line'}" @sort-change="storeSortChange" v-loading="store_loading">
 			<el-table-column prop="name" label="店铺名称" width="120" show-overflow-tooltip align="center" sortable="custom">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="sendFhlChart(scope.row.dpbh,scope.row.name)">{{scope.row.name}}</el-button>
 				</template>
 			</el-table-column>
-			<el-table-column prop="fh_0" label="当日已发货" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="fh_0" label="当日发货数" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fh_je_0" label="当日发货金额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="dd_0" label="当日订单总数" align="center" sortable="custom"></el-table-column>
-			<el-table-column prop="jrfh_0" label="今日已发货" align="center" sortable="custom"></el-table-column>
+			<el-table-column prop="jrfh_0" label="今日发货数" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="jrfh_je_0" label="今日发货金额" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_0" label="当日发货率" align="center" sortable="custom"></el-table-column>
 			<el-table-column prop="fhl_1" label="两日发货率" align="center" sortable="custom"></el-table-column>
@@ -53,10 +53,10 @@
 		</div>
 		<div class="table_chart">
 			<div class="table_box">
-				<div class="table_title">部门发货情况</div>
+				<PopoverWidget class="mb-10 mt-10" title="部门发货情况" :show_popover="false" :update_time="dept_update_time"/>
 				<el-table size="small" :data="dept_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="deptSortChange" v-loading="dept_loading">
 					<el-table-column prop="name" label="部门" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
-					<el-table-column prop="fh_0" label="当日已发货" width="110" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fh_0" label="当日发货数" width="110" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="dd_0" label="当日订单总数" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_0" label="当日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_1" label="两日发货率" width="120" align="center" sortable="custom"></el-table-column>
@@ -76,7 +76,7 @@
 		</div>
 		<div class="table_chart">
 			<div class="table_box">
-				<div class="table_title">平台发货情况</div>
+				<PopoverWidget class="mb-10 mt-10" title="平台发货情况" :show_popover="false" :update_time="platform_update_time"/>
 				<el-table size="small" :data="platform_data" tooltip-effect="dark" style="position: absolute;width: 100%" :max-height="300" :header-cell-style="{'background':'#f4f4f4'}" @sort-change="platformSortChange" v-loading="platform_loading">
 					<el-table-column prop="name" label="平台" width="120" show-overflow-tooltip align="center" fixed sortable="custom"></el-table-column>
 					<el-table-column prop="fh_0" label="当日已发货" width="110" align="center" sortable="custom"></el-table-column>
@@ -104,24 +104,28 @@
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 
 	import demandResource from '../../../api/demandResource.js'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	export default{
 		data(){
 			return{
 				toast_list:[
 				'本报告数据源为实时数据源，展示订单发货情况',
-				'数据更新方式：每小时一更新',
-				'当日发货数：付款日期为数据写入日期当天的已发货的内部订单号数',
-				'当日订单总数：付款日期为数据写入日期当天的所有的内部订单号数',
+				'当日发货数：以付款日期统计，当天付款的订单已发货的内部订单号数',
+				'当日发货金额：以付款日期统计，当天付款的订单已发货的销售金额',
+				'当日订单总数：以付款日期统计，当天付款的订单所有状态的内部订单号数，订单状态包括：已发货、发货中、已付款待审核、等待供销商发货和异常',
+				'今日发货数：以发货日期统计，当天发货的内部订单号数',
+				'今日发货金额：以发货日期统计，当天发货的销售金额',
 				'当日发货率：当日发货数/当日订单总数',
 				'两日发货率：昨日发货数/昨日订单总数',
 				'三日发货率：前天发货数/前天订单总数',
 				'四日发货率：大前天发货数/大前天订单总数',
 				'每单(内部订单号)对应的销售数量等于1的订单为一件订单；大于1的订单为多件订单',
-				'一件订单：付款日期为数据写入日期前1天至脚本运行时间单件订单的内部订单号数',
-				'多件订单：付款日期为数据写入日期前1天至脚本运行时间的多件订单的内部订单号数',
+				'一件订单：以付款日期统计，前1天至脚本运行时间单件订单的内部订单号数',
+				'多件订单：以付款日期统计，前1天至脚本运行时间的多件订单的内部订单号数',
 				'多件订单比例：多件订单/(一件订单+多件订单）',
-				'系统异常订单数：近一个月异常订单的原始线上订单号数',
-				'系统剩余订单数：近一个月未发货订单的原始线上订单号数',
+				'系统剩余订单数：以付款日期统计，近一个月未发货订单的原始线上订单号数',
+				'系统剩余金额：以付款日期统计，近一个月未发货订单的销售金额',
+				'系统异常订单：以付款日期统计，近一个月异常订单的原始线上订单号数'
 				],
 				dept_name:[],								//项目部
 				pl:[],										//平台
@@ -174,7 +178,10 @@
 				djddblChart:null,
 				jqt_loading:false,
 				jqtfhlChart:null,
-				chart_loading:false
+				chart_loading:false,
+				store_update_time:"",
+				dept_update_time:"",
+				platform_update_time:"",
 			}
 		},
 		created(){
@@ -251,6 +258,7 @@
 						let data = res.data.data;
 						this[`${type}_data`] = data.data;
 						this[`${type}_total`] = data.total;
+						this[`${type}_update_time`] = data.update_time;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -463,7 +471,7 @@
 					},
 					legend: {
 						top:'30',
-						data: ['当日订单数','当日发货率','两日发货率','三日发货率','四日发货率',]
+						data: ['当日订单总数','当日发货率','两日发货率','三日发货率','四日发货率',]
 					},
 					xAxis: {
 						type: 'category',
@@ -485,7 +493,7 @@
 						name:'订单数'
 					}],
 					series: [{
-						name:'当日订单数',
+						name:'当日订单总数',
 						type: 'line',
 						yAxisIndex:1,
 						lineStyle:{
@@ -565,7 +573,8 @@
 			},
 		},
 		components:{
-			dps
+			dps,
+			PopoverWidget
 		}
 	}
 </script>

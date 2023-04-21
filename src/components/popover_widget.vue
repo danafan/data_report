@@ -1,18 +1,22 @@
 <template>
-	<div class="custom_title_row">
-		<div class="custom_title">{{title}}</div>
-		<el-popover
-		placement="top-start"
-		width="500"
-		trigger="hover" v-if="show_popover">
-		<div class="row_content" v-for="item in list">
-			<span class="bold">{{item.label}}</span>
-			<span>{{item.value}}</span>
-		</div>
-		<img v-if="use_icon" class="popover_icon" src="../static/popover_icon.png" slot="reference">
-		<i class="icon_style el-icon-info" slot="reference" v-else></i>
-	</el-popover>
+	<div>
+		<div class="custom_title_row">
+			<div class="custom_title">{{title}}</div>
+			<el-popover
+			placement="top-start"
+			width="500"
+			trigger="hover" v-if="show_popover">
+			<div class="row_content" v-for="item in list">
+				<span class="bold">{{item.label}}</span>
+				<span>{{item.value}}</span>
+			</div>
+			<img v-if="use_icon" class="popover_icon" src="../static/popover_icon.png" slot="reference">
+			<i class="icon_style el-icon-info" slot="reference" v-else></i>
+		</el-popover>
+	</div>
+	<div class="f12 red_color" v-if="update_time != ''">数据更新时间：{{update_time}}</div>
 </div>
+
 </template>
 <script>
 	import popover from '../api/popoverContent.js'
@@ -30,6 +34,11 @@
 			},
 			//标题名称
 			title:{
+				type:String,
+				default:""
+			},
+			//数据更新时间
+			update_time:{
 				type:String,
 				default:""
 			},

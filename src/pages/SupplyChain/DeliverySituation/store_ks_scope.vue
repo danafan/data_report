@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
-			<el-form-item label="付款日期:">
+			<el-form-item label="统计日期:">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
@@ -19,8 +19,8 @@
 				<el-button type="primary" size="mini" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="flex jsb mb-10">
-			<PopoverWidget title="指标解释" :show_popover="false"/>
+		<div class="flex ac jsb mb-10">
+			<PopoverWidget title="指标解释" keys="dpkswd" :update_time="update_time"/>
 			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<custom-table v-loading="loading" :isLoading="loading" max_height="650" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
@@ -80,7 +80,7 @@
 				table_data:[],
 				title_list:[],
 				total:0,
-
+				update_time:"",
 			}
 		},
 		created(){
@@ -128,6 +128,7 @@
 						this.title_list = data.title_list;
 						this.table_data = data.table_data.data;
 						this.total = data.table_data.total;
+						this.update_time = data.update_time;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
