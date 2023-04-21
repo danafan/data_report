@@ -112,7 +112,7 @@
 				'本报告数据源为实时数据源，展示订单发货情况',
 				'当日发货数：以付款日期统计，当天付款的订单已发货的内部订单号数',
 				'当日发货金额：以付款日期统计，当天付款的订单已发货的销售金额',
-				'当日订单总数：以付款日期统计，当天付款的订单所有状态的内部订单号数，订单状态包括：已发货、发货中、已付款待审核、等待供销商发货和异常',
+				'当日订单总数：以付款日期统计，当天付款的订单所有状态的内部订单号数，订单状态包括:已发货、发货中、已付款待审核、等待供销商发货和异常',
 				'今日发货数：以发货日期统计，当天发货的内部订单号数',
 				'今日发货金额：以发货日期统计，当天发货的销售金额',
 				'当日发货率：当日发货数/当日订单总数',
@@ -379,9 +379,9 @@
 							}
 							this.jqtfhlChart.setOption(this.axisOption(jr_dd_data,jr_data,lr_data,sr_data,si_data,ax_data));
 						})
-						window.addEventListener('resize',() => {
-							this.jqtfhlChart.resize();
-						});
+						// window.addEventListener('resize',() => {
+						// 	this.jqtfhlChart.resize();
+						// });
 					}else{
 						this.$message.warning(res.data.msg);
 					}

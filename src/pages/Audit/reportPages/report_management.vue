@@ -274,7 +274,7 @@
 					<el-form-item label="处理人：">
 						<div>{{item.handle_user_name}}</div>
 					</el-form-item>
-					<el-form-item label="拒绝状态：">
+					<el-form-item label="审核状态：">
 						<div>已拒绝</div>
 					</el-form-item>
 					<el-form-item label="拒绝原因：">

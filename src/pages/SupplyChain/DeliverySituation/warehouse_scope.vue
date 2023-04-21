@@ -26,7 +26,7 @@
 				</el-form>
 			</div>
 		</div>
-		<div class="table_title">仓库发货情况</div>
+		<PopoverWidget class="mb-10 mt-10" title="仓库发货情况" :show_popover="false" :update_time="update_time"/>
 		<!-- 表格 -->
 		<div class="table_container" v-loading="loading">
 			<div class="table_header">
@@ -65,6 +65,7 @@
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 
 	import resource from '../../../api/demandResource.js'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	export default{
 		data(){
 			return{
@@ -112,7 +113,7 @@
 					prop:'ckmc',
 					sort:null
 				},{
-					lable:'当日订单数',
+					lable:'当日订单总数',
 					prop:'dd_0',
 					sort:null
 				},{
@@ -200,6 +201,7 @@
 				loading:false,
 				total_data:{},			//总计列
 				table_data:[],			//表哥数据
+				update_time:""
 			}
 		},
 		created(){
@@ -237,13 +239,14 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						let data = res.data.data;
-						if(data.length > 0){
-							this.total_data = data.splice(0,1)[0];
-							this.table_data = data;
+						if(data.list.length > 0){
+							this.total_data = data.list.splice(0,1)[0];
+							this.table_data = data.list;
 						}else{
 							this.total_data = {};
 							this.table_data = [];
 						}
+						this.update_time = data.update_time;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -261,6 +264,9 @@
 				//获取列表
 				this.ckSend();
 			}
+		},
+		components:{
+			PopoverWidget
 		}
 	}
 </script>
