@@ -20,16 +20,16 @@
 				<div class="table_title flex ac jc bold f14">GMV统计</div>
 				<div class="flex-1 flex jsa ac top_content">
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">总GMV</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.xsje}}</div>
+						<div class="f13 bold mb-5">总GMV</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.xsje}}</div>
 					</div>
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">剔除补单GMV</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.gmv_pbd}}</div>
+						<div class="f13 bold mb-5">剔除补单GMV</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.gmv_pbd}}</div>
 					</div>
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">剔除补单退款GMV</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.gmv_pbdtk}}</div>
+						<div class="f13 bold mb-5">剔除补单退款GMV</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.gmv_pbdtk}}</div>
 					</div>
 				</div>
 			</div>
@@ -37,33 +37,58 @@
 				<div class="table_title flex ac jc bold f14">总营销费用</div>
 				<div class="flex-1 flex jsa ac top_content">
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">总营销费用</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.total_yxfy}}</div>
+						<div class="f13 bold mb-5">总营销费用</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.total_yxfy}}</div>
 					</div>
 					<div class="height-100 flex fc ac jc relative">
-						<div class="f14 bold mb-5">直通车</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.ztc_hf}}</div>
-						<div class="absolute space-nowrap zb">占比：{{top_data.ztc_hf_zb}}</div>
+						<div class="f13 bold mb-5">直通车</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.ztc_hf}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.ztc_hf_zb}}</div>
 					</div>
 					<div class="height-100 flex fc ac jc relative">
-						<div class="f14 bold mb-5">引力魔方</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.ylmf_xh}}</div>
-						<div class="absolute space-nowrap zb">占比：{{top_data.ylmf_xh_zb}}</div>
+						<div class="f13 bold mb-5">引力魔方</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.ylmf_xh}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.ylmf_xh_zb}}</div>
 					</div>
 					<div class="height-100 flex fc ac jc relative">
-						<div class="f14 bold mb-5">淘客佣金</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.tbk_yj}}</div>
-						<div class="absolute space-nowrap zb">占比：{{top_data.tbk_yj_zb}}</div>
+						<div class="f13 bold mb-5">引力魔方到店</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.ylmf_xh_dp}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.ylmf_xh_dp_zb}}</div>
 					</div>
 					<div class="height-100 flex fc ac jc relative">
-						<div class="f14 bold mb-5">鱼塘佣金</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.sd_yj}}</div>
-						<div class="absolute space-nowrap zb">占比：{{top_data.sd_yj_zb}}</div>
+						<div class="f13 bold mb-5">淘客佣金</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.tbk_yj}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.tbk_yj_zb}}</div>
 					</div>
 					<div class="height-100 flex fc ac jc relative">
-						<div class="f14 bold mb-5">鱼塘快递费</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.ytkdf}}</div>
-						<div class="absolute space-nowrap zb">占比：{{top_data.ytkdf_zb}}</div>
+						<div class="f13 bold mb-5">万相台</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.wxt_xh}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.wxt_xh_zb}}</div>
+					</div>
+					<div class="height-100 flex fc ac jc relative">
+						<div class="f13 bold mb-5">营销费用(其他)</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.qt_yxfy}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.qt_yxfy_zb}}</div>
+					</div>
+					<div class="height-100 flex fc ac jc relative">
+						<div class="f13 bold mb-5">极速推花费</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.jstj_hf}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.jstj_hf_zb}}</div>
+					</div>
+					<div class="height-100 flex fc ac jc relative">
+						<div class="f13 bold mb-5">超级推荐费用</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.cjtj_hf}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.cjtj_hf_zb}}</div>
+					</div>
+					<div class="height-100 flex fc ac jc relative">
+						<div class="f13 bold mb-5">鱼塘佣金</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.sd_yj}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.sd_yj_zb}}</div>
+					</div>
+					<div class="height-100 flex fc ac jc relative">
+						<div class="f13 bold mb-5">鱼塘快递费</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.ytkdf}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.ytkdf_zb}}</div>
 					</div>
 				</div>
 			</div>
@@ -71,12 +96,12 @@
 				<div class="table_title flex ac jc bold f14">营销费用贡献毛益统计</div>
 				<div class="flex-1 flex jsa ac top_content">
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">营销费用贡献毛益</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.gxmy}}</div>
+						<div class="f13 bold mb-5">营销费用贡献毛益</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.gxmy}}</div>
 					</div>
 					<div class="flex fc ac jc">
-						<div class="f14 bold mb-5">营销费用贡献毛益率</div>
-						<div class="f22 bold money" v-loading="top_loading">{{top_data.gxmyl}}</div>
+						<div class="f13 bold mb-5">营销费用贡献毛益率</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.gxmyl}}</div>
 					</div>
 				</div>
 			</div>
@@ -88,7 +113,8 @@
 				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="new_item_analysis" max_height="380" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url'/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="new_item_analysis" max_height="680" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url' v-if="!custom_loading"/>
+		<div style="width: 100%;height: 80px" v-else v-loading="true"></div>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 		<!-- 自定义列表 -->
 		<el-dialog title="自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -107,7 +133,7 @@
 </template>
 <style lang="less" scoped>
 .top_box{
-	height: 140px;
+	height: 120px;
 	.table_title{
 		background: #D6E9EF;
 		width: 100%;
@@ -120,21 +146,25 @@
 	}
 }
 .gmvtj{
-	width: 29%;
+	width: 280px;
+	margin-right: 3px;
 }
 .zyxfy{
-	width: 50%;
+	flex:1;
 }
 .mytj{
-	width: 19%;
+	margin-left: 3px;
+	width: 240px
 }
 .money{
+	margin-top: 3px;
 	color:#A96115;
 }
 .zb{
 	color:red;
-	font-size: 12px;
-	bottom:8px;
+	font-size: 20px;
+	zoom:0.6;
+	bottom:5px;
 }
 </style>
 <script>
@@ -183,6 +213,7 @@
 				sort:'',
 				sort_type:'',
 				loading:false,
+				custom_loading:false,
 				table_data:[],
 				table_total_data:{},
 				total:0,
@@ -285,10 +316,12 @@
 			//自定义列
 			setColumns(){
 				var row_ids = this.selected_ids.join(',');
+				this.custom_loading = true;
 				resource.setColumns({menu_id:'171',row_ids:row_ids}).then(res => {
 					if(res.data.code == 1){
 						this.$message.success(res.data.msg);
 						this.show_custom = false;
+						this.custom_loading = false;
 						//获取列表
 						this.page = 1;
 						this.pagesize = 10;

@@ -13,7 +13,7 @@
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
-					<div>总花费：鱼塘佣金 + 淘客佣金 + 直通车花费 + 超级推荐花费 + 极速推花费</div>
+					<div>总花费：鱼塘佣金 + 淘客佣金 + 天猫佣金 + 直通车花费 + 超级推荐花费 + 极速推花费 + 引力魔方+ 引力魔方到店 + 万相台 + 营销费用（其他）+鱼塘快递费 + 店铺团队费用</div>
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
@@ -22,6 +22,10 @@
 				<div class="item_row">
 					<div class="dian"></div>
 					<div>利润率：盈亏 / 剔除鱼塘销售额</div>
+				</div>
+				<div class="item_row">
+					<div class="dian"></div>
+					<div>营销费用：鱼塘佣金 + 淘客佣金 + 天猫佣金 + 直通车花费 + 超级推荐花费 + 极速推花费 + 引力魔方+ 引力魔方到店 + 万相台 + 营销费用（其他）+鱼塘快递费</div>
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
@@ -110,7 +114,7 @@
 		<el-button type="primary" size="small" @click="customFun('zbhz_data')" style="margin-bottom: 5px">自定义列表</el-button>
 		<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
-	<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange" v-loading="table_list_loading">
+	<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange" v-loading="table_list_loading" v-if="!is_custom_loading">
 		<el-table-column :prop="item.row_field_name" :width="item.type == 3 || zbhzFixed(item.row_field_name)?110:widthColumn(item.row_field_name)?90:70" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
@@ -134,6 +138,7 @@
 			</template>
 		</el-table-column>
 	</el-table>
+	<div v-else style="height: 600px;width: 100%" v-loading="true"></div>
 	<div class="page">
 		<el-pagination @size-change="zbhzPageSizeChange" @current-change="zbhzPageChange" :current-page="zbhz_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="table_list.total" >
 		</el-pagination>
@@ -149,16 +154,16 @@
 	<div class="title">每日分析</div>
 	<el-tabs v-model="activeItemTab" @tab-click="checkItemTab">
 		<el-tab-pane label="整体数据" name="overall_data" class="tab_pane_box">
-			<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" :is_export="button_list.zt_export" @customBack="customFun" v-loading="overall_loading"/>
+			<TabaleWidget page_type="overall_data" :table_data="table_data_overall" :selected_ids="selected_ids_overall" :title_list="title_list_overall" :view_row="view_row_overall" :total_data="total_data_overall" :is_export="button_list.zt_export" @customBack="customFun" v-loading="overall_loading" :showTable="!overall_loading"/>
 		</el-tab-pane>
 		<el-tab-pane label="搜索系列" name="search_data" class="tab_pane_box">
-			<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" :is_export="button_list.search_export" @customBack="customFun" v-loading="search_loading"/>
+			<TabaleWidget page_type="search_data" :table_data="table_data_search" :selected_ids="selected_ids_search" :title_list="title_list_search" :view_row="view_row_search" :total_data="total_data_search" :is_export="button_list.search_export" @customBack="customFun" v-loading="search_loading" :showTable="!search_loading"/>
 		</el-tab-pane>
 		<el-tab-pane label="直通车系列" name="ztc_data" class="tab_pane_box">
-			<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" :is_export="button_list.ztc_export" @customBack="customFun" v-loading="ztc_loading"/>
+			<TabaleWidget page_type="ztc_data" :table_data="table_data_ztc" :selected_ids="selected_ids_ztc" :title_list="title_list_ztc" :view_row="view_row_ztc" :total_data="total_data_ztc" :is_export="button_list.ztc_export" @customBack="customFun" v-loading="ztc_loading" :showTable="!ztc_loading"/>
 		</el-tab-pane>
 		<el-tab-pane label="超级推荐系列" name="cjtj_data" class="tab_pane_box">
-			<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" :is_export="button_list.cjtj_export" @customBack="customFun" v-loading="cjtj_loading"/>
+			<TabaleWidget page_type="cjtj_data" :table_data="table_data_cjtj" :selected_ids="selected_ids_cjtj" :title_list="title_list_cjtj" :view_row="view_row_cjtj" :total_data="total_data_cjtj" :is_export="button_list.cjtj_export" @customBack="customFun" v-loading="cjtj_loading" :showTable="!cjtj_loading"/>
 		</el-tab-pane>
 	</el-tabs>
 	<!-- 折线图 -->
@@ -323,6 +328,7 @@
 				select_spid_list:[],						//选中的商品ID列表
 				table_list:{},								//列表行数据
 				title_list:[],								//列表列数据
+				is_custom_loading:false,
 				sort:"",
 				sort_type:"",
 				show_custom:false,							//是否显示自定义弹框
@@ -536,6 +542,7 @@
 						this.$message.success(res.data.msg);
 						this.show_custom = false;
 						if(this.page_type == 'zbhz_data'){
+							this.is_custom_loading = true;
 							//指标汇总
 							this.dpAnalysis();
 						}else if(this.page_type == 'overall_data'){
@@ -594,6 +601,7 @@
 				resource.dpAnalysis({...req,...dpAnalysis}).then(res => {
 					if(res.data.code == 1){
 						this.table_list_loading = false;
+						this.is_custom_loading = false;
 						this.button_list = res.data.data.button_list;	//导出按钮是否显示
 						this.table_list = res.data.data.table_list;		//列表行数据
 						this.title_list = res.data.data.title_list;		//列表列数据

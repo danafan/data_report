@@ -5,7 +5,7 @@
 			<el-button type="primary" plain size="small" @click="exportFun" v-if="is_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<el-table :data="table_data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" :cell-style="columnStyle" max-height='600' :summary-method="getSummaries"
-		show-summary>
+		show-summary v-if="showTable">
 		<el-table-column :prop="item.row_field_name" :width="item.row_field_name == 'tjrq'?90:80" v-for="item in title_list" :sortable="item.is_sort == 1?true:false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
 			<template slot="header" slot-scope="scope">
 				<el-tooltip class="item" effect="dark" :content="item.row_name" placement="top-start">
@@ -22,9 +22,14 @@
 			</template>
 		</el-table-column>
 	</el-table>
+	<div v-else class="loading" :v-loading="true"></div>
 </div>
 </template>
 <style lang="less" scoped>
+.loading{
+	width: 100%;
+	height: 600px;
+}
 .table_setting{
 	margin-bottom: 5px;
 	display: flex;
@@ -60,6 +65,10 @@
 	import {exportExcel} from '../../../../api/export.js'
 	export default{
 		props:{
+			showTable:{
+				type:Boolean,
+				default:true
+			},
 			page_type:{
 				type:String,
 				default:""
