@@ -81,6 +81,11 @@
 						<div class="absolute space-nowrap zb">{{top_data.cjtj_hf_zb}}</div>
 					</div>
 					<div class="height-100 flex fc ac jc relative">
+						<div class="f13 bold mb-5">天猫佣金</div>
+						<div class="f15 bold money" v-loading="top_loading">{{top_data.tmyj}}</div>
+						<div class="absolute space-nowrap zb">{{top_data.tmyj_zb}}</div>
+					</div>
+					<div class="height-100 flex fc ac jc relative">
 						<div class="f13 bold mb-5">鱼塘佣金</div>
 						<div class="f15 bold money" v-loading="top_loading">{{top_data.sd_yj}}</div>
 						<div class="absolute space-nowrap zb">{{top_data.sd_yj_zb}}</div>
