@@ -25,7 +25,7 @@
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
-					<div>营销费用率：总花费 / 剔除鱼塘销售额</div>
+					<div>营销费用率： 营销费用 / 剔除鱼塘销售额</div>
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
@@ -33,11 +33,11 @@
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
-					<div>整体ROI：GMV / 总花费</div>
+					<div>整体ROI：GMV / 营销费用</div>
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
-					<div>真实ROI：剔除鱼塘销售额 / 总花费</div>
+					<div>真实ROI：剔除鱼塘销售额 / 营销费用</div>
 				</div>
 				<div class="item_row">
 					<div class="dian"></div>
