@@ -46,11 +46,10 @@
 				<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="flex jsb mb-10">
-			<PopoverWidget title="指标解释" keys="gross_profit_analysis"/>
+		<div class="flex ac jsb mb-10">
+			<PopoverWidget title="指标解释" :update_time="update_time" keys="gross_profit_analysis"/>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<div class="f12 red_color mb-10">更新时间：{{update_time}}</div>
 		<custom-table v-loading="loading" :isLoading="loading" tableName="gross_profit" max_height="350" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 	</div>

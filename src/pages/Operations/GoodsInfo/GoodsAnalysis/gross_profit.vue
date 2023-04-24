@@ -2,24 +2,6 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
-			<!-- <el-form-item label="项目部：">
-				<el-cascader
-				size="mini"
-				class="input_cascader"
-				ref="cascader"
-				:options="dept_list"
-				:props="props"
-				filterable
-				@change="getIds"
-				@remove-tag="getIds"
-				clearable></el-cascader>
-			</el-form-item>
-			<el-form-item label="店铺：">
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item> -->
 			<el-form-item label="品类：">
 				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
@@ -51,7 +33,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="发货日期：">
-				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				<el-date-picker v-model="date" :clearable="false" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -137,7 +119,7 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[],									//发货日期
+				date:[getMonthStartDate(),getCurrentDate()],									//发货日期
 				top_list_data:[],							//顶部数据
 				menu_list:[
 				{name:'店铺',id:'store'},

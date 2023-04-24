@@ -1,118 +1,59 @@
 <template>
 	<div>
-		<div class="top_row">
-			<div class="toast_box">
-				<div class="toast_title">关键指标含义</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>xxUV：对应销售额/对应访客数</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>毛利额：剔除鱼塘及售前退款订单，按款式每月销售成本计算</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>总花费：鱼塘佣金 + 淘客佣金 + 天猫佣金 + 直通车花费 + 超级推荐花费 + 极速推花费 + 引力魔方+ 引力魔方到店 + 万相台 + 营销费用（其他）+鱼塘快递费 + 店铺团队费用</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>盈亏：毛利额 - 总花费</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>利润率：盈亏 / 剔除鱼塘销售额</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>营销费用：鱼塘佣金 + 淘客佣金 + 天猫佣金 + 直通车花费 + 超级推荐花费 + 极速推花费 + 引力魔方+ 引力魔方到店 + 万相台 + 营销费用（其他）+鱼塘快递费</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>营销费用率： 营销费用 / 剔除鱼塘销售额</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>营销贡献毛益率：盈亏 / 剔除鱼塘及售前退款销售额</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>整体ROI：GMV / 营销费用</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>真实ROI：剔除鱼塘销售额 / 营销费用</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div>ROI平衡点：1 / 毛利率</div>
-				</div>
-			</div>
-			<div class="form_box">
-				<el-form :inline="true" size="small" class="demo-form-inline">
-					<el-form-item label="统计日期：">
-						<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
-						</el-date-picker>
-					</el-form-item>
-					<el-form-item label="平台:">
-						<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStore" multiple filterable collapse-tags placeholder="全部">
-							<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item label="店铺：">
-						<el-select v-model="select_shop_list" clearable :popper-append-to-body="false"  multiple
-						filterable
-						collapse-tags placeholder="全部">
-						<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="产品分类：">
-					<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-						<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="商品ID：">
-					<el-select v-model="select_spid_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入商品ID" :remote-method="getSpid" collapse-tags>
-						<el-option v-for="item in spid_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="款式编码：">
-					<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
-						<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item label="供应商款号：">
-					<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
-						<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
-						</el-option>
-					</el-select>
-				</el-form-item>
-				<el-form-item>
-					<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
-				</el-form-item>
-			</el-form>
-			<div class="bottom_toast">
-				<div class="item_row">
-					<div class="dian"></div>
-					<div class="toast_title">每日数据更新时间：14:00</div>
-				</div>
-				<div class="item_row">
-					<div class="dian"></div>
-					<div class="toast_title">此处统计营销费用均为单品粒度花费，不包含店铺各项内部费用分摊支出</div>
-				</div>
-			</div>
-		</div>
-	</div>
+		<el-form :inline="true" size="small" class="demo-form-inline">
+			<el-form-item label="统计日期：">
+				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+				</el-date-picker>
+			</el-form-item>
+			<el-form-item label="平台:">
+				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStore" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="店铺：">
+				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false"  multiple
+				filterable
+				collapse-tags placeholder="全部">
+				<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="产品分类：">
+			<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="商品ID：">
+			<el-select v-model="select_spid_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入商品ID" :remote-method="getSpid" collapse-tags>
+				<el-option v-for="item in spid_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="款式编码：">
+			<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
+				<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item label="供应商款号：">
+			<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
+				<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
+				</el-option>
+			</el-select>
+		</el-form-item>
+		<el-form-item>
+			<el-button type="primary" size="small" @click="searchFun">搜索</el-button>
+		</el-form-item>
+	</el-form>
 	<!-- 指标汇总 -->
-	<div class="title">指标汇总</div>
-	<div class="table_setting">
-		<el-button type="primary" size="small" @click="customFun('zbhz_data')" style="margin-bottom: 5px">自定义列表</el-button>
-		<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+	<div class="flex ac jsb mb-10">
+		<PopoverWidget title="指标解释" update_time="每日14:00" keys="dpzhfx"/>
+		<div class="flex">
+			<el-button type="primary" size="small" @click="customFun('zbhz_data')">自定义列表</el-button>
+			<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 	</div>
 	<el-table :data="table_list.data" size="small" style="width: 100%" :header-cell-style="{'background':'#8D5714','color':'#ffffff'}" max-height='600' :cell-style="columnStyle" @sort-change="sortChange" v-loading="table_list_loading" v-if="!is_custom_loading">
 		<el-table-column :prop="item.row_field_name" :width="item.type == 3 || zbhzFixed(item.row_field_name)?110:widthColumn(item.row_field_name)?90:70" v-for="item in title_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip :fixed="zbhzFixed(item.row_field_name)">
@@ -284,6 +225,7 @@
 	import resource from '../../../api/resource.js'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import TabaleWidget from './ItemAnalysis/table_widget.vue'
+	import PopoverWidget from '../../../components/popover_widget.vue'
 	import {exportUp} from '../../../api/export.js'
 	export default{
 		data(){
@@ -889,7 +831,8 @@
 }
 },
 components:{
-	TabaleWidget
+	TabaleWidget,
+	PopoverWidget
 }
 }
 </script>
