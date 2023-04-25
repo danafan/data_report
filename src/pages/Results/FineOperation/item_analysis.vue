@@ -49,7 +49,7 @@
 	</el-form>
 	<!-- 指标汇总 -->
 	<div class="flex ac jsb mb-10">
-		<PopoverWidget title="指标解释" update_time="每日14:00" keys="dpzhfx"/>
+		<PopoverWidget title="指标解释" update_time="每日14:00" width="900" keys="dpzhfx"/>
 		<div class="flex">
 			<el-button type="primary" size="small" @click="customFun('zbhz_data')">自定义列表</el-button>
 			<el-button type="primary" plain size="small" @click="exportFun" v-if="button_list.hz_export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>

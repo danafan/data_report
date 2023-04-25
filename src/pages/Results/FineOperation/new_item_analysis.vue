@@ -17,7 +17,7 @@
 		</el-form>
 		<div class="flex jsb mb-15">
 			<div class="top_box gmvtj flex fc">
-				<div class="table_title flex ac jc bold f14">GMV统计</div>
+				<div class="table_title flex ac jc bold f14">真实GMV</div>
 				<div class="flex-1 flex jsa ac top_content">
 					<div class="flex fc ac jc">
 						<div class="f13 bold mb-5">总GMV</div>

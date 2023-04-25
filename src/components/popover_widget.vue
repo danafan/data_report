@@ -4,7 +4,7 @@
 			<div class="custom_title">{{title}}</div>
 			<el-popover
 			placement="top-start"
-			width="500"
+			:width="width"
 			trigger="hover" v-if="show_popover">
 			<div class="row_content" v-for="item in list">
 				<span class="bold">{{item.label}}</span>
@@ -50,6 +50,11 @@
 			use_icon:{
 				type:Boolean,
 				default:false
+			},
+			//弹窗宽度
+			width:{
+				type:String,
+				default:"500"
 			}
 		},
 		created(){
