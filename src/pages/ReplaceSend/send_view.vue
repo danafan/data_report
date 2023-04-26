@@ -98,7 +98,7 @@
 			</div>
 			<i class="refresh el-icon-refresh" @click="refreshFn"></i>
 		</div>
-		<!-- 图表 -->
+		<!-- 今日/30日代发图表 -->
 		<div class="white_back p10 mb-10">
 			<div class="flex ac jsb f16">
 				<el-radio-group v-model="charts_type" size="mini">
@@ -108,6 +108,14 @@
 				<div class="f12 red_color" v-if="charts_type == 'today'">更新时间：{{today_update_time}}</div>
 			</div>
 			<div class="charts" id="send_chart_view" v-loading="charts_loading"></div>
+		</div>
+		<!-- 地区代发图表 -->
+		<div class="white_back p10 mb-10">
+			<div class="flex ac jsb f16 mb-10">
+				<div class="bold">地区代发趋势图</div>
+				<div class="f12 red_color">更新时间：{{area_data.update_time}}</div>
+			</div>
+			<div class="area_charts" id="area_chart_view" v-loading="area_loading"></div>
 		</div>
 		<!-- 明细 -->
 		<div class="flex jsb mb-10">
@@ -338,6 +346,8 @@
 				twoLoading:false,
 				ksbm:"",
 				remark:"",
+				area_loading:false,					//地区图表加载
+				area_data:{},						//地区图表数据
 			}
 		},
 		created(){
@@ -427,8 +437,8 @@
 				await this.dfOrderTotal();
 				//今天代发订单图表
 				await this.todayChart();
-				// //30天代发订单图表
-				// await this.monthChart();
+				//地区图表数据
+				await this.dfAreaChart()
 				//店铺代发明细
 				await this.dfShopGysList('shop_name');
 				//供应商代发明细
@@ -677,9 +687,6 @@
 						data: last_week_data
 					}]
 				});
-				// window.addEventListener('resize',() => {
-				// 	this.viewChart.resize();
-				// });
 			},
 			//30天代发订单图表渲染
 			monthCharts(){
@@ -761,6 +768,93 @@
 				// window.addEventListener('resize',() => {
 				// 	this.viewChart.resize();
 				// });
+			},
+			//地区图表数据
+			dfAreaChart(){
+				this.area_loading = true;
+				return new Promise((resolve)=>{
+					resource.dfAreaChart().then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.area_loading = false;
+							this.area_data = res.data.data;
+							//地区图表渲染
+							this.areaCharts()
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				})
+			},
+			//地区图表渲染
+			areaCharts(){
+				var echarts = require("echarts");
+				var area_chart_view = document.getElementById('area_chart_view');
+				this.areaChart = echarts.getInstanceByDom(area_chart_view)
+				this.areaChart = echarts.init(area_chart_view);
+
+				let x_data = this.area_data.day_list;
+				let legend_list = [];
+				let series = [];
+
+				this.area_data.area_list.map(item => {
+					let area_obj = {
+						name: item.name,
+						type: 'line',
+						emphasis: {
+							focus: 'series'
+						},
+						data: []
+					}
+					legend_list.push(item.name)
+					item.list.map(i => {
+						let data_item = {
+							name:i.order_num,
+							value:i.money
+						}
+						area_obj['data'].push(data_item)
+					})
+					series.push(area_obj)
+				})
+
+				this.areaChart.setOption({
+					tooltip: {
+						trigger: 'item',
+						formatter: function (params) {
+							let tip = `${params.seriesName}</br>${x_data[params.dataIndex]}</br>代发订单：${params.data.name}</br>代发金额：${params.data.value}</br>`;
+							
+							return tip;
+						},
+						backgroundColor:"#ffffff",
+						textStyle:{
+							color:"#333333",
+							fontSize:12
+						},
+						axisPointer: {            
+							type: 'shadow'     
+						}
+					},
+					grid:{
+						left:80,
+						top:60,
+						bottom:30,
+						right:50
+					},
+					legend: {
+						data: legend_list
+					},
+					xAxis: [{
+						type: 'category',
+						data: x_data,
+					}],
+					yAxis:[{
+						type: 'value',
+						axisLabel: {
+							formatter: '{value}'
+						}
+					}],
+					series: series
+				});
 			},
 			//店铺/供应商代发明细
 			dfShopGysList(type){
@@ -1371,6 +1465,10 @@
 	}
 }
 .charts{
+	width: 100%;
+	height: 380px;
+}
+.area_charts{
 	width: 100%;
 	height: 380px;
 }

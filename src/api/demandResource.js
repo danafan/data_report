@@ -62,7 +62,9 @@ let path = {
 	ksbmSend:'supplier/send_ksbm',									//款式编码维度
 	sendKsbmExport:'supplier/send_ksbm_export',						//款式编码维度（导出）
 	sendDpKsbm:'supplier/send_dp_ksbm',								//店铺款式编码维度列表
-	sendDpKsbmExport:'supplier/send_dp_ksbm_export',							//店铺款式编码维度列表(导出)
+	sendDpKsbmExport:'supplier/send_dp_ksbm_export',				//店铺款式编码维度列表(导出)
+	sendSupplier:'supplier/send_supplier',							//供应商维度列表接口
+	sendSupplierExport:'supplier/send_supplier_export',				//供应商维度列表(导出)
 	
 }						
 export default{
@@ -317,6 +319,14 @@ export default{
 	//店铺款式编码维度列表（导出）
 	sendDpKsbmExport(params){
 		return http.post(path.sendDpKsbmExport, params)
+	},
+	//供应商维度列表接口
+	sendSupplier(params){
+		return http.get(path.sendSupplier, params)
+	},
+	//供应商维度列表
+	sendSupplierExport(params){
+		return http.post(path.sendSupplierExport, params)
 	},
 	
 }

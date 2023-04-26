@@ -6,6 +6,7 @@
 				<WarehouseScope v-if="item.web_url == 'warehouse_scope'"/>
 				<KsScope v-if="item.web_url == 'ks_scope'"/>
 				<StoreKsScope v-if="item.web_url == 'store_ks_scope'"/>
+				<SupplierScope v-if="item.web_url == 'supplier_scope'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -20,6 +21,7 @@
 	import WarehouseScope from './DeliverySituation/warehouse_scope.vue'
 	import KsScope from './DeliverySituation/ks_scope.vue'
 	import StoreKsScope from './DeliverySituation/store_ks_scope.vue'
+	import SupplierScope from './DeliverySituation/supplier_scope.vue'
 	export default{
 		data(){
 			return{
@@ -60,7 +62,8 @@
 			StoreScope,
 			WarehouseScope,
 			KsScope,
-			StoreKsScope
+			StoreKsScope,
+			SupplierScope
 		}
 	}
 </script>

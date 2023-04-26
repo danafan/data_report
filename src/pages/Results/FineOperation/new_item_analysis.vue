@@ -159,7 +159,7 @@
 		</div>
 	</div>
 	<div class="flex ac jsb mb-10">
-		<PopoverWidget title="指标汇总" :show_popover="false"/>
+		<PopoverWidget title="指标汇总" width="900" keys="dpzhfx"/>
 		<div class="flex ac">
 			<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>

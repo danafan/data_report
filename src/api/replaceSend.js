@@ -19,6 +19,7 @@ let path = {
 	handleKsbmFeedback:'replacesend/handle_ksbm_feedback',	//提交处理
 	ksbmFeedbackExport:'replacesend/ksbm_feedback_export',	//反馈列表导出
 	addKsbmFeedback:'replacesend/add_ksbm_feedback',		//提交反馈
+	dfAreaChart:'replacesend/df_area_chart',				//地区代发订单趋势图
 }							
 export default{
 	//订单列表
@@ -96,6 +97,10 @@ export default{
 	//创建反馈
 	addKsbmFeedback(params){
 		return http.post(path.addKsbmFeedback, params)
+	},
+	//地区代发订单趋势图
+	dfAreaChart(params){
+		return http.get(path.dfAreaChart, params)
 	},
 }
 
