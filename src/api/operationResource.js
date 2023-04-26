@@ -53,6 +53,8 @@ let path = {
 	returnBoardTable:'supplier/return_board_table',		//公司京东抖音退款表格
 	exportReturnBoardTable:'supplier/export_return_board_table',	//公司京东抖音退款表格导出
 	importData:'supply_chain/stock/import_data',		//库存分析导入
+	pddDeptSales:'audit/pdd_dept_sales',				//拼多多项目部销售统计
+	goodsDetailsExport:'supplier/goods_details_export',	//退款情况看板（店铺商品明细导出）
 }						
 export default{
 	//获取款式编码
@@ -266,6 +268,14 @@ export default{
 	//库存分析导入
 	importData(params){
 		return http.post(path.importData, params)
+	},
+	//拼多多项目部销售统计
+	pddDeptSales(params){
+		return http.get(path.pddDeptSales, params)
+	},
+	//店铺商品明细导出
+	goodsDetailsExport(params){
+		return http.post(path.goodsDetailsExport, params)
 	},
 }
 

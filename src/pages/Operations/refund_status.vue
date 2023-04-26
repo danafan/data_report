@@ -181,6 +181,7 @@
 		</div>
 		<!-- 店铺商品明细 -->
 		<div class="table_setting">
+			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
 		</div>
 		<!-- 表格 -->
@@ -742,6 +743,38 @@
 					return s1 + s2.replace(reg, '$&,') + s3
 				})
 				return res
+			},
+			//导出
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText:'取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						dept_id:this.dept_name.join(','),
+						platform:this.pl.join(','),
+						shop_id:this.shop_code.join(','),
+						cpfl:this.select_pl_ids.join(','),
+						ksbm:this.select_ks_ids.join(','),
+						gyskh:this.select_gys_ids.join(','),
+						spid:this.select_spid_list.join(','),
+						tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
+						tjrq_end:this.date && this.date.length > 0?this.date[1]:"",
+						sort:this.sort,
+						sort_type:this.sort_type
+					}
+					operationResource.goodsDetailsExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'店铺商品明细');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//品类列表
 			getPl(){

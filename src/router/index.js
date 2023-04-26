@@ -42,6 +42,7 @@ const goods_cate = resolve=>require(['@/pages/Operations/GoodsInfo/goods_cate'],
 const goods_analysis = resolve=>require(['@/pages/Operations/GoodsInfo/goods_analysis'],resolve)    //商品分析
 const operations_data_analysis = resolve=>require(['@/pages/Operations/operations_data_analysis'],resolve)    //数据分析
 const refund_status = resolve=>require(['@/pages/Operations/refund_status'],resolve)    //退款情况看板
+const pdd_sales = resolve=>require(['@/pages/Operations/pdd_sales'],resolve)    //拼多多销售统计
 //目标销售额管理
 const store_sales_forecast = resolve=>require(['@/pages/TargetSales/storeSalesForecast/store_sales_forecast'],resolve)   //店长销售收入预估表
 const create_target = resolve=>require(['@/pages/TargetSales/storeSalesForecast/create_target'],resolve)   //店铺填报
@@ -117,6 +118,7 @@ const router = new Router({
     { path: '/delivery_data',name:"发货数据", component: delivery_data},
     { path: '/operations_data_analysis',name:"运营中心数据分析", component: operations_data_analysis},
     { path: '/refund_status',name:"退款情况看板", component: refund_status},
+    { path: '/pdd_sales',name:"拼多多销售统计", component: pdd_sales},
     { path: '/goods_cate',name:"商品分类", component: goods_cate},
     { path: '/goods_analysis',name:"商品分析", component: goods_analysis},
     { path: '/supplier_ranking',name:"供应商排行", component: supplier_ranking},

@@ -95,9 +95,9 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/replace_send">
+				<!-- <el-menu-item index="/pdd_sales">
 					<i class="el-icon-s-promotion"></i>
-					<span slot="title">代发系统</span>
+					<span slot="title">拼多多销售统计</span>
 				</el-menu-item> -->
 				<!-- <el-menu-item index="/human_effect">
 					<i class="el-icon-s-finance"></i>

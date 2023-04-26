@@ -17,14 +17,14 @@
 		</el-form>
 		<div class="flex jsb mb-15">
 			<div class="top_box gmvtj flex fc">
-				<div class="table_title flex ac jc bold f14">真实GMV</div>
+				<div class="table_title flex ac jc bold f14">GMV统计</div>
 				<div class="flex-1 flex jsa ac top_content">
 					<div class="flex fc ac jc">
 						<div class="f13 bold mb-5">总GMV</div>
 						<div class="f15 bold money" v-loading="top_loading">{{top_data.xsje}}</div>
 					</div>
 					<div class="flex fc ac jc">
-						<div class="f13 bold mb-5">剔除补单GMV</div>
+						<div class="f13 bold mb-5">真实GMV</div>
 						<div class="f15 bold money" v-loading="top_loading">{{top_data.gmv_pbd}}</div>
 					</div>
 					<div class="flex fc ac jc">

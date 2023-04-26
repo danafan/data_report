@@ -64,9 +64,8 @@
 			var new_list = [];
 			let list = popover[this.keys];
 			list.map(item => {
-				item.split('：');
 				let obj = {
-					label:item.split('：')[0] + "：",
+					label:item.indexOf('：') > -1?item.split('：')[0] + "：":item,
 					value:item.split('：')[1]
 				}
 				new_list.push(obj)
