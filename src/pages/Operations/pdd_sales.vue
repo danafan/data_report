@@ -8,19 +8,19 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="三天销量：">
-				<el-input style="width: 50px" size="small" type="number" v-model="xssl_3_num_start"></el-input>
+				<el-input style="width: 70px" size="small" type="number" v-model="xssl_3_num_start"></el-input>
 				--
-				<el-input style="width: 50px" size="small" type="number" v-model="xssl_3_num_end"></el-input>
+				<el-input style="width: 70px" size="small" type="number" v-model="xssl_3_num_end"></el-input>
 			</el-form-item>
 			<el-form-item label="七天销量：">
-				<el-input style="width: 50px" size="small" type="number" v-model="xssl_7_num_start"></el-input>
+				<el-input style="width: 70px" size="small" type="number" v-model="xssl_7_num_start"></el-input>
 				--
-				<el-input style="width: 50px" size="small" type="number" v-model="xssl_7_num_end"></el-input>
+				<el-input style="width: 70px" size="small" type="number" v-model="xssl_7_num_end"></el-input>
 			</el-form-item>
 			<el-form-item label="三十天销量：">
-				<el-input style="width: 50px" size="small" type="number" v-model="xssl_30_num_start"></el-input>
+				<el-input style="width: 70px" size="small" type="number" v-model="xssl_30_num_start"></el-input>
 				--
-				<el-input style="width: 50px" size="small" type="number" v-model="xssl_30_num_end"></el-input>
+				<el-input style="width: 70px" size="small" type="number" v-model="xssl_30_num_end"></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
@@ -39,6 +39,7 @@
 	import PopoverWidget from '../../components/popover_widget.vue'
 
 	import resource from '../../api/operationResource.js'
+	import commonResource from '../../api/resource.js'
 
 	export default{
 		data(){
@@ -68,7 +69,7 @@
 			//款式编码
 			getKsbm(e){
 				if(e != ''){
-					resource.ajaxKsbm({name:e}).then(res => {
+					commonResource.ajaxKsbm({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.ks_list = res.data.data;
 						}else{

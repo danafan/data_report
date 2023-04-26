@@ -14,9 +14,9 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="供应商：">
-				<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
-					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+			<el-form-item label="供应商款号：">
+				<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商款号" :remote-method="getGyshh" collapse-tags>
+					<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -263,8 +263,8 @@
 				select_pl_ids:[],							//选中的品类列表
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
-				gys_list:[],								//供应商列表
-				select_gys_ids:[],							//选中的供应商
+				gyshh_list:[],								//供应商货号
+				select_gyshh_ids:[],						//选中的供应商货号
 				spid_list:[],								//商品id列表
 				select_spid_list:[],						//选中的商品ID列表
 				pickerOptions: {
@@ -600,7 +600,7 @@
 					shop_id:this.shop_code.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
-					gyskh:this.select_gys_ids.join(','),
+					gyskh:this.select_gyshh_ids.join(','),
 					spid:this.select_spid_list.join(','),
 					tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length > 0?this.date[1]:""
@@ -665,7 +665,7 @@
 					shop_id:this.shop_code.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
-					gyskh:this.select_gys_ids.join(','),
+					gyskh:this.select_gyshh_ids.join(','),
 					spid:this.select_spid_list.join(','),
 					tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length > 0?this.date[1]:"",
@@ -757,7 +757,7 @@
 						shop_id:this.shop_code.join(','),
 						cpfl:this.select_pl_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
-						gyskh:this.select_gys_ids.join(','),
+						gyskh:this.select_gyshh_ids.join(','),
 						spid:this.select_spid_list.join(','),
 						tjrq_start:this.date && this.date.length > 0?this.date[0]:"",
 						tjrq_end:this.date && this.date.length > 0?this.date[1]:"",
@@ -803,12 +803,12 @@
 					})
 				}
 			},
-			//供应商列表
-			getGys(e){
+			//供应商货号
+			getGyshh(e){
 				if(e != ''){
-					resource.ajaxGys({name:e}).then(res => {
+					resource.ajaxGyshh({name:e,from:this.page_type}).then(res => {
 						if(res.data.code == 1){
-							this.gys_list = res.data.data;
+							this.gyshh_list = res.data.data;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
