@@ -6,13 +6,13 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStore" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_plat_ids" clearable @change="getStore" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺：">
-				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false"  multiple
+				<el-select v-model="select_shop_list" clearable multiple
 				filterable
 				collapse-tags placeholder="全部">
 				<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
@@ -20,37 +20,37 @@
 			</el-select>
 		</el-form-item>
 		<el-form-item label="产品分类：">
-			<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+			<el-select v-model="select_pl_ids" clearable multiple filterable collapse-tags placeholder="全部">
 				<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="商品ID：">
-			<el-select v-model="select_spid_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入商品ID" :remote-method="getSpid" collapse-tags>
+			<el-select v-model="select_spid_list" clearable multiple filterable remote reserve-keyword placeholder="请输入商品ID" :remote-method="getSpid" collapse-tags>
 				<el-option v-for="item in spid_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="款式编码：">
-			<el-select v-model="select_ks_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
+			<el-select v-model="select_ks_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入款式" :remote-method="getKsbm" collapse-tags>
 				<el-option v-for="item in ks_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="供应商款号：">
-			<el-select v-model="select_gyshh_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
+			<el-select v-model="select_gyshh_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商货号" :remote-method="getGyshh" collapse-tags>
 				<el-option v-for="item in gyshh_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="供应商：">
-			<el-select v-model="select_gys_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
+			<el-select v-model="select_gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags >
 				<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>
 		</el-form-item>
 		<el-form-item label="推广负责人：">
-			<el-select v-model="tgfzr_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入推广负责人" :remote-method="ajaxTgfzr" collapse-tags>
+			<el-select v-model="tgfzr_ids" clearable multiple filterable reserve-keyword placeholder="请输入推广负责人" collapse-tags>
 				<el-option v-for="item in tgfzr_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>
@@ -383,16 +383,14 @@
 				}
 			},
 			//推广负责人
-			ajaxTgfzr(e){
-				if(e != ''){
-					resource.ajaxTgfzr({username:e}).then(res => {
+			ajaxTgfzr(){
+				resource.ajaxTgfzr().then(res => {
 						if(res.data.code == 1){
 							this.tgfzr_list = res.data.data;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
 					})
-				}
 			},
 			//点击搜索
 			searchFun(){
