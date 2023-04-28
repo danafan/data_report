@@ -52,7 +52,7 @@
 					<!-- 正负颜色 -->
 					<div :class="[{'red_color':scope.row[i.row_field_name] >= 0},{'green_color':scope.row[i.row_field_name] < 0}]" v-else-if="i.type == '2' && i.row_field_name != 'mlv_rate'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
 					<!-- 图片 -->
-					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-else-if="i.type == '3' && scope.row.images[0] != ''" @click.stop="handleClickStop"></el-image>
+					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[i.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-else-if="i.type == '3' && filterImage(scope.row[i.row_field_name])[0] != ''" @click.stop="handleClickStop"></el-image>
 					<!-- 链接 -->
 					<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
 					<!-- 图表 -->
@@ -72,7 +72,7 @@
 				<!-- 正负颜色 -->
 				<div :class="[{'red_color':scope.row[item.row_field_name] >= 0},{'green_color':scope.row[item.row_field_name] < 0}]" v-else-if="item.type == '2'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
 				<!-- 图片 -->
-				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-else-if="item.type == '3' && scope.row.images[0] != ''" @click.stop="handleClickStop"></el-image>
+				<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[item.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" v-else-if="item.type == '3' && filterImage(scope.row[item.row_field_name])[0] != ''" @click.stop="handleClickStop"></el-image>
 				<!-- 链接 -->
 				<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
 				<!-- 图表 -->
@@ -243,6 +243,14 @@
     		}
     	},
     	methods:{
+    		//过滤图片
+    		filterImage(image){
+    			if(image){
+    				return image.split(',');
+    			}else{
+    				return [];
+    			}
+    		},
   			//设置监听滚动事件
   			setScroll(){
   				this.$nextTick(() => {

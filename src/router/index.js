@@ -177,7 +177,8 @@ const router = new Router({
     }, component: demand_report},
     { path: '/created_demand',name:"新建外采需求", component: created_demand},
     { path: '/procurement_info',name:"运营外采信息", component: procurement_info},
-    { path: '/human_effect',name:"人效看板", component: human_effect}
+    { path: '/human_effect',name:"人效看板", component: human_effect},
+
     ]
 }
 ]

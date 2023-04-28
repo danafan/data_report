@@ -137,13 +137,7 @@
 						this.loading = false;
 						let data = res.data.data;
 						this.title_list = data.title_list;
-						let table_data = data.table_data.data;
-						table_data.map(item => {
-							let images = [];
-							images.push(item.tp);
-							item['images'] = images;
-						})
-						this.table_data = table_data;
+						this.table_data = data.table_data.data;
 						this.total = data.table_data.total;
 					}else{
 						this.$message.warning(res.data.msg);

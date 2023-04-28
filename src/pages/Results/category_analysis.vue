@@ -12,6 +12,8 @@
 				<GrossProfitAnalysis v-if="item.web_url == 'gross_profit_analysis'"/>
 				<NewItemAnalysis v-if="item.web_url == 'new_item_analysis'"/>
 				<HumanEffect v-if="item.web_url == 'human_effect'"/>
+				<PromotionPerformance v-if="item.web_url == 'promotion_performance'"/>
+				<IndividualPerformance v-if="item.web_url == 'individual_performance'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -32,6 +34,8 @@
 	import ExperienceScore from './FineOperation/experience_score.vue'
 	import GrossProfitAnalysis from './FineOperation/gross_profit_analysis.vue'
 	import HumanEffect from '../HumanEffect/human_effect.vue'
+	import PromotionPerformance from '../PromotionPerformance/promotion_performance.vue'
+	import IndividualPerformance from '../IndividualPerformance/individual_performance.vue'
 	export default{
 		data(){
 			return{
@@ -79,7 +83,9 @@
 			WeatherAnalysis,
 			ExperienceScore,
 			GrossProfitAnalysis,
-			HumanEffect
+			HumanEffect,
+			PromotionPerformance,
+			IndividualPerformance
 		}
 	}
 </script>
