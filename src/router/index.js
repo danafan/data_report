@@ -8,6 +8,7 @@ const focus_core = resolve=>require(['@/pages/FocusCore/focus_core'],resolve)
 const store_data = resolve=>require(['@/pages/Results/StoreResults/store_data'],resolve)
 const store_results = resolve=>require(['@/pages/Results/store_results'],resolve)
 const category_analysis = resolve=>require(['@/pages/Results/category_analysis'],resolve)
+const performance = resolve=>require(['@/pages/Results/performance'],resolve)
 //缓冲机制
 const test_market = resolve=>require(['@/pages/Buffer/test_market'],resolve)
 const supplement = resolve=>require(['@/pages/Buffer/supplement'],resolve)
@@ -93,6 +94,7 @@ const router = new Router({
     { path: '/store_data',name:"店铺日数据", component: store_data},
     { path: '/store_results',name:"店铺业绩", component: store_results},
     { path: '/category_analysis',name:"品类分析", component: category_analysis},
+    { path: '/performance_index',name:"推广绩效", component: performance},
     { path: '/test_market',name:"试销管理", component: test_market},
     { path: '/supplement',name:"补货管理", component: supplement},
     { path: '/stop_replenish',name:"停止进货", component: stop_replenish},

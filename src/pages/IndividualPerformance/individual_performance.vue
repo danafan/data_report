@@ -12,6 +12,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="品牌：">
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword placeholder="请输入品牌" :remote-method="ajaxPp" collapse-tags>
+					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
@@ -47,7 +53,8 @@
 				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="table_loading" :isLoading="table_loading" tableName="promotion" max_height="350" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url'/>
+		<custom-table v-loading="table_loading" :isLoading="table_loading" tableName="promotion" max_height="350" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url' v-if="!custom_loading"/>
+		<div style="width: 100%;height: 80px" v-else v-loading="true"></div>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 		<!-- 自定义列表 -->
 		<el-dialog title="自定义列表（单击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -73,10 +80,9 @@
 	import PageWidget from '../../components/pagination_widget.vue'
 	import PopoverWidget from '../../components/popover_widget.vue'
 
-	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,lastMonthDate} from '../../api/nowMonth.js'
+	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,lastMonthDate,lastXDate} from '../../api/nowMonth.js'
 
-	import {exportPost} from '../../api/export.js'
-	import { MessageBox,Message } from 'element-ui';
+	import {exportUp} from '../../api/export.js'
 	export default{
 		data(){
 			return{
@@ -107,10 +113,12 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[lastMonthDate(),getCurrentDate()],//日期
+				date:[lastXDate(7),getCurrentDate()],//日期
 				tgfzr_list:[],								//员工列表
 				tgfzr_ids:'宋鑫磊',							//推广负责人
 				type:'gys',									//类型
+				pp_list:[],									//品牌列表
+				select_pp_list:[],							//选中的品牌列表
 				dashedChart:null,							//气泡图
 				dashed_loading:false,						//气泡图加载
 				gr_loading:false,
@@ -143,24 +151,22 @@
 		created(){
 			//推广负责人
 			this.ajaxTgfzr();
-			//推广绩效综合看板 汇总数据
-			this.userPromoteDpList();
 		},
 		mounted(){
-			//获取推广负责人柱状图数据
-			this.userPromoteTotal()
-			//获取气泡图数据
-			this.scatterChart();
+			//点击搜索
+			this.searchFn();
 		},
 		methods:{
 			//点击搜索
-			searchFn(){
+			async searchFn(){
 				//获取推广负责人柱状图数据
-				this.userPromoteTotal()
+				await this.userPromoteTotal()
 				//获取气泡图数据
-				this.scatterChart();
+				await this.scatterChart();
 				//推广绩效综合看板 汇总数据
-				this.userPromoteDpList();
+				this.page = 1;
+				this.pagesize = 10;
+				await this.userPromoteDpList();
 			},
 			//子组件传递过来的参数
 			checkReq(reqObj){
@@ -178,7 +184,19 @@
 					}
 				})
 			},
-			//获取顶部柱状图数据
+			//品牌列表
+			ajaxPp(e){
+				if(e != ''){
+					commonResource.ajaxPp({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.pp_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//获取顶部折线图数据
 			userPromoteTotal(){
 				let arg = {
 					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
@@ -186,58 +204,71 @@
 					tgfzr:this.tgfzr_ids,
 					shop_id:this.shop_ids.join(','),
 					platform:this.platform_ids.join(','),
-					dept_id:this.dept_ids.join(',')
+					dept_id:this.dept_ids.join(','),
+					pp:this.select_pp_list.join(',')
 				}
 				this.gr_loading = true;
 				this.pie_loading = true;
-				resource.userPromoteTotal(arg).then(res => {
-					if(res.data.code == 1){
-						this.gr_loading = false;
-						this.pie_loading = false;
-						let data = res.data.data;
-						this.user_info = data.user_info;
-						this.user_yesterday_roi = data.yesterday_roi;
-						this.user_month_roi = data.month_roi;
-						let x_axis = data.chart.day_list;
-						let series_data = data.chart.list;
-						let month_line = [];
-						let week_line = [];
-						for(let i = 0;i < series_data.length;i ++){
-							month_line.push(data.month_roi)
-							week_line.push(data.week_roi)
-						}
-						var echarts = require("echarts");
-						var gr_chart = document.getElementById(`gr_chart`);
-						this.grChart = echarts.getInstanceByDom(gr_chart)
-						if (this.grChart == null) { 
-							this.grChart = echarts.init(gr_chart);
-						}
-						this.grChart.setOption(this.setBarOptions(x_axis,series_data,month_line,week_line));
+				return new Promise((resolve)=>{
+					resource.userPromoteTotal(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.gr_loading = false;
+							this.pie_loading = false;
+							let data = res.data.data;
+							this.user_info = data.user_info;
+							this.user_yesterday_roi = data.yesterday_roi;
+							this.user_month_roi = data.month_roi;
+							let x_axis = data.chart.day_list;
+							let series_data = data.chart.list;
+							let self_roi = [];
+							let company_roi = [];
+							let month_roi = [];
+							for(let i = 0;i < series_data.length;i ++){
+								self_roi.push(data.self_roi)
+								company_roi.push(data.company_roi)
+								month_roi.push(data.month_roi)
+							}
+							var echarts = require("echarts");
+							var gr_chart = document.getElementById(`gr_chart`);
+							this.grChart = echarts.getInstanceByDom(gr_chart)
+							if (this.grChart == null) { 
+								this.grChart = echarts.init(gr_chart);
+							}
+							this.grChart.setOption(this.setBarOptions(x_axis,series_data,self_roi,company_roi,month_roi));
 
-						let legend_data = [];
-						data.pie_data.map(item => {
-							legend_data.push(item.name)
-						})
-						var pie_chart = document.getElementById(`pie_chart`);
-						this.pieChart = echarts.getInstanceByDom(pie_chart)
-						if (this.pieChart == null) { 
-							this.pieChart = echarts.init(pie_chart);
+							let legend_data = [];
+							let pie_series_data = [];
+							data.pie_data.map(item => {
+								legend_data.push(item.name);
+								let pie_item = {
+									name:item.name,
+									value:item.zb,
+									money:item.money
+								}
+								pie_series_data.push(pie_item)
+							})
+							var pie_chart = document.getElementById('pie_chart');
+							this.pieChart = echarts.getInstanceByDom(pie_chart)
+							if (this.pieChart == null) { 
+								this.pieChart = echarts.init(pie_chart);
+							}
+							this.pieChart.setOption(this.setPieOptions(legend_data,pie_series_data));
+							window.addEventListener('resize',this.debounce(()=>{
+								this.grChart.resize();
+								this.pieChart.resize();
+							}, 50));
+						}else{
+							this.$message.warning(res.data.msg);
 						}
-						this.pieChart.setOption(this.setPieOptions(legend_data,data.pie_data));
-						window.addEventListener('resize',this.debounce(()=>{
-							this.grChart.resize();
-							this.pieChart.resize();
-						}, 50));
-					}else{
-						this.$message.warning(res.data.msg);
-					}
+					})
 				})
 			},
-			//柱状图渲染
-			setBarOptions(x_axis,series_data,month_line,week_line){
+			//折线图渲染
+			setBarOptions(x_axis,series_data,self_roi,company_roi,month_roi){
 				return {
 					title:{
-						text:'个人ROI柱状图'
+						text:'个人ROI折线图'
 					},
 					tooltip: {
 					    // 提示框组件
@@ -249,18 +280,18 @@
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",
-						textStyle:{
-							color:"#ffffff"
-						},
-						borderColor:"rgba(0,0,0,0.7)",
-						axisPointer: {            
-							type: 'shadow'        
-						}
+					    textStyle:{
+					    	color:"#ffffff"
+					    },
+					    borderColor:"rgba(0,0,0,0.7)",
+					    axisPointer: {            
+					    	type: 'shadow'        
+					    }
 					},
 					grid: {
 						left: '8%',
 						top: '15%',
-						right:'2%',
+						right:'10%',
 						bottom:'10%'
 					},
 					xAxis: {
@@ -273,12 +304,12 @@
 					series: [
 					{
 						data: series_data,
-						type: 'bar'
+						type: 'line'
 					},
 					{
-						name: '平均值',
+						name: '个人',
 						type: 'line',
-						data: month_line,
+						data: self_roi,
 						lineStyle: {
 							normal: {
 								width: 0,
@@ -290,21 +321,22 @@
 							data: [
 							{
 								type: 'average',
-								name: '月辅助线',
+								name: '个人',
 							},
 							],
-							precision: 0,
+							precision: 2,
 							label: {
-								normal: {
-									position: 'middle',
-									formatter: '月辅助线：{c}',
-								},
+								color:"#91cc75",
+								distance:20,
+								position: 'start',
+								formatter: '个人：{c}',
 							}
 						},
-					},{
-						name: '平均值',
+					}
+					,{
+						name: '公司',
 						type: 'line',
-						data: week_line,
+						data: company_roi,
 						lineStyle: {
 							normal: {
 								width: 0,
@@ -316,15 +348,40 @@
 							data: [
 							{
 								type: 'average',
-								name: '周辅助线',
+								name: '公司',
 							},
 							],
-							precision: 0,
+							precision: 2,
 							label: {
-								normal: {
-									position: 'middle',
-									formatter: '周辅助线：{c}',
-								},
+								color:"#fac858",
+								position: 'middle',
+								formatter: '公司：{c}'
+							}
+						},
+					}
+					,{
+						name: '近30天',
+						type: 'line',
+						data: month_roi,
+						lineStyle: {
+							normal: {
+								width: 0,
+							},
+						},
+						symbolSize: 0,
+						markLine: {
+							silent: true,
+							data: [
+							{
+								type: 'average',
+								name: '近30天',
+							},
+							],
+							precision: 2,
+							label: {
+								color:"#ee6666",
+								position: 'end',
+								formatter: '近30天：{c}'
 							}
 						},
 					}
@@ -341,7 +398,8 @@
 						trigger: 'item',
 						formatter: (params) => {
 							return `${params.data.name}</br>
-							ROI：${params.data.value}`;
+							占比：${params.data.value}%</br>
+							金额：${!params.data.money?0:params.data.money}</br>`;
 						},
 						backgroundColor:"rgba(0,0,0,.8)",
 						textStyle:{
@@ -353,7 +411,6 @@
 						}
 					},
 					legend: {
-						right: '2%',
 						top: '10%',
 						data:legend_data
 					},
@@ -364,7 +421,7 @@
 						data: series_data,
 						label:{
 							formatter: (params) => {
-								return params.data.name + ':' + params.data.value + '%';
+								return params.data.name + '：' + params.data.value + '%' + `（${!params.data.money?0:params.data.money}）`;
 							},
 						},
 						emphasis: {
@@ -387,35 +444,41 @@
 					shop_id:this.shop_ids.join(','),
 					platform:this.platform_ids.join(','),
 					dept_id:this.dept_ids.join(','),
+					pp:this.select_pp_list.join(','),
 					type:this.type
 				}
 				this.dashed_loading = true;
-				resource.scatterChart(arg).then(res => {
-					if(res.data.code == 1){
-						this.dashed_loading = false;
-						let data = res.data.data.list;
-						let chart_data = [];
-						data.map(item => {
-							let item_arr = [];
-							item_arr.push(item.yk);
-							item_arr.push(item.roi);
-							item_arr.push(item.zsgmv);
-							item_arr.push(item.name);
-							chart_data.push(item_arr)
-						})
-						var echarts = require("echarts");
-						var dashed_chart = document.getElementById('dashed_chart');
-						this.dashedChart = echarts.getInstanceByDom(dashed_chart)
-						if (this.dashedChart == null) { 
-							this.dashedChart = echarts.init(dashed_chart);
+				return new Promise((resolve)=>{
+					resource.scatterChart(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.dashed_loading = false;
+							let data = res.data.data.list;
+							let chart_data = [];
+							data.map(item => {
+								let item_arr = [];
+								item_arr.push(item.yk);
+								item_arr.push(item.roi);
+								item_arr.push(item.zsgmv);
+								item_arr.push(item.name);
+								chart_data.push(item_arr)
+							})
+
+							var echarts = require("echarts");
+							var dashed_chart = document.getElementById('dashed_chart');
+							this.dashedChart = echarts.getInstanceByDom(dashed_chart)
+							if (this.dashedChart == null) { 
+								this.dashedChart = echarts.init(dashed_chart);
+							}
+							this.dashedChart.setOption(this.setDashedOptions(chart_data));
+
+							window.addEventListener('resize',this.debounce(()=>{
+								this.dashedChart.resize()
+							}, 50));
+						}else{
+							this.$message.warning(res.data.msg);
 						}
-						this.dashedChart.setOption(this.setDashedOptions(chart_data));
-						window.addEventListener('resize',this.debounce(()=>{
-							this.dashedChart.resize()
-						}, 50));
-					}else{
-						this.$message.warning(res.data.msg);
-					}
+					})
 				})
 			},
 			//改变屏幕大小防抖
@@ -436,19 +499,19 @@
 					    position:'top',
 					    formatter:  (params) => {
 					    	let tip = `${params.data[3]}</br>
-					    	ROI：${params.data[2]}</br>
-					    	贡献毛益：${params.data[1]}</br>
+					    	ROI：${params.data[1]}</br>
+					    	贡献毛益：${params.data[0]}</br>
 					    	GMV：${params.data[2]}</br>`;
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",
-						textStyle:{
-							color:"#ffffff"
-						},
-						borderColor:"rgba(0,0,0,0.7)",
-						axisPointer: {            
-							type: 'shadow'        
-						}
+					    textStyle:{
+					    	color:"#ffffff"
+					    },
+					    borderColor:"rgba(0,0,0,0.7)",
+					    axisPointer: {            
+					    	type: 'shadow'        
+					    }
 					},
 					title: {
 						text: 'ROI气泡图统计',
@@ -462,59 +525,59 @@
 					grid: {
 						left: '8%',
 						top: '10%',
-						right:'2%'
+						right:'8%'
 					},
 					xAxis: {
-						splitLine: {
-							lineStyle: {
-								type: 'dashed'
-							}
-						}
+						name:'贡献毛益',
+						axisLine:{
+							onZero:false
+						},
+						offset:-127
 					},
 					yAxis: {
-						splitLine: {
-							lineStyle: {
-								type: 'dashed'
-							}
-						},
-						scale: true
+						name:'ROI',
+						scale:true,
+						min:0,
+						max:18,
 					},
 					series: [
 					{
-						// name: '1990',
 						data: data,
 						type: 'scatter',
+						label:{
+							show:true,
+							formatter: (params) => {
+								return params.data[2] > 10000?params.data[3]:'';
+							},
+						},	
 						symbolSize: function (data) {
-							return Math.sqrt(data[2]) / 20;
+							return Math.sqrt(data[2]) / 2;
 						},
-						// emphasis: {
-						// 	focus: 'series',
-						// 	label: {
-						// 		show: true,
-						// 		formatter: function (param) {
-						// 			return param.data[3];
-						// 		},
-						// 		position: 'top'
-						// 	}
+						// markLine:{
+						// 	data: [{
+						// 		name: 'Y 轴值为 100 的水平线',
+						// 		yAxis: 6
+						// 	}]
 						// },
 						itemStyle: {
-							shadowBlur: 10,
-							shadowColor: 'rgba(120, 36, 50, 0.5)',
-							shadowOffsetY: 5,
-							color: new echarts.graphic.RadialGradient(0.4, 0.3, 1, [
-							{
-								offset: 0,
-								color: 'rgb(251, 118, 123)'
-							},
-							{
-								offset: 1,
-								color: 'rgb(204, 46, 72)'
+							// shadowBlur: 10,
+							// shadowColor: 'rgba(120, 36, 50, 0.5)',
+							// shadowOffsetY: 5,
+							color:({seriesIndex, dataIndex, data, value}) => {
+								if(data[0] > 0 && data[1] > 6){
+									return 'green'
+								}else if(data[0] > 0 && data[1] <= 6){
+									return 'yellow'
+								}else if(data[0] <= 0 && data[1] <= 6){
+									return 'red'
+								}else if(data[0] <= 0 && data[1] > 6){
+									return 'yellow'
+								}
 							}
-							])
 						}
 					}
 					]
-				};
+				}
 			},
 			//推广绩效综合看板 汇总数据
 			userPromoteDpList(){
@@ -525,30 +588,34 @@
 					shop_id:this.shop_ids.join(','),
 					platform:this.platform_ids.join(','),
 					dept_id:this.dept_ids.join(','),
+					pp:this.select_pp_list.join(','),
 					type:this.type,
 					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
 				}
 				this.table_loading = true;
-				resource.userPromoteDpList(arg).then(res => {
-					if(res.data.code == 1){
-						this.table_loading = false;
-						let data = res.data.data;
-						this.title_list = data.title_list;
-						this.table_data = data.table_list.data;
-						if(this.table_data.length > 0){
-							this.table_total_data = this.table_data[0];
-							this.table_data.splice(0,1);
-						}else{
-							this.table_total_data = {};
-						}
-						this.total = data.table_list.total;
+				return new Promise((resolve)=>{
+					resource.userPromoteDpList(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.table_loading = false;
+							let data = res.data.data;
+							this.title_list = data.title_list;
+							this.table_data = data.table_list.data;
+							if(this.table_data.length > 0){
+								this.table_total_data = this.table_data[0];
+								this.table_data.splice(0,1);
+							}else{
+								this.table_total_data = {};
+							}
+							this.total = data.table_list.total;
 						this.selected_ids = data.selected_ids;	//自定义已选中的id
 						this.view_row = data.view_row;			//自定义
 					}else{
 						this.$message.warning(res.data.msg);
 					}
+				})
 				})
 			},
 			//点击自定义列
@@ -578,7 +645,7 @@
 						//获取列表
 						this.page = 1;
 						this.pagesize = 10;
-						this.promoteKpiDpList();
+						this.userPromoteDpList();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -586,32 +653,23 @@
 			},
 			//导出
 			commitExport(){
-				MessageBox.confirm('确认导出?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					let arg = {
-						tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
-						tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
-						tgfzr:this.tgfzr_ids,
-						shop_id:this.shop_ids.join(','),
-						platform:this.platform_ids.join(','),
-						dept_id:this.dept_ids.join(','),
-						type:this.type,
-						sort:this.sort
-					}
-					resource.userPromoteDpExport(arg).then(res => {
-						if(res){
-							exportPost("\ufeff" + res.data,`${this.user_info.ding_user_name}绩效综合看板汇总`);
-						}
-					})
-				}).catch(() => {
-					Message({
-						type: 'info',
-						message: '取消导出'
-					});          
-				});
+				let req = {
+					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
+					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
+					tgfzr:this.tgfzr_ids,
+					shop_id:this.shop_ids.join(','),
+					platform:this.platform_ids.join(','),
+					dept_id:this.dept_ids.join(','),
+					pp:this.select_pp_list.join(','),
+					type:this.type,
+					sort:this.sort
+				}
+				var export_arr = [];
+				for(let key in req){
+					export_arr.push(`${key}=${req[key]}`);
+				}
+				let url = "annual/user_promote_dp_export?" + export_arr.join("&");
+				exportUp(url)
 			},
 			//排序回调
 			sortCallBack(sort){
