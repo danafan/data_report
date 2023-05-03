@@ -31,6 +31,9 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
+				<el-checkbox :true-label='1' :false-label="0" v-model="gxmyxyl">贡献毛益小于0</el-checkbox>
+			</el-form-item>
+			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
@@ -132,6 +135,7 @@
 				pp_list:[],									//品牌列表
 				select_pp_list:[],							//选中的品牌列表
 				type:'fzr',									//类型
+				gxmyxyl:0,									//贡献毛益小于0
 				dashedChart:null,							//气泡图
 				dashed_loading:false,						//气泡图加载
 				fzr_loading:false,
@@ -150,6 +154,7 @@
 				total:0,
 				title_list:[],
 				sort:"",
+				sort_type:"",
 				custom_loading:false,
 				show_custom:false,
 				selected_ids:[],							//自定义已选中的id
@@ -157,7 +162,8 @@
 				view_row:[],								//所有列表-指标汇总
 				page:1,
 				pagesize:10,
-				current_arg:{}
+				current_arg:{},
+				qpt_arg:{}
 			}
 		},
 		watch:{
@@ -183,6 +189,13 @@
 			//点击搜索
 			async searchFn(){
 				//获取推广负责人柱状图数据
+				this.fzr_loading = true;
+				this.dept_loading = true;
+				this.dpid_loading = true;
+				this.gys_loading = true;
+				this.cpfl_loading = true;
+				this.dashed_loading = true;
+				this.table_loading = true;
 				await this.promoteKpiChart('fzr','推广负责人ROI')
 				//获取项目部柱状图数据
 				await this.promoteKpiChart('dept','项目部ROI')
@@ -198,6 +211,7 @@
 				//推广绩效综合看板 汇总数据
 				this.page = 1;
 				this.pagesize = 10;
+				this.qpt_arg = {};
 				await this.promoteKpiDpList();
 			},
 			//子组件传递过来的参数
@@ -269,35 +283,73 @@
 					dept_id:this.dept_ids.join(','),
 					type:type
 				}
-				this[`${type}_loading`] = true;
+				if(this.gxmyxyl === 1){
+					arg['gxmy_flag'] = this.gxmyxyl;
+				}
 				return new Promise((resolve)=>{
 					resource.promoteKpiChart(arg).then(res => {
 						resolve();
 						if(res.data.code == 1){
 							this[`${type}_loading`] = false;
 							let data = res.data.data;
-							let x_axis = data.title;
-							let series_data = [];
-							data.list.map(item => {
-								let chart_item = {
-									value: item,
-									itemStyle: {
-										color: item >= data.roi?'green':'red'
-									}
-								}
-								series_data.push(chart_item);
-							})
-							let line_data = [];
-							for(let i = 0;i < series_data.length;i ++){
-								line_data.push(data.roi)
-							}
 							var echarts = require("echarts");
 							var dashed_chart = document.getElementById(`${type}_chart`);
 							this[`${type}Chart`] = echarts.getInstanceByDom(dashed_chart)
 							if (this[`${type}Chart`] == null) { 
 								this[`${type}Chart`] = echarts.init(dashed_chart);
 							}
-							this[`${type}Chart`].setOption(this.setBarOptions(title,x_axis,series_data,line_data,type));
+							if(data.length == 0){		//无数据
+								let option = {
+									title: {
+										text: title,
+									},
+									graphic: {
+										type: 'text',
+										left: 'center',
+										top: 'middle',
+										silent: true,
+										invisible: false, 
+										style: {
+											fill: 'black',
+											text: '暂无数据',
+											fontSize: '16px'
+										}
+									}
+								}
+								if (this[`${type}Chart`]) { 
+									this[`${type}Chart`].clear();
+								}
+								this[`${type}Chart`].setOption(option);
+							}else{						//有数据
+								let x_axis = data.title;
+								let series_data = [];
+								data.list.map(item => {
+									let chart_item = {
+										value: item,
+										itemStyle: {
+											color: item >= data.roi?'green':'red'
+										},
+										label: {
+											show: type != 'gys'?true:false,
+											position: 'top',
+											color: item >= data.roi?'green':'red',
+											fontWeight:'bold',
+											distance:type == 'fzr' || type == 'dpid'?10:5,
+											rotate:type == 'fzr' || type == 'dpid'?55:0
+										},
+									}
+									series_data.push(chart_item);
+								})
+								let line_data = [];
+								for(let i = 0;i < series_data.length;i ++){
+									line_data.push(data.roi)
+								}
+								if (this[`${type}Chart`]) { 
+									this[`${type}Chart`].clear();
+								}
+								this[`${type}Chart`].setOption(this.setBarOptions(title,x_axis,series_data,line_data,type));
+							}
+							
 							window.addEventListener('resize',this.debounce(()=>{
 								this[`${type}Chart`].resize();
 							}, 50));
@@ -346,18 +398,14 @@
 						}:{}
 					},
 					yAxis: {
-						type: 'value'
+						type: 'value',
+						min:-1,
+						max:18,
 					},
 					series: [
 					{
 						data: series_data,
-						type: 'bar',
-						label: {
-							show: type != 'gys'?true:false,
-							position: 'top',
-							distance:type == 'fzr' || type == 'dpid'?10:5,
-							rotate:type == 'fzr' || type == 'dpid'?55:0
-						},
+						type: 'bar'
 					},
 					{
 						name: '平均值',
@@ -398,7 +446,10 @@
 					gys:this.select_gys_ids.join(','),
 					platform:this.platform_ids.join(','),
 					dept_id:this.dept_ids.join(','),
-					type:this.type
+					type:this.type,
+				}
+				if(this.gxmyxyl === 1){
+					arg['gxmy_flag'] = this.gxmyxyl;
 				}
 				this.dashed_loading = true;
 				return new Promise((resolve)=>{
@@ -406,44 +457,76 @@
 						resolve();
 						if(res.data.code == 1){
 							this.dashed_loading = false;
-							let data = res.data.data.list;
-							let chart_data = [];
-							data.map(item => {
-								let item_arr = [];
-								item_arr.push(item.yk);
-								item_arr.push(item.roi);
-								item_arr.push(item.zsgmv);
-								item_arr.push(item.name);
-								if(item.dept_id){
-									item_arr.push({dept_id:item.dept_id})
-								}else if(item.shop_id){
-									item_arr.push({shop_id:item.shop_id})
-								}else{
-									let dd = {};
-									if(this.type == 'fzr'){
-										dd['tgfzr'] = item.name;
-									}else{
-										dd[this.type] = item.name;
-									}
-									item_arr.push(dd)
-								}
-								chart_data.push(item_arr)
-							})
+							let data = res.data.data;
 							var echarts = require("echarts");
 							var dashed_chart = document.getElementById('dashed_chart');
 							this.dashedChart = echarts.getInstanceByDom(dashed_chart)
 							if (this.dashedChart == null) { 
 								this.dashedChart = echarts.init(dashed_chart);
 							}
-							this.dashedChart.setOption(this.setDashedOptions(chart_data));
+							if(data.length == 0){		//无数据
+								let option = {
+									title: {
+										text: 'ROI气泡图统计',
+										left: '5%',
+										top: '0'
+									},
+									graphic: {
+										type: 'text',
+										left: 'center',
+										top: 'middle',
+										silent: true,
+										invisible: false, 
+										style: {
+											fill: 'black',
+											text: '暂无数据',
+											fontSize: '16px'
+										}
+									}
+								}
+								if (this.dashedChart) { 
+									this.dashedChart.clear();
+								}
+								this.dashedChart.setOption(option);
+							}else{
+								var max = Math.max.apply(Math, data.list.map(i => {return i.zsgmv }));
+								let chart_data = [];
+								data.list.map(item => {
+									let item_arr = [];
+									item_arr.push(item.yk);
+									item_arr.push(item.roi);
+									item_arr.push(item.zsgmv);
+									item_arr.push(item.name);
+									if(item.dept_id){
+										item_arr.push({dept_id:item.dept_id})
+									}else if(item.shop_id){
+										item_arr.push({shop_id:item.shop_id})
+									}else{
+										let dd = {};
+										if(this.type == 'fzr'){
+											dd['tgfzr'] = item.name;
+										}else{
+											dd[this.type] = item.name;
+										}
+										item_arr.push(dd)
+									}
+									chart_data.push(item_arr)
+								})
+								if (this.dashedChart) { 
+									this.dashedChart.clear();
+								}
+								this.dashedChart.setOption(this.setDashedOptions(chart_data,max));
+							}
+							
 							window.addEventListener('resize',this.debounce(()=>{
 								this.dashedChart.resize()
 							}, 50));
 							this.dashedChart.off('click');
 							this.dashedChart.on('click',(params) => {
-							//推广绩效综合看板 汇总数据
-							this.promoteKpiDpList(params.data[params.data.length - 1]);
-						})
+								this.qpt_arg = params.data[params.data.length - 1];
+								//推广绩效综合看板 汇总数据
+								this.promoteKpiDpList();
+							})
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -459,7 +542,7 @@
 				} 
 			},
 			//气泡图渲染
-			setDashedOptions(data){
+			setDashedOptions(data,max){
 				var echarts = require("echarts");
 				return {
 					tooltip: {
@@ -501,12 +584,12 @@
 						axisLine:{
 							onZero:false
 						},
-						offset:-127
+						offset:-140
 					},
 					yAxis: {
 						name:'ROI',
 						scale:true,
-						min:0,
+						min:-1,
 						max:18,
 					},
 					series: [
@@ -515,23 +598,28 @@
 						type: 'scatter',
 						label:{
 							show:true,
+							color:'blue',
+							fontWeight:'bold',
 							formatter: (params) => {
-								return params.data[2] > 300000?params.data[3]:'';
+								return params.data[2] > 1000000?params.data[3]:'';
 							},
 						},	
 						symbolSize: function (data) {
-							return Math.sqrt(data[2]) / 10;
+							// let r = 0;
+							// if(3000000/max > 1){
+							// 	r = Math.sqrt(data[2]) / 30;
+							// }else{
+							// 	if(3000000/max >= 0.8){
+							// 		r =(Math.sqrt(data[2]) * 3000000/max)/10;
+							// 	}else if(3000000/max >= 0.5 && 3000000/max < 0.8){
+							// 		r =(Math.sqrt(data[2]) * 3000000/max)/7;
+							// 	}else if(3000000/max < 0.5){
+							// 		r =(Math.sqrt(data[2]) * 3000000/max)/4;
+							// 	}
+							// }
+							return Math.sqrt(data[2]) / 30;
 						},
-						// markLine:{
-						// 	data: [{
-						// 		name: 'Y 轴值为 100 的水平线',
-						// 		yAxis: 6
-						// 	}]
-						// },
 						itemStyle: {
-							// shadowBlur: 10,
-							// shadowColor: 'rgba(120, 36, 50, 0.5)',
-							// shadowOffsetY: 5,
 							color:({seriesIndex, dataIndex, data, value}) => {
 								if(data[0] > 0 && data[1] > 6){
 									return 'green'
@@ -549,7 +637,7 @@
 				}
 			},
 			//推广绩效综合看板 汇总数据
-			promoteKpiDpList(req){
+			promoteKpiDpList(){
 				let arg = {
 					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
@@ -562,12 +650,14 @@
 					dept_id:this.dept_ids.join(','),
 					type:this.type,
 					sort:this.sort,
+					sort_type:this.sort_type,
 					page:this.page,
 					pagesize:this.pagesize
 				}
-				if(req){
-					arg = {...arg,...req};
+				if(this.gxmyxyl === 1){
+					arg['gxmy_flag'] = this.gxmyxyl;
 				}
+				arg = {...arg,...this.qpt_arg};
 				this.current_arg = arg;
 				this.table_loading = true;
 				return new Promise((resolve)=>{
@@ -620,7 +710,7 @@
 						//获取列表
 						this.page = 1;
 						this.pagesize = 10;
-						this.promoteKpiDpList();
+						this.promoteKpiDpList(this.current_arg);
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -640,6 +730,9 @@
 					dept_id:this.current_arg.dept_id,
 					type:this.current_arg.type,
 					sort:this.current_arg.sort,
+				}
+				if(this.gxmyxyl === 1){
+					req['gxmy_flag'] = this.gxmyxyl;
 				}
 				var export_arr = [];
 				for(let key in req){

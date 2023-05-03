@@ -145,14 +145,14 @@
 			</div>
 		</div>
 		<div class="top_box mytj flex fc">
-			<div class="table_title flex ac jc bold f14">营销费用贡献毛益统计</div>
+			<div class="table_title flex ac jc bold f14">贡献毛益统计</div>
 			<div class="flex-1 flex jsa ac top_content">
 				<div class="flex fc ac jc">
-					<div class="f13 bold mb-5">营销费用贡献毛益</div>
+					<div class="f13 bold mb-5">贡献毛益</div>
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.gxmy}}</div>
 				</div>
 				<div class="flex fc ac jc">
-					<div class="f13 bold mb-5">营销费用贡献毛益率</div>
+					<div class="f13 bold mb-5">贡献毛益率</div>
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.gxmyl}}</div>
 				</div>
 			</div>

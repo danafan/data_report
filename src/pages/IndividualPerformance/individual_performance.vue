@@ -130,6 +130,7 @@
 				total:0,
 				title_list:[],
 				sort:"",
+				sort_type:"",
 				custom_loading:false,
 				show_custom:false,
 				selected_ids:[],							//自定义已选中的id
@@ -159,6 +160,10 @@
 		methods:{
 			//点击搜索
 			async searchFn(){
+				this.gr_loading = true;
+				this.pie_loading = true;
+				this.dashed_loading = true;
+				this.table_loading = true;
 				//获取推广负责人柱状图数据
 				await this.userPromoteTotal()
 				//获取气泡图数据
@@ -216,44 +221,103 @@
 							this.gr_loading = false;
 							this.pie_loading = false;
 							let data = res.data.data;
+							// 顶部用户信息
 							this.user_info = data.user_info;
 							this.user_yesterday_roi = data.yesterday_roi;
 							this.user_month_roi = data.month_roi;
-							let x_axis = data.chart.day_list;
-							let series_data = data.chart.list;
-							let self_roi = [];
-							let company_roi = [];
-							let month_roi = [];
-							for(let i = 0;i < series_data.length;i ++){
-								self_roi.push(data.self_roi)
-								company_roi.push(data.company_roi)
-								month_roi.push(data.month_roi)
-							}
 							var echarts = require("echarts");
+							
+							// 折线图
 							var gr_chart = document.getElementById(`gr_chart`);
 							this.grChart = echarts.getInstanceByDom(gr_chart)
 							if (this.grChart == null) { 
 								this.grChart = echarts.init(gr_chart);
 							}
-							this.grChart.setOption(this.setBarOptions(x_axis,series_data,self_roi,company_roi,month_roi));
-
-							let legend_data = [];
-							let pie_series_data = [];
-							data.pie_data.map(item => {
-								legend_data.push(item.name);
-								let pie_item = {
-									name:item.name,
-									value:item.zb,
-									money:item.money
+							if(data.chart.length == 0){		//无数据
+								let option = {
+									title: {
+										text: '个人ROI折线图'
+									},
+									graphic: {
+										type: 'text',
+										left: 'center',
+										top: 'middle',
+										silent: true,
+										invisible: false, 
+										style: {
+											fill: 'black',
+											text: '暂无数据',
+											fontSize: '16px'
+										}
+									}
 								}
-								pie_series_data.push(pie_item)
-							})
+								if (this.grChart) { 
+									this.grChart.clear();
+								}
+								this.grChart.setOption(option);
+							}else{
+								let x_axis = data.chart.day_list;
+								let series_data = data.chart.list;
+								let self_roi = [];
+								let company_roi = [];
+								let month_roi = [];
+								for(let i = 0;i < series_data.length;i ++){
+									self_roi.push(data.self_roi)
+									company_roi.push(data.company_roi)
+									month_roi.push(data.month_roi)
+								}
+								if (this.grChart) { 
+									this.grChart.clear();
+								}
+								this.grChart.setOption(this.setBarOptions(x_axis,series_data,self_roi,company_roi,month_roi));
+							}
+							
+							// 饼图
 							var pie_chart = document.getElementById('pie_chart');
 							this.pieChart = echarts.getInstanceByDom(pie_chart)
 							if (this.pieChart == null) { 
 								this.pieChart = echarts.init(pie_chart);
 							}
-							this.pieChart.setOption(this.setPieOptions(legend_data,pie_series_data));
+							if(data.pie_data.length == 0){		//无数据
+								let option = {
+									title: {
+										text: '推广费用结构图'
+									},
+									graphic: {
+										type: 'text',
+										left: 'center',
+										top: 'middle',
+										silent: true,
+										invisible: false, 
+										style: {
+											fill: 'black',
+											text: '暂无数据',
+											fontSize: '16px'
+										}
+									}
+								}
+								if (this.pieChart) { 
+									this.pieChart.clear();
+								}
+								this.pieChart.setOption(option);
+							}else{
+								let legend_data = [];
+								let pie_series_data = [];
+								data.pie_data.map(item => {
+									legend_data.push(item.name);
+									let pie_item = {
+										name:item.name,
+										value:item.zb,
+										money:item.money
+									}
+									pie_series_data.push(pie_item)
+								})
+								if (this.pieChart) { 
+									this.pieChart.clear();
+								}
+								this.pieChart.setOption(this.setPieOptions(legend_data,pie_series_data));
+							}
+							// 刷新
 							window.addEventListener('resize',this.debounce(()=>{
 								this.grChart.resize();
 								this.pieChart.resize();
@@ -299,11 +363,19 @@
 						data: x_axis
 					},
 					yAxis: {
-						type: 'value'
+						type: 'value',
+						min:-1,
+						max:18,
 					},
 					series: [
 					{
 						data: series_data,
+						label: {
+							show: true,
+							position: 'top',
+							color: 'inherit',
+							fontWeight:'bold',
+						},
 						type: 'line'
 					},
 					{
@@ -453,25 +525,53 @@
 						resolve();
 						if(res.data.code == 1){
 							this.dashed_loading = false;
-							let data = res.data.data.list;
-							let chart_data = [];
-							data.map(item => {
-								let item_arr = [];
-								item_arr.push(item.yk);
-								item_arr.push(item.roi);
-								item_arr.push(item.zsgmv);
-								item_arr.push(item.name);
-								chart_data.push(item_arr)
-							})
-
+							let data = res.data.data;
 							var echarts = require("echarts");
 							var dashed_chart = document.getElementById('dashed_chart');
 							this.dashedChart = echarts.getInstanceByDom(dashed_chart)
 							if (this.dashedChart == null) { 
 								this.dashedChart = echarts.init(dashed_chart);
 							}
-							this.dashedChart.setOption(this.setDashedOptions(chart_data));
-
+							if(data.length == 0){		//无数据
+								let option = {
+									title: {
+										text: 'ROI气泡图统计',
+										left: '5%',
+										top: '0'
+									},
+									graphic: {
+										type: 'text',
+										left: 'center',
+										top: 'middle',
+										silent: true,
+										invisible: false, 
+										style: {
+											fill: 'black',
+											text: '暂无数据',
+											fontSize: '16px'
+										}
+									}
+								}
+								if (this.dashedChart) { 
+									this.dashedChart.clear();
+								}
+								this.dashedChart.setOption(option);
+							}else{
+								var max = Math.max.apply(Math, data.list.map(i => {return i.zsgmv }));
+								let chart_data = [];
+								data.list.map(item => {
+									let item_arr = [];
+									item_arr.push(item.yk);
+									item_arr.push(item.roi);
+									item_arr.push(item.zsgmv);
+									item_arr.push(item.name);
+									chart_data.push(item_arr)
+								})
+								if (this.dashedChart) { 
+									this.dashedChart.clear();
+								}
+								this.dashedChart.setOption(this.setDashedOptions(chart_data,max));
+							}
 							window.addEventListener('resize',this.debounce(()=>{
 								this.dashedChart.resize()
 							}, 50));
@@ -490,7 +590,7 @@
 				} 
 			},
 			//气泡图渲染
-			setDashedOptions(data){
+			setDashedOptions(data,max){
 				var echarts = require("echarts");
 				return {
 					tooltip: {
@@ -532,12 +632,12 @@
 						axisLine:{
 							onZero:false
 						},
-						offset:-127
+						offset:-140
 					},
 					yAxis: {
 						name:'ROI',
 						scale:true,
-						min:0,
+						min:-1,
 						max:18,
 					},
 					series: [
@@ -546,23 +646,28 @@
 						type: 'scatter',
 						label:{
 							show:true,
+							color:'blue',
+							fontWeight:'bold',
 							formatter: (params) => {
 								return params.data[2] > 10000?params.data[3]:'';
 							},
 						},	
 						symbolSize: function (data) {
-							return Math.sqrt(data[2]) / 2;
+							let r = 0;
+							if(100000/max > 1){
+								r = Math.sqrt(data[2]) / 2;
+							}else{
+								if(100000/max >= 0.8){
+									r =(Math.sqrt(data[2]) * 100000/max)/1.8;
+								}else if(100000/max >= 0.5 && 100000/max < 0.8){
+									r =(Math.sqrt(data[2]) * 100000/max)/1.2;
+								}else if(100000/max < 0.5){
+									r =(Math.sqrt(data[2]) * 100000/max)/0.8;
+								}
+							}
+							return r;
 						},
-						// markLine:{
-						// 	data: [{
-						// 		name: 'Y 轴值为 100 的水平线',
-						// 		yAxis: 6
-						// 	}]
-						// },
 						itemStyle: {
-							// shadowBlur: 10,
-							// shadowColor: 'rgba(120, 36, 50, 0.5)',
-							// shadowOffsetY: 5,
 							color:({seriesIndex, dataIndex, data, value}) => {
 								if(data[0] > 0 && data[1] > 6){
 									return 'green'
@@ -591,6 +696,7 @@
 					pp:this.select_pp_list.join(','),
 					type:this.type,
 					sort:this.sort,
+					sort_type:this.sort_type,
 					page:this.page,
 					pagesize:this.pagesize
 				}
