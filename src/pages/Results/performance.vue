@@ -2,9 +2,9 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<NewItemAnalysis v-if="item.web_url == 'new_item_analysis' && activeTab == 'new_item_analysis'"/>
-				<PromotionPerformance v-if="item.web_url == 'promotion_performance' && activeTab == 'promotion_performance'"/>
-				<IndividualPerformance v-if="item.web_url == 'individual_performance' && activeTab == 'individual_performance'"/>
+				<NewItemAnalysis v-if="item.web_url == 'new_item_analysis'"/>
+				<PromotionPerformance v-if="item.web_url == 'promotion_performance'"/>
+				<IndividualPerformance v-if="item.web_url == 'individual_performance'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

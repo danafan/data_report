@@ -23,19 +23,47 @@
 			</el-form-item>
 		</el-form>
 		<!-- 个人信息 -->
-		<el-divider></el-divider>
+		<!-- <el-divider></el-divider>
 		<div class="flex ac jsb f12">
 			<div>姓名：{{user_info.ding_user_name}}</div>
 			<div>部门：{{user_info.dept_1_name}}</div>
 			<div>入职时间：{{user_info.entry_time}}</div>
 			<div>昨日ROI：{{user_yesterday_roi}}</div>
 			<div>30日ROI：{{user_month_roi}}</div>
+			<div>收入占店铺比：{{gmv_shop_zb}}</div>
+			<div>收入占公司比：{{company_zb}}</div>
 		</div>
-		<el-divider></el-divider>
-		<!-- 顶部柱状图 -->
-		<div class="bar_chart" id="gr_chart" v-loading="gr_loading"></div>
+		<el-divider></el-divider> -->
+		<div class="flex mb-20 relative">
+			<el-table :data="dp_zb_list" max-height="180" size="mini" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="info_loading">
+				<el-table-column show-overflow-tooltip prop="shop_name" label="店铺名称" width="150"  align="center">
+				</el-table-column>
+				<el-table-column prop="zsgmv_zb" label="店铺占比" width="100" align="center">
+				</el-table-column>
+			</el-table>
+			<el-table class="info_table" :data="info_zb_list" size="mini" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="info_loading">
+				<el-table-column prop="company_zb" label="公司占比" width="100" align="center">
+				</el-table-column>
+				<el-table-column show-overflow-tooltip prop="ding_user_name" label="姓名" width="100" align="center">
+				</el-table-column>
+				<el-table-column show-overflow-tooltip prop="dept_1_name" label="部门" width="100" align="center">
+				</el-table-column>
+				<el-table-column show-overflow-tooltip prop="entry_time" label="入职时间" width="100" align="center">
+				</el-table-column>
+				<el-table-column prop="yesterday_roi" label="昨日ROI" width="100" align="center">
+				</el-table-column>
+				<el-table-column prop="month_roi" label="30日ROI" width="100" align="center">
+				</el-table-column>
+			</el-table>
+		</div>
+		<!-- 个人roi折线图 -->
+		<div class="bar_chart" id="gr_chart" v-loading="info_loading"></div>
+		<!-- 个人gmv柱状图 -->
+		<div class="bar_chart" id="gmv_chart" v-loading="info_loading"></div>
+		<!-- 个人销量柱状图 -->
+		<div class="bar_chart" id="xl_chart" v-loading="info_loading"></div>
 		<!-- 顶部饼图 -->
-		<div class="pie_chart" id="pie_chart" v-loading="pie_loading"></div>
+		<div class="pie_chart" id="pie_chart" v-loading="info_loading"></div>
 		<div class="flex jse">
 			<el-radio-group v-model="type" size="small">
 				<el-radio-button label="gys">供应商</el-radio-button>
@@ -50,7 +78,7 @@
 			<PopoverWidget title="指标汇总" :show_popover="false"/>
 			<div class="flex ac">
 				<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="commitExport" :loading="table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<custom-table v-loading="table_loading" :isLoading="table_loading" tableName="promotion" max_height="350" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url' v-if="!custom_loading"/>
@@ -113,7 +141,7 @@
 						}
 					}]
 				},	 										//时间区间
-				date:[lastXDate(7),getCurrentDate()],//日期
+				date:[lastXDate(7),getCurrentDate()],		//日期
 				tgfzr_list:[],								//员工列表
 				tgfzr_ids:'宋鑫磊',							//推广负责人
 				type:'gys',									//类型
@@ -121,9 +149,9 @@
 				select_pp_list:[],							//选中的品牌列表
 				dashedChart:null,							//气泡图
 				dashed_loading:false,						//气泡图加载
-				gr_loading:false,
-				pie_loading:false,
+				info_loading:false,
 				grChart:null,
+				gmvChart:null,
 				table_loading:false,
 				table_data:[],
 				table_total_data:{},
@@ -141,6 +169,9 @@
 				user_info:{},
 				user_yesterday_roi:'',
 				user_month_roi:"",
+				dp_zb_list:[],								//个人店铺占比列表
+				info_zb_list:[],							//个人信息列表
+				company_zb:"",								//个人公司占比
 			}
 		},
 		watch:{
@@ -160,8 +191,7 @@
 		methods:{
 			//点击搜索
 			async searchFn(){
-				this.gr_loading = true;
-				this.pie_loading = true;
+				this.info_loading = true;
 				this.dashed_loading = true;
 				this.table_loading = true;
 				//获取推广负责人柱状图数据
@@ -201,7 +231,7 @@
 					})
 				}
 			},
-			//获取顶部折线图数据
+			//顶部个人信息/折线图/饼图
 			userPromoteTotal(){
 				let arg = {
 					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
@@ -212,22 +242,32 @@
 					dept_id:this.dept_ids.join(','),
 					pp:this.select_pp_list.join(',')
 				}
-				this.gr_loading = true;
-				this.pie_loading = true;
+				this.info_loading = true;
 				return new Promise((resolve)=>{
 					resource.userPromoteTotal(arg).then(res => {
 						resolve();
 						if(res.data.code == 1){
-							this.gr_loading = false;
-							this.pie_loading = false;
+							this.info_loading = false;
 							let data = res.data.data;
 							// 顶部用户信息
+							this.info_zb_list = [];
+							let info_item = {
+								ding_user_name:data.user_info.ding_user_name,
+								dept_1_name:data.user_info.dept_1_name,
+								entry_time:data.user_info.entry_time,
+								yesterday_roi:data.yesterday_roi,
+								month_roi:data.month_roi,
+								company_zb:data.company_zb
+							}
+							this.info_zb_list.push(info_item);
 							this.user_info = data.user_info;
-							this.user_yesterday_roi = data.yesterday_roi;
+							// this.user_yesterday_roi = data.yesterday_roi;
 							this.user_month_roi = data.month_roi;
+							this.dp_zb_list = data.dp_zb_list;//个人店铺占比列表
+							this.company_zb = data.company_zb;//个人公司占比
 							var echarts = require("echarts");
 							
-							// 折线图
+							// 个人roi折线图
 							var gr_chart = document.getElementById(`gr_chart`);
 							this.grChart = echarts.getInstanceByDom(gr_chart)
 							if (this.grChart == null) { 
@@ -269,7 +309,79 @@
 								if (this.grChart) { 
 									this.grChart.clear();
 								}
-								this.grChart.setOption(this.setBarOptions(x_axis,series_data,self_roi,company_roi,month_roi));
+								this.grChart.setOption(this.setLineOptions(x_axis,series_data,self_roi,company_roi,month_roi));
+							}
+							// 个人gmv柱状图
+							var gmv_chart = document.getElementById(`gmv_chart`);
+							this.gmvChart = echarts.getInstanceByDom(gmv_chart)
+							if (this.gmvChart == null) { 
+								this.gmvChart = echarts.init(gmv_chart);
+							}
+							if(data.chart.length == 0){		//无数据
+								let option = {
+									title: {
+										text: '个人GMV柱状图'
+									},
+									graphic: {
+										type: 'text',
+										left: 'center',
+										top: 'middle',
+										silent: true,
+										invisible: false, 
+										style: {
+											fill: 'black',
+											text: '暂无数据',
+											fontSize: '16px'
+										}
+									}
+								}
+								if (this.gmvChart) { 
+									this.gmvChart.clear();
+								}
+								this.gmvChart.setOption(option);
+							}else{
+								let gmv_x_axis = data.chart.day_list;
+								let gmv_series_data = data.chart.zsgmv_list;
+								if (this.gmvChart) { 
+									this.gmvChart.clear();
+								}
+								this.gmvChart.setOption(this.setBarOptions('个人GMV柱状图','GMV',gmv_x_axis,gmv_series_data));
+							}
+							// 个人销量柱状图
+							var xl_chart = document.getElementById(`xl_chart`);
+							this.xlChart = echarts.getInstanceByDom(xl_chart)
+							if (this.xlChart == null) { 
+								this.xlChart = echarts.init(xl_chart);
+							}
+							if(data.chart.length == 0){		//无数据
+								let option = {
+									title: {
+										text: '个人销量柱状图'
+									},
+									graphic: {
+										type: 'text',
+										left: 'center',
+										top: 'middle',
+										silent: true,
+										invisible: false, 
+										style: {
+											fill: 'black',
+											text: '暂无数据',
+											fontSize: '16px'
+										}
+									}
+								}
+								if (this.xlChart) { 
+									this.xlChart.clear();
+								}
+								this.xlChart.setOption(option);
+							}else{
+								let xl_x_axis = data.chart.day_list;
+								let xl_series_data = data.chart.zsxl_list;
+								if (this.xlChart) { 
+									this.xlChart.clear();
+								}
+								this.xlChart.setOption(this.setBarOptions('个人销量柱状图','销量',xl_x_axis,xl_series_data));
 							}
 							
 							// 饼图
@@ -321,15 +433,17 @@
 							window.addEventListener('resize',this.debounce(()=>{
 								this.grChart.resize();
 								this.pieChart.resize();
+								this.gmvChart.resize();
+								this.xlChart.resize();
 							}, 50));
 						}else{
 							this.$message.warning(res.data.msg);
 						}
 					})
-				})
-			},
+})
+},
 			//折线图渲染
-			setBarOptions(x_axis,series_data,self_roi,company_roi,month_roi){
+			setLineOptions(x_axis,series_data,self_roi,company_roi,month_roi){
 				return {
 					title:{
 						text:'个人ROI折线图'
@@ -354,18 +468,20 @@
 					},
 					grid: {
 						left: '8%',
-						top: '15%',
+						top: '18%',
 						right:'10%',
 						bottom:'10%'
 					},
 					xAxis: {
 						type: 'category',
-						data: x_axis
+						data: x_axis,
+						name:'日期'
 					},
 					yAxis: {
 						type: 'value',
 						min:-1,
 						max:18,
+						name:'ROI'
 					},
 					series: [
 					{
@@ -456,6 +572,60 @@
 								formatter: '近30天：{c}'
 							}
 						},
+					}
+					]
+				}
+			},
+			//柱状图渲染
+			setBarOptions(title,y_name,x_axis,series_data){
+				return {
+					title:{
+						text:title
+					},
+					tooltip: {
+					    // 提示框组件
+					    trigger: 'item', 
+					    position:'top',
+					    formatter:  (params) => {
+					    	let tip = `${params.name}</br>
+					    	${y_name}：${params.value}`;
+					    	return tip
+					    },
+					    backgroundColor:"rgba(0,0,0,.8)",
+					    textStyle:{
+					    	color:"#ffffff"
+					    },
+					    borderColor:"rgba(0,0,0,0.7)",
+					    axisPointer: {            
+					    	type: 'shadow'        
+					    }
+					},
+					grid: {
+						left: '8%',
+						top: '18%',
+						right:'10%',
+						bottom:'10%'
+					},
+					xAxis: {
+						type: 'category',
+						data: x_axis,
+						name:'日期'
+					},
+					yAxis: {
+						type: 'value',
+						name:y_name
+					},
+					series: [
+					{
+						data: series_data,
+						label: {
+							show: true,
+							position: 'top',
+							color: 'inherit',
+							fontWeight:'bold',
+							rotate:55
+						},
+						type: 'bar'
 					}
 					]
 				}
@@ -565,6 +735,8 @@
 									item_arr.push(item.roi);
 									item_arr.push(item.zsgmv);
 									item_arr.push(item.name);
+									item_arr.push(item.xssl);
+									item_arr.push(item.mll);
 									chart_data.push(item_arr)
 								})
 								if (this.dashedChart) { 
@@ -601,7 +773,9 @@
 					    	let tip = `${params.data[3]}</br>
 					    	ROI：${params.data[1]}</br>
 					    	贡献毛益：${params.data[0]}</br>
-					    	GMV：${params.data[2]}</br>`;
+					    	GMV：${params.data[2]}</br>
+					    	销量：${params.data[4]}</br>
+					    	毛利率：${params.data[5]}</br>`;
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",
@@ -814,6 +988,10 @@
 	}
 </script>
 <style lang="less" scoped>
+.info_table{
+	position: absolute;
+	left: 250px;
+}
 .bar_chart{
 	width: 100%;
 	height: 300px;

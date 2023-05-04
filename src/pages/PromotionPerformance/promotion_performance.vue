@@ -62,7 +62,7 @@
 			<PopoverWidget title="指标汇总" :show_popover="false"/>
 			<div class="flex ac">
 				<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="commitExport" :loading="table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<custom-table v-loading="table_loading" :isLoading="table_loading" tableName="promotion" max_height="350" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url' v-if="!custom_loading"/>
@@ -497,6 +497,8 @@
 									item_arr.push(item.roi);
 									item_arr.push(item.zsgmv);
 									item_arr.push(item.name);
+									item_arr.push(item.xssl);
+									item_arr.push(item.mll);
 									if(item.dept_id){
 										item_arr.push({dept_id:item.dept_id})
 									}else if(item.shop_id){
@@ -553,7 +555,9 @@
 					    	let tip = `${params.data[3]}</br>
 					    	ROI：${params.data[1]}</br>
 					    	贡献毛益：${params.data[0]}</br>
-					    	GMV：${params.data[2]}</br>`;
+					    	GMV：${params.data[2]}</br>
+					    	销量：${params.data[4]}</br>
+					    	毛利率：${params.data[5]}</br>`;
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",

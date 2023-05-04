@@ -103,6 +103,11 @@
 					<div class="absolute space-nowrap zb">{{top_data.ylmf_xh_dp_zb}}</div>
 				</div>
 				<div class="height-100 flex fc ac jc relative">
+					<div class="f13 bold mb-5">鱼塘天猫佣金</div>
+					<div class="f15 bold money" v-loading="top_loading">{{top_data.yttmyj}}</div>
+					<div class="absolute space-nowrap zb">{{top_data.yttmyj_zb}}</div>
+				</div>
+				<div class="height-100 flex fc ac jc relative">
 					<div class="f13 bold mb-5">淘客佣金</div>
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.tbk_yj}}</div>
 					<div class="absolute space-nowrap zb">{{top_data.tbk_yj_zb}}</div>
@@ -137,11 +142,7 @@
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.sd_yj}}</div>
 					<div class="absolute space-nowrap zb">{{top_data.sd_yj_zb}}</div>
 				</div>
-				<div class="height-100 flex fc ac jc relative">
-					<div class="f13 bold mb-5">鱼塘快递费</div>
-					<div class="f15 bold money" v-loading="top_loading">{{top_data.ytkdf}}</div>
-					<div class="absolute space-nowrap zb">{{top_data.ytkdf_zb}}</div>
-				</div>
+				
 			</div>
 		</div>
 		<div class="top_box mytj flex fc">
