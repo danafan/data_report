@@ -22,20 +22,8 @@
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<!-- 个人信息 -->
-		<!-- <el-divider></el-divider>
-		<div class="flex ac jsb f12">
-			<div>姓名：{{user_info.ding_user_name}}</div>
-			<div>部门：{{user_info.dept_1_name}}</div>
-			<div>入职时间：{{user_info.entry_time}}</div>
-			<div>昨日ROI：{{user_yesterday_roi}}</div>
-			<div>30日ROI：{{user_month_roi}}</div>
-			<div>收入占店铺比：{{gmv_shop_zb}}</div>
-			<div>收入占公司比：{{company_zb}}</div>
-		</div>
-		<el-divider></el-divider> -->
 		<div class="flex mb-20 relative">
-			<el-table :data="dp_zb_list" max-height="180" size="mini" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="info_loading">
+			<el-table class="user_info_table" :data="dp_zb_list" max-height="180" size="mini" tooltip-effect="dark" :header-cell-style="{'background':'#f4f4f4'}" v-loading="info_loading">
 				<el-table-column show-overflow-tooltip prop="shop_name" label="店铺名称" width="150"  align="center">
 				</el-table-column>
 				<el-table-column prop="zsgmv_zb" label="店铺占比" width="100" align="center">
@@ -430,12 +418,12 @@
 								this.pieChart.setOption(this.setPieOptions(legend_data,pie_series_data));
 							}
 							// 刷新
-							window.addEventListener('resize',this.debounce(()=>{
-								this.grChart.resize();
-								this.pieChart.resize();
-								this.gmvChart.resize();
-								this.xlChart.resize();
-							}, 50));
+							// window.addEventListener('resize',this.debounce(()=>{
+							// 	this.grChart.resize();
+							// 	this.pieChart.resize();
+							// 	this.gmvChart.resize();
+							// 	this.xlChart.resize();
+							// }, 50));
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -744,9 +732,9 @@
 								}
 								this.dashedChart.setOption(this.setDashedOptions(chart_data,max));
 							}
-							window.addEventListener('resize',this.debounce(()=>{
-								this.dashedChart.resize()
-							}, 50));
+							// window.addEventListener('resize',this.debounce(()=>{
+							// 	this.dashedChart.resize()
+							// }, 50));
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -987,7 +975,20 @@
 		}
 	}
 </script>
+<style type="text/css">
+.user_info_table .el-table__empty-block{
+	min-height: 36px!important;
+}
+.user_info_table .el-table__empty-block .el-table__empty-text{
+	line-height: 36px!important;
+}
+/*.el-table__row>td{ border: none!important; }*/
+
+.el-table::before { height: 0px!important; } 
+</style>
 <style lang="less" scoped>
+
+
 .info_table{
 	position: absolute;
 	left: 250px;

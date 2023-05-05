@@ -39,14 +39,37 @@
 		</el-form>
 		<!--  推广负责人 -->
 		<div class="bar_chart_100" id="fzr_chart" v-loading="fzr_loading"></div>
-		<div class="flex mt-10">
-			<div class="bar_chart_50" id="dept_chart" v-loading="dept_loading"></div>
-			<div class="bar_chart_50" id="dpid_chart" v-loading="dpid_loading"></div>
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="postExport('推广负责人ROI','fzr')" :loading="fzr_table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<custom-table v-loading="fzr_table_loading" :isLoading="fzr_table_loading" tableName="fzr" :table_data="fzr_table_data" :title_list="fzr_title_list"/>
+		<div class="flex jsb mt-10">
+			<div class="width-50">
+				<div class="bar_chart_100" id="dept_chart" v-loading="dept_loading"></div>
+				<div class="flex jse mb-10">
+					<el-button type="primary" plain size="small" @click="postExport('项目部ROI','dept')" :loading="dept_table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
+				<custom-table class="width-100" v-loading="dept_table_loading" :isLoading="dept_table_loading" tableName="dept" :table_data="dept_table_data" :title_list="dept_title_list"/>
+			</div>
+			<div class="width-50">
+				<div class="bar_chart_100" id="dpid_chart" v-loading="dpid_loading"></div>
+				<div class="flex jse mb-10">
+					<el-button type="primary" plain size="small" @click="postExport('店铺ROI','dpid')" :loading="dpid_table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
+				<custom-table class="width-100" v-loading="dpid_table_loading" :isLoading="dpid_table_loading" tableName="dept" :table_data="dpid_table_data" :title_list="dpid_title_list"/>
+			</div>
 		</div>
 		<div class="bar_chart_100 mt-10" id="gys_chart" v-loading="gys_loading"></div>
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="postExport('供应商ROI','gys')" :loading="gys_table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<custom-table v-loading="gys_table_loading" :isLoading="gys_table_loading" tableName="gys" :table_data="gys_table_data" :title_list="gys_title_list"/>
 		<div class="bar_chart_100 mt-10" id="cpfl_chart" v-loading="cpfl_loading"></div>
-
-		<div class="flex jse">
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="postExport('品类ROI','cpfl')" :loading="cpfl_table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<custom-table v-loading="cpfl_table_loading" :isLoading="cpfl_table_loading" tableName="cpfl" :table_data="cpfl_table_data" :title_list="cpfl_title_list"/>
+		<div class="flex jse mt-15">
 			<el-radio-group v-model="type" size="small">
 				<el-radio-button label="fzr">人员</el-radio-button>
 				<el-radio-button label="dept">项目部</el-radio-button>
@@ -62,7 +85,7 @@
 			<PopoverWidget title="指标汇总" :show_popover="false"/>
 			<div class="flex ac">
 				<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-				<el-button type="primary" plain size="small" @click="commitExport" :loading="table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="commitExport('promote_kpi_dp_export')" :loading="table_loading">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<custom-table v-loading="table_loading" :isLoading="table_loading" tableName="promotion" max_height="350" :table_data="table_data" :title_list="title_list" :is_wrap="true" :is_custom_sort="false" :total_row="true" :table_total_data="table_total_data" @sortCallBack="sortCallBack" @tableCallBack="tableCallBack" fieldName='spid_url' v-if="!custom_loading"/>
@@ -87,14 +110,12 @@
 	import dps from '../../components/results_components/dps.vue'
 	import resource from '../../api/promotion.js'
 	import commonResource from '../../api/resource.js'
-
 	import CustomTable from '../../components/custom_table.vue'
 	import PageWidget from '../../components/pagination_widget.vue'
 	import PopoverWidget from '../../components/popover_widget.vue'
-
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,lastMonthDate,lastXDate} from '../../api/nowMonth.js'
-
-	import {exportUp} from '../../api/export.js'
+	import {exportUp,exportPost} from '../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		data(){
 			return{
@@ -139,10 +160,15 @@
 				dashedChart:null,							//气泡图
 				dashed_loading:false,						//气泡图加载
 				fzr_loading:false,
+				fzr_table_loading:false,
 				dept_loading:false,
+				dept_table_loading:false,
 				dpid_loading:false,
+				dpid_table_loading:false,
 				gys_loading:false,
+				gys_table_loading:false,
 				cpfl_loading:false,
+				cpfl_table_loading:false,
 				fzrChart:null,
 				deptChart:null,
 				dpidChart:null,
@@ -163,7 +189,17 @@
 				page:1,
 				pagesize:10,
 				current_arg:{},
-				qpt_arg:{}
+				qpt_arg:{},
+				fzr_table_data:[],			//推广负责人roi表格数据
+				fzr_title_list:[],			//推广负责人roi表头数据
+				dept_table_data:[],			//项目部roi表格数据
+				dept_title_list:[],			//项目部roi表头数据
+				dpid_table_data:[],			//店铺roi表格数据
+				dpid_title_list:[],			//店铺roi表头数据
+				gys_table_data:[],			//供应商roi表格数据
+				gys_title_list:[],			//供应商roi表头数据
+				cpfl_table_data:[],			//产品分类roi表格数据
+				cpfl_title_list:[],			//产品分类roi表头数据
 			}
 		},
 		watch:{
@@ -190,21 +226,32 @@
 			async searchFn(){
 				//获取推广负责人柱状图数据
 				this.fzr_loading = true;
+				this.fzr_table_loading = true;
 				this.dept_loading = true;
+				this.dept_table_loading = true;
 				this.dpid_loading = true;
+				this.dpid_table_loading = true;
 				this.gys_loading = true;
+				this.gys_table_loading = true;
 				this.cpfl_loading = true;
+				this.cpfl_table_loading = true;
 				this.dashed_loading = true;
 				this.table_loading = true;
+				//推广负责人ROI
 				await this.promoteKpiChart('fzr','推广负责人ROI')
-				//获取项目部柱状图数据
+				await this.dpPromoteGroupList('fzr');
+				//项目部ROI
 				await this.promoteKpiChart('dept','项目部ROI')
-				//获取店铺柱状图数据
+				await this.dpPromoteGroupList('dept');
+				//店铺ROI
 				await this.promoteKpiChart('dpid','店铺ROI')
-				//获取供应商柱状图数据
+				await this.dpPromoteGroupList('dpid');
+				//供应商ROI
 				await this.promoteKpiChart('gys','供应商ROI')
-				//获取品类柱状图数据
+				await this.dpPromoteGroupList('gys');
+				//品类ROI
 				await this.promoteKpiChart('cpfl','品类ROI')
+				await this.dpPromoteGroupList('cpfl');
 				//获取气泡图数据
 				this.type = 'fzr';
 				await this.scatterChart();
@@ -350,9 +397,9 @@
 								this[`${type}Chart`].setOption(this.setBarOptions(title,x_axis,series_data,line_data,type));
 							}
 							
-							window.addEventListener('resize',this.debounce(()=>{
-								this[`${type}Chart`].resize();
-							}, 50));
+							// window.addEventListener('resize',this.debounce(()=>{
+							// 	this[`${type}Chart`].resize();
+							// }, 50));
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -433,6 +480,37 @@
 					}
 					]
 				}
+			},
+			//获取表格数据
+			dpPromoteGroupList(type){
+				let arg = {
+					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
+					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
+					tgfzr:this.tgfzr_ids.join(','),
+					shop_id:this.shop_ids.join(','),
+					cpfl:this.select_pl_ids.join(','),
+					pp:this.select_pp_list.join(','),
+					gys:this.select_gys_ids.join(','),
+					platform:this.platform_ids.join(','),
+					dept_id:this.dept_ids.join(','),
+					type:type
+				}
+				if(this.gxmyxyl === 1){
+					arg['gxmy_flag'] = this.gxmyxyl;
+				}
+				return new Promise((resolve)=>{
+					resource.dpPromoteGroupList(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this[`${type}_table_loading`] = false;
+							let data = res.data.data;
+							this[`${type}_table_data`] = data.table_data;
+							this[`${type}_title_list`] = data.title_list;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				})
 			},
 			//获取气泡图数据
 			scatterChart(){
@@ -520,9 +598,9 @@
 								this.dashedChart.setOption(this.setDashedOptions(chart_data,max));
 							}
 							
-							window.addEventListener('resize',this.debounce(()=>{
-								this.dashedChart.resize()
-							}, 50));
+							// window.addEventListener('resize',this.debounce(()=>{
+							// 	this.dashedChart.resize()
+							// }, 50));
 							this.dashedChart.off('click');
 							this.dashedChart.on('click',(params) => {
 								this.qpt_arg = params.data[params.data.length - 1];
@@ -720,8 +798,42 @@
 					}
 				});
 			},
+			//上面导出
+			postExport(title,type){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
+						tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
+						tgfzr:this.tgfzr_ids.join(','),
+						shop_id:this.shop_ids.join(','),
+						cpfl:this.select_pl_ids.join(','),
+						pp:this.select_pp_list.join(','),
+						gys:this.select_gys_ids.join(','),
+						platform:this.platform_ids.join(','),
+						dept_id:this.dept_ids.join(','),
+						type:type,
+					}
+					if(this.gxmyxyl === 1){
+						arg['gxmy_flag'] = this.gxmyxyl;
+					}
+					resource.dpPromoteGroupExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,title);
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//导出
-			commitExport(){
+			commitExport(export_url){
 				let req = {
 					tjrq_start:this.current_arg.tjrq_start,
 					tjrq_end:this.current_arg.tjrq_end,
@@ -742,7 +854,7 @@
 				for(let key in req){
 					export_arr.push(`${key}=${req[key]}`);
 				}
-				let url = "annual/promote_kpi_dp_export?" + export_arr.join("&");
+				let url = `annual/${export_url}?${export_arr.join("&")}`;
 				exportUp(url)
 			},
 			//排序回调
