@@ -268,6 +268,8 @@ let path = {
 	dpNewAnalysisTotal:'annual/dp_new_analysis_total',				//新-单品分析头部汇总
 	PerformanceReportYeJi:'PerformanceReport/yeji',					//业绩分析报表（新）接口
 	ajaxTgfzr:'common/ajaxTgfzr',									//推广负责人列表
+	dayBusiness:'supplier/day_business',							//每日合计--营销费用投产情况
+	dayBusinessExport:'supplier/day_business_export',				//每日合计--营销费用投产情况导出
 		
 
 }					
@@ -1375,6 +1377,14 @@ export default{
 	//推广负责人
 	ajaxTgfzr(params){
 		return http.get(path.ajaxTgfzr, params)
+	},
+	//每日合计--营销费用投产情况
+	dayBusiness(params){
+		return http.get(path.dayBusiness, params)
+	},
+	//每日合计--营销费用投产情况导出
+	dayBusinessExport(params){
+		return http.post(path.dayBusinessExport, params)
 	},
 }
 

@@ -49,6 +49,16 @@
 		</div>
 		<custom-table v-loading="shop_loading" :isLoading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
 		<page-widget :page="store_page" :pagesize="store_pagesize" :total="store_total" @handleSizeChange="storeSizeChange" @handlePageChange="storePageChange"/>
+		<!-- 每日合计--营销费用投产情况 -->
+		<div class="flex ac jsb mb-10 mt-10">
+			<div class="custom_title">每日合计--营销费用投产情况</div>
+			<div class="flex ac">
+				<el-button type="primary" size="small" @click="customFn('total_day')">自定义列表</el-button>
+				<el-button type="primary" plain size="small" @click="totalDayExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
+		</div>
+		<custom-table v-loading="total_day_loading" :isLoading="total_day_loading" max_height="560" :table_data="total_day_data" :title_list="total_day_title_list" :total_row="true" :table_total_data="total_day_total_data"/>
+		<page-widget :page="total_day_page" :pagesize="total_day_pagesize" :total="total_day_total" @handleSizeChange="totalDaySizeChange" @handlePageChange="totalDayPageChange"/>
 		<!-- 店铺日数据 -->
 		<div class="flex ac jsb mb-10 mt-10">
 			<div class="custom_title">店铺日数据</div>
@@ -160,9 +170,18 @@
 				sort:"",
 				show_custom:false,			//自定义列表弹窗
 				menu_id:'',					//菜单ID
-				custom_type:'',	//自定义类型(dept:部门;shop:店铺;day:日数据）
+				custom_type:'',		//自定义类型(dept:部门;shop:店铺;day:日数据）
 				selected_ids:[],			//当前选中的所有ID
 				view_row:[],				//当前的列表
+				total_day_data:[],		//店铺总计-营销费用投产情况
+				total_day_view_row:[],
+				total_day_selected_ids:[],
+				total_day_loading:false,
+				total_day_total:0,
+				total_day_title_list:[],			//表头
+				total_day_total_data:{},		//店铺-营销费用投产情况（总计行）
+				total_day_pagesize:10,
+				total_day_page:1,
 			};
 		},
 		created(){
@@ -198,6 +217,10 @@
 				this.store_page = 1;
 				this.store_pagesize = 10;
 				await this.shopBusiness();
+				// 每日合计--营销费用投产情况
+				this.total_day_page = 1;
+				this.total_day_pagesize = 10;
+				await this.dayBusiness()
 				//店铺日数据
 				this.day_page = 1;
 				this.day_pagesize = 10;
@@ -632,6 +655,79 @@
 				this.store_page = val;
 				this.shopBusiness();
 			},
+			// 每日合计--营销费用投产情况
+			dayBusiness(){
+				let arg = {
+					start_time:this.date && this.date.length> 0?this.date[0]:"",
+					end_time:this.date && this.date.length> 0?this.date[1]:"",
+					pp:this.select_pp_list.join(','),
+					platform:this.pl.join(','),
+					dept_id:this.dept_name.join(','),
+					shop_id:this.shop_code.join(','),
+					page:this.store_page,
+					pagesize:this.store_pagesize
+				}
+				this.total_day_loading = true;
+				return new Promise((resolve)=>{
+					resource.dayBusiness(arg).then(res => {
+						resolve();
+						if(res.data.code == 1){
+							this.total_day_loading = false;
+							let data = res.data.data;
+							this.total_day_view_row = data.all_rows;
+							this.total_day_selected_ids = data.selected_ids;
+							let total_day_data = data.data.data;
+							if(total_day_data.length > 0){
+								this.total_day_total_data = total_day_data[0];
+								total_day_data.splice(0,1);
+							}else{
+								this.total_day_total_data = {};
+							}
+							this.total_day_data = total_day_data;
+							this.total_day_total = data.data.total;
+							this.total_day_title_list = data.table_title;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				})
+			},
+			//每日合计-导出
+			totalDayExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_time:this.date && this.date.length> 0?this.date[0]:"",
+						end_time:this.date && this.date.length> 0?this.date[1]:"",
+						pp:this.select_pp_list.join(','),
+						platform:this.pl.join(','),
+						dept_id:this.dept_name.join(','),
+						shop_id:this.shop_code.join(','),
+					}
+					resource.dayBusinessExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'每日合计-营销费用投产情况');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
+			//每日合计—营销费用投产情况分页
+			totalDaySizeChange(val) {
+				this.total_day_pagesize = val;
+				this.dayBusiness();
+			},
+			totalDayPageChange(val) {
+				this.total_day_page = val;
+				this.dayBusiness();
+			},
 			//店铺日数据
 			shopDayBusiness(){
 				let arg = {
@@ -694,6 +790,10 @@
 					this.view_row = this.day_view_row;
 					this.selected_ids = this.day_selected_ids;
 					this.menu_id = '100006';
+				}else if(this.custom_type == 'total_day'){
+					this.view_row = this.total_day_view_row;
+					this.selected_ids = this.total_day_selected_ids;
+					this.menu_id = '100008';
 				}
 				this.show_custom = true;
 			},
@@ -710,6 +810,10 @@
 					})
 				}else if(this.custom_type == 'day'){
 					this.day_view_row.map(item => {
+						this.selected_ids.push(item.row_id)
+					})
+				}else if(this.custom_type == 'total_day'){
+					this.total_day_view_row.map(item => {
 						this.selected_ids.push(item.row_id)
 					})
 				}
@@ -736,6 +840,10 @@
 							this.day_pagesize = 10;
 							this.sort = "";
 							this.shopDayBusiness()
+						}else if(this.custom_type == 'total_day'){
+							this.total_day_page = 1;
+							this.total_day_pagesize = 10;
+							this.dayBusiness()
 						}
 					}else{
 						this.$message.warning(res.data.msg);
