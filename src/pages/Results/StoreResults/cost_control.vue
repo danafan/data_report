@@ -664,8 +664,8 @@
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
-					page:this.store_page,
-					pagesize:this.store_pagesize
+					page:this.total_day_page,
+					pagesize:this.total_day_pagesize
 				}
 				this.total_day_title_list = [];
 				this.total_day_loading = true;

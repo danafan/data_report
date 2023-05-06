@@ -71,6 +71,8 @@ let path = {
 	ytHandleList:'audit/yt_handle_list',							//SD处理反馈表
 	ytHandle:'audit/yt_handle',										//提交处理
 	ytSudit:'audit/yt_audit',										//提交审核
+	pddMonthBill:'audit/pdd_month_bill',							//拼多多账单
+	pddBalance:'audit/pdd_balance',									//拼多多账单余额
 }						
 export default{
 	//款式编码列表
@@ -360,6 +362,14 @@ export default{
 	//提交审核
 	ytSudit(params){
 		return http.post(path.ytSudit, params)
+	},
+	//拼多多账单
+	pddMonthBill(params){
+		return http.get(path.pddMonthBill, params)
+	},
+	//拼多多账单余额
+	pddBalance(params){
+		return http.get(path.pddBalance, params)
 	},
 }
 

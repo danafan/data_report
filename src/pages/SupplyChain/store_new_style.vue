@@ -469,8 +469,8 @@
 								}
 								x_axis.map((x_item,x_i) => {
 									let x_o = {
-										value:item[`num_${x_item.split('-')[2]}`],
-										rate:item[`rate_${x_item.split('-')[2]}`]
+										value:item[`num_${x_item}`],
+										rate:item[`rate_${x_item}`]
 									}
 									data_item.data.push(x_o)
 								})
@@ -512,7 +512,7 @@
 									data: []
 								}
 								x_axis.map((x_item,x_i) => {
-									dept_data_item.data.push(item[`num_${x_item.split('-')[2]}`])
+									dept_data_item.data.push(item[`num_${x_item}`])
 								})
 								dept_series_data.push(dept_data_item);
 							}
@@ -626,7 +626,7 @@
 									data: []
 								}
 								x_axis.map((x_item,x_i) => {
-									xmb_data_item.data.push(item[`num_${x_item.split('-')[2]}`])
+									xmb_data_item.data.push(item[`num_${x_item}`])
 								})
 								xmb_series_data.push(xmb_data_item);
 							}

@@ -4,6 +4,11 @@
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<StoreAccountYue v-if="item.web_url == 'store_account_yue'"/>
 				<AlipayYue v-if="item.web_url == 'alipay_yue'"/>
+				<PddAccount v-if="item.web_url == 'pdd_account'"/>
+				<DyAccount v-if="item.web_url == 'dy_account'"/>
+				<JdAccount v-if="item.web_url == 'jd_account'"/>
+				<KsAccount v-if="item.web_url == 'ks_account'"/>
+				<XhsAccount v-if="item.web_url == 'xhs_account'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -16,6 +21,11 @@
 <script>
 	import StoreAccountYue from './AccountStoreYue/store_account_yue.vue'
 	import AlipayYue from './AccountStoreYue/alipay_yue.vue'
+	import PddAccount from './AccountStoreYue/pdd_account.vue'
+	import DyAccount from './AccountStoreYue/dy_account.vue'
+	import JdAccount from './AccountStoreYue/jd_account.vue'
+	import KsAccount from './AccountStoreYue/ks_account.vue'
+	import XhsAccount from './AccountStoreYue/xhs_account.vue'
 	export default{
 		data(){
 			return{
@@ -56,6 +66,11 @@
 		components:{
 			StoreAccountYue,
 			AlipayYue,
+			PddAccount,
+			DyAccount,
+			JdAccount,
+			KsAccount,
+			XhsAccount
 		}
 	}
 </script>
