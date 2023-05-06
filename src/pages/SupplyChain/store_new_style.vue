@@ -1,9 +1,17 @@
 <template>
 	<div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
-			<el-form-item label="上架时间:">
-				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
-				</el-date-picker>
+			<el-form-item label="项目部：">
+				<el-cascader
+				 size="mini"
+				class="input_cascader"
+				ref="cascader"
+				:options="dept_list"
+				:props="props"
+				filterable
+				@change="getIds"
+				@remove-tag="getIds"
+				clearable></el-cascader>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
@@ -16,6 +24,10 @@
 					<el-option label="是" :value="1"></el-option>
 					<el-option label="否" :value="2"></el-option>
 				</el-select>
+			</el-form-item>
+			<el-form-item label="上架时间:">
+				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
+				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
@@ -228,6 +240,14 @@
 					}]
 				},	 										
 				date:[lastXDate(7),lastXDate(1)],			//时间区间
+				dept_list:[],								//部门列表
+				select_dept_ids:[],							//选中的部门列表
+				props:{
+					multiple:true,
+					value:'dept_id',
+					label:'dept_name',
+					children:'list',
+				},
 				store_list: [],								//店铺列表	
 				select_store_ids:[],						//选中的店铺列表
 				type:"",									//是否杭州档口
@@ -280,6 +300,8 @@
 			}
 		},
 		created(){
+			//部门列表
+			this.getDept();
 			// 获取所有店铺
 			this.getStoreList();
 			//点击搜索
@@ -333,9 +355,63 @@
 				this.sa_supplier_page = 1;
 				this.saSupplierList();
 			},
+			//部门列表
+			getDept(){
+				if(this.$store.state.dept_list.length == 0){  
+					resource.ajaxViewDept({from:1}).then(res => {
+						if(res.data.code == 1){
+							this.dept_list = res.data.data;
+							this.$store.commit('setDeptList',this.dept_list);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}else{
+					this.dept_list = this.$store.state.dept_list;
+				}
+			},
+			//切换部门
+			getIds(){
+				this.$nextTick(()=>{
+					var arr = [];
+					var select_department = this.$refs.cascader.getCheckedNodes({leafOnly:true});
+					select_department.map(s => {
+						if(!!s.parent){	//最后一层有父级
+							var m = s.parent;
+							if(!!m.checked){ //倒数第二层被全选了
+								if(!!m.parent){ //倒数第二层有父级
+									var d = m.parent;
+									if(!!d.checked){ //倒数第三层被全选了
+										if(arr.indexOf(d.value) == -1){
+											arr.push(d.value);
+										}
+									}else{
+										if(arr.indexOf(m.value) == -1){
+											arr.push(m.value);
+										}
+									}
+								}else{
+									if(arr.indexOf(m.value) == -1){
+										arr.push(m.value);
+									}
+								}
+							}else{
+								arr.push(s.value);
+							}
+						}else{	//只有一层
+							arr.push(s.value);
+						}
+					})
+					this.select_dept_ids = arr;
+					//店铺列表
+					this.getStoreList();
+				});
+			},
 			// 获取所有店铺
 			getStoreList(){
-				resource.ajaxViewStore().then(res => {
+				this.select_store_ids = [];
+				let dept_id = this.select_dept_ids.join(',');
+				resource.ajaxViewStore({dept_id:dept_id}).then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
 					}else{
@@ -349,6 +425,7 @@
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					type:this.type
 				}
 				this.company_dept_loading = true;
@@ -463,6 +540,7 @@
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					type:this.type
 				}
 				if(item == 'detail'){		//店铺上新明细
@@ -504,6 +582,7 @@
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					type:this.type,
 				}
 				this.xmb_loading = true;
@@ -585,6 +664,7 @@
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					type:this.type,
 					page:this.store_page,
 					pagesize:this.store_pagesize
@@ -623,6 +703,7 @@
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					type:this.type,
 					page:this.style_page,
 					pagesize:this.style_pagesize
@@ -657,6 +738,7 @@
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					type:this.type,
 					page:this.supplier_page,
 					pagesize:this.supplier_pagesize
@@ -695,6 +777,7 @@
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
+					dept_id:this.select_dept_ids.join(','),
 					type:this.type,
 					page:this.sa_supplier_page,
 					pagesize:this.sa_supplier_pagesize

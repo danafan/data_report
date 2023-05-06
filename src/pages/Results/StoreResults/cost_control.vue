@@ -667,6 +667,7 @@
 					page:this.store_page,
 					pagesize:this.store_pagesize
 				}
+				this.total_day_title_list = [];
 				this.total_day_loading = true;
 				return new Promise((resolve)=>{
 					resource.dayBusiness(arg).then(res => {

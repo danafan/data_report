@@ -32,6 +32,7 @@
 	<!-- 表格 -->
 	<div class="table_setting">
 		<el-button type="primary" size="small" @click="show_custom = true" style="margin-bottom: 5px">自定义列表</el-button>
+		<el-button type="primary" plain size="small" @click="Export">导出<i class="el-icon-download el-icon--right"></i></el-button>
 	</div>
 	<!-- 表格 -->
 	<div class="table_container" v-loading="loading">
@@ -209,6 +210,7 @@
 </style>
 <script>
 	import resource from '../../../api/resource.js'
+	import {exportExcel} from '../../../api/export.js'
 	import dps from '../../../components/results_components/dps.vue'
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	export default{
@@ -366,6 +368,30 @@
 						this.$message.warning(res.data.msg);
 					}
 				});
+			},
+			//导出
+			Export(){
+				// 加单位
+				let table_list = JSON.parse(JSON.stringify(this.shop_table_list_data));
+				let total_list = JSON.parse(JSON.stringify(this.total_list));
+				let data_list = [...table_list,...total_list];
+				
+				data_list.map(item => {
+					this.label_list.map(i => {
+						item[i.row_field_name] += i.unit;
+					})
+				});
+				var data_obj = {
+					table_title:"目标完成情况",
+					table_title_list:[],
+					field_name_list:[],
+					data_list:table_list.length > 1?data_list:table_list
+				};
+				this.label_list.map(item => {
+					data_obj.table_title_list.push(item.row_name);
+					data_obj.field_name_list.push(item.row_field_name);
+				})
+				exportExcel(data_obj);
 			},
 			//处理表格的数据
 			clTableData(table_data){
