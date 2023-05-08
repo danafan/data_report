@@ -65,6 +65,7 @@ let path = {
 	sendDpKsbmExport:'supplier/send_dp_ksbm_export',				//店铺款式编码维度列表(导出)
 	sendSupplier:'supplier/send_supplier',							//供应商维度列表接口
 	sendSupplierExport:'supplier/send_supplier_export',				//供应商维度列表(导出)
+	ajaxGysArea:'supplier/ajax_gys_area',							//ajax获取供应商对应地区列表
 	
 }						
 export default{
@@ -328,7 +329,10 @@ export default{
 	sendSupplierExport(params){
 		return http.post(path.sendSupplierExport, params)
 	},
-	
+	//ajax获取供应商对应地区列表
+	ajaxGysArea(params){
+		return http.get(path.ajaxGysArea, params)
+	},
 }
 
 

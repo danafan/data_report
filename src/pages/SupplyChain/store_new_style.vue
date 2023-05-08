@@ -3,7 +3,7 @@
 		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="项目部：">
 				<el-cascader
-				 size="mini"
+				size="mini"
 				class="input_cascader"
 				ref="cascader"
 				:options="dept_list"
@@ -28,6 +28,12 @@
 			<el-form-item label="上架时间:">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
+			</el-form-item>
+			<el-form-item label="供应商地址：">
+				<el-select v-model="area_ids" clearable multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in area_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
@@ -65,7 +71,7 @@
 					<div class="table_title">事业部</div>
 					<el-button type="primary" plain size="mini" @click="exportFn('dept')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
-				<el-table :data="dept_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="spanMethod" v-loading="company_dept_loading">
+				<el-table :data="dept_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="deptSpanMethod" v-loading="company_dept_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="index == 0 || index == 1?100:200" align="center" v-for="(item,index) in dept_title" :fixed="index == 0 || index == 1">
 						<template slot-scope="scope">
 							<div :class="{'bold_style':index == 0 || (index == 1 && scope.$index == 0 || scope.$index%3 == 0)}">{{scope.row[item.row_field_name]}}</div>
@@ -90,7 +96,7 @@
 					<div class="table_title">项目部</div>
 					<el-button type="primary" plain size="mini" @click="exportFn('xmb')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
-				<el-table :data="xmb_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="spanMethod" v-loading="xmb_loading">
+				<el-table :data="xmb_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="xmbSpanMethod" v-loading="xmb_loading">
 					<el-table-column :label="item.row_name" :prop="item.row_field_name" :width="index == 0 || index == 1?100:200" align="center" v-for="(item,index) in xmb_title" :fixed="index == 0 || index == 1">
 						<template slot-scope="scope">
 							<div :class="{'bold_style':index == 0 || (index == 1 && scope.$index == 0 || scope.$index%3 == 0)}">{{scope.row[item.row_field_name]}}</div>
@@ -115,7 +121,7 @@
 					<div class="table_title">店铺</div>
 					<el-button type="primary" plain size="mini" @click="exportFn('store')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
-				<el-table :data="store_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="spanMethod" v-loading="store_loading">
+				<el-table :data="store_data" size="small" max-height="320" style="width: 100%" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="shopSpanMethod" v-loading="store_loading">
 					<el-table-column :label="item.row_name" show-overflow-tooltip :prop="item.row_field_name" :width="index == 0 || index == 1?100:200" align="center" v-for="(item,index) in store_title" :fixed="index == 0 || index == 1">
 						<template slot-scope="scope">
 							<div :class="{'bold_style':index == 0 || (index == 1 && scope.$index == 0 || scope.$index%3 == 0)}">{{scope.row[item.row_field_name]}}</div>
@@ -241,6 +247,8 @@
 				},	 										
 				date:[lastXDate(7),lastXDate(1)],			//时间区间
 				dept_list:[],								//部门列表
+				area_list:[],								//供应商地址列表
+				area_ids:[],								//选中的供应商地址列表
 				select_dept_ids:[],							//选中的部门列表
 				props:{
 					multiple:true,
@@ -300,6 +308,8 @@
 			}
 		},
 		created(){
+			//获取供应商地区列表
+			this.ajaxGysArea();
 			//部门列表
 			this.getDept();
 			// 获取所有店铺
@@ -320,15 +330,61 @@
 					return 'background: #F6BD16;color:#333333';
 				}
 			},
-			//合并单元格
-			spanMethod({ row, column, rowIndex, columnIndex }){
+			//事业部合并单元格
+			deptSpanMethod({ row, column, rowIndex, columnIndex }){
 				if (columnIndex === 0) {
-					if (rowIndex % 3 === 0) {
-						return [3, 1];
-					} else {
-						return [0, 0];
-					}
+					const _row = this.flitterData(this.dept_data).one[rowIndex];
+					const _col = _row > 0 ? 1 : 0;
+					return {
+						rowspan: _row,
+						colspan: _col,
+					};
 				}
+			},
+			//项目部合并单元格
+			xmbSpanMethod({ row, column, rowIndex, columnIndex }){
+				if (columnIndex === 0) {
+					const _row = this.flitterData(this.xmb_data).one[rowIndex];
+					const _col = _row > 0 ? 1 : 0;
+					return {
+						rowspan: _row,
+						colspan: _col,
+					};
+				}
+			},
+			//店铺合并单元格
+			shopSpanMethod({ row, column, rowIndex, columnIndex }){
+				if (columnIndex === 0) {
+					const _row = this.flitterData(this.store_data).one[rowIndex];
+					const _col = _row > 0 ? 1 : 0;
+					return {
+						rowspan: _row,
+						colspan: _col,
+					};
+				}
+			},
+			/**合并表格的第一列，处理表格数据 */
+			flitterData(arr) {
+				let spanOneArr = [];
+				let concatOne = 0;
+				arr.forEach((item, index) => {
+					if (index === 0) {
+						spanOneArr.push(1);
+					} else {
+					    //注意这里的quarterly是表格绑定的字段，根据自己的需求来改
+					    if (item.dept_1 === arr[index - 1].dept_1) {
+					        //第一列需合并相同内容的判断条件
+					        spanOneArr[concatOne] += 1;
+					        spanOneArr.push(0);
+					    } else {
+					    	spanOneArr.push(1);
+					    	concatOne = index;
+					    }
+					}
+				});
+				return {
+					one: spanOneArr,
+				};
 			},
 			//点击搜索
 			searchFn(){
@@ -419,6 +475,16 @@
 					}
 				})
 			},
+			//获取供应商地区列表
+			ajaxGysArea(){
+				demandResource.ajaxGysArea().then(res => {
+					if(res.data.code == 1){
+						this.area_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//公司、事业部数据
 			companyDeptKsList(){
 				let arg = {
@@ -426,6 +492,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
+					area:this.area_ids.join(','),
 					type:this.type
 				}
 				this.company_dept_loading = true;
@@ -447,7 +514,7 @@
 						let company_legend = [];			//图例名称
 						let company_series_data = [];		//数据
 						this.company_data.map((item,index) => {
-							if(index > 0){
+							if(item.gys_level != '总计'){
 								company_legend.push(item.gys_level);
 								let data_item = {
 									name: item.gys_level,
@@ -486,10 +553,13 @@
 						//事业部数据
 						let dept = res.data.data.dept;
 						this.dept_title = dept.table_list;
+						// this.dept_data = dept.data;
 						let dept_data = dept.data;
-						this.dept_data = dept_data.length > 0?dept_data.reduce(function (a, b) { 
-							return a.concat(b)
-						}):[];
+						// this.dept_data = dept_data.length > 0?dept_data.reduce(function (a, b) { 
+						// 	return a.concat(b)
+						// }):[];
+						this.dept_data = this.flatten(dept_data);
+						console.log(this.dept_data)
 						// 事业部图表
 						let dept_legend = [];	//图例名称
 						let dept_series_data = [];		//数据
@@ -534,6 +604,11 @@
 					}
 				})
 			},
+			flatten(arr) {
+				return arr.reduce((prev, next) => {
+					return prev.concat(Array.isArray(next) ? this.flatten(next) : next)
+				}, [])
+			},
 			//数据-导出
 			exportFn(item){
 				let arg = {
@@ -541,6 +616,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
+					area:this.area_ids.join(','),
 					type:this.type
 				}
 				if(item == 'detail'){		//店铺上新明细
@@ -564,15 +640,15 @@
 				}else{
 					if(item == 'company' || item == 'dept'){	//公司、事业部
 						arg.item = item;
-						exportUp(`supplier/company_dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}&item=${arg.item}`);
+						exportUp(`supplier/company_dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}&item=${arg.item}&area=${arg.area}`);
 					}else if(item == 'xmb'){		//项目部
-						exportUp(`supplier/dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
+						exportUp(`supplier/dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}&area=${arg.area}`)
 					}else if(item == 'store'){		//店铺
-						exportUp(`supplier/shop_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
+						exportUp(`supplier/shop_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}&area=${arg.area}`)
 					}else if(item == 'supplier'){	//供应商
-						exportUp(`supplier/gys_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
+						exportUp(`supplier/gys_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}&area=${arg.area}`)
 					}else if(item == 'supplier_sa'){	//供应商sa
-						exportUp(`supplier/sa_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
+						exportUp(`supplier/sa_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}&area=${arg.area}`)
 					}
 				}
 			},
@@ -583,6 +659,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
+					area:this.area_ids.join(','),
 					type:this.type,
 				}
 				this.xmb_loading = true;
@@ -665,6 +742,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
+					area:this.area_ids.join(','),
 					type:this.type,
 					page:this.store_page,
 					pagesize:this.store_pagesize
@@ -704,6 +782,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
+					area:this.area_ids.join(','),
 					type:this.type,
 					page:this.style_page,
 					pagesize:this.style_pagesize
@@ -739,6 +818,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
+					area:this.area_ids.join(','),
 					type:this.type,
 					page:this.supplier_page,
 					pagesize:this.supplier_pagesize
@@ -778,6 +858,7 @@
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
 					shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
+					area:this.area_ids.join(','),
 					type:this.type,
 					page:this.sa_supplier_page,
 					pagesize:this.sa_supplier_pagesize
