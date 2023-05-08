@@ -17,8 +17,8 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="日期：">
-				<el-date-picker v-model="zd_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+			<el-form-item label="发生时间：">
+				<el-date-picker v-model="zd_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -39,7 +39,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="日期：">
-				<el-date-picker v-model="ye_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
+				<el-date-picker v-model="ye_date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>
@@ -138,8 +138,8 @@
 				let arg = {
 					shop_id:this.zd_store_ids.join(','),
 					account_type:this.account_type,
-					start_time:this.zd_date && this.zd_date.length> 0?this.zd_date[0]:"",
-					end_time:this.zd_date && this.zd_date.length> 0?this.zd_date[1]:"",
+					start_date:this.zd_date && this.zd_date.length> 0?this.zd_date[0]:"",
+					end_date:this.zd_date && this.zd_date.length> 0?this.zd_date[1]:"",
 					sort:this.zd_sort,
 					page:this.zd_page,
 					pagesize:this.zd_pagesize
@@ -178,8 +178,8 @@
 				this.ye_loading = true;
 				let arg = {
 					shop_id:this.ye_store_ids.join(','),
-					start_time:this.ye_date && this.ye_date.length> 0?this.ye_date[0]:"",
-					end_time:this.ye_date && this.ye_date.length> 0?this.ye_date[1]:"",
+					start_date:this.ye_date && this.ye_date.length> 0?this.ye_date[0]:"",
+					end_date:this.ye_date && this.ye_date.length> 0?this.ye_date[1]:"",
 					sort:this.ye_sort,
 					page:this.ye_page,
 					pagesize:this.ye_pagesize

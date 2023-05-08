@@ -564,15 +564,15 @@
 				}else{
 					if(item == 'company' || item == 'dept'){	//公司、事业部
 						arg.item = item;
-						exportUp(`supplier/company_dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}&item=${arg.item}`);
+						exportUp(`supplier/company_dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}&item=${arg.item}`);
 					}else if(item == 'xmb'){		//项目部
-						exportUp(`supplier/dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
+						exportUp(`supplier/dept_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
 					}else if(item == 'store'){		//店铺
-						exportUp(`supplier/shop_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
+						exportUp(`supplier/shop_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
 					}else if(item == 'supplier'){	//供应商
-						exportUp(`supplier/gys_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
+						exportUp(`supplier/gys_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
 					}else if(item == 'supplier_sa'){	//供应商sa
-						exportUp(`supplier/sa_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&type=${arg.type}`)
+						exportUp(`supplier/sa_ks_list_export?start_time=${arg.start_time}&end_time=${arg.end_time}&shop_id=${arg.shop_id}&dept_id=${arg.dept_id}&type=${arg.type}`)
 					}
 				}
 			},

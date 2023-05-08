@@ -6,7 +6,7 @@
 				<el-date-picker v-model="date" type="daterange" :clearable="false" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :append-to-body="false" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item label="用户名称：">
+			<el-form-item label="推广负责人：">
 				<el-select v-model="tgfzr_ids" clearable multiple filterable reserve-keyword placeholder="请输入推广负责人" collapse-tags>
 					<el-option v-for="item in tgfzr_list" :key="item" :label="item" :value="item">
 					</el-option>

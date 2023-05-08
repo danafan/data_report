@@ -8,7 +8,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="日期：">
-				<el-date-picker v-model="date" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期" :append-to-body="false">
+				<el-date-picker v-model="date" type="date" clearable value-format="yyyy-MM-dd" placeholder="选择日期">
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item>

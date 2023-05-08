@@ -73,7 +73,15 @@ let path = {
 	ytSudit:'audit/yt_audit',										//提交审核
 	pddMonthBill:'audit/pdd_month_bill',							//拼多多账单
 	pddBalance:'audit/pdd_balance',									//拼多多账单余额
-}						
+	dyBill:'audit/dy_bill',											//抖音账单
+	dyBalance:'audit/dy_balance',									//抖音账单余额
+	jdBill:'audit/jd_bill',											//京东账单
+	ksxdBill:'audit/ksxd_bill',								//快手小店资金账单
+	ksxdBillSz:'audit/ksxd_bill_sz',						//快手小店收支明细
+	ksxdBillDetail:'audit/ksxd_bill_detail',				//快手小店资金账单明细
+	xhsBill:'audit/xhs_bill',								//小红书账单
+	ajaxJdBillShops:'audit/ajax_jd_bill_shops',				//ajax京东账单-店铺列表
+}							
 export default{
 	//款式编码列表
 	ajaxKsbm(params){
@@ -370,6 +378,38 @@ export default{
 	//拼多多账单余额
 	pddBalance(params){
 		return http.get(path.pddBalance, params)
+	},
+	//抖音账单
+	dyBill(params){
+		return http.get(path.dyBill, params)
+	},
+	//抖音账单余额
+	dyBalance(params){
+		return http.get(path.dyBalance, params)
+	},
+	//京东账单
+	jdBill(params){
+		return http.get(path.jdBill, params)
+	},
+	//快手小店资金账单
+	ksxdBill(params){
+		return http.get(path.ksxdBill, params)
+	},
+	//快手小店收支明细
+	ksxdBillSz(params){
+		return http.get(path.ksxdBillSz, params)
+	},
+	//快手小店资金账单明细
+	ksxdBillDetail(params){
+		return http.get(path.ksxdBillDetail, params)
+	},
+	//小红书账单
+	xhsBill(params){
+		return http.get(path.xhsBill, params)
+	},
+	//ajax京东账单-店铺列表
+	ajaxJdBillShops(params){
+		return http.get(path.ajaxJdBillShops, params)
 	},
 }
 

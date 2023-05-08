@@ -93,6 +93,11 @@
 					<div class="absolute space-nowrap zb">{{top_data.ztc_hf_zb}}</div>
 				</div>
 				<div class="height-100 flex fc ac jc relative">
+					<div class="f13 bold mb-5">万相台</div>
+					<div class="f15 bold money" v-loading="top_loading">{{top_data.wxt_xh}}</div>
+					<div class="absolute space-nowrap zb">{{top_data.wxt_xh_zb}}</div>
+				</div>
+				<div class="height-100 flex fc ac jc relative">
 					<div class="f13 bold mb-5">引力魔方</div>
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.ylmf_xh}}</div>
 					<div class="absolute space-nowrap zb">{{top_data.ylmf_xh_zb}}</div>
@@ -103,20 +108,26 @@
 					<div class="absolute space-nowrap zb">{{top_data.ylmf_xh_dp_zb}}</div>
 				</div>
 				<div class="height-100 flex fc ac jc relative">
+					<div class="f13 bold mb-5">鱼塘佣金</div>
+					<div class="f15 bold money" v-loading="top_loading">{{top_data.sd_yj}}</div>
+					<div class="absolute space-nowrap zb">{{top_data.sd_yj_zb}}</div>
+				</div>
+				<div class="height-100 flex fc ac jc relative">
 					<div class="f13 bold mb-5">鱼塘天猫佣金</div>
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.yttmyj}}</div>
 					<div class="absolute space-nowrap zb">{{top_data.yttmyj_zb}}</div>
+				</div>
+				<div class="height-100 flex fc ac jc relative">
+					<div class="f13 bold mb-5">真实天猫佣金</div>
+					<div class="f15 bold money" v-loading="top_loading">{{top_data.tmyj}}</div>
+					<div class="absolute space-nowrap zb">{{top_data.tmyj_zb}}</div>
 				</div>
 				<div class="height-100 flex fc ac jc relative">
 					<div class="f13 bold mb-5">淘客佣金</div>
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.tbk_yj}}</div>
 					<div class="absolute space-nowrap zb">{{top_data.tbk_yj_zb}}</div>
 				</div>
-				<div class="height-100 flex fc ac jc relative">
-					<div class="f13 bold mb-5">万相台</div>
-					<div class="f15 bold money" v-loading="top_loading">{{top_data.wxt_xh}}</div>
-					<div class="absolute space-nowrap zb">{{top_data.wxt_xh_zb}}</div>
-				</div>
+				
 				<div class="height-100 flex fc ac jc relative">
 					<div class="f13 bold mb-5">营销费用(其他)</div>
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.qt_yxfy}}</div>
@@ -132,17 +143,6 @@
 					<div class="f15 bold money" v-loading="top_loading">{{top_data.cjtj_hf}}</div>
 					<div class="absolute space-nowrap zb">{{top_data.cjtj_hf_zb}}</div>
 				</div>
-				<div class="height-100 flex fc ac jc relative">
-					<div class="f13 bold mb-5">天猫佣金</div>
-					<div class="f15 bold money" v-loading="top_loading">{{top_data.tmyj}}</div>
-					<div class="absolute space-nowrap zb">{{top_data.tmyj_zb}}</div>
-				</div>
-				<div class="height-100 flex fc ac jc relative">
-					<div class="f13 bold mb-5">鱼塘佣金</div>
-					<div class="f15 bold money" v-loading="top_loading">{{top_data.sd_yj}}</div>
-					<div class="absolute space-nowrap zb">{{top_data.sd_yj_zb}}</div>
-				</div>
-				
 			</div>
 		</div>
 		<div class="top_box mytj flex fc">
