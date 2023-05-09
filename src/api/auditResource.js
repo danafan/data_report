@@ -72,14 +72,23 @@ let path = {
 	ytHandle:'audit/yt_handle',										//提交处理
 	ytSudit:'audit/yt_audit',										//提交审核
 	pddMonthBill:'audit/pdd_month_bill',							//拼多多账单
+	pddMonthBillExport:'audit/pdd_month_bill_export',				//拼多多账单导出
 	pddBalance:'audit/pdd_balance',									//拼多多账单余额
+	pddBalanceExport:'audit/pdd_balance_export',					//拼多多账单余额导出
 	dyBill:'audit/dy_bill',											//抖音账单
+	dyBillExport:'audit/dy_bill_export',							//抖音账单导出
 	dyBalance:'audit/dy_balance',									//抖音账单余额
+	dyBalanceExport:'audit/dy_balance_export',						//抖音账单余额导出
 	jdBill:'audit/jd_bill',											//京东账单
+	jdBillExport:'audit/jd_bill_export',							//京东账单导出
 	ksxdBill:'audit/ksxd_bill',								//快手小店资金账单
+	ksxdBillExport:'audit/ksxd_bill_export',				//快手小店资金账单导出
 	ksxdBillSz:'audit/ksxd_bill_sz',						//快手小店收支明细
+	ksxdBillSzExport:'audit/ksxd_bill_sz_export',			//快手小店收支明细导出
 	ksxdBillDetail:'audit/ksxd_bill_detail',				//快手小店资金账单明细
+	ksxdBillDetailExport:'audit/ksxd_bill_detail_export',	//快手小店资金账单明细导出
 	xhsBill:'audit/xhs_bill',								//小红书账单
+	xhsBillExport:'audit/xhs_bill_export',					//小红书账单导出
 	ajaxJdBillShops:'audit/ajax_jd_bill_shops',				//ajax京东账单-店铺列表
 }							
 export default{
@@ -375,37 +384,73 @@ export default{
 	pddMonthBill(params){
 		return http.get(path.pddMonthBill, params)
 	},
+	//拼多多账单导出
+	pddMonthBillExport(params){
+		return http.post(path.pddMonthBillExport, params)
+	},
 	//拼多多账单余额
 	pddBalance(params){
 		return http.get(path.pddBalance, params)
+	},
+	//拼多多账单余额导出
+	pddBalanceExport(params){
+		return http.post(path.pddBalanceExport, params)
 	},
 	//抖音账单
 	dyBill(params){
 		return http.get(path.dyBill, params)
 	},
+	//抖音账单导出
+	dyBillExport(params){
+		return http.post(path.dyBillExport, params)
+	},
 	//抖音账单余额
 	dyBalance(params){
 		return http.get(path.dyBalance, params)
+	},
+	//抖音账单余导出
+	dyBalanceExport(params){
+		return http.post(path.dyBalanceExport, params)
 	},
 	//京东账单
 	jdBill(params){
 		return http.get(path.jdBill, params)
 	},
+	//京东账单导出
+	jdBillExport(params){
+		return http.post(path.jdBillExport, params)
+	},
 	//快手小店资金账单
 	ksxdBill(params){
 		return http.get(path.ksxdBill, params)
+	},
+	//快手小店资金账单导出
+	ksxdBillExport(params){
+		return http.post(path.ksxdBillExport, params)
 	},
 	//快手小店收支明细
 	ksxdBillSz(params){
 		return http.get(path.ksxdBillSz, params)
 	},
+	//快手小店收支明细导出
+	ksxdBillSzExport(params){
+		return http.post(path.ksxdBillSzExport, params)
+	},
 	//快手小店资金账单明细
 	ksxdBillDetail(params){
 		return http.get(path.ksxdBillDetail, params)
 	},
+	//快手小店资金账单明细导出
+	ksxdBillDetailExport(params){
+		return http.post(path.ksxdBillDetailExport, params)
+	},
 	//小红书账单
 	xhsBill(params){
 		return http.get(path.xhsBill, params)
+	},
+	//小红书账单导出
+	xhsBillExport(params){
+		return http.post(path.xhsBillExport, params)
 	},
 	//ajax京东账单-店铺列表
 	ajaxJdBillShops(params){

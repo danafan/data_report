@@ -1,24 +1,11 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<dps @callBack="checkReq"></dps>
 			<el-form-item label="统计日期：">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable @change="getStore" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺：">
-				<el-select v-model="select_shop_list" clearable multiple
-				filterable
-				collapse-tags placeholder="全部">
-				<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-				</el-option>
-			</el-select>
-		</el-form-item>
 		<el-form-item label="产品分类：">
 			<el-select v-model="select_pl_ids" clearable multiple filterable collapse-tags placeholder="全部">
 				<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
@@ -229,6 +216,8 @@
 	import PopoverWidget from '../../../components/popover_widget.vue'
 
 	import {exportUp} from '../../../api/export.js'
+
+	import dps from '../../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
@@ -257,10 +246,9 @@
 					}]
 				},	 										//时间区间
 				date:[getMonthStartDate(),getCurrentDate()],//统计日期
-				shop_list:[],								//店铺列表
-				select_shop_list:[],						//选中的店铺列表
-				plat_list:[],								//平台列表
-				select_plat_ids:[],							//选中的平台列表
+				dept_ids:[],								//选中的项目部列表
+				platform_ids:[],							//选中的平台列表
+				shop_ids:[],								//选中的店铺列表
 				pl_list:[],									//品类列表
 				select_pl_ids:[],							//选中的品类列表
 				ks_list:[],									//款式编码列表
@@ -293,10 +281,6 @@
 			}
 		},
 		created(){
-			//平台列表
-			this.ajaxPlat();
-			//店铺列表
-			this.getStore();
 			//品类列表
 			this.getPl();
 			//推广负责人列表
@@ -306,24 +290,11 @@
 		},
 		methods:{
 			//平台列表
-			ajaxPlat(){
-				resource.ajaxPlat().then(res => {
-					if(res.data.code == 1){
-						this.plat_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-			},
-			//店铺列表
-			getStore(){
-				resource.ajaxViewStore({name:'',platform:this.select_plat_ids.join(','),}).then(res => {
-					if(res.data.code == 1){
-						this.shop_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.dept_ids = reqObj.select_department_ids;
+				this.platform_ids = reqObj.select_plat_ids;
+				this.shop_ids = reqObj.select_store_ids;
 			},
 			//品类列表
 			getPl(){
@@ -412,12 +383,13 @@
 					tgfzr:this.tgfzr_ids.join(','),
 					empty_tgzrr_flag:this.wtgfzr,
 					spid:this.select_spid_list.join(','),
-					shop_id:this.select_shop_list.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					gyskh:this.select_gyshh_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					ks:this.select_ks_ids.join(','),
-					platform:this.select_plat_ids.join(','),
+					shop_id:this.shop_ids.join(','),
+					platform:this.platform_ids.join(','),
+					dept_id:this.dept_ids.join(','),
 				}
 				this.top_loading = true;
 				resource.dpNewAnalysisTotal(arg).then(res => {
@@ -437,12 +409,13 @@
 					tgfzr:this.tgfzr_ids.join(','),
 					empty_tgzrr_flag:this.wtgfzr,
 					spid:this.select_spid_list.join(','),
-					shop_id:this.select_shop_list.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					gyskh:this.select_gyshh_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					ks:this.select_ks_ids.join(','),
-					platform:this.select_plat_ids.join(','),
+					shop_id:this.shop_ids.join(','),
+					platform:this.platform_ids.join(','),
+					dept_id:this.dept_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize,
 					sort:this.sort,
@@ -517,12 +490,13 @@
 					tgfzr:this.tgfzr_ids.join(','),
 					empty_tgzrr_flag:this.wtgfzr,
 					spid:this.select_spid_list.join(','),
-					shop_id:this.select_shop_list.join(','),
 					cpfl:this.select_pl_ids.join(','),
 					gyskh:this.select_gyshh_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					ks:this.select_ks_ids.join(','),
-					platform:this.select_plat_ids.join(','),
+					shop_id:this.shop_ids.join(','),
+					platform:this.platform_ids.join(','),
+					dept_id:this.dept_ids.join(','),
 					sort:this.sort,
 					sort_type:this.sort_type,
 				}
@@ -562,6 +536,7 @@
 			},
 		},
 		components:{
+			dps,
 			CustomTable,
 			PageWidget,
 			PopoverWidget

@@ -19,6 +19,9 @@
 				<el-button type="primary" size="small" @click="zdHandlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="zdExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<custom-table v-loading="zd_loading" :isLoading="zd_loading" tableName="pdd_zd" :table_data="zd_table_data" :title_list="zd_title_list" :is_custom_sort="false" @sortCallBack="zdSortCallBack"/>
 		<page-widget :page="zd_page" :pagesize="zd_pagesize" :total="zd_total" @handleSizeChange="zdHandleSizeChange" @handlePageChange="zdHandlePageChange"/>
 		<!-- 资金账单明细 -->
@@ -34,6 +37,9 @@
 				<el-button type="primary" size="small" @click="mxHandlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="zdmxExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<custom-table v-loading="mx_loading" :isLoading="mx_loading" tableName="pdd_zd" :table_data="mx_table_data" :title_list="mx_title_list" :is_custom_sort="false" @sortCallBack="mxSortCallBack"/>
 		<page-widget :page="mx_page" :pagesize="mx_pagesize" :total="mx_total" @handleSizeChange="mxHandleSizeChange" @handlePageChange="mxHandlePageChange"/>
 		<!-- 快手小店收支明细 -->
@@ -49,6 +55,9 @@
 				<el-button type="primary" size="small" @click="yeHandlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="szmxExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<custom-table v-loading="ye_loading" :isLoading="ye_loading" tableName="pdd_zd" :table_data="ye_table_data" :title_list="ye_title_list" :is_custom_sort="false" @sortCallBack="yeSortCallBack"/>
 		<page-widget :page="ye_page" :pagesize="ye_pagesize" :total="ye_total" @handleSizeChange="yeHandleSizeChange" @handlePageChange="yeHandlePageChange"/>
 	</div>
@@ -61,6 +70,8 @@
 	import CustomTable from '../../../components/custom_table.vue'
 	import PageWidget from '../../../components/pagination_widget.vue'
 	import PopoverWidget from '../../../components/popover_widget.vue'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		components:{
 			CustomTable,
@@ -166,6 +177,31 @@
 					}
 				})
 			},
+			//账单导出
+			zdExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						shop_id:this.zd_store_ids.join(','),
+						start_date:this.zd_date && this.zd_date.length> 0?this.zd_date[0]:"",
+						end_date:this.zd_date && this.zd_date.length> 0?this.zd_date[1]:"",
+						sort:this.zd_sort,
+					}
+					auditResource.ksxdBillExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'快手小店资金账单');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//账单排序回调
 			zdSortCallBack(sort){
 				this.zd_sort = sort;
@@ -205,6 +241,30 @@
 					}
 				})
 			},
+			//账单明细导出
+			zdmxExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_date:this.mx_date && this.mx_date.length> 0?this.mx_date[0]:"",
+						end_date:this.mx_date && this.mx_date.length> 0?this.mx_date[1]:"",
+						sort:this.mx_sort,
+					}
+					auditResource.ksxdBillDetailExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'快手小店资金账单明细');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
 			//账单明细排序回调
 			mxSortCallBack(sort){
 				this.mx_sort = sort;
@@ -243,6 +303,30 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//收支明细导出
+			szmxExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_date:this.ye_date && this.ye_date.length> 0?this.ye_date[0]:"",
+						end_date:this.ye_date && this.ye_date.length> 0?this.ye_date[1]:"",
+						sort:this.ye_sort,
+					}
+					auditResource.ksxdBillSzExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'快手小店收支明细');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//收支明细排序回调
 			yeSortCallBack(sort){

@@ -19,6 +19,9 @@
 				<el-button type="primary" size="small" @click="zdHandlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
+		<div class="flex jse mb-10">
+			<el-button type="primary" plain size="small" @click="zdExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<custom-table v-loading="zd_loading" max_height="620px" :isLoading="zd_loading" tableName="pdd_zd" :table_data="zd_table_data" :title_list="zd_title_list" :is_custom_sort="false" @sortCallBack="zdSortCallBack"/>
 		<page-widget :page="zd_page" :pagesize="zd_pagesize" :total="zd_total" @handleSizeChange="zdHandleSizeChange" @handlePageChange="zdHandlePageChange"/>
 	</div>
@@ -31,6 +34,8 @@
 	import CustomTable from '../../../components/custom_table.vue'
 	import PageWidget from '../../../components/pagination_widget.vue'
 	import PopoverWidget from '../../../components/popover_widget.vue'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 	export default{
 		components:{
 			CustomTable,
@@ -114,6 +119,31 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//账单导出
+			zdExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						shop_name:this.zd_store_ids.join(','),
+						start_date:this.zd_date && this.zd_date.length> 0?this.zd_date[0]:"",
+						end_date:this.zd_date && this.zd_date.length> 0?this.zd_date[1]:"",
+						sort:this.zd_sort,
+					}
+					auditResource.jdBillExport(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'京东账单');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//账单排序回调
 			zdSortCallBack(sort){

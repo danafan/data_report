@@ -982,13 +982,10 @@
 .user_info_table .el-table__empty-block .el-table__empty-text{
 	line-height: 36px!important;
 }
-/*.el-table__row>td{ border: none!important; }*/
 
 .el-table::before { height: 0px!important; } 
 </style>
 <style lang="less" scoped>
-
-
 .info_table{
 	position: absolute;
 	left: 250px;
