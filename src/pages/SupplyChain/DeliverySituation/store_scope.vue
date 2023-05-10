@@ -82,7 +82,7 @@
 					<el-table-column prop="fh_0" label="当日已发货" width="110" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="dd_0" label="当日订单总数" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_0" label="当日发货率" width="120" align="center" sortable="custom"></el-table-column>
-					<el-table-column prop="fhl_1" label="当日发货率" width="120" align="center" sortable="custom"></el-table-column>
+					<el-table-column prop="fhl_1" label="两日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_2" label="三日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="fhl_3" label="四日发货率" width="120" align="center" sortable="custom"></el-table-column>
 					<el-table-column prop="xtsy" label="系统剩余订单数" width="130" align="center" sortable="custom"></el-table-column>

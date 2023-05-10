@@ -208,6 +208,34 @@
 				this.page = 1;
 				this.pagesize = 10;
 				this.scatterChart();
+			},
+			activeTab:function(n,o){
+				if(n == 'promotion_performance'){
+					if(this.fzrChart){
+						this.fzrChart.resize();
+					}
+					if(this.deptChart){
+						this.deptChart.resize();
+					}
+					if(this.dpidChart){
+						this.dpidChart.resize();
+					}
+					if(this.gysChart){
+						this.gysChart.resize();
+					}
+					if(this.cpflChart){
+						this.cpflChart.resize();
+					}
+					if(this.dashedChart){
+						this.dashedChart.resize();
+					}
+				}
+			}
+		},
+		props:{
+			activeTab:{
+				type:String,
+				default:""
 			}
 		},
 		created(){
@@ -215,7 +243,6 @@
 			this.ajaxTgfzr();
 			//品类列表
 			this.getPl();
-			
 		},
 		mounted(){
 			//点击搜索
@@ -371,15 +398,17 @@
 								let x_axis = data.title;
 								let series_data = [];
 								data.list.map(item => {
+									item['value'] = item.roi;
 									let chart_item = {
-										value: item,
+										value: item.roi,
+										data:item,
 										itemStyle: {
-											color: item >= data.roi?'green':'red'
+											color: item.roi >= data.roi?'green':'red'
 										},
 										label: {
 											show: type != 'gys'?true:false,
 											position: 'top',
-											color: item >= data.roi?'green':'red',
+											color: item.roi >= data.roi?'green':'red',
 											fontWeight:'bold',
 											distance:type == 'fzr' || type == 'dpid'?10:5,
 											rotate:type == 'fzr' || type == 'dpid'?55:0
@@ -418,7 +447,9 @@
 					    position:'top',
 					    formatter:  (params) => {
 					    	let tip = `${params.name}</br>
-					    	ROI：${params.value}`;
+					    	ROI：${params.value}</br>
+					    	真实GMV：${params.data.data.zs_xsje}</br>
+					    	营销费用：${params.data.data.yxfy}`;
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",
@@ -447,7 +478,8 @@
 					yAxis: {
 						type: 'value',
 						min:-1,
-						max:18,
+						max:21,
+						splitNumber:6
 					},
 					series: [
 					{
@@ -577,6 +609,7 @@
 									item_arr.push(item.name);
 									item_arr.push(item.xssl);
 									item_arr.push(item.mll);
+									item_arr.push(item.yxfy);
 									if(item.dept_id){
 										item_arr.push({dept_id:item.dept_id})
 									}else if(item.shop_id){
@@ -633,9 +666,10 @@
 					    	let tip = `${params.data[3]}</br>
 					    	ROI：${params.data[1]}</br>
 					    	贡献毛益：${params.data[0]}</br>
-					    	GMV：${params.data[2]}</br>
+					    	真实GMV：${params.data[2]}</br>
 					    	销量：${params.data[4]}</br>
-					    	毛利率：${params.data[5]}</br>`;
+					    	毛利率：${params.data[5]}</br>
+					    	营销费用：${params.data[6]}</br>`;
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",
@@ -666,13 +700,14 @@
 						axisLine:{
 							onZero:false
 						},
-						offset:-140
+						offset:-121
 					},
 					yAxis: {
 						name:'ROI',
 						scale:true,
 						min:-1,
-						max:18,
+						max:21,
+						splitNumber:6
 					},
 					series: [
 					{
@@ -687,18 +722,6 @@
 							},
 						},	
 						symbolSize: function (data) {
-							// let r = 0;
-							// if(3000000/max > 1){
-							// 	r = Math.sqrt(data[2]) / 30;
-							// }else{
-							// 	if(3000000/max >= 0.8){
-							// 		r =(Math.sqrt(data[2]) * 3000000/max)/10;
-							// 	}else if(3000000/max >= 0.5 && 3000000/max < 0.8){
-							// 		r =(Math.sqrt(data[2]) * 3000000/max)/7;
-							// 	}else if(3000000/max < 0.5){
-							// 		r =(Math.sqrt(data[2]) * 3000000/max)/4;
-							// 	}
-							// }
 							return Math.sqrt(data[2]) / 30;
 						},
 						itemStyle: {
@@ -903,6 +926,7 @@
 	height: 320px;
 }
 .dashed_chart{
+	// width: 800px;
 	width: 100%;
 	height: 500px;
 }

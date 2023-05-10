@@ -60,7 +60,7 @@
 			</el-radio-group>
 		</div>
 		<!-- 气泡图 -->
-		<div class="dashed_chart" id="dashed_chart" v-loading="dashed_loading"></div>
+		<div class="dashed_chart" id="dashed_chart_01" v-loading="dashed_loading"></div>
 		<!-- 汇总 -->
 		<div class="flex ac jsb mb-10">
 			<PopoverWidget title="指标汇总" :show_popover="false"/>
@@ -140,6 +140,8 @@
 				info_loading:false,
 				grChart:null,
 				gmvChart:null,
+				xlChart:null,
+				pieChart:null,
 				table_loading:false,
 				table_data:[],
 				table_total_data:{},
@@ -166,6 +168,31 @@
 			type:function(n,o){
 				//获取气泡图数据
 				this.scatterChart();
+			},
+			activeTab:function(n,o){
+				if(n == 'individual_performance'){
+					if(this.grChart){
+						this.grChart.resize();
+					}
+					if(this.gmvChart){
+						this.gmvChart.resize();
+					}
+					if(this.xlChart){
+						this.xlChart.resize();
+					}
+					if(this.pieChart){
+						this.pieChart.resize();
+					}
+					if(this.dashedChart){
+						this.dashedChart.resize();
+					}
+				}
+			}
+		},
+		props:{
+			activeTab:{
+				type:String,
+				default:""
 			}
 		},
 		created(){
@@ -285,14 +312,23 @@
 								this.grChart.setOption(option);
 							}else{
 								let x_axis = data.chart.day_list;
-								let series_data = data.chart.list;
+								let roi_data = data.chart.list;
+								let zsgmv_list = data.chart.zsgmv_list;
+								let zsxl_list = data.chart.zsxl_list;
 								let self_roi = [];
 								let company_roi = [];
 								let month_roi = [];
-								for(let i = 0;i < series_data.length;i ++){
+								let series_data = [];
+								for(let i = 0;i < roi_data.length;i ++){
 									self_roi.push(data.self_roi)
 									company_roi.push(data.company_roi)
 									month_roi.push(data.month_roi)
+									let series_item = {
+										value:roi_data[i],
+										zsgmv:zsgmv_list[i],
+										zsxl:zsxl_list[i],
+									}
+									series_data.push(series_item)
 								}
 								if (this.grChart) { 
 									this.grChart.clear();
@@ -442,7 +478,7 @@
 					    position:'top',
 					    formatter:  (params) => {
 					    	let tip = `${params.name}</br>
-					    	ROI：${params.value}`;
+					    	ROI：${params.value}</br>`;
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",
@@ -468,8 +504,9 @@
 					yAxis: {
 						type: 'value',
 						min:-1,
-						max:18,
-						name:'ROI'
+						max:21,
+						name:'ROI',
+						splitNumber:6
 					},
 					series: [
 					{
@@ -606,10 +643,14 @@
 					series: [
 					{
 						data: series_data,
+						itemStyle:{
+							color:"#fac858"
+						},
 						label: {
 							show: true,
+							verticalAlign: 'top',
 							position: 'top',
-							color: 'inherit',
+							color: '#5470c6',
 							fontWeight:'bold',
 							rotate:55
 						},
@@ -640,6 +681,7 @@
 							type: 'shadow'        
 						}
 					},
+					color:['#5470c6', '#91cc75', '#fac858', '#ee6666', '#73c0de', '#3ba272', '#fc8452', '#9a60b4', '#ea7ccc', '#ff5858', '#8B008B'],
 					legend: {
 						top: '10%',
 						data:legend_data
@@ -685,7 +727,7 @@
 							this.dashed_loading = false;
 							let data = res.data.data;
 							var echarts = require("echarts");
-							var dashed_chart = document.getElementById('dashed_chart');
+							var dashed_chart = document.getElementById('dashed_chart_01');
 							this.dashedChart = echarts.getInstanceByDom(dashed_chart)
 							if (this.dashedChart == null) { 
 								this.dashedChart = echarts.init(dashed_chart);
@@ -725,6 +767,7 @@
 									item_arr.push(item.name);
 									item_arr.push(item.xssl);
 									item_arr.push(item.mll);
+									item_arr.push(item.yxfy);
 									chart_data.push(item_arr)
 								})
 								if (this.dashedChart) { 
@@ -761,9 +804,10 @@
 					    	let tip = `${params.data[3]}</br>
 					    	ROI：${params.data[1]}</br>
 					    	贡献毛益：${params.data[0]}</br>
-					    	GMV：${params.data[2]}</br>
+					    	真实GMV：${params.data[2]}</br>
 					    	销量：${params.data[4]}</br>
-					    	毛利率：${params.data[5]}</br>`;
+					    	毛利率：${params.data[5]}</br>
+					    	营销费用：${params.data[6]}</br>`;
 					    	return tip
 					    },
 					    backgroundColor:"rgba(0,0,0,.8)",
@@ -794,13 +838,14 @@
 						axisLine:{
 							onZero:false
 						},
-						offset:-140
+						offset:-121
 					},
 					yAxis: {
 						name:'ROI',
 						scale:true,
 						min:-1,
-						max:18,
+						max:21,
+						splitNumber:6
 					},
 					series: [
 					{
@@ -999,6 +1044,7 @@
 	height: 500px;
 }
 .dashed_chart{
+	// width: 800px;
 	width: 100%;
 	height: 500px;
 }
