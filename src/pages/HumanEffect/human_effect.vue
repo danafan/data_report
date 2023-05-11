@@ -59,6 +59,7 @@
 			},
     		//渲染节点
     		renderContent(h, data) {
+                console.log(data);
                 if(data.type == 1){
                     return (
                         <div>
@@ -163,7 +164,36 @@
                         </div>
                         );
                 }else{
-                    return (
+                    if(data.dept_id == "72341529"){
+                        return (
+                        <div>
+                            <div class="dept_name">{data.dept_name}（{data.user_num}人）</div>
+                            <div class="flex jsa bottom_line">
+                            <div class="flex f12 fc ac pp right_line">
+                                <div class="flex mb-3">
+                                    <div class="bold space-nowrap">团队人均费用：</div>
+                                    <div class="space-nowrap">¥{data.tdrjfy_rx}</div>
+                                </div>
+                                <div class="flex ac">
+                                    <div class="bold space-nowrap">环比上月：</div>
+                                   <div class={data.tdrjfy_hb>0?'red_color':data.tdrjfy_hb==0?'':'green_color'}>{data.tdrjfy_hb>0?'+':''}{data.tdrjfy_hb}%</div>
+                                </div>
+                            </div>
+                            <div class="flex f12 fc ac pp">
+                                <div class="flex mb-3">
+                                    <div class="bold space-nowrap">邀约面试：</div>
+                                    <div class="space-nowrap">{data.msyy_rx}</div>
+                                </div>
+                                <div class="flex ac">
+                                    <div class="bold space-nowrap">环比上月：</div>
+                                   <div class={data.msyy_hb>0?'red_color':data.msyy_hb==0?'':'green_color'}>{data.msyy_hb>0?'+':''}{data.msyy_hb}%</div>
+                                </div>
+                            </div>
+                            </div>
+                        </div>
+                        )
+                    }else{
+                        return (
                         <div>
                         <div class="dept_name">{data.dept_name}（{data.user_num}人）</div>
                         <div class="flex fc ac pp">
@@ -178,6 +208,8 @@
                         </div>
                         </div>
                         )
+                    }
+                    
                 }
             },
     		//默认展开
@@ -227,6 +259,9 @@
 }
 .bottom_line{
     border-bottom:1px solid #dcdcdc;
+}
+.right_line{
+    border-right:1px solid #dcdcdc;
 }
 .line{
 	background-color: #dcdcdc;

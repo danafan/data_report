@@ -369,7 +369,7 @@
 								if (this.gmvChart) { 
 									this.gmvChart.clear();
 								}
-								this.gmvChart.setOption(this.setBarOptions('个人GMV柱状图','GMV',gmv_x_axis,gmv_series_data));
+								this.gmvChart.setOption(this.setBarOptions('个人GMV柱状图','真实GMV',gmv_x_axis,gmv_series_data));
 							}
 							// 个人销量柱状图
 							var xl_chart = document.getElementById(`xl_chart`);
