@@ -2,7 +2,7 @@
 	<div @contextmenu="showMenu">
 		<el-container class="box">
 			<el-header class="header">
-				<div class="gxk">德儿网络数据中心</div>
+				<div class="gxk">德儿网络数据中心11</div>
 				<div class="user_set">
 					<el-button type="primary" size="small" icon="el-icon-document-add" circle style="margin-right: 15px" @click="newWindow"></el-button>
 					<el-popover @show="getList" placement="bottom" width="460" trigger="hover">
