@@ -58,7 +58,7 @@
 					<!-- 图表 -->
 					<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
 					<!-- 普通文字 -->
-					<div class="table_header_text" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
+					<div class="table_header_text" @dblclick="doCopy(scope.row[i.row_field_name])" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
 				</template>
 			</el-table-column>
 			<!-- 单级表头 -->
@@ -78,7 +78,7 @@
 				<!-- 图表 -->
 				<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
 				<!-- 普通文字 -->
-				<div class="table_header_text" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+				<div class="table_header_text" @dblclick="doCopy(scope.row[item.row_field_name])" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
 			</template>
 		</el-table-column>
 		<el-table-column label="操作" align="center" v-if="is_setting">
@@ -108,316 +108,323 @@
 			//是否显示序号
 			show_index:{
 				type:Boolean,
-				default:false
+			default:false
 			},
 			//表头是否换行
 			is_wrap:{
 				type:Boolean,
-				default:true
+			default:true
 			},
 			//表格最大高度
 			max_height:{
 				type:String,
-				default:'360px'
+			default:'360px'
 			},
 			//列宽
 			column_width:{
 				type:String,
-				default:''
+			default:''
 			},
 			//表格数据
 			table_data:{
 				type:Array,
-				default:()=>[]
+			default:()=>[]
 			},
 			//表头数据
 			title_list:{
 				type:Array,
-				default:()=>[]
+			default:()=>[]
 			},
 			//第一行是否是总计行
 			total_row:{
 				type:Boolean,
-				default:false
+			default:false
 			},
 			//总计行数据
 			table_total_data:{
 				type:Object,
-				default:()=>{}
+			default:()=>{}
 			},
 			//是否自定义排序
 			is_custom_sort:{
 				type:Boolean,
-				default:true
+			default:true
 			},
 			//下钻时取的参数
 			fieldName:{
 				type:String,
-				default:''
+			default:''
 			},
 			//表格名称（用于区分点击的哪个表格）
 			tableName:{
 				type:String,
-				default:''
+			default:''
 			},
 			//图片宽高
 			image_size:{
 				type:String,
-				default:'50px'
+			default:'50px'
 			},
 			//是否有操作列
 			is_setting:{
 				type:Boolean,
-				default:false
+			default:false
 			},
 			//排序拼接类型(true:数字；false：字母)
 			sort_num:{
 				type:Boolean,
-				default:true
+			default:true
 			},
 			//按钮权限
 			button_list:{
 				type:Object,
-				default:() => {
-					return {
-						edit:0,
-						del:0
-					}
+			default:() => {
+				return {
+					edit:0,
+					del:0
 				}
-			},
-			//加载状态
-			isLoading:{
-				type:Boolean,
-				default: false
 			}
 		},
-		watch:{
-			table_data:function(n,o){
-				this.$nextTick(() => {
-					this.show_chart_filed = [];
-					this.getShowChartFiled(this.title_list);
-					var echarts = require("echarts");
-					n.map(n_item => {
-						this.show_chart_filed.map((item) => {
-							if(n_item.id != ''){
-								var ele = document.getElementById(`${item}-${n_item.id}`);
-								let myChart = echarts.getInstanceByDom(ele)
-								if (myChart == null) { 
-									myChart = echarts.init(ele);
-								}
-								let x_axis = [];
-								let series_data = n_item[item].split(',');
-								series_data.map(i => {
-									x_axis.push('');
-								})
-								myChart.setOption(this.chartsOptions(x_axis,series_data))
+			//加载状态
+		isLoading:{
+			type:Boolean,
+		default: false
+		}
+	},
+	watch:{
+		table_data:function(n,o){
+			this.$nextTick(() => {
+				this.show_chart_filed = [];
+				this.getShowChartFiled(this.title_list);
+				var echarts = require("echarts");
+				n.map(n_item => {
+					this.show_chart_filed.map((item) => {
+						if(n_item.id != ''){
+							var ele = document.getElementById(`${item}-${n_item.id}`);
+							let myChart = echarts.getInstanceByDom(ele)
+							if (myChart == null) { 
+								myChart = echarts.init(ele);
 							}
+							let x_axis = [];
+							let series_data = n_item[item].split(',');
+							series_data.map(i => {
+								x_axis.push('');
+							})
+							myChart.setOption(this.chartsOptions(x_axis,series_data))
+						}
 
-						})
 					})
 				})
-			},
-			table_total_data:function(n,o){
-				this.total_data = [];
-				if(Object.keys(n).length > 0){
-					this.total_data.push(n);
-				}
-			},
-			isLoading:function(n,o){
-				if(!n){
-					this.setScroll();
-				}
-				
+			})
+		},
+		table_total_data:function(n,o){
+			this.total_data = [];
+			if(Object.keys(n).length > 0){
+				this.total_data.push(n);
 			}
 		},
-		mounted(){
-			this.setScroll();
-		},
-		beforeDestroy() {
-    		// 移除事件监听
-    		if(this.total_table){
-    			this.total_table.removeEventListener("scroll", ()=>{});
-    		}
-    		if(this.data_table){
-    			this.data_table.removeEventListener("scroll", ()=>{});
-    		}
-    	},
-    	methods:{
-    		//过滤图片
-    		filterImage(image){
-    			if(image){
-    				return image.split(',');
-    			}else{
-    				return [];
-    			}
-    		},
-  			//设置监听滚动事件
-  			setScroll(){
-  				this.$nextTick(() => {
-  					if(this.total_row){
-  						this.total_table = this.$refs.total_table.bodyWrapper;
-  						this.total_table.addEventListener('scroll', this.debounce((e)=>{
-  							if(this.table_data.length > 0){
-  								this.data_table.scrollLeft = this.total_table.scrollLeft;
-  							}
+		isLoading:function(n,o){
+			if(!n){
+				this.setScroll();
+			}
 
-  						}, 50));
-  					}else{
-  						this.total_table = null;
-  					}
-  					if(!this.total_row || (this.total_row && this.table_data.length > 0)){
-  						this.data_table = this.$refs.data_table.bodyWrapper;
-  						this.data_table.addEventListener('scroll', this.debounce((e)=>{
-  							if(this.total_row){
-  								this.total_table.scrollLeft = this.data_table.scrollLeft;
-  							}
-  						}, 50));
-  					}else{
-  						this.data_table = null;
-  					}
-  				})
-  			},
-  			debounce(fn, wait) {
-  				var timeout = null; 
-  				return function() { 
-  					if(timeout !== null) clearTimeout(timeout); 
-  					timeout = setTimeout(fn, wait); 
-  				} 
-  			},
-  			setBackground({row, rowIndex}){
-  				return {'background':'#F5F7FA','color':'#333333'}
-  			},
+		}
+	},
+	mounted(){
+		this.setScroll();
+	},
+	beforeDestroy() {
+    		// 移除事件监听
+		if(this.total_table){
+			this.total_table.removeEventListener("scroll", ()=>{});
+		}
+		if(this.data_table){
+			this.data_table.removeEventListener("scroll", ()=>{});
+		}
+	},
+	methods:{
+		doCopy(text) {
+			this.$copyText(text).then( (e) => {
+				this.$message.success('复制成功')
+			},  (e)=> {
+				this.$message.success('复制失败')
+			})
+		},
+    		//过滤图片
+		filterImage(image){
+			if(image){
+				return image.split(',');
+			}else{
+				return [];
+			}
+		},
+  			//设置监听滚动事件
+		setScroll(){
+			this.$nextTick(() => {
+				if(this.total_row){
+					this.total_table = this.$refs.total_table.bodyWrapper;
+					this.total_table.addEventListener('scroll', this.debounce((e)=>{
+						if(this.table_data.length > 0){
+							this.data_table.scrollLeft = this.total_table.scrollLeft;
+						}
+
+					}, 50));
+				}else{
+					this.total_table = null;
+				}
+				if(!this.total_row || (this.total_row && this.table_data.length > 0)){
+					this.data_table = this.$refs.data_table.bodyWrapper;
+					this.data_table.addEventListener('scroll', this.debounce((e)=>{
+						if(this.total_row){
+							this.total_table.scrollLeft = this.data_table.scrollLeft;
+						}
+					}, 50));
+				}else{
+					this.data_table = null;
+				}
+			})
+		},
+		debounce(fn, wait) {
+			var timeout = null; 
+			return function() { 
+				if(timeout !== null) clearTimeout(timeout); 
+				timeout = setTimeout(fn, wait); 
+			} 
+		},
+		setBackground({row, rowIndex}){
+			return {'background':'#F5F7FA','color':'#333333'}
+		},
 			//排序
-			sortChange({ column, prop, order }) {  
-				let sort = "";
-				if(order){
-					sort = prop + '-' + (order == 'ascending'?`${this.sort_num?'1':'asc'}`:`${this.sort_num?'0':'desc'}`);
-				} else{
-					sort = "";
-				}   
-				this.$emit('sortCallBack',sort);
-			},
-			sortableFn(bool){
-				if(bool){
-					if(this.is_custom_sort){
-						return true;
-					}else{
-						return 'custom';
-					}
+		sortChange({ column, prop, order }) {  
+			let sort = "";
+			if(order){
+				sort = prop + '-' + (order == 'ascending'?`${this.sort_num?'1':'asc'}`:`${this.sort_num?'0':'desc'}`);
+			} else{
+				sort = "";
+			}   
+			this.$emit('sortCallBack',sort);
+		},
+		sortableFn(bool){
+			if(bool){
+				if(this.is_custom_sort){
+					return true;
 				}else{
-					return false;
+					return 'custom';
 				}
-			},
+			}else{
+				return false;
+			}
+		},
 			//递归找到需要展示图标的字段
-			getShowChartFiled(list) {
-				list.map(item => {
-					if(item.list && item.list.length > 0){
-						if(item.type == 8){
-							this.show_chart_filed.push(item.row_field_name);
-						}
-						this.getShowChartFiled(item.list)
-					}else{
-						if(item.type == 8){
-							this.show_chart_filed.push(item.row_field_name);
-						}
+		getShowChartFiled(list) {
+			list.map(item => {
+				if(item.list && item.list.length > 0){
+					if(item.type == 8){
+						this.show_chart_filed.push(item.row_field_name);
 					}
-				})
-			},
-			//表头加特殊背景色
-			columnStyle({ row, column, rowIndex, columnIndex }) {
-				if(column.columnKey){
-					return `background: ${column.columnKey};color:#333333`;
+					this.getShowChartFiled(item.list)
 				}else{
-					return `background: #f4f4f4`;
-				}
-			},
-			//图表绘制
-			chartsOptions(x_axis,series_data){
-				return {
-					xAxis: {
-						type: 'category',
-						data: x_axis,
-						axisLine: {
-							show: false, 
-						},
-						axisTick: {
-							show: false,  
-						}
-					},
-					yAxis: {
-						type: 'value',
-						axisTick: {
-							show: false,  
-						},
-						axisLine: {
-							show: false, 
-						},
-						axisLabel: {
-							show: false, 
-						},
-						splitLine: {
-							show: true,
-							lineStyle: {
-								type: 'dashed',
-							},
-						}
-					},
-					grid:{
-						bottom:'10px',
-						top:'10px',
-						left:'5px',
-						right:'5px',
-					},
-					series: [
-					{
-						data: series_data,
-						type: 'line',
+					if(item.type == 8){
+						this.show_chart_filed.push(item.row_field_name);
 					}
-					]
 				}
-			},
+			})
+		},
+			//表头加特殊背景色
+		columnStyle({ row, column, rowIndex, columnIndex }) {
+			if(column.columnKey){
+				return `background: ${column.columnKey};color:#333333`;
+			}else{
+				return `background: #f4f4f4`;
+			}
+		},
+			//图表绘制
+		chartsOptions(x_axis,series_data){
+			return {
+				xAxis: {
+					type: 'category',
+					data: x_axis,
+					axisLine: {
+						show: false, 
+					},
+					axisTick: {
+						show: false,  
+					}
+				},
+				yAxis: {
+					type: 'value',
+					axisTick: {
+						show: false,  
+					},
+					axisLine: {
+						show: false, 
+					},
+					axisLabel: {
+						show: false, 
+					},
+					splitLine: {
+						show: true,
+						lineStyle: {
+							type: 'dashed',
+						},
+					}
+				},
+				grid:{
+					bottom:'10px',
+					top:'10px',
+					left:'5px',
+					right:'5px',
+				},
+				series: [
+				{
+					data: series_data,
+					type: 'line',
+				}
+				]
+			}
+		},
 			//大图点击关闭
-			handleClickStop() {
-				this.$nextTick(() => {
+		handleClickStop() {
+			this.$nextTick(() => {
 		          let domImageView = document.querySelector(".el-image-viewer__mask"); // 获取遮罩层dom
 		          if (!domImageView) {
 		          	return;
 		          }
 		          domImageView.addEventListener("click", () => {
 		            // 点击遮罩层时调用关闭按钮的 click 事件
-		            document.querySelector(".el-image-viewer__close").click();
-		        });
+		          	document.querySelector(".el-image-viewer__close").click();
+		          });
 		      });
-			},
+		},
 
 
-		}
 	}
+}
 </script>
 <style type="text/css">
-.total_table .el-table__body-wrapper::-webkit-scrollbar {
-	display: none!important;
-	height: 0!important;
-}
-.total_table .el-table__fixed{
-	height: 100%!important;
-}
-.el-table__fixed-right::before, .el-table__fixed::before{
-	z-index: 1;
-}
+	.total_table .el-table__body-wrapper::-webkit-scrollbar {
+		display: none!important;
+		height: 0!important;
+	}
+	.total_table .el-table__fixed{
+		height: 100%!important;
+	}
+	.el-table__fixed-right::before, .el-table__fixed::before{
+		z-index: 1;
+	}
 </style>
 <style lang="less" scoped>
-.prop_text{
-	white-space: pre-wrap;
-}
-.chart{
-	width: 150px;
-	height: 80px;
-}
-.red_color{
-	color: red;
-}
-.green_color{
-	color: green;
-}
+	.prop_text{
+		white-space: pre-wrap;
+	}
+	.chart{
+		width: 150px;
+		height: 80px;
+	}
+	.red_color{
+		color: red;
+	}
+	.green_color{
+		color: green;
+	}
 </style>

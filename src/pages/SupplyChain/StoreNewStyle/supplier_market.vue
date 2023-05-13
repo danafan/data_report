@@ -772,13 +772,7 @@
 			},
 			//排序回调
 			sortCallBack(sort){
-				if(sort == ''){
-					this.sort = sort;
-					this.sort_type = sort;
-				}else{
-					this.sort = sort.split('-')[0];
-					this.sort_type = sort.split('-')[1]==0?1:0;
-				}
+				this.sort = sort;
 				//获取列表
 				this.kssxList();
 			},

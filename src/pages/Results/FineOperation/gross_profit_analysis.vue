@@ -42,6 +42,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="结算方式：">
+				<el-select v-model="jsfs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in jsfs_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
@@ -83,6 +89,8 @@
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
 				limit_type:"",								//选中的日均销列表
+				jsfs_list:[],			//结算方式列表
+				jsfs_ids:[],			//选中的结算方式
 				limit_type_list:[{
 					id:'1',
 					name:'日销 1-20'
@@ -108,6 +116,8 @@
 			}
 		},
 		created(){
+			//供应商结算方式
+			this.ajaxJsfs();
 			//品类列表
 			this.getPl();
 			//获取列表
@@ -119,6 +129,16 @@
 				this.select_department_ids = reqObj.select_department_ids;
 				this.select_plat_ids = reqObj.select_plat_ids;
 				this.select_store_ids = reqObj.select_store_ids;
+			},
+			//供应商结算方式
+			ajaxJsfs(){
+				resource.ajaxJsfs().then(res => {
+					if(res.data.code == 1){
+						this.jsfs_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//供应商列表
 			getGys(e){
@@ -199,6 +219,7 @@
 					ksbm:this.select_ks_ids.join(','),
 					limit_type:this.limit_type,
 					bbid:this.bbid.join(','),
+					jsfs:this.jsfs_ids.join(','),
 					sort:this.sort
 				}
 				this.loading = true;
@@ -234,6 +255,7 @@
 						ksbm:this.select_ks_ids.join(','),
 						limit_type:this.limit_type,
 						bbid:this.bbid.join(','),
+						jsfs:this.jsfs_ids.join(','),
 						sort:this.sort
 					}
 					resource.mlreportExport(arg).then(res => {
