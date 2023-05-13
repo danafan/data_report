@@ -168,22 +168,54 @@ function formatDate(date,t) {
   	
   }
 //获取月日期信息
-export function getMonthInfo(year,month){
-	let callObj = {
-		monthDayNum:mGetDate(year,month),
-		year:year,
-		month:month
-	}
-	return callObj;
-}
+  export function getMonthInfo(year,month){
+  	let callObj = {
+  		monthDayNum:mGetDate(year,month),
+  		year:year,
+  		month:month
+  	}
+  	return callObj;
+  }
 // 获取当月天数
-function mGetDate(y,m){
-	var thisDate = new Date(y,m,0);  
-	return thisDate.getDate();
-}
+  function mGetDate(y,m){
+  	var thisDate = new Date(y,m,0);  
+  	return thisDate.getDate();
+  }
 // 获取星期
-export function getWeek(dateString) {
-	var dateArray = dateString.split("-");
-	var date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2]);
-	return "日一二三四五六".charAt(date.getDay());
-}
+  export function getWeek(dateString) {
+  	var dateArray = dateString.split("-");
+  	var date = new Date(dateArray[0], parseInt(dateArray[1] - 1), dateArray[2]);
+  	return "日一二三四五六".charAt(date.getDay());
+  }
+
+//获取两个日期间的所有日期
+  export function getEveryDay(stime, etime) {
+  	//初始化日期列表，数组
+    var diffdate = new Array();
+    var i=0;
+    //开始日期小于等于结束日期,并循环
+    while(stime<=etime){
+        diffdate[i] = stime;
+        
+        //获取开始日期时间戳
+        var stime_ts = new Date(stime).getTime();
+        console.log('当前日期：'+stime   +'当前时间戳：'+stime_ts);
+        
+        //增加一天时间戳后的日期
+        var next_date = stime_ts + (24*60*60*1000);
+        
+        //拼接年月日，这里的月份会返回（0-11），所以要+1
+        var next_dates_y = new Date(next_date).getFullYear()+'-';
+        var next_dates_m = (new Date(next_date).getMonth()+1 < 10)?'0'+(new Date(next_date).getMonth()+1)+'-':(new Date(next_date).getMonth()+1)+'-';
+        var next_dates_d = (new Date(next_date).getDate() < 10)?'0'+new Date(next_date).getDate():new Date(next_date).getDate();
+ 
+        stime = next_dates_y+next_dates_m+next_dates_d;
+        
+        //增加数组key
+        i++;
+    }
+    return diffdate;
+  }
+
+
+

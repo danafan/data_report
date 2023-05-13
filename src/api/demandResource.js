@@ -66,6 +66,10 @@ let path = {
 	sendSupplier:'supplier/send_supplier',							//供应商维度列表接口
 	sendSupplierExport:'supplier/send_supplier_export',				//供应商维度列表(导出)
 	ajaxGysArea:'supplier/ajax_gys_area',							//ajax获取供应商对应地区列表
+	kssxLineChart:'supplier/kssx_line_chart',						//供应商市场维度-折线图
+	kssxCrossplot:'supplier/kssx_crossplot',						//供应商市场维度-交叉图
+	kssxList:'supplier/kssx_list',									//供应商市场维度-明细
+	kssxExport:'supplier/kssx_export',								//供应商市场维度-明细导出
 	
 }						
 export default{
@@ -332,6 +336,22 @@ export default{
 	//ajax获取供应商对应地区列表
 	ajaxGysArea(params){
 		return http.get(path.ajaxGysArea, params)
+	},
+	//供应商市场维度-折线图
+	kssxLineChart(params){
+		return http.get(path.kssxLineChart, params)
+	},
+	//供应商市场维度-交叉图
+	kssxCrossplot(params){
+		return http.get(path.kssxCrossplot, params)
+	},
+	//供应商市场维度-明细
+	kssxList(params){
+		return http.get(path.kssxList, params)
+	},
+	//供应商市场维度-明细导出
+	kssxExport(params){
+		return http.post(path.kssxExport, params)
 	},
 }
 
