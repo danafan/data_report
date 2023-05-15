@@ -7,27 +7,52 @@ import axios from './index.js'
 function formatJson(filterVal, jsonData) {
 	return jsonData.map(v => filterVal.map(j => v[j]))
 }
-export function exportExcel(data_obj) {
+export function exportExcel(data_obj,is_multi) {
 	MessageBox.confirm('确认导出?', '提示', {
 		confirmButtonText: '确定',
 		cancelButtonText: '取消',
 		type: 'warning'
 	}).then(() => {
-		require.ensure([], () => {
-			　const { export_json_to_excel } = require('../vendor/Export2Excel.js')
-			　const tHeader = data_obj.table_title_list;
-			　const filterVal = data_obj.field_name_list;
-			　const list = data_obj.data_list;
-			　const data = formatJson(filterVal,list);
-			let today = new Date();
-			let tadayDate =
-			today.getFullYear() +
-			"-" +
-			(today.getMonth() + 1) +
-			"-" +
-			today.getDate();
-			　export_json_to_excel(tHeader, data, data_obj.table_title + "-" + tadayDate);
-		})
+		if(is_multi === true){	//多级表头加合并单元格
+			require.ensure([], () => {
+				　const { export_json_to_excel_2 } = require('../vendor/Export2Excel.js')
+				　const multiHeader = [data_obj.multiHeader];
+				const header = data_obj.header;
+				　const filterVal = data_obj.field_name_list;
+				　const list = data_obj.data_list;
+				　const data = formatJson(filterVal,list);
+
+				let today = new Date();
+				let tadayDate =
+				today.getFullYear() +
+				"-" +
+				(today.getMonth() + 1) +
+				"-" +
+				today.getDate();
+				const merges = [
+					"A1:A2",
+					"B1:B2"
+					]
+				export_json_to_excel_2({multiHeader,header:header, data,merges, filename:data_obj.filename + "-" + tadayDate});
+			})
+
+		}else{
+			require.ensure([], () => {
+				　const { export_json_to_excel } = require('../vendor/Export2Excel.js')
+				　const tHeader = data_obj.table_title_list;
+				　const filterVal = data_obj.field_name_list;
+				　const list = data_obj.data_list;
+				　const data = formatJson(filterVal,list);
+				let today = new Date();
+				let tadayDate =
+				today.getFullYear() +
+				"-" +
+				(today.getMonth() + 1) +
+				"-" +
+				today.getDate();
+				　export_json_to_excel(tHeader, data, data_obj.table_title + "-" + tadayDate);
+			})
+		}
 	}).catch(() => {
 		Message({
 			type: 'info',
@@ -83,28 +108,28 @@ export function exportUp(url){
 		}
 		if(!!store.state.is_ding_talk){  //钉钉
         	//获取code
-        	dd.ready(() => {
-        		dd.runtime.permission.requestAuthCode({
-        			corpId: "ding7828fff434921f5b",
-        			onSuccess: res =>{
+			dd.ready(() => {
+				dd.runtime.permission.requestAuthCode({
+					corpId: "ding7828fff434921f5b",
+					onSuccess: res =>{
                 		//获取钉钉用户信息
-                		let code = res.code;
-                		exportSet(new_url,arg,code);
-                	},
-                	onFail : err => {
-                		alert('dd error: ' + JSON.stringify(err));
-                	}
-                });
-        	});
-        }else{
-        	exportSet(new_url,arg);
-        }
-    }).catch(() => {
-    	Message({
-    		type: 'info',
-    		message: '取消导出'
-    	});          
-    });
+						let code = res.code;
+						exportSet(new_url,arg,code);
+					},
+					onFail : err => {
+						alert('dd error: ' + JSON.stringify(err));
+					}
+				});
+			});
+		}else{
+			exportSet(new_url,arg);
+		}
+	}).catch(() => {
+		Message({
+			type: 'info',
+			message: '取消导出'
+		});          
+	});
 }
 
 //统一导出

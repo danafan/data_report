@@ -2,6 +2,7 @@
 require('script-loader!file-saver');
 require('script-loader!../vendor/Blob.js');
 require('script-loader!xlsx/dist/xlsx.core.min');
+
 function generateArray(table) {
     var out = [];
     var rows = table.querySelectorAll('tr');
@@ -91,35 +92,6 @@ function s2ab(s) {
     return buf;
 }
 
-export function export_table_to_excel(id) {
-    var theTable = document.getElementById(id);
-    console.log('a')
-    var oo = generateArray(theTable);
-    var ranges = oo[1];
-
-    /* original data */
-    var data = oo[0];
-    var ws_name = "SheetJS";
-    console.log(data);
-
-    var wb = new Workbook(), ws = sheet_from_array_of_arrays(data);
-
-    /* add ranges to worksheet */
-    // ws['!cols'] = ['apple', 'banan'];
-    ws['!merges'] = ranges;
-
-    /* add worksheet to workbook */
-    wb.SheetNames.push(ws_name);
-    wb.Sheets[ws_name] = ws;
-
-    var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'binary'});
-
-    saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), "test.xlsx")
-}
-
-function formatJson(jsonData) {
-    console.log(jsonData)
-}
 export function export_json_to_excel(th, jsonData, defaultTitle) {
 
     /* original data */
@@ -138,4 +110,48 @@ export function export_json_to_excel(th, jsonData, defaultTitle) {
     var wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST: false, type: 'binary'});
     var title = defaultTitle || '列表'
     saveAs(new Blob([s2ab(wbout)], {type: "application/octet-stream"}), title + ".xlsx")
+}
+
+//多级表头导出
+export function export_json_to_excel_2({
+  multiHeader = [],
+  header,
+  data,
+  merges = [],
+  filename,
+  bookType = 'xlsx'
+} = {}) {
+  /* original data */
+  filename = filename || 'excel-list'
+  data = [...data]
+  data.unshift(header);
+
+  for (let i = multiHeader.length - 1; i > -1; i--) {
+    data.unshift(multiHeader[i])
+  }
+
+  var ws_name = "SheetJS";
+  var wb = new Workbook(),
+    ws = sheet_from_array_of_arrays(data);
+
+  if (merges.length > 0) {
+    if (!ws['!merges']) ws['!merges'] = [];
+    merges.forEach(item => {
+      ws['!merges'].push(XLSX.utils.decode_range(item))
+    })
+  }
+
+  /* add worksheet to workbook */
+  wb.SheetNames.push(ws_name);
+  wb.Sheets[ws_name] = ws;
+
+
+  var wbout = XLSX.write(wb, {
+    bookType: bookType,
+    bookSST: false,
+    type: 'binary'
+  });
+  saveAs(new Blob([s2ab(wbout)], {
+    type: "application/octet-stream"
+  }), `${filename}.${bookType}`);
 }

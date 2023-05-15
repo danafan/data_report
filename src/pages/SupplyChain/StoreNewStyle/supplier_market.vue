@@ -38,7 +38,10 @@
 		<!-- 近30天事业部上新折线图 -->
 		<div class="line_chart" id="dept_chart" v-loading="dept_loading"></div>
 		<!-- 近30天事业部上新交叉图 -->
-		<PopoverWidget class="mb-10" title="近30天事业部上新交叉图" :show_popover="false"/>
+		<div class="flex ac jsb mb-10">
+			<PopoverWidget class="mb-10" title="近30天事业部上新交叉图" :show_popover="false"/>
+			<el-button type="primary" plain size="small" @click="customExport('dept')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
 		<el-table class="mb-10" :data="dept_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="deptSpanMethod" v-loading="dept_table_loading">
 			<el-table-column :label="item.label" :prop="item.prop" align="center" v-for="(item,index) in dept_title_list" :fixed="index == 0 || index == 1">
 				<template slot-scope="scope">
@@ -54,9 +57,12 @@
 		<!-- 店铺上新折线图 -->
 		<div class="line_chart" id="shop_chart" v-loading="shop_loading"></div>
 		<!-- 店铺上新交叉图 -->
-		<PopoverWidget class="mb-10" title="店铺上新交叉图" :show_popover="false"/>
-		<el-table class="mb-10" :data="shop_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="shopSpanMethod" v-loading="shop_table_loading">
-			<el-table-column :label="item.label" :prop="item.prop" :width="index == 0?140:''" align="center" v-for="(item,index) in shop_title_list" :fixed="index == 0 || index == 1">
+		<div class="flex ac jsb mb-10">
+			<PopoverWidget title="店铺上新交叉图" :show_popover="false"/>
+			<el-button type="primary" plain size="small" @click="customExport('shop')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+		</div>
+		<el-table class="mb-10" :data="shop_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" @cell-click="cellClick" :span-method="shopSpanMethod" v-loading="shop_table_loading">
+			<el-table-column :label="item.label" :prop="item.prop" :width="index == 0?140:''" align="center" v-for="(item,index) in shop_title_list" :index="index" :fixed="index == 0 || index == 1">
 				<template slot-scope="scope">
 					<div>{{scope.row[item.prop]}}</div>
 				</template>
@@ -80,7 +86,7 @@
 	import {lastXDate,getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getEveryDay} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
 	import demandResource from '../../../api/demandResource.js'
-	import {exportPost,exportNewExcel,exportUp} from '../../../api/export.js'
+	import {exportPost,exportExcel} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	import PopoverWidget from '../../../components/popover_widget'
 	import CustomTable from '../../../components/custom_table'
@@ -169,6 +175,7 @@
 				shop_table:[],								//店铺上新交叉图数据
 				shop_table_loading:false,					//店铺上新交叉图加载
 				detail_loading:false,						//明细数据加载
+				shop_id:"",
 				detail_title_list:[],						//明细数据表格头部
 				detail_table_data:[],						//明细数据列表
 				total:0,
@@ -330,6 +337,7 @@
 			},
 			//点击搜索
 			async searchFn(is_all){
+				this.shop_id = "";
 				this.table_date_list = getEveryDay(this.date[0],this.date[1]).reverse();
 				if(is_all === true){
 					this.hy_loading = true;
@@ -489,7 +497,8 @@
 								num_arr.map((item,index)=> {
 									let series_item = {
 										value:item,
-										zb:zb_arr[index]
+										zb:zb_arr[index],
+										name:data.list[0].name
 									}
 									series_data_arr.push(series_item)
 								})
@@ -505,7 +514,7 @@
 							if (this.shopChart == null) { 
 								this.shopChart = echarts.init(shop_chart);
 							}
-							this.shopChart.setOption(this.setLineOptions('店铺档口/外采折线图',data.day_list,series_data,legend_data,'hy'));
+							this.shopChart.setOption(this.setLineOptions('店铺档口/外采折线图',data.day_list,series_data,legend_data,'shop'));
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -523,22 +532,31 @@
 					},
 					tooltip: {
 					    // 提示框组件
-						trigger: 'item', 
+						trigger: 'axis', 
 						position:'top',
 						formatter:  (params) => {
-							let tip = '';
 							if(type == 'hy'){
-								tip = `${params.seriesName}</br>
-								日期：${params.name}</br>
-								上新数量：${params.data.value}</br>
-								占比：${params.data.zb}</br>`;
+								let tip = `${params[0].name}</br>`;
+								params.map(item => {
+									tip += `${item.seriesName}上新数量：${item.data.value}</br>
+									${item.seriesName}占比：${item.data.zb}</br>`;
+								})
+								return tip;
 							}else if(type == 'dept'){
-								console.log(params)
-								tip = `${params.seriesName}</br>
-								日期：${params.name}</br>
-								上新数量：${params.value}</br>`;
+								let tip = `${params[0].name}</br>`;
+								params.map(item => {
+									tip += `${item.seriesName}：${item.value}</br>`;
+								})
+								return tip;
+							}else if(type == 'shop'){
+								let tip = `${params[0].data.name}</br>
+								${params[0].axisValue}</br>`;
+								params.map(item => {
+									tip += `${item.seriesName}上新数量：${item.data.value}</br>
+									${item.seriesName}占比：${item.data.zb}</br>`;
+								})
+								return tip
 							}
-							return tip
 						},
 						backgroundColor:"rgba(0,0,0,.8)",
 						textStyle:{
@@ -708,6 +726,7 @@
 							data.map(item => {
 								item.list.map(i => {
 									i['name'] = item.name;
+									i['shop_id'] = item.shop_id;
 									this.shop_table.push(i);
 								})
 							})
@@ -717,10 +736,22 @@
 					})
 				})
 			},
+			//点击店铺上新交叉图某个店铺
+			cellClick(row, column, cell, event){
+				if(column.index == 0){
+					this.shop_id = row.shop_id;
+					//明细数据
+					this.kssxList();
+				}
+			},
 			//明细数据
 			kssxList(){
+				if(this.shop_id != ''){
+					this.page = 1;
+					this.sort = '';
+				}
 				let arg = {
-					shop_id:this.select_store_ids.join(','),
+					shop_id:this.shop_id?this.shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
@@ -744,7 +775,7 @@
 					})
 				})
 			},
-			//导出
+			//post导出
 			exportFn(){
 				MessageBox.confirm('确认导出?', '提示', {
 					confirmButtonText: '确定',
@@ -787,6 +818,48 @@
 				//获取列表
 				this.kssxList();
 			},
+			//自定义导出
+			customExport(type){
+				if(type == 'shop'){
+					let multiHeader = ['店铺','类型'];
+					let tHeader = ['店铺','类型'];
+					let field_name_list = ['name','hy_name'];
+					this.table_date_list.map(item => {
+						multiHeader = [...multiHeader,...[item,item]];
+						tHeader.push('款数');
+						tHeader.push('占比');
+						field_name_list.push(`${item}_num`);
+						field_name_list.push(`${item}_zb`);
+					})
+					var data_obj = {
+						multiHeader:multiHeader, //这里是第一行的表头
+				        header: tHeader, //这里应该是算第二行的表头
+				        field_name_list:field_name_list,
+				        data_list:this.shop_table,//数据
+				        filename: "店铺上新交叉图",
+				    };
+				    exportExcel(data_obj,true);
+				}else{
+					let multiHeader = ['事业部','类型'];
+					let tHeader = ['事业部','类型'];
+					let field_name_list = ['name','hy_name'];
+					this.table_date_list.map(item => {
+						multiHeader = [...multiHeader,...[item,item]];
+						tHeader.push('款数');
+						tHeader.push('占比');
+						field_name_list.push(`${item}_num`);
+						field_name_list.push(`${item}_zb`);
+					})
+					var data_obj = {
+						multiHeader:multiHeader, //这里是第一行的表头
+				        header: tHeader, //这里应该是算第二行的表头
+				        field_name_list:field_name_list,
+				        data_list:this.dept_table,//数据
+				        filename: "事业部上新交叉图",
+				    };
+				    exportExcel(data_obj,true);
+				}
+			}
 		},
 		components:{
 			PopoverWidget,

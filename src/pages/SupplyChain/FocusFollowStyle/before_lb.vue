@@ -231,12 +231,12 @@
 					prop:'stl_15',
 					is_sort:true
 				},{
-					label:'7天到货率',
-					prop:'dhl_7',
-					is_sort:true
-				},{
 					label:'一周前15天实退率',
 					prop:'stl_15_7',
+					is_sort:true
+				},{
+					label:'7天到货率',
+					prop:'dhl_7',
 					is_sort:true
 				},{
 					label:'7天到货率(排除备货)',

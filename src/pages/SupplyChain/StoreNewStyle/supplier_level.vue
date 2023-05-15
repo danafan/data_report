@@ -215,7 +215,7 @@
 	import {lastXDate,getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
 	import demandResource from '../../../api/demandResource.js'
-	import {exportPost,exportNewExcel,exportUp} from '../../../api/export.js'
+	import {exportPost,exportUp} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 
 	export default{

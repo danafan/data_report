@@ -199,7 +199,6 @@ function formatDate(date,t) {
         
         //获取开始日期时间戳
         var stime_ts = new Date(stime).getTime();
-        console.log('当前日期：'+stime   +'当前时间戳：'+stime_ts);
         
         //增加一天时间戳后的日期
         var next_date = stime_ts + (24*60*60*1000);

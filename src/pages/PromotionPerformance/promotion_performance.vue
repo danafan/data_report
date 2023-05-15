@@ -34,6 +34,9 @@
 				<el-checkbox :true-label='1' :false-label="0" v-model="gxmyxyl">贡献毛益小于0</el-checkbox>
 			</el-form-item>
 			<el-form-item>
+				<el-checkbox :true-label='1' :false-label="0" v-model="yk_flag">盈亏小于0</el-checkbox>
+			</el-form-item>
+			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
@@ -157,6 +160,7 @@
 				select_pp_list:[],							//选中的品牌列表
 				type:'fzr',									//类型
 				gxmyxyl:0,									//贡献毛益小于0
+				yk_flag:0,									//盈亏小于0
 				dashedChart:null,							//气泡图
 				dashed_loading:false,						//气泡图加载
 				fzr_loading:false,
@@ -235,7 +239,7 @@
 		props:{
 			activeTab:{
 				type:String,
-				default:""
+			default:""
 			}
 		},
 		created(){
@@ -360,6 +364,9 @@
 				if(this.gxmyxyl === 1){
 					arg['gxmy_flag'] = this.gxmyxyl;
 				}
+				if(this.yk_flag === 1){
+					arg['yk_flag'] = this.yk_flag;
+				}
 				return new Promise((resolve)=>{
 					resource.promoteKpiChart(arg).then(res => {
 						resolve();
@@ -443,23 +450,23 @@
 					},
 					tooltip: {
 					    // 提示框组件
-					    trigger: 'item', 
-					    position:'top',
-					    formatter:  (params) => {
-					    	let tip = `${params.name}</br>
-					    	ROI：${params.value}</br>
-					    	真实GMV：${params.data.data.zs_xsje}</br>
-					    	营销费用：${params.data.data.yxfy}`;
-					    	return tip
-					    },
-					    backgroundColor:"rgba(0,0,0,.8)",
-					    textStyle:{
-					    	color:"#ffffff"
-					    },
-					    borderColor:"rgba(0,0,0,0.7)",
-					    axisPointer: {            
-					    	type: 'shadow'        
-					    }
+						trigger: 'item', 
+						position:'top',
+						formatter:  (params) => {
+							let tip = `${params.name}</br>
+							ROI：${params.value}</br>
+							真实GMV：${params.data.data.zs_xsje}</br>
+							营销费用：${params.data.data.yxfy}`;
+							return tip
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+						axisPointer: {            
+							type: 'shadow'        
+						}
 					},
 					grid: {
 						left: type == 'dept' || type == 'dpid'?'5%':'2%',
@@ -530,6 +537,9 @@
 				if(this.gxmyxyl === 1){
 					arg['gxmy_flag'] = this.gxmyxyl;
 				}
+				if(this.yk_flag === 1){
+					arg['yk_flag'] = this.yk_flag;
+				}
 				return new Promise((resolve)=>{
 					resource.dpPromoteGroupList(arg).then(res => {
 						resolve();
@@ -560,6 +570,9 @@
 				}
 				if(this.gxmyxyl === 1){
 					arg['gxmy_flag'] = this.gxmyxyl;
+				}
+				if(this.yk_flag === 1){
+					arg['yk_flag'] = this.yk_flag;
 				}
 				this.dashed_loading = true;
 				return new Promise((resolve)=>{
@@ -660,26 +673,26 @@
 				return {
 					tooltip: {
 					    // 提示框组件
-					    trigger: 'item', 
-					    position:'top',
-					    formatter:  (params) => {
-					    	let tip = `${params.data[3]}</br>
-					    	ROI：${params.data[1]}</br>
-					    	贡献毛益：${params.data[0]}</br>
-					    	真实GMV：${params.data[2]}</br>
-					    	销量：${params.data[4]}</br>
-					    	毛利率：${params.data[5]}</br>
-					    	营销费用：${params.data[6]}</br>`;
-					    	return tip
-					    },
-					    backgroundColor:"rgba(0,0,0,.8)",
-					    textStyle:{
-					    	color:"#ffffff"
-					    },
-					    borderColor:"rgba(0,0,0,0.7)",
-					    axisPointer: {            
-					    	type: 'shadow'        
-					    }
+						trigger: 'item', 
+						position:'top',
+						formatter:  (params) => {
+							let tip = `${params.data[3]}</br>
+							ROI：${params.data[1]}</br>
+							贡献毛益：${params.data[0]}</br>
+							真实GMV：${params.data[2]}</br>
+							销量：${params.data[4]}</br>
+							毛利率：${params.data[5]}</br>
+							营销费用：${params.data[6]}</br>`;
+							return tip
+						},
+						backgroundColor:"rgba(0,0,0,.8)",
+						textStyle:{
+							color:"#ffffff"
+						},
+						borderColor:"rgba(0,0,0,0.7)",
+						axisPointer: {            
+							type: 'shadow'        
+						}
 					},
 					title: {
 						text: 'ROI气泡图统计',
@@ -762,6 +775,9 @@
 				if(this.gxmyxyl === 1){
 					arg['gxmy_flag'] = this.gxmyxyl;
 				}
+				if(this.yk_flag === 1){
+					arg['yk_flag'] = this.yk_flag;
+				}
 				arg = {...arg,...this.qpt_arg};
 				this.current_arg = arg;
 				this.table_loading = true;
@@ -843,6 +859,9 @@
 					if(this.gxmyxyl === 1){
 						arg['gxmy_flag'] = this.gxmyxyl;
 					}
+					if(this.yk_flag === 1){
+						arg['yk_flag'] = this.yk_flag;
+					}
 					resource.dpPromoteGroupExport(arg).then(res => {
 						if(res){
 							exportPost("\ufeff" + res.data,title);
@@ -872,6 +891,9 @@
 				}
 				if(this.gxmyxyl === 1){
 					req['gxmy_flag'] = this.gxmyxyl;
+				}
+				if(this.yk_flag === 1){
+					req['yk_flag'] = this.yk_flag;
 				}
 				var export_arr = [];
 				for(let key in req){
@@ -917,15 +939,15 @@
 	}
 </script>
 <style lang="less" scoped>
-.bar_chart_100{
-	width: 100%;
-	height: 320px;
-}
-.bar_chart_50{
-	width: 50%;
-	height: 320px;
-}
-.dashed_chart{
+	.bar_chart_100{
+		width: 100%;
+		height: 320px;
+	}
+	.bar_chart_50{
+		width: 50%;
+		height: 320px;
+	}
+	.dashed_chart{
 	// width: 800px;
 	width: 100%;
 	height: 500px;
