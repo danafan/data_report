@@ -4,6 +4,9 @@ import * as dd from 'dingtalk-jsapi';
 import store from '../store/index.js'
 import axios from './index.js'
 
+import FileSaver from 'file-saver'
+import * as XLSX from 'xlsx'
+
 function formatJson(filterVal, jsonData) {
 	return jsonData.map(v => filterVal.map(j => v[j]))
 }
@@ -152,4 +155,25 @@ export function exportPost(data,name){
     document.body.removeChild(elink)
 }
 
+
+//自定义导出表格，直接导出
+export function exportTable(ele,name){
+	MessageBox.confirm('确认导出?', '提示', {
+		confirmButtonText: '确定',
+		cancelButtonText: '取消',
+		type: 'warning'
+	}).then(() => {
+		const wb = XLSX.utils.table_to_book(ele, {raw:true})
+		const wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'array'})
+		FileSaver.saveAs(
+			new Blob([wbout],{type: 'application/octet-stream'}),
+			`${name}.xlsx`,
+			)
+	}).catch(() => {
+		Message({
+			type: 'info',
+			message: '取消导出'
+		});          
+	});
+}
 

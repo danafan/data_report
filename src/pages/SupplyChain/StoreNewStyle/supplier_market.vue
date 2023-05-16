@@ -61,7 +61,7 @@
 			<PopoverWidget title="店铺上新交叉图" :show_popover="false"/>
 			<el-button type="primary" plain size="small" @click="customExport('shopTable','店铺上新交叉图')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table ref='shopTable' id='shopTable' class="mb-10" :data="shop_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" @cell-click="cellClick" :span-method="shopSpanMethod" v-loading="shop_table_loading">
+		<el-table ref='shopTable' class="mb-10" :data="shop_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" @cell-click="cellClick" :span-method="shopSpanMethod" v-loading="shop_table_loading">
 			<el-table-column :label="item.label" :prop="item.prop" :width="index == 0?140:''" align="center" v-for="(item,index) in shop_title_list" :index="index" :fixed="index == 0 || index == 1">
 				<template slot-scope="scope">
 					<div>{{scope.row[item.prop]}}</div>
@@ -86,14 +86,11 @@
 	import {lastXDate,getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getEveryDay} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
 	import demandResource from '../../../api/demandResource.js'
-	import {exportPost,exportExcel} from '../../../api/export.js'
+	import {exportPost,exportTable} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
 	import PopoverWidget from '../../../components/popover_widget'
 	import CustomTable from '../../../components/custom_table'
 	import PageWidget from '../../../components/pagination_widget'
-
-	import FileSaver from 'file-saver'
-	import * as XLSX from 'xlsx'
 	export default{
 		data(){
 			return{
@@ -821,29 +818,13 @@
 				this.kssxList();
 			},
 			//自定义导出
-			customExport(id,name){
-				MessageBox.confirm('确认导出?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					const $e = this.$refs[id].$el
-					let $table = $e.querySelector('.el-table__fixed')
-					if(!$table) {
-						$table = $e
-					}
-					const wb = XLSX.utils.table_to_book($table, {raw:true})
-					const wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'array'})
-					FileSaver.saveAs(
-						new Blob([wbout],{type: 'application/octet-stream'}),
-						`${name}.xlsx`,
-						)
-				}).catch(() => {
-					Message({
-						type: 'info',
-						message: '取消导出'
-					});          
-				});
+			customExport(ref,name){
+				const $e = this.$refs[ref].$el
+				let $table = $e.querySelector('.el-table__fixed')
+				if(!$table) {
+					$table = $e
+				}
+				exportTable($table,name);
 			}
 		},
 		components:{

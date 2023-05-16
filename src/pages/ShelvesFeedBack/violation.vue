@@ -220,7 +220,7 @@
 						let data = res.data.data;
 						this.table_list = data.table_data.data;
 						this.table_list.map(item => {
-							item['images'] = [data.domain + item.pic];
+							item['pic'] = data.domain + item.pic;
 						})
 						this.title_list = data.title_list;
 						this.total = data.table_data.total;
