@@ -40,9 +40,9 @@
 		<!-- 近30天事业部上新交叉图 -->
 		<div class="flex ac jsb mb-10">
 			<PopoverWidget class="mb-10" title="近30天事业部上新交叉图" :show_popover="false"/>
-			<el-button type="primary" plain size="small" @click="customExport('dept')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="customExport('deptTable','事业部上新交叉图')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table class="mb-10" :data="dept_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="deptSpanMethod" v-loading="dept_table_loading">
+		<el-table ref='deptTable' class="mb-10" :data="dept_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" :span-method="deptSpanMethod" v-loading="dept_table_loading">
 			<el-table-column :label="item.label" :prop="item.prop" align="center" v-for="(item,index) in dept_title_list" :fixed="index == 0 || index == 1">
 				<template slot-scope="scope">
 					<div>{{scope.row[item.prop]}}</div>
@@ -59,9 +59,9 @@
 		<!-- 店铺上新交叉图 -->
 		<div class="flex ac jsb mb-10">
 			<PopoverWidget title="店铺上新交叉图" :show_popover="false"/>
-			<el-button type="primary" plain size="small" @click="customExport('shop')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="customExport('shopTable','店铺上新交叉图')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<el-table class="mb-10" :data="shop_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" @cell-click="cellClick" :span-method="shopSpanMethod" v-loading="shop_table_loading">
+		<el-table ref='shopTable' id='shopTable' class="mb-10" :data="shop_table" size="small" max-height="320" :header-cell-style="{'background':'#F6BD16','color':'#333333'}" :cell-style="twoColumnStyle" @cell-click="cellClick" :span-method="shopSpanMethod" v-loading="shop_table_loading">
 			<el-table-column :label="item.label" :prop="item.prop" :width="index == 0?140:''" align="center" v-for="(item,index) in shop_title_list" :index="index" :fixed="index == 0 || index == 1">
 				<template slot-scope="scope">
 					<div>{{scope.row[item.prop]}}</div>
@@ -91,6 +91,9 @@
 	import PopoverWidget from '../../../components/popover_widget'
 	import CustomTable from '../../../components/custom_table'
 	import PageWidget from '../../../components/pagination_widget'
+
+	import FileSaver from 'file-saver'
+	import * as XLSX from 'xlsx'
 	export default{
 		data(){
 			return{
@@ -740,16 +743,15 @@
 			cellClick(row, column, cell, event){
 				if(column.index == 0){
 					this.shop_id = row.shop_id;
+					this.page = 1;
+					this.pagesize = 10;
+					this.sort = '';
 					//明细数据
 					this.kssxList();
 				}
 			},
 			//明细数据
 			kssxList(){
-				if(this.shop_id != ''){
-					this.page = 1;
-					this.sort = '';
-				}
 				let arg = {
 					shop_id:this.shop_id?this.shop_id:this.select_store_ids.join(','),
 					dept_id:this.select_dept_ids.join(','),
@@ -783,7 +785,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						shop_id:this.select_store_ids.join(','),
+						shop_id:this.shop_id?this.shop_id:this.select_store_ids.join(','),
 						dept_id:this.select_dept_ids.join(','),
 						start_date:this.date && this.date.length> 0?this.date[0]:"",
 						end_date:this.date && this.date.length> 0?this.date[1]:"",
@@ -819,46 +821,29 @@
 				this.kssxList();
 			},
 			//自定义导出
-			customExport(type){
-				if(type == 'shop'){
-					let multiHeader = ['店铺','类型'];
-					let tHeader = ['店铺','类型'];
-					let field_name_list = ['name','hy_name'];
-					this.table_date_list.map(item => {
-						multiHeader = [...multiHeader,...[item,item]];
-						tHeader.push('款数');
-						tHeader.push('占比');
-						field_name_list.push(`${item}_num`);
-						field_name_list.push(`${item}_zb`);
-					})
-					var data_obj = {
-						multiHeader:multiHeader, //这里是第一行的表头
-				        header: tHeader, //这里应该是算第二行的表头
-				        field_name_list:field_name_list,
-				        data_list:this.shop_table,//数据
-				        filename: "店铺上新交叉图",
-				    };
-				    exportExcel(data_obj,true);
-				}else{
-					let multiHeader = ['事业部','类型'];
-					let tHeader = ['事业部','类型'];
-					let field_name_list = ['name','hy_name'];
-					this.table_date_list.map(item => {
-						multiHeader = [...multiHeader,...[item,item]];
-						tHeader.push('款数');
-						tHeader.push('占比');
-						field_name_list.push(`${item}_num`);
-						field_name_list.push(`${item}_zb`);
-					})
-					var data_obj = {
-						multiHeader:multiHeader, //这里是第一行的表头
-				        header: tHeader, //这里应该是算第二行的表头
-				        field_name_list:field_name_list,
-				        data_list:this.dept_table,//数据
-				        filename: "事业部上新交叉图",
-				    };
-				    exportExcel(data_obj,true);
-				}
+			customExport(id,name){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					const $e = this.$refs[id].$el
+					let $table = $e.querySelector('.el-table__fixed')
+					if(!$table) {
+						$table = $e
+					}
+					const wb = XLSX.utils.table_to_book($table, {raw:true})
+					const wbout = XLSX.write(wb, {bookType: 'xlsx', bookSST:true, type: 'array'})
+					FileSaver.saveAs(
+						new Blob([wbout],{type: 'application/octet-stream'}),
+						`${name}.xlsx`,
+						)
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			}
 		},
 		components:{

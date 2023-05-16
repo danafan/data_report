@@ -135,10 +135,12 @@ export function export_json_to_excel_2({
     ws = sheet_from_array_of_arrays(data);
 
   if (merges.length > 0) {
+    console.log(ws)
     if (!ws['!merges']) ws['!merges'] = [];
     merges.forEach(item => {
       ws['!merges'].push(XLSX.utils.decode_range(item))
     })
+    console.log(ws)
   }
 
   /* add worksheet to workbook */
