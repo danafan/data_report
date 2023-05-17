@@ -71,6 +71,12 @@
 			<el-form-item label="标签：">
 				<el-input size="mini" v-model="labels" placeholder="标签"></el-input>
 			</el-form-item>
+			<el-form-item label="是否清理：">
+				<el-select v-model="is_clear" clearable placeholder="全部">
+					<el-option label="清理" value="1"></el-option>
+					<el-option label="不清理" value="0"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
@@ -192,6 +198,14 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="ckwz" label="所在仓库" sortable show-overflow-tooltip align="center"></el-table-column>
+			<el-table-column label="是否清理" width="120" align="center">
+				<template slot-scope="scope">
+					<el-select size="mini" v-model="scope.row.is_clear" @change="tagEdit({ksbm:scope.row.ksbm,is_clear:scope.row.is_clear})">
+						<el-option label="清理" :value="1"></el-option>
+						<el-option label="不清理" :value="0"></el-option>
+					</el-select>
+				</template>
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -246,6 +260,7 @@
 				date:getNowDate(),		//库存日期
 				is_retreat:"",			//是否可退
 				labels:"",				//标签
+				is_clear:"",			//是否清理
 				date_list:[getLastYear(1),getLastYear(0)],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
 				kcCbChart:null,			//近一年库存/成本趋势图表
@@ -262,8 +277,6 @@
 				kc_cb_chart_loading:false,
 				loading:false,
 				show_dialog:false,
-
-
 			}
 		},
 		created(){
@@ -361,6 +374,7 @@
 					cpfl:this.select_pl_ids.join(','),
 					is_retreat:this.is_retreat,
 					labels:this.labels,
+					is_clear:this.is_clear,
 					gys:this.select_gys_ids.join(',')
 				}
 				this.analysis_row_loading = true;
@@ -550,60 +564,61 @@
 				}
 			},
         	//款式列表
-        	stockAnalysisKsList(){
-        		let arg = {
-        			start_time:this.date,
-        			plbz:this.select_sfzzk_id.join(','),
-        			jj:this.select_jj_ids.join(','),
-        			ckwz:this.selected_ckwz_list.join(','),
-        			pl:this.select_pp_list.join(','),
-        			ksbm:this.select_ks_ids.join(','),
-        			xb:this.select_xb_id,
-        			cpfl:this.select_pl_ids.join(','),
-        			is_retreat:this.is_retreat,
-        			labels:this.labels,
-        			gys:this.select_gys_ids.join(','),
-        			page:this.page,
-        			pagesize:this.pagesize
-        		}
-        		if(this.sort != ''){
-        			arg.sort = this.sort;
-        		}
-        		this.loading = true;
-        		resource.stockAnalysisKsList(arg).then(res => {
-        			if(res.data.code == 1){
-        				this.loading = false;
-        				this.dataObj = res.data.data.list;
-        				this.cbj_total = res.data.data.cbj_total;
-        			}else{
-        				this.$message.warning(res.data.msg);
-        			}
-        		})
-        	},
+			stockAnalysisKsList(){
+				let arg = {
+					start_time:this.date,
+					plbz:this.select_sfzzk_id.join(','),
+					jj:this.select_jj_ids.join(','),
+					ckwz:this.selected_ckwz_list.join(','),
+					pl:this.select_pp_list.join(','),
+					ksbm:this.select_ks_ids.join(','),
+					xb:this.select_xb_id,
+					cpfl:this.select_pl_ids.join(','),
+					is_retreat:this.is_retreat,
+					labels:this.labels,
+					is_clear:this.is_clear,
+					gys:this.select_gys_ids.join(','),
+					page:this.page,
+					pagesize:this.pagesize
+				}
+				if(this.sort != ''){
+					arg.sort = this.sort;
+				}
+				this.loading = true;
+				resource.stockAnalysisKsList(arg).then(res => {
+					if(res.data.code == 1){
+						this.loading = false;
+						this.dataObj = res.data.data.list;
+						this.cbj_total = res.data.data.cbj_total;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
         	//修改标签
-        	tagEdit(arg){
-        		resource.editLabels(arg).then(res => {
-        			if(res.data.code == 1){
-        				this.$message.success(res.data.msg);
-        			}else{
-        				this.$message.warning(res.data.msg);
-        			}
-        		})
-        	},
+			tagEdit(arg){
+				resource.editLabels(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
         	//排序
-        	sortChange(column){
-        		if(column.order){
-        			let order = column.order == 'ascending'?'asc':'desc';
-        			this.sort = column.prop + '-' + order;
-        		}else{
-        			this.sort = '';
-        		}
-        		this.stockAnalysisKsList();
-        	},
+			sortChange(column){
+				if(column.order){
+					let order = column.order == 'ascending'?'asc':'desc';
+					this.sort = column.prop + '-' + order;
+				}else{
+					this.sort = '';
+				}
+				this.stockAnalysisKsList();
+			},
         	//下载模版
-        	downTemplate(){
-        		window.open(`${this.downLoadUrl}/静态库存分析_款式标签导入模板.xlsx`);
-        	},
+			downTemplate(){
+				window.open(`${this.downLoadUrl}/静态库存分析_款式标签导入模板.xlsx`);
+			},
         	//导入
 			uploadCsv(){
 				if (this.$refs.csvUpload.files.length > 0) {
@@ -623,43 +638,44 @@
 				}
 			},
         	//导出
-        	commitExport(){
-        		MessageBox.confirm('确认导出?', '提示', {
-        			confirmButtonText: '确定',
-        			cancelButtonText: '取消',
-        			type: 'warning'
-        		}).then(() => {
-        			let arg = {
-        				start_time:this.date,
-        				plbz:this.select_sfzzk_id.join(','),
-        				jj:this.select_jj_ids.join(','),
-        				ckwz:this.selected_ckwz_list.join(','),
-        				pl:this.select_pp_list.join(','),
-        				ksbm:this.select_ks_ids.join(','),
-        				xb:this.select_xb_id,
-        				cpfl:this.select_pl_ids.join(','),
-        				is_retreat:this.is_retreat,
-        				labels:this.labels,
-        				gys:this.select_gys_ids.join(',')
-        			}
-        			if(this.sort != ''){
-        				arg.sort = this.sort;
-        			}
-        			resource.stockAnalysisKsExprot(arg).then(res => {
-        				if(res){
-        					exportPost("\ufeff" + res.data,'款式库存数量');
-        				}
-        			})
-        		}).catch(() => {
-        			Message({
-        				type: 'info',
-        				message: '取消导出'
-        			});          
-        		});
-        	},
+			commitExport(){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_time:this.date,
+						plbz:this.select_sfzzk_id.join(','),
+						jj:this.select_jj_ids.join(','),
+						ckwz:this.selected_ckwz_list.join(','),
+						pl:this.select_pp_list.join(','),
+						ksbm:this.select_ks_ids.join(','),
+						xb:this.select_xb_id,
+						cpfl:this.select_pl_ids.join(','),
+						is_retreat:this.is_retreat,
+						labels:this.labels,
+						is_clear:this.is_clear,
+						gys:this.select_gys_ids.join(',')
+					}
+					if(this.sort != ''){
+						arg.sort = this.sort;
+					}
+					resource.stockAnalysisKsExprot(arg).then(res => {
+						if(res){
+							exportPost("\ufeff" + res.data,'款式库存数量');
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
+			},
         	//分页
-        	handleSizeChange(val) {
-        		this.pagesize = val;
+			handleSizeChange(val) {
+				this.pagesize = val;
 				//获取列表
 				this.stockAnalysisKsList();
 			},
@@ -669,26 +685,27 @@
 				this.stockAnalysisKsList();
 			},
         	//图片放大
-        	bigImg(big_img_url){
-        		this.imageDialog = true;
-        		this.big_img_url = big_img_url;
-        	},
-        }
-    }
+			bigImg(big_img_url){
+				this.imageDialog = true;
+				this.big_img_url = big_img_url;
+			},
+		}
+	}
 </script>
 <style lang="less" scoped>
-.buts{
-	margin-bottom: 5px;
-	display: flex;
-	justify-content: flex-end;
-}
-.analysis_row{
-	width: 100%;
-	display: flex;
-	.analysis_left{
-		flex:1;
+	.buts{
+		margin-bottom: 5px;
+		display: flex;
+		justify-content: flex-end;
+	}
+	.analysis_row{
+		width: 100%;
+		display: flex;
+		.analysis_left{
+		// flex:1;
 	}
 	.analysis_right{
+		margin-left: 20px;
 		width: 360px;
 		height: 360px;
 	}
