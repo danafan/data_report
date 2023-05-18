@@ -75,6 +75,7 @@
 				<el-select v-model="is_clear" clearable placeholder="全部">
 					<el-option label="清理" value="1"></el-option>
 					<el-option label="不清理" value="0"></el-option>
+					<el-option label="可退" value="2"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item>
@@ -203,6 +204,7 @@
 					<el-select size="mini" v-model="scope.row.is_clear" @change="tagEdit({ksbm:scope.row.ksbm,is_clear:scope.row.is_clear})">
 						<el-option label="清理" :value="1"></el-option>
 						<el-option label="不清理" :value="0"></el-option>
+						<el-option label="可退" :value="2"></el-option>
 					</el-select>
 				</template>
 			</el-table-column>
