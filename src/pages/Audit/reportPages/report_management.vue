@@ -20,6 +20,12 @@
 					<el-option label="否" value="0"></el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="是否发货：">
+				<el-select v-model="is_send" clearable :popper-append-to-body="false" placeholder="是否发货">
+					<el-option label="是" value="1"></el-option>
+					<el-option label="否" value="0"></el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="便笺：">
 				<el-select v-model="bj" clearable :popper-append-to-body="false" placeholder="便笺">
 					<el-option label="WP" value="WP"></el-option>
@@ -135,6 +141,7 @@
 	</div>
 	<div class="buts">
 		<el-button type="primary" plain size="small" @click="allTransmit">批量转交</el-button>
+		<ImportUpload ref="importUpload" button_name="批量导入内部订单号" table_key="内部订单号" @importCallBack="ytSendOrder"/>
 		<el-button type="primary" size="small" @click="ykbDialog = true">
 			导入
 			<i class="el-icon-upload el-icon--right"></i>
@@ -167,6 +174,8 @@
 		<el-table-column prop="remarks" label="线下备注" show-overflow-tooltip align="center">
 		</el-table-column>
 		<el-table-column prop="is_warehousing" label="是否进仓" show-overflow-tooltip align="center">
+		</el-table-column>
+		<el-table-column prop="is_send" label="代发-是否发货" show-overflow-tooltip align="center">
 		</el-table-column>
 		<el-table-column prop="ykbdh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
 		<el-table-column prop="apply_user_name" label="申请人" width="100" show-overflow-tooltip align="center"></el-table-column>
@@ -353,6 +362,8 @@
 	import resource from '../../../api/auditResource.js'
 	import commonResource from '../../../api/targetSales.js'
 	import UploadsFile from '../../../components/uploads_file.vue'
+	import ImportUpload from '../../../components/import_upload.vue'
+
 	export default{
 		data(){
 			return{
@@ -367,6 +378,7 @@
 				sfcz:"",									//是否称重
 				sfsh:"",									//是否售后
 				is_warehousing:"",							//是否进仓
+				is_send:"",									//是否发货
 				bj:"",										//便笺
 				arg_xsddh:"",									//线上订单号
 				arg_ykbdh:"",									//易快报单号
@@ -514,6 +526,7 @@
 					is_weight:this.sfcz,
 					is_after_sale:this.sfsh,
 					is_warehousing:this.is_warehousing,
+					is_send:this.is_send,
 					note:this.bj,
 					xsddh:this.arg_xsddh,
 					ykbdh:this.arg_ykbdh,
@@ -551,6 +564,7 @@
 					is_weight:this.sfcz,
 					is_after_sale:this.sfsh,
 					is_warehousing:this.is_warehousing,
+					is_send:this.is_send,
 					note:this.bj,
 					xsddh:this.arg_xsddh,
 					ykbdh:this.arg_ykbdh,
@@ -565,6 +579,22 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						this.dataObj = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//批量导入内部订单号
+			ytSendOrder(nbddh_arr){
+				let arg = {
+					nbddhs:nbddh_arr.join(',')
+				}
+				resource.ytSendOrder(arg).then(res => {
+					this.$refs.importUpload.clearInput();
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						//获取列表
+						this.getList();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -587,6 +617,7 @@
 						is_weight:this.sfcz,
 						is_after_sale:this.sfsh,
 						is_warehousing:this.is_warehousing,
+						is_send:this.is_send,
 						note:this.bj,
 						xsddh:this.arg_xsddh,
 						ykbdh:this.arg_ykbdh,
@@ -737,165 +768,147 @@
 			//转交处理状态
 			handleStatus:function(v){
 				switch(v){
-					case 0:
+				case 0:
 					return '待转交';
-					case 1:
+				case 1:
 					return '待处理';
-					case 2:
+				case 2:
 					return '待审核';
-					case 3:
+				case 3:
 					return '已审核';
-					default:
+				default:
 					return;
 				}
 			},
 			//追回状态
 			recoverStatus:function(v){
 				switch(v){
-					case 1:
+				case 1:
 					return '已追回';
-					case 2:
+				case 2:
 					return '未追回';
-					default:
+				default:
 					return;
 				}
 			},
 		},
 		components:{
 			dps,
-			UploadsFile
+			UploadsFile,
+			ImportUpload
 		}
 	}
 </script>
 <style lang="less" scoped>
-.card_row{
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	.el_card{
-		width: 380px;
-		.card_content{
-			height: 80px;
-			font-size: 14px;
-			display:flex;
-			justify-content: space-between;
-			.card_left{
-				flex:1;
-				display:flex;
-				flex-direction: column;
-				align-items: center;
-				justify-content: center;
-				font-weight: bold;
-				.left_label{
-					margin-bottom: 10px;
-				}
-				.left_value{
-					font-size: 22px;
-				}
-			}
-			.line{
+	.card_row{
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		.el_card{
+			width: 380px;
+			.card_content{
 				height: 80px;
-			}
-			.card_right{
-				flex:1;
+				font-size: 14px;
 				display:flex;
-				flex-direction: column;
-				align-items: flex-start;
-				justify-content: space-around;
-				.right_row{
+				justify-content: space-between;
+				.card_left{
+					flex:1;
 					display:flex;
-					.right_row_label{
-						font-weight: bold;
+					flex-direction: column;
+					align-items: center;
+					justify-content: center;
+					font-weight: bold;
+					.left_label{
+						margin-bottom: 10px;
+					}
+					.left_value{
+						font-size: 22px;
+					}
+				}
+				.line{
+					height: 80px;
+				}
+				.card_right{
+					flex:1;
+					display:flex;
+					flex-direction: column;
+					align-items: flex-start;
+					justify-content: space-around;
+					.right_row{
+						display:flex;
+						.right_row_label{
+							font-weight: bold;
+						}
 					}
 				}
 			}
+
 		}
-		
 	}
-}
-.buts{
-	margin-top: 15px;
-	margin-bottom: 15px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-}
-.imgBox{
-	background: #fff;
-	display: flex;
-	align-items:center;
-	justify-content:center;
-	width: 106px;
-	height: 30px;
-	border-radius: 2px;
-	border: 1px solid #E0E0E0;
-	position: relative;
-	.text{
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		text-align: center;
-		height: 100%;
-		line-height: 30px;
-		font-size: 13px;
-		color: #666666;
+	.buts{
+		margin-top: 15px;
+		margin-bottom: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
 	}
-	.upload_file {
-		position: absolute;
-		top: 0;
-		left: 0;
-		width: 100%;
-		height: 100%;
-		opacity: 0;
-	}
-}
-.file_name_box{
-	display: flex;
-	align-items: center;
-	border-radius: 2px;
-	border: 1px solid #E0E0E0;
-	width: 206px;
-	height: 30px;
-	padding-left: 10px;
-	padding-right: 10px;
-	.file_name{
-		margin-right: 10px;
-		width: 100%;
-		text-align: center;
-		height: 100%;
-		line-height: 30px;
-		font-size: 13px;
-		color: #666666;
-		display: -webkit-box;
-		-webkit-box-orient: vertical;
-		-webkit-line-clamp: 1;
-		overflow: hidden;
-	}
-}
-.buttons{
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	.upload_box{
-		margin-left: 30px;
+	.imgBox{
+		background: #fff;
+		display: flex;
+		align-items:center;
+		justify-content:center;
+		width: 106px;
+		height: 30px;
+		border-radius: 2px;
+		border: 1px solid #E0E0E0;
 		position: relative;
-		.upload_file{
+		.text{
 			position: absolute;
 			top: 0;
-			bottom: 0;
 			left: 0;
-			right: 0;
+			width: 100%;
+			text-align: center;
+			height: 100%;
+			line-height: 30px;
+			font-size: 13px;
+			color: #666666;
+		}
+		.upload_file {
+			position: absolute;
+			top: 0;
+			left: 0;
 			width: 100%;
 			height: 100%;
 			opacity: 0;
 		}
 	}
-}
-.yuan{
-	background:#333333;
-	border-radius:50%;
-	width: 10px;
-	height: 10px;
-}
+	.file_name_box{
+		display: flex;
+		align-items: center;
+		border-radius: 2px;
+		border: 1px solid #E0E0E0;
+		width: 206px;
+		height: 30px;
+		padding-left: 10px;
+		padding-right: 10px;
+		.file_name{
+			margin-right: 10px;
+			width: 100%;
+			text-align: center;
+			height: 100%;
+			line-height: 30px;
+			font-size: 13px;
+			color: #666666;
+			display: -webkit-box;
+			-webkit-box-orient: vertical;
+			-webkit-line-clamp: 1;
+			overflow: hidden;
+		}
+	}
+	.yuan{
+		background:#333333;
+		border-radius:50%;
+		width: 10px;
+		height: 10px;
+	}
 </style>

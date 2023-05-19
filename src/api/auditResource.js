@@ -90,6 +90,7 @@ let path = {
 	xhsBill:'audit/xhs_bill',								//小红书账单
 	xhsBillExport:'audit/xhs_bill_export',					//小红书账单导出
 	ajaxJdBillShops:'audit/ajax_jd_bill_shops',				//ajax京东账单-店铺列表
+	ytSendOrder:'audit/yt_send_order',						//sd报表批量导入内部订单号
 }							
 export default{
 	//款式编码列表
@@ -455,6 +456,10 @@ export default{
 	//ajax京东账单-店铺列表
 	ajaxJdBillShops(params){
 		return http.get(path.ajaxJdBillShops, params)
+	},
+	//sd报表批量导入内部订单号
+	ytSendOrder(params){
+		return http.post(path.ytSendOrder, params)
 	},
 }
 
