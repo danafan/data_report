@@ -270,6 +270,7 @@ let path = {
 	ajaxTgfzr:'common/ajaxTgfzr',									//推广负责人列表
 	dayBusiness:'supplier/day_business',							//每日合计--营销费用投产情况
 	dayBusinessExport:'supplier/day_business_export',				//每日合计--营销费用投产情况导出
+	ajaxLabels:'stock_analysis/ajax_labels',						//获取标签列表
 		
 
 }					
@@ -1385,6 +1386,10 @@ export default{
 	//每日合计--营销费用投产情况导出
 	dayBusinessExport(params){
 		return http.post(path.dayBusinessExport, params)
+	},
+	//获取标签列表
+	ajaxLabels(params){
+		return http.get(path.ajaxLabels, params)
 	},
 }
 

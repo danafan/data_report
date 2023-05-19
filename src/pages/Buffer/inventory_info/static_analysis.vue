@@ -68,8 +68,14 @@
 					<el-option label="待核实" value="待核实"></el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="标签：">
+			<!-- <el-form-item label="标签：">
 				<el-input size="mini" v-model="labels" placeholder="标签"></el-input>
+			</el-form-item> -->
+			<el-form-item label="标签：">
+				<el-select v-model="labels" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-option v-for="item in label_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item label="是否清理：">
 				<el-select v-model="is_clear" clearable placeholder="全部">
@@ -88,25 +94,25 @@
 				<div class="analysis_left">
 					<div class="title">{{item.name}}库存分析</div>
 					<el-table :data="item.list" size="mini" max-height="300">
-						<el-table-column prop="name" :label="item.name" fixed show-overflow-tooltip align="center">
+						<el-table-column prop="name" width="120" :label="item.name" fixed show-overflow-tooltip align="center">
 							<template slot-scope="scope">
 								<div>{{scope.row.name == null?'-':scope.row.name}}</div>
 							</template>
 						</el-table-column>
 						<el-table-column :label="i" v-for="i in date_list" align="center">
-							<el-table-column :prop="`sl_total_${i}`" label="数量" align="center">
+							<el-table-column :prop="`sl_total_${i}`" label="数量" sortable width="80" align="center">
 							</el-table-column>
-							<el-table-column :prop="`cbj_total_${i}`" label="总成本额" align="center">
+							<el-table-column :prop="`cbj_total_${i}`" label="总成本额" sortable width="80" align="center">
 								<template slot-scope="scope">
 									<div>{{scope.row[`cbj_total_${i}`]}}万</div>
 								</template>
 							</el-table-column>
-							<el-table-column :prop="`cb_rate_${i}`" label="成本占比" align="center">
+							<el-table-column :prop="`cb_rate_${i}`" label="成本占比" sortable width="80" align="center">
 								<template slot-scope="scope">
 									<div>{{scope.row[`cb_rate_${i}`]}}%</div>
 								</template>
 							</el-table-column>
-							<el-table-column :prop="`year_rate_${i}`" label="年同比(成本)" align="center">
+							<el-table-column :prop="`year_rate_${i}`" label="年同比(成本)" sortable width="120" align="center">
 								<template slot-scope="scope">
 									<div v-if="scope.row[`year_rate_${i}`] == '-'">{{scope.row[`year_rate_${i}`]}}</div>
 									<div style="color:red" v-if="scope.row[`year_rate_${i}`] >= 0">{{scope.row[`year_rate_${i}`]}}%</div>
@@ -248,6 +254,8 @@
 			return{
 				select_sfzzk_id:[],		//选中的自有货品
 				select_jj_ids:[],		//选中的季节
+				label_list:[],			//标签列表
+				labels:[],				//选中的标签列表
 				ckwz_list:[],			//仓库位置列表
 				selected_ckwz_list:[],	//选中的仓库位置列表
 				pp_list:[],				//品牌列表
@@ -261,7 +269,6 @@
 				select_xb_id:"",		//选中的性别	
 				date:getNowDate(),		//库存日期
 				is_retreat:"",			//是否可退
-				labels:"",				//标签
 				is_clear:"",			//是否清理
 				date_list:[getLastYear(1),getLastYear(0)],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
@@ -284,6 +291,8 @@
 		created(){
 			//获取仓库位置列表
 			this.getCkwz();
+			//获取标签列表
+			this.ajaxLabels();
 			//库存分析（页面左侧部分）
 			this.stockAnalysis();
 			//款式分析（页面右上部分）
@@ -296,6 +305,16 @@
 			this.stockAnalysisKsList();
 		},
 		methods:{
+			//获取标签列表
+			ajaxLabels(){
+				resource.ajaxLabels().then(res => {
+					if(res.data.code == 1){
+						this.label_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取仓库位置列表
 			getCkwz(){
 				resource.getCkwz().then(res => {
@@ -703,92 +722,89 @@
 	.analysis_row{
 		width: 100%;
 		display: flex;
-		.analysis_left{
-		// flex:1;
+		.analysis_right{
+			margin-left: 20px;
+			width: 360px;
+			height: 360px;
+		}
 	}
-	.analysis_right{
-		margin-left: 20px;
-		width: 360px;
-		height: 360px;
-	}
-}
-.kc_cb{
-	margin-top: 15px;
-	width: 100%;
-	display: flex;
-	.kc_cb_chart{
-		flex: 1;
-		height: 320px;
-	}
-	.number_box{
-		width: 280px;
-		height: 260px;
-		display:flex;
-		flex-direction: column;
-		justify-content: space-around;
-		padding-left: 15px;
-		.number_row{
+	.kc_cb{
+		margin-top: 15px;
+		width: 100%;
+		display: flex;
+		.kc_cb_chart{
+			flex: 1;
+			height: 320px;
+		}
+		.number_box{
+			width: 280px;
+			height: 260px;
 			display:flex;
-			align-items: center;
-			justify-content: space-between;
-			.label{
-				font-size: 18px;
-				font-weight: bold;
-			}
-			.right{
+			flex-direction: column;
+			justify-content: space-around;
+			padding-left: 15px;
+			.number_row{
 				display:flex;
 				align-items: center;
-				.val{
-					font-size: 16px;
-					font-weight: bold;
-					color:#FE9333;
-				}
-				.hb{
-					margin-left: 5px;
-					margin-right: 5px;
-					font-size: 14px;
-					color: #999999;
-				}
-				.bfb{
-					font-size: 14px;
-					color: red;
+				justify-content: space-between;
+				.label{
+					font-size: 18px;
 					font-weight: bold;
 				}
-				.bfb_j{
-					color: green;
+				.right{
+					display:flex;
+					align-items: center;
+					.val{
+						font-size: 16px;
+						font-weight: bold;
+						color:#FE9333;
+					}
+					.hb{
+						margin-left: 5px;
+						margin-right: 5px;
+						font-size: 14px;
+						color: #999999;
+					}
+					.bfb{
+						font-size: 14px;
+						color: red;
+						font-weight: bold;
+					}
+					.bfb_j{
+						color: green;
+					}
 				}
 			}
 		}
 	}
-}
-.title{
-	margin-top: 15px;
-	margin-bottom: 15px;
-	font-size: 16px;
-	font-weight: bold;
-}
-.toast{
-	margin-bottom: 15px;
-	font-size: 14px;
-	color:red;
-}
-.down_box{
-	display:flex;
-	.upload_box{
-		margin-left: 10px;
-		position: relative;
-		.upload_file{
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			width: 100%;
-			height: 100%;
-			opacity: 0;
+	.title{
+		margin-top: 15px;
+		margin-bottom: 15px;
+		font-size: 16px;
+		font-weight: bold;
+	}
+	.toast{
+		margin-bottom: 15px;
+		font-size: 14px;
+		color:red;
+	}
+	.down_box{
+		display:flex;
+		.upload_box{
+			margin-left: 10px;
+			position: relative;
+			.upload_file{
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0;
+			}
 		}
 	}
-}
 </style>
 
 
