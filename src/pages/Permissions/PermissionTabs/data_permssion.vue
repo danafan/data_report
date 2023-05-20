@@ -52,6 +52,10 @@
 				<el-input style="width:200px" type="text" placeholder="数据权限名称" size="small" v-model="name"></el-input>
 			</el-form-item>
 		</el-form>
+		<el-radio-group class="mb-10" size="mini" v-model="permssion_type">
+			<el-radio-button label="shop_list">店铺</el-radio-button>
+			<el-radio-button label="dept_list">部门</el-radio-button>
+		</el-radio-group>
 		<div class="menu_list_box">
 			<el-tree :data="menu_list" ref="tree" node-key="dept_id" :default-checked-keys="checked_keys" :props="props" show-checkbox @check="checkChange"></el-tree>
 		</div>
@@ -94,28 +98,28 @@
 </div>
 </template>
 <style lang="less" scoped>
-.buts{
-	margin-bottom: 15px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-}
-.menu_list_box{
-	flex:1;
-	display: flex;
-	flex-wrap: wrap;
-	.menu_item{
-		width:50%;
+	.buts{
+		margin-bottom: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
 	}
-}
-.detail_item{
-	margin-bottom: 10px;
-	display:flex;
-	align-items: flex-start;
-	.item_label{
-		width:90px;
+	.menu_list_box{
+		flex:1;
+		display: flex;
+		flex-wrap: wrap;
+		.menu_item{
+			width:50%;
+		}
 	}
-}
+	.detail_item{
+		margin-bottom: 10px;
+		display:flex;
+		align-items: flex-start;
+		.item_label{
+			width:90px;
+		}
+	}
 </style>
 <script>
 	import resource from '../../../api/resource.js'
@@ -133,7 +137,12 @@
 					detail: 1,
 					edit: 1
 				}},				//数据
-				menu_list:[],						//功能列表（角色用）
+				permssion_type:'shop_list',			//角色类型
+				shop_list:[],						//店铺列表
+				shop_ids:[],
+				dept_list:[],						//部门列表
+				dept_ids:[],						//
+				menu_list:[],						//当前使用的列表
 				props:{
 					label: 'dept_name',
 					children: 'list'
@@ -152,6 +161,13 @@
 		created(){
 			//获取列表
 			this.getData();
+		},
+		watch:{
+			//监听类型变化（店铺或部门维度切换）
+			permssion_type:function(n,o){
+				//设置当前展示的列表
+				this.setCurrentList(this[n]);
+			}
 		},
 		methods:{
 			//搜索
@@ -172,22 +188,27 @@
 					}
 				})
 			},
-			//关闭新增或者编辑
-			closeRoleDialog(){
+			//清除已选的列表
+			clearList(){
 				this.checked_keys = [];					//已选中的功能id集合
-				this.name = "";							//角色名称
+			},
+			//监听关闭弹窗
+			closeRoleDialog(){
+				this.name = "";
+				this.permssion_type = 'shop_list';
+				//清除已选的列表
+				this.clearList();
 			},
 			//新增角色
 			addRole(){
 				resource.addDataRoleGet().then(res => {
 					if(res.data.code == 1){
-						let arr = res.data.data;
-						var menu_list_arr = [];
-						arr.map(item => {
-							menu_list_arr.push(item[0]);
-						})
-						this.menu_list = menu_list_arr;
 						this.role_type = '1';
+						let data = res.data.data;
+						this.shop_list = data.shop_list;
+						this.dept_list = data.dept_list;
+						//设置当前展示的列表
+						this.setCurrentList(this.shop_list);
 						this.show_role_dialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -198,21 +219,40 @@
 			editFun(role_id){
 				resource.editDataRoleGet({role_id:role_id}).then(res => {
 					if(res.data.code == 1){
-						let arr = res.data.data.list;
-						var menu_list_arr = [];
-						arr.map(item => {
-							menu_list_arr.push(item[0]);
-						})
-						this.menu_list = menu_list_arr;
-						this.checked_keys = res.data.data.ids;
-						this.name = res.data.data.role_name;	//角色名称
-						this.role_id = role_id;
 						this.role_type = '2';
+						let data = res.data.data;
+						this.shop_list = data.shop_list;
+						this.shop_ids = data.shop_ids;
+						this.dept_list = data.dept_list;
+						this.dept_ids = data.dept_ids;
+
+						//设置当前展示的列表
+						this.setCurrentList(this.shop_list);
+						this.name = data.role_name;	//角色名称
+						this.role_id = role_id;
 						this.show_role_dialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//设置当前展示的列表
+			setCurrentList(list){
+				var menu_list_arr = [];
+				list.map(item => {
+					menu_list_arr.push(item[0]);
+				})
+				this.menu_list = menu_list_arr;
+				//清除已选的列表
+				this.clearList();
+				//当前是
+				if(this.role_type == '2'){
+					if(this.permssion_type == 'shop_list'){
+						this.checked_keys = this.shop_ids;
+					}else{
+						this.checked_keys = this.dept_ids;
+					}
+				}
 			},
 			//查看
 			getDetail(role_id){
@@ -261,9 +301,15 @@
 					return;
 				}
 				let req = {
-					name:this.name,
-					ids:this.checked_keys.join(',')
+					name:this.name
 				}
+				if(this.permssion_type == 'shop_list'){
+					req['shop_ids'] = this.checked_keys.join(',');
+				}
+				if(this.permssion_type == 'dept_list'){
+					req['dept_ids'] = this.checked_keys.join(',');
+				}
+				console.log(req)
 				if(this.role_type == '1'){	//添加
 					resource.addDataRolePost(req).then(res => {
 						if(res.data.code == 1){
