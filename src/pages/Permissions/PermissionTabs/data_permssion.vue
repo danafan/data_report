@@ -56,8 +56,13 @@
 			<el-radio-button label="shop_list">店铺</el-radio-button>
 			<el-radio-button label="dept_list">部门</el-radio-button>
 		</el-radio-group>
-		<div class="menu_list_box">
-			<el-tree :data="menu_list" ref="tree" node-key="dept_id" :default-checked-keys="checked_keys" :props="props" show-checkbox @check="checkChange"></el-tree>
+		<!-- 店铺树 -->
+		<div class="menu_list_box" v-show="permssion_type == 'shop_list'">
+			<el-tree :data="shop_list" ref="shopTree" node-key="dept_id" :default-checked-keys="shop_ids" :props="props" show-checkbox @check="checkShopChange"></el-tree>
+		</div>
+		<!-- 部门树 -->
+		<div class="menu_list_box"  v-show="permssion_type == 'dept_list'">
+			<el-tree :data="dept_list" ref="tree" node-key="dept_id" :default-checked-keys="dept_ids" :props="props" show-checkbox @check="checkDeptChange"></el-tree>
 		</div>
 		<div slot="footer" class="dialog-footer">
 			<el-button @click="show_role_dialog = false" size="small">取 消</el-button>
@@ -136,20 +141,18 @@
 					del: 1,
 					detail: 1,
 					edit: 1
-				}},				//数据
+				}},		  //数据
 				permssion_type:'shop_list',			//角色类型
 				shop_list:[],						//店铺列表
-				shop_ids:[],
+				shop_ids:[],						//选中的店铺列表
 				dept_list:[],						//部门列表
-				dept_ids:[],						//
-				menu_list:[],						//当前使用的列表
+				dept_ids:[],						//选中的部门列表
 				props:{
 					label: 'dept_name',
 					children: 'list'
 				},
 				show_role_dialog:false,				//是否显示新增或编辑角色
 				role_dialog_title:"",				//新增或者编辑角色弹框标题
-				checked_keys:[],					//已选中的功能id集合
 				name:"",							//角色名称
 				role_type:'1',						//提交类型（1:添加；2:编辑）
 				role_id:"",							//选中的角色id
@@ -161,13 +164,6 @@
 		created(){
 			//获取列表
 			this.getData();
-		},
-		watch:{
-			//监听类型变化（店铺或部门维度切换）
-			permssion_type:function(n,o){
-				//设置当前展示的列表
-				this.setCurrentList(this[n]);
-			}
 		},
 		methods:{
 			//搜索
@@ -190,7 +186,8 @@
 			},
 			//清除已选的列表
 			clearList(){
-				this.checked_keys = [];					//已选中的功能id集合
+				this.shop_ids = [];					//删除已选中的店铺列表
+				this.dept_ids = [];					//删除已选中的部门列表
 			},
 			//监听关闭弹窗
 			closeRoleDialog(){
@@ -205,10 +202,10 @@
 					if(res.data.code == 1){
 						this.role_type = '1';
 						let data = res.data.data;
-						this.shop_list = data.shop_list;
-						this.dept_list = data.dept_list;
+						let shop_list = data.shop_list;
+						let dept_list = data.dept_list;
 						//设置当前展示的列表
-						this.setCurrentList(this.shop_list);
+						this.setCurrentList(shop_list,dept_list);
 						this.show_role_dialog = true;
 					}else{
 						this.$message.warning(res.data.msg);
@@ -221,13 +218,13 @@
 					if(res.data.code == 1){
 						this.role_type = '2';
 						let data = res.data.data;
-						this.shop_list = data.shop_list;
+						let shop_list = data.shop_list;
+						let dept_list = data.dept_list;
+						//设置当前展示的列表
+						this.setCurrentList(shop_list,dept_list);
 						this.shop_ids = data.shop_ids;
-						this.dept_list = data.dept_list;
 						this.dept_ids = data.dept_ids;
 
-						//设置当前展示的列表
-						this.setCurrentList(this.shop_list);
 						this.name = data.role_name;	//角色名称
 						this.role_id = role_id;
 						this.show_role_dialog = true;
@@ -237,22 +234,17 @@
 				})
 			},
 			//设置当前展示的列表
-			setCurrentList(list){
-				var menu_list_arr = [];
-				list.map(item => {
-					menu_list_arr.push(item[0]);
+			setCurrentList(shop_list,dept_list){
+				this.shop_list = [];
+				shop_list.map(item => {
+					this.shop_list.push(item[0]);
 				})
-				this.menu_list = menu_list_arr;
+				this.dept_list = [];
+				dept_list.map(item => {
+					this.dept_list.push(item[0]);
+				})
 				//清除已选的列表
 				this.clearList();
-				//当前是
-				if(this.role_type == '2'){
-					if(this.permssion_type == 'shop_list'){
-						this.checked_keys = this.shop_ids;
-					}else{
-						this.checked_keys = this.dept_ids;
-					}
-				}
 			},
 			//查看
 			getDetail(role_id){
@@ -287,29 +279,33 @@
 					});          
 				});
 			},
+			//点击某个店铺选项
+			checkShopChange() {
+				const resourceArr = this.$refs.shopTree.getCheckedNodes().filter(item => {
+					return !item.list
+				})
+      			this.shop_ids = resourceArr.map(vls => { //此处为接口需要数据格式
+      				return vls.dept_id;
+      			})
+      		},
 			//点击某个部门选项
-			checkChange(data, checked) {
-				this.checked_keys = checked.checkedKeys;
-			},
+      		checkDeptChange(data, checked) {
+      			this.dept_ids = checked.checkedKeys;
+      		},
 			//提交添加或编辑
-			submitRole(){
-				if(this.name == ''){
-					this.$message.warning('请输入数据权限名称!');
-					return;
-				}else if(this.name.length > 20){
-					this.$message.warning('权限名称不能超过20个字!');
-					return;
-				}
-				let req = {
-					name:this.name
-				}
-				if(this.permssion_type == 'shop_list'){
-					req['shop_ids'] = this.checked_keys.join(',');
-				}
-				if(this.permssion_type == 'dept_list'){
-					req['dept_ids'] = this.checked_keys.join(',');
-				}
-				console.log(req)
+      		submitRole(){
+      			if(this.name == ''){
+      				this.$message.warning('请输入数据权限名称!');
+      				return;
+      			}else if(this.name.length > 20){
+      				this.$message.warning('权限名称不能超过20个字!');
+      				return;
+      			}
+      			let req = {
+      				name:this.name,
+      				shop_ids:this.shop_ids.join(','),
+      				dept_ids:this.dept_ids.join(',')
+      			}
 				if(this.role_type == '1'){	//添加
 					resource.addDataRolePost(req).then(res => {
 						if(res.data.code == 1){
@@ -322,7 +318,7 @@
 							this.$message.warning(res.data.msg);
 						}
 					});
-				}else{
+				}else{						//编辑
 					req.role_id = this.role_id;
 					resource.editDataRolePost(req).then(res => {
 						if(res.data.code == 1){

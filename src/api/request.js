@@ -66,10 +66,10 @@ export function middleWare(params,type) {
   var token = Base64.encode(JSON.stringify(token_obj));
   
   //组织参数
-  // var req = {...params,...{sign:sign,token:token}};
+  var req = {...params,...{sign:sign,token:token}};
   // var req = {...params,...{sign:sign,admin_id:'0135085617860683',token:token}};   //审计
   // var req = {...params,...{sign:sign,admin_id:'014017496357903146',token:token}};   //测试
-  var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}}; //陈鑫杰
+  // var req = {...params,...{sign:sign,admin_id:'16161349938228000',token:token}}; //陈鑫杰
   // var req = {...params,...{sign:sign,admin_id:'1610937013243744',token:token}};   //普通
   // var req = {...params,...{sign:sign,admin_id:'016050173120277413',token:token}};  //老板
   // var req = {...params,...{sign:sign,admin_id:'2217',token:token}};                //超级店长
