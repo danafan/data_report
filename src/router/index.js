@@ -1,6 +1,9 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 
+//登录页
+const login = resolve=>require(['@/pages/login'],resolve)
+//首页
 const home = resolve=>require(['@/pages/home'],resolve)
 //重点核心指标
 const focus_core = resolve=>require(['@/pages/FocusCore/focus_core'],resolve)
@@ -85,6 +88,7 @@ Vue.use(Router)
 
 const router = new Router({
   routes: [
+    { path: '/login',name:"登录", component: login},
   {
     path: '/',
     component: home,

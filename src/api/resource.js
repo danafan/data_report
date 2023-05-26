@@ -3,6 +3,7 @@ let path = {
 	messageList:'message/list',										//获取消息列表
 	messageRead:'message/read',										//读取消息
 	unreadnum:'message/unreadnum',									//未读消息数
+	getConfig:'getConfig',											//扫码登录获取appkey
 	dingLogin:'ding_login',											//钉钉获取用户信息
 	login:'login',													//浏览器获取用户信息
 	quit:'quit',													//推出
@@ -286,6 +287,10 @@ export default{
 	//未读消息数
 	unreadnum(params){
 		return http.get(path.unreadnum, params)
+	},
+	//扫码登录获取appkey
+	getConfig(params){
+		return http.get(path.getConfig, params)
 	},
 	//钉钉获取用户信息
 	dingLogin(params){

@@ -1,4 +1,4 @@
-<template>
+ <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="数据权限名称：">

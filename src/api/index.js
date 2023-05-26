@@ -41,7 +41,7 @@ instance.interceptors.response.use(response => {
   switch (response.data.code) {
     case 1:
     return response;
-    case 10000:
+    case 10001:
     localStorage.clear();
     router.replace("/login");
     return;
@@ -51,7 +51,6 @@ instance.interceptors.response.use(response => {
     //   message: response.data.msg
     // });
     return response;
-    return;
     default:
        return response;
   }
