@@ -42,6 +42,10 @@ instance.interceptors.response.use(response => {
     case 1:
     return response;
     case 10001:
+    Message({
+      type: 'warning',
+      message: response.data.msg
+    });
     localStorage.clear();
     router.replace("/login");
     return;
