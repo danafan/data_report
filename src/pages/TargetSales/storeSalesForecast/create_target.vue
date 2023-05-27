@@ -81,6 +81,11 @@
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
+			<el-table-column width="180" label="上月实际值" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.last_month_data}}{{scope.row.isPer?'%':''}}</div>
+				</template>
+			</el-table-column>
 			<el-table-column width="200" label="本月目标参数" align="center">
 				<template slot-scope="scope">
 					<el-input size="small" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto || closeStep2" @input="inputFun($event,'1',scope.$index)" @change="changeInput($event,scope.row)" :ref="scope.row.key">
@@ -417,6 +422,7 @@
 					key:'ygfhds',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -426,6 +432,7 @@
 					key:'gmv',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -435,6 +442,7 @@
 					key:'kdj',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:false,
 					advice:"",
@@ -444,6 +452,7 @@
 					key:'tkl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -453,6 +462,7 @@
 					key:'xssr',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:false,
 					advice:"",
@@ -462,6 +472,7 @@
 					key:'mll',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -471,6 +482,7 @@
 					key:'yxfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -480,6 +492,7 @@
 					key:'dptdfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -489,6 +502,7 @@
 					key:'xmbftfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -498,6 +512,7 @@
 					key:'sybftfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -507,6 +522,7 @@
 					key:'lbfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -516,6 +532,7 @@
 					key:'dpqtfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -525,6 +542,7 @@
 					key:'gxmyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:true,
 					advice:"",
@@ -534,6 +552,7 @@
 					key:'gxmy',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -543,6 +562,7 @@
 					key:'wlfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -552,6 +572,7 @@
 					key:'kffyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -561,6 +582,7 @@
 					key:'gtfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -570,6 +592,7 @@
 					key:'jlr',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -579,6 +602,7 @@
 					key:'jlrl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:true,
 					advice:"",
@@ -590,7 +614,6 @@
 			}
 		},
 		created(){
-
 			//获取部门列表
 			this.getDepts();
 			//获取店铺列表
@@ -770,6 +793,28 @@
 							for(let i = 0;i < this.table_data.length;i ++){
 								if(j.split('_')[0] == this.table_data[i].key){
 									this.table_data[i].advice = remark_lists[j];
+								}
+							}
+						}
+						//第一块禁用
+						this.closeStep1 = true;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
+				//获取店铺上月实际数据
+				let req = {
+					shop_code:this.new_code,
+					date:this.date
+				}
+				resource.getLastMonthData(req).then(res => {
+					if(res.data.code == 1){
+						this.loading = false;
+						let data = res.data.data;	//去年同期收入占比
+						for(let kk in data){
+							for(let i = 0;i < this.table_data.length;i ++){
+								if(this.table_data[i].key == kk){
+									this.table_data[i].last_month_data = data[kk];
 								}
 							}
 						}

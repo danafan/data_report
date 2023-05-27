@@ -22,6 +22,7 @@ let path = {
 	businessTargetCheck:'targesalemanage/business_target_check',	//事业部目标审核
 	targesalemanageShopExport:'targesalemanage/shop_export',		//店铺月目标导出
 	targesalemanageDayExport:'targesalemanage/day_export',			//店铺日目标导出
+	getLastMonthData:'targesalemanage/get_last_month_data',			//获取店铺上月实际数据
 }						
 export default{
 	//获取部门列表
@@ -115,6 +116,10 @@ export default{
 	//店铺日目标导出
 	targesalemanageDayExport(params){
 		return http.post(path.targesalemanageDayExport, params)
+	},
+	//获取店铺上月实际数据
+	getLastMonthData(params){
+		return http.get(path.getLastMonthData, params)
 	},
 }
 

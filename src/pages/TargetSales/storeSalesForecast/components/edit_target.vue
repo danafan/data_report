@@ -72,6 +72,11 @@
 					<div>{{scope.row.value}}{{scope.row.isPer?'%':''}}</div>
 				</template>
 			</el-table-column>
+			<el-table-column width="180" label="上月实际值" align="center">
+				<template slot-scope="scope">
+					<div>{{scope.row.last_month_data}}{{scope.row.isPer?'%':''}}</div>
+				</template>
+			</el-table-column>
 			<el-table-column width="160" label="本月目标参数" align="center">
 				<template slot-scope="scope">
 					<el-input size="small" type="number" :placeholder="scope.row.name" v-model="scope.row.new_value" v-if="scope.row.isPer" :disabled="scope.row.isAuto || closeStep2" @input="inputFun($event,'1',scope.$index)" @change="changeInput($event,scope.row)" :ref="scope.row.key">
@@ -300,63 +305,63 @@
 </div>
 </template>
 <style lang="less" scoped>
-.set_row{
-	width: 100%;
-	display:flex;
-	align-items: center;
-	justify-content: space-between;
-	.red_toast{
-		margin-top: 15px;
-		color: red;
-		font-size: 12px;
-	}
-	.upload_box{
-		margin-right: 10px;
-		position: relative;
-		.upload_file{
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			width: 100%;
-			height: 100%;
-			opacity: 0;
+	.set_row{
+		width: 100%;
+		display:flex;
+		align-items: center;
+		justify-content: space-between;
+		.red_toast{
+			margin-top: 15px;
+			color: red;
+			font-size: 12px;
+		}
+		.upload_box{
+			margin-right: 10px;
+			position: relative;
+			.upload_file{
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0;
+			}
 		}
 	}
-}
-.top_content{
-	display: flex;
-	.form_widget{
+	.top_content{
 		display: flex;
+		.form_widget{
+			display: flex;
+			flex-direction: column;
+			align-items: center;
+		}
+
+	}
+	.table_box{
+		flex:1;
+		.table_button{
+			margin-top: 20px;
+			margin-left: 250px;
+		}
+	}
+
+	.bottom_table_box{
+		width: 100%;
+		display:flex;
 		flex-direction: column;
 		align-items: center;
+		.submit{
+			margin-top: 20px;
+		}
 	}
-	
-}
-.table_box{
-	flex:1;
-	.table_button{
-		margin-top: 20px;
-		margin-left: 250px;
-	}
-}
 
-.bottom_table_box{
-	width: 100%;
-	display:flex;
-	flex-direction: column;
-	align-items: center;
-	.submit{
-		margin-top: 20px;
+	.text_content{
+		overflow: hidden;/*超出部分隐藏*/
+		white-space: nowrap;/*不换行*/
+		text-overflow:ellipsis;/*超出部分文字以...显示*/
 	}
-}
-
-.text_content{
-	overflow: hidden;/*超出部分隐藏*/
-	white-space: nowrap;/*不换行*/
-	text-overflow:ellipsis;/*超出部分文字以...显示*/
-}
 </style>
 <script>
 	import resource from '../../../../api/targetSales.js'
@@ -402,6 +407,7 @@
 					key:'ygfhds',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -411,6 +417,7 @@
 					key:'gmv',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -420,6 +427,7 @@
 					key:'kdj',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:false,
 					advice:"",
@@ -429,6 +437,7 @@
 					key:'tkl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -438,6 +447,7 @@
 					key:'xssr',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:false,
 					advice:"",
@@ -447,6 +457,7 @@
 					key:'mll',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -456,6 +467,7 @@
 					key:'yxfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -465,6 +477,7 @@
 					key:'dptdfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -474,6 +487,7 @@
 					key:'xmbftfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -483,6 +497,7 @@
 					key:'sybftfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -492,6 +507,7 @@
 					key:'lbfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -501,6 +517,7 @@
 					key:'dpqtfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -510,6 +527,7 @@
 					key:'gxmyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:true,
 					advice:"",
@@ -519,6 +537,7 @@
 					key:'gxmy',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -528,6 +547,7 @@
 					key:'wlfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -537,6 +557,7 @@
 					key:'kffyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -546,6 +567,7 @@
 					key:'gtfyl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:false,
 					advice:"",
@@ -555,6 +577,7 @@
 					key:'jlr',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:false,
 					isAuto:true,
 					advice:"",
@@ -564,6 +587,7 @@
 					key:'jlrl',
 					value:0,
 					new_value:"",
+					last_month_data:"",
 					isPer:true,
 					isAuto:true,
 					advice:"",
@@ -607,15 +631,15 @@
 		props:{
 			month:{
 				type:String,
-				default:""
+			default:""
 			},
 			day:{
 				type:String,
-				default:""
+			default:""
 			},
 			shop_target_id:{
 				type:String,
-				default:""
+			default:""
 			}
 		},
 		methods:{
@@ -716,14 +740,34 @@
 									}
 								}
 							}
+							
 						}
 						//第一块禁用
 						this.closeStep1 = true;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
-					
 				})
+				//获取店铺上月实际数据
+				let req = {
+					shop_code:this.shop_id,
+					date:this.date
+				}
+				resource.getLastMonthData(req).then(res => {
+					if(res.data.code == 1){
+						let data = res.data.data;	//去年同期收入占比
+						for(let kk in data){
+							for(let i = 0;i < this.table_data.length;i ++){
+								if(this.table_data[i].key == kk){
+									this.table_data[i].last_month_data = data[kk];
+								}
+							}
+						}
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+
 			},
 			//第一次进来获取本月目标参数和备注
 			setMbRemark(month_obj){
@@ -804,23 +848,23 @@
 					//销售收入占比平均数
 					var average = parseInt(100/monthInfo.monthDayNum);
       				//销售收入占比最后一个
-      				var last_average = 100 - average*(monthInfo.monthDayNum - 1)
+					var last_average = 100 - average*(monthInfo.monthDayNum - 1)
 
-      				let is_arr = this.day_percent.filter(item => {
-      					return item == 0;
-      				})
-      				for(var i=1;i<=monthInfo.monthDayNum;i++){
-      					var d = i < 10?'0'+i:i;
-      					let info = {
-      						day:monthInfo.month+'月'+d+'日',
-      						week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
-      						mll:this.table_data[5].new_value,
-      						yxfyl:this.table_data[6].new_value,
-      						qntqsrzb:this.day_percent[i-1],
-      						xssrzb:is_arr.length >10?(i < monthInfo.monthDayNum?average:last_average):this.day_percent[i-1]
-      					}
-      					menu.push(this.setInfo(info));
-      				}
+					let is_arr = this.day_percent.filter(item => {
+						return item == 0;
+					})
+					for(var i=1;i<=monthInfo.monthDayNum;i++){
+						var d = i < 10?'0'+i:i;
+						let info = {
+							day:monthInfo.month+'月'+d+'日',
+							week:getWeek(monthInfo.year+'-'+monthInfo.month+'-'+i),
+							mll:this.table_data[5].new_value,
+							yxfyl:this.table_data[6].new_value,
+							qntqsrzb:this.day_percent[i-1],
+							xssrzb:is_arr.length >10?(i < monthInfo.monthDayNum?average:last_average):this.day_percent[i-1]
+						}
+						menu.push(this.setInfo(info));
+					}
       			}else{	//获取详情
       				type.map((item,index) => {
       					item.qntqsrzb = this.day_percent[index];
