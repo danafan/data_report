@@ -1,7 +1,7 @@
 <template>
 	<div class="send_view pr-10 pl-10 pb-20">
 		<!-- 头部信息 -->
-		<div class="top_content relative flex ac jsa mb-10">
+		<div class="top_content relative flex ac jsa mb-10" v-loading="title_total_loading">
 			<div class="top_item background_color height-100 flex fc ac">
 				<div class="width-100 flex ac jsb">
 					<div class="red_color f12">今日代发订单监控</div>
@@ -293,6 +293,7 @@
 	export default{
 		data(){
 			return {
+				title_total_loading:false,
 				top_info:{},						//头部数据
 				charts_loading:false,
 				charts_type:'today',				//今日/30日代发概览
@@ -433,6 +434,17 @@
 				this.jjcs_loading = false;
 				this.jjcs_title_list = [];					//发货即将超时头部列表
 				this.jjcs_table_data = [];					//发货即将超时列表
+
+				this.title_total_loading = true;
+				this.charts_loading = true;
+				this.area_loading = true;
+				this.sp_loading = true;
+				this.gys_loading = true;
+				this.dp_loading = true;
+				this.pjsx_loading = true;
+				this.jjcs_loading = true;
+				this.store_record_loading = true;
+				this.supplier_record_loading = true;
 				//头部信息
 				await this.dfOrderTotal();
 				//今天代发订单图表
@@ -456,9 +468,11 @@
 			},
 			//头部信息
 			dfOrderTotal(){
+				this.title_total_loading = true;
 				return new Promise((resolve)=>{
 					resource.dfOrderTotal().then(res => {
 						resolve();
+						this.title_total_loading = false;
 						if(res.data.code == 1){
 							this.top_info = res.data.data;
 						}else{
@@ -472,576 +486,586 @@
 				var arg = {};
 				switch(type){
 					case 1: //代发订单数
-					arg = {
-						start_date:getNowDate() + ' 00:00:00',
-						end_date:getNowDate() + ' 23:59:59',
-						order_status:[],
-						time_type:1
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:[],
+							time_type:1
+						}
+						this.$emit('callback',arg);
+						break;
 					case 2: //代发订单未审核
-					arg = {
-						start_date:getNowDate() + ' 00:00:00',
-						end_date:getNowDate() + ' 23:59:59',
-						order_status:['WaitConfirm','Question'],
-						time_type:1
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['WaitConfirm','Question'],
+							time_type:1
+						}
+						this.$emit('callback',arg);
+						break;
 					case 3: //代发订单发货数
-					arg = {
-						start_date:getNowDate() + ' 00:00:00',
-						end_date:getNowDate() + ' 23:59:59',
-						order_status:['Sent'],
-						time_type:1
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['Sent'],
+							time_type:1
+						}
+						this.$emit('callback',arg);
+						break;
 					case 4: //代发订单已审核
-					arg = {
-						start_date:getNowDate() + ' 00:00:00',
-						end_date:getNowDate() + ' 23:59:59',
-						order_status:['WaitOuterSent','Delivering'],
-						time_type:1
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['WaitOuterSent','Delivering'],
+							time_type:1
+						}
+						this.$emit('callback',arg);
+						break;
 					case 5: //代发今日已发货
-					arg = {
-						start_date:getNowDate() + ' 00:00:00',
-						end_date:getNowDate() + ' 23:59:59',
-						order_status:['Sent'],
-						time_type:2
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:getNowDate() + ' 00:00:00',
+							end_date:getNowDate() + ' 23:59:59',
+							order_status:['Sent'],
+							time_type:2
+						}
+						this.$emit('callback',arg);
+						break;
 					case 6: //48小时内未发货
-					arg = {
-						start_date:lastXDate(2,true),
-						end_date:getNowDate(true),
-						order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
-						time_type:1
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:lastXDate(2,true),
+							end_date:getNowDate(true),
+							order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
+							time_type:1
+						}
+						this.$emit('callback',arg);
+						break;
 					case 7: //代发今日未发货
-					arg = {
-						start_date:'',
-						end_date:'',
-						order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
-						time_type:1
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:'',
+							end_date:'',
+							order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
+							time_type:1
+						}
+						this.$emit('callback',arg);
+						break;
 					case 8: //超48小时未发货订单数
-					arg = {
-						start_date:'',
-						end_date:lastXDate(2,true),
-						order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
-						time_type:1
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							start_date:'',
+							end_date:lastXDate(2,true),
+							order_status:['WaitConfirm','Question','WaitOuterSent','Delivering'],
+							time_type:1
+						}
+						this.$emit('callback',arg);
+						break;
 					case 9: //列表下钻的跳转
-					arg = {
-						ksbm:params.ksbm,
-						order_status:params.order_status
-					}
-					this.$emit('callback',arg);
-					break;
+						arg = {
+							ksbm:params.ksbm,
+							order_status:params.order_status
+						}
+						this.$emit('callback',arg);
+						break;
 					default:
-					return;
-				}
-			},
+						return;
+					}
+				},
 			//今天代发订单图表
-			todayChart(){
-				this.charts_loading = true;
-				return new Promise((resolve)=>{
-					resource.todayChart().then(res => {
-						resolve();
-						if(res.data.code == 1){
-							this.charts_loading = false;
-							this.today_data = res.data.data;
-							this.today_update_time = this.today_data.update_time;
+				todayChart(){
+					this.charts_loading = true;
+					return new Promise((resolve)=>{
+						resource.todayChart().then(res => {
+							resolve();
+							if(res.data.code == 1){
+								this.charts_loading = false;
+								this.today_data = res.data.data;
+								this.today_update_time = this.today_data.update_time;
 						//今日代发概览图表渲染
-						this.todayCharts();
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
-				})
-			},
-			//30天代发订单图表
-			monthChart(){
-				this.charts_loading = true;
-				return new Promise((resolve)=>{
-					resource.monthChart().then(res => {
-						resolve();
-						if(res.data.code == 1){
-							this.charts_loading = false;
-							this.month_data = res.data.data;
-							//30天代发订单图表渲染
-							this.monthCharts()
-						}else{
-							this.$message.warning(res.data.msg);
-						}
+								this.todayCharts();
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
 					})
-				})
-			},
+				},
+			//30天代发订单图表
+				monthChart(){
+					this.charts_loading = true;
+					return new Promise((resolve)=>{
+						resource.monthChart().then(res => {
+							resolve();
+							if(res.data.code == 1){
+								this.charts_loading = false;
+								this.month_data = res.data.data;
+							//30天代发订单图表渲染
+								this.monthCharts()
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+					})
+				},
 			//今日代发概览图表渲染
-			todayCharts(){
-				var echarts = require("echarts");
-				var send_chart_view = document.getElementById('send_chart_view');
-				this.viewChart = echarts.getInstanceByDom(send_chart_view)
-				this.viewChart = echarts.init(send_chart_view);
+				todayCharts(){
+					var echarts = require("echarts");
+					var send_chart_view = document.getElementById('send_chart_view');
+					this.viewChart = echarts.getInstanceByDom(send_chart_view)
+					this.viewChart = echarts.init(send_chart_view);
 
-				let x_data = this.today_data.hour_list;
-				let today_data = [];
-				let yesterday_data = [];
-				let last_week_data = [];
-				let zb_data = [];
-				this.today_data.list.map(item => {
-					today_data.push(item.today_money);
-					yesterday_data.push(item.yesterday_money);
-					last_week_data.push(item.last_week_money);
-					let zb_obj = {
-						yesterday_zb:item.yesterday_zb,
-						last_week_zb:item.last_week_zb
-					}
-					zb_data.push(zb_obj)
-				})
+					let x_data = this.today_data.hour_list;
+					let today_data = [];
+					let yesterday_data = [];
+					let last_week_data = [];
+					let zb_data = [];
+					this.today_data.list.map(item => {
+						today_data.push(item.today_money);
+						yesterday_data.push(item.yesterday_money);
+						last_week_data.push(item.last_week_money);
+						let zb_obj = {
+							yesterday_zb:item.yesterday_zb,
+							last_week_zb:item.last_week_zb
+						}
+						zb_data.push(zb_obj)
+					})
 
-				this.viewChart.setOption({
-					tooltip: {
-						trigger: 'axis',
-						formatter: function (params) {
-							let tip = "";
-							if(params.length > 0){
-								tip += `${params[0].seriesName}：${params[0].value}</br>`;
+					this.viewChart.setOption({
+						tooltip: {
+							trigger: 'axis',
+							formatter: function (params) {
+								let tip = "";
+								if(params.length > 0){
+									tip += `${params[0].seriesName}：${params[0].value}</br>`;
+								}
+
+								let arr = params.filter(item => {
+									return item.seriesName == '今日';
+								})
+								if(arr.length > 0){
+									tip += `较昨日:${zb_data[params[0].dataIndex].yesterday_zb}&nbsp&nbsp&nbsp&nbsp较上周:${zb_data[params[0].dataIndex].last_week_zb}</br>`;
+								}
+
+								if(params.length > 1){
+									tip += `${params[1].seriesName}：${params[1].value}</br>`;
+								}
+								if(params.length > 2){
+									tip += `${params[2].seriesName}：${params[2].value}</br>`;
+								}
+								return tip;
+							},
+							backgroundColor:"#ffffff",
+							textStyle:{
+								color:"#333333",
+								fontSize:14
+							},
+							axisPointer: {            
+								type: 'shadow'     
 							}
-							
-							let arr = params.filter(item => {
-								return item.seriesName == '今日';
-							})
-							if(arr.length > 0){
-								tip += `较昨日:${zb_data[params[0].dataIndex].yesterday_zb}&nbsp&nbsp&nbsp&nbsp较上周:${zb_data[params[0].dataIndex].last_week_zb}</br>`;
+						},
+						grid:{
+							left:80,
+							top:60,
+							bottom:30,
+							right:50
+						},
+						legend: {
+							data: ['今日','昨日','上周']
+						},
+						xAxis: [{
+							type: 'category',
+							data: x_data,
+						}],
+						yAxis:[{
+							type: 'value',
+							axisLabel: {
+								formatter: '{value}'
 							}
-							
-							if(params.length > 1){
-								tip += `${params[1].seriesName}：${params[1].value}</br>`;
-							}
-							if(params.length > 2){
-								tip += `${params[2].seriesName}：${params[2].value}</br>`;
-							}
-							return tip;
-						},
-						backgroundColor:"#ffffff",
-						textStyle:{
-							color:"#333333",
-							fontSize:14
-						},
-						axisPointer: {            
-							type: 'shadow'     
-						}
-					},
-					grid:{
-						left:80,
-						top:60,
-						bottom:30,
-						right:50
-					},
-					legend: {
-						data: ['今日','昨日','上周']
-					},
-					xAxis: [{
-						type: 'category',
-						data: x_data,
-					}],
-					yAxis:[{
-						type: 'value',
-						axisLabel: {
-							formatter: '{value}'
-						}
-					}],
-					series: [{
-						name: "今日",
-						type: 'line',
-						emphasis: {
-							focus: 'series'
-						},
-						data: today_data
-					},{
-						name: "昨日",
-						type: 'line',
-						emphasis: {
-							focus: 'series'
-						},
-						data: yesterday_data
-					},{
-						name: "上周",
-						type: 'line',
-						emphasis: {
-							focus: 'series'
-						},
-						data: last_week_data
-					}]
-				});
-			},
+						}],
+						series: [{
+							name: "今日",
+							type: 'line',
+							emphasis: {
+								focus: 'series'
+							},
+							data: today_data
+						},{
+							name: "昨日",
+							type: 'line',
+							emphasis: {
+								focus: 'series'
+							},
+							data: yesterday_data
+						},{
+							name: "上周",
+							type: 'line',
+							emphasis: {
+								focus: 'series'
+							},
+							data: last_week_data
+						}]
+					});
+				},
 			//30天代发订单图表渲染
-			monthCharts(){
-				var echarts = require("echarts");
-				var send_chart_view = document.getElementById('send_chart_view');
-				this.viewChart = echarts.getInstanceByDom(send_chart_view)
-				this.viewChart = echarts.init(send_chart_view);
+				monthCharts(){
+					var echarts = require("echarts");
+					var send_chart_view = document.getElementById('send_chart_view');
+					this.viewChart = echarts.getInstanceByDom(send_chart_view)
+					this.viewChart = echarts.init(send_chart_view);
 
-				let x_data = this.month_data.day_list;
-				let order_num_list = this.month_data.order_num_list.list;
-				let money_list = this.month_data.money_list.list;
-				
-				this.viewChart.setOption({
-					tooltip: {
-						trigger: 'axis',
-						formatter: function (params) {
-							let tip = `时间：${params[0].name}</br>`;
-							params.map((item,index) => {
-								tip += `${item.seriesName}：${item.value}${index == 0?'单':'元'}</br>`
-							})
-							return tip;
+					let x_data = this.month_data.day_list;
+					let order_num_list = this.month_data.order_num_list.list;
+					let money_list = this.month_data.money_list.list;
+
+					this.viewChart.setOption({
+						tooltip: {
+							trigger: 'axis',
+							formatter: function (params) {
+								let tip = `时间：${params[0].name}</br>`;
+								params.map((item,index) => {
+									tip += `${item.seriesName}：${item.value}${index == 0?'单':'元'}</br>`
+								})
+								return tip;
+							},
+							backgroundColor:"#ffffff",
+							textStyle:{
+								color:"#333333",
+								fontSize:14
+							},
+							axisPointer: {            
+								type: 'shadow'     
+							}
 						},
-						backgroundColor:"#ffffff",
-						textStyle:{
-							color:"#333333",
-							fontSize:14
+						grid:{
+							left:80,
+							top:60,
+							bottom:30,
+							right:80
 						},
-						axisPointer: {            
-							type: 'shadow'     
-						}
-					},
-					grid:{
-						left:80,
-						top:60,
-						bottom:30,
-						right:80
-					},
-					legend: {
-						data: ['代发订单', '代发金额']
-					},
-					xAxis: [{
-						type: 'category',
-						data: x_data
-					}],
-					yAxis:[{
-						type: 'value',
-						name:'代发订单（单）',
-						axisLabel: {
-							formatter: '{value}'
-						}
-					},{
-						type: 'value',
-						name:'代发金额（元）',
-						axisLabel: {
-							formatter: '{value}'
-						}
-					}],
-					series: [{
-						name: '代发订单',
-						type: 'bar',
-						yAxisIndex:0,
-						emphasis: {
-							focus: 'series'
+						legend: {
+							data: ['代发订单', '代发金额']
 						},
-						data: order_num_list
-					},{
-						name: '代发金额',
-						type: 'line',
-						yAxisIndex:1,
-						lineStyle: { 
-							 width:3.6
-						},
-						emphasis: {
-							focus: 'series'
-						},
-						data: money_list
-					}]
-				});
+						xAxis: [{
+							type: 'category',
+							data: x_data
+						}],
+						yAxis:[{
+							type: 'value',
+							name:'代发订单（单）',
+							axisLabel: {
+								formatter: '{value}'
+							}
+						},{
+							type: 'value',
+							name:'代发金额（元）',
+							axisLabel: {
+								formatter: '{value}'
+							}
+						}],
+						series: [{
+							name: '代发订单',
+							type: 'bar',
+							yAxisIndex:0,
+							emphasis: {
+								focus: 'series'
+							},
+							data: order_num_list
+						},{
+							name: '代发金额',
+							type: 'line',
+							yAxisIndex:1,
+							lineStyle: { 
+								 width:3.6
+							},
+							emphasis: {
+								focus: 'series'
+							},
+							data: money_list
+						}]
+					});
 				// window.addEventListener('resize',() => {
 				// 	this.viewChart.resize();
 				// });
-			},
+				},
 			//地区图表数据
-			dfAreaChart(){
-				this.area_loading = true;
-				return new Promise((resolve)=>{
-					resource.dfAreaChart().then(res => {
-						resolve();
-						if(res.data.code == 1){
-							this.area_loading = false;
-							this.area_data = res.data.data;
+				dfAreaChart(){
+					this.area_loading = true;
+					return new Promise((resolve)=>{
+						resource.dfAreaChart().then(res => {
+							resolve();
+							if(res.data.code == 1){
+								this.area_loading = false;
+								this.area_data = res.data.data;
 							//地区图表渲染
-							this.areaCharts()
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				})
-			},
-			//地区图表渲染
-			areaCharts(){
-				var echarts = require("echarts");
-				var area_chart_view = document.getElementById('area_chart_view');
-				this.areaChart = echarts.getInstanceByDom(area_chart_view)
-				this.areaChart = echarts.init(area_chart_view);
-
-				let x_data = this.area_data.day_list;
-				let legend_list = [];
-				let series = [];
-
-				this.area_data.area_list.map(item => {
-					let area_obj = {
-						name: item.name,
-						type: 'line',
-						emphasis: {
-							focus: 'series'
-						},
-						data: []
-					}
-					legend_list.push(item.name)
-					item.list.map(i => {
-						let data_item = {
-							name:i.order_num,
-							value:i.money
-						}
-						area_obj['data'].push(data_item)
-					})
-					series.push(area_obj)
-				})
-
-				this.areaChart.setOption({
-					tooltip: {
-						trigger: 'item',
-						formatter: function (params) {
-							let tip = `${params.seriesName}</br>${x_data[params.dataIndex]}</br>代发订单：${params.data.name}</br>代发金额：${params.data.value}</br>`;
-							
-							return tip;
-						},
-						backgroundColor:"#ffffff",
-						textStyle:{
-							color:"#333333",
-							fontSize:12
-						},
-						axisPointer: {            
-							type: 'shadow'     
-						}
-					},
-					grid:{
-						left:80,
-						top:60,
-						bottom:30,
-						right:50
-					},
-					legend: {
-						data: legend_list
-					},
-					xAxis: [{
-						type: 'category',
-						data: x_data,
-					}],
-					yAxis:[{
-						type: 'value',
-						axisLabel: {
-							formatter: '{value}'
-						}
-					}],
-					series: series
-				});
-			},
-			//店铺/供应商代发明细
-			dfShopGysList(type){
-				let arg = {
-					type:type,
-					search:this.store_name
-				}
-				if(type == 'shop_name'){
-					arg['search'] = this.store_name;
-					this.store_record_loading = true;
-				}else{
-					arg['search'] = this.supplier_name;
-					this.supplier_record_loading = true;
-				}
-				return new Promise((resolve)=>{
-					resource.dfShopGysList(arg).then(res => {
-						resolve();
-						if(res.data.code == 1){
-							let data = res.data.data;
-							if(type == 'shop_name'){
-								this.store_record_title_list = data.title_list;
-								this.store_record_table_list = data.table_data;
-								this.store_update_time = data.update_time;
-								this.store_record_loading = false;
+								this.areaCharts()
 							}else{
-								this.supplier_record_title_list = data.title_list;
-								this.supplier_record_table_list = data.table_data;
-								this.supplier_update_time = data.update_time;
-								this.supplier_record_loading = false;
+								this.$message.warning(res.data.msg);
 							}
-						}else{
-							this.$message.warning(res.data.msg);
-						}
+						})
 					})
-				})
-			},
-			//明细下钻
-			tableCallBack(filed,tableName){
-				switch(tableName){
-					case 'shop': 	//点击店铺明细查看供应商
-					this.shop_name = filed;
-					this.tableName = 'two_shop';
-					this.first_title = '供应商';
+				},
+			//地区图表渲染
+				areaCharts(){
+					var echarts = require("echarts");
+					var area_chart_view = document.getElementById('area_chart_view');
+					this.areaChart = echarts.getInstanceByDom(area_chart_view)
+					this.areaChart = echarts.init(area_chart_view);
+
+					let x_data = this.area_data.day_list;
+					let legend_list = [];
+					let series = [];
+
+					this.area_data.area_list.map(item => {
+						let area_obj = {
+							name: item.name,
+							type: 'line',
+							emphasis: {
+								focus: 'series'
+							},
+							data: []
+						}
+						legend_list.push(item.name)
+						item.list.map(i => {
+							let data_item = {
+								name:i.order_num,
+								value:i.money
+							}
+							area_obj['data'].push(data_item)
+						})
+						series.push(area_obj)
+					})
+
+					this.areaChart.setOption({
+						tooltip: {
+							trigger: 'item',
+							formatter: function (params) {
+								let tip = `${params.seriesName}</br>${x_data[params.dataIndex]}</br>代发订单：${params.data.name}</br>代发金额：${params.data.value}</br>`;
+
+								return tip;
+							},
+							backgroundColor:"#ffffff",
+							textStyle:{
+								color:"#333333",
+								fontSize:12
+							},
+							axisPointer: {            
+								type: 'shadow'     
+							}
+						},
+						grid:{
+							left:80,
+							top:60,
+							bottom:30,
+							right:50
+						},
+						legend: {
+							data: legend_list
+						},
+						xAxis: [{
+							type: 'category',
+							data: x_data,
+						}],
+						yAxis:[{
+							type: 'value',
+							axisLabel: {
+								formatter: '{value}'
+							}
+						}],
+						series: series
+					});
+				},
+			//店铺/供应商代发明细
+				dfShopGysList(type){
 					let arg = {
-						type:'shop_name',
-						shop_name:this.shop_name
+						type:type,
+						search:this.store_name
 					}
-					this.firstDialog = true;
-					this.firstLoading = true;
-					resource.dfShopGysList(arg).then(res => {
-						if(res.data.code == 1){
-							this.firstLoading = false;
-							let data = res.data.data;
-							this.first_title_list = data.title_list;
-							this.first_table_list = data.table_data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
+					if(type == 'shop_name'){
+						arg['search'] = this.store_name;
+						this.store_record_loading = true;
+					}else{
+						arg['search'] = this.supplier_name;
+						this.supplier_record_loading = true;
+					}
+					return new Promise((resolve)=>{
+						resource.dfShopGysList(arg).then(res => {
+							resolve();
+							if(res.data.code == 1){
+								let data = res.data.data;
+								if(type == 'shop_name'){
+									this.store_record_title_list = data.title_list;
+									this.store_record_table_list = data.table_data;
+									this.store_update_time = data.update_time;
+									this.store_record_loading = false;
+								}else{
+									this.supplier_record_title_list = data.title_list;
+									this.supplier_record_table_list = data.table_data;
+									this.supplier_update_time = data.update_time;
+									this.supplier_record_loading = false;
+								}
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
 					})
-					break;
+				},
+			//明细下钻
+				tableCallBack(filed,tableName){
+					switch(tableName){
+					case 'shop': 	//点击店铺明细查看供应商
+						this.first_title_list = [];
+						this.first_table_list = [];
+						this.shop_name = filed;
+						this.tableName = 'two_shop';
+						this.first_title = '供应商';
+						let arg = {
+							type:'shop_name',
+							shop_name:this.shop_name
+						}
+						this.firstDialog = true;
+						this.firstLoading = true;
+						resource.dfShopGysList(arg).then(res => {
+							if(res.data.code == 1){
+								this.firstLoading = false;
+								let data = res.data.data;
+								this.first_title_list = data.title_list;
+								this.first_table_list = data.table_data;
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+						break;
 					case 'two_shop': 		//店铺明细第二层
-					this.supp_name = filed;
-					let arg_two = {
-						type:'shop_name',
-						shop_name:this.shop_name,
-						supplier_name:this.supp_name
-					}
-					this.twoLoading = true;
-					this.twoDialog = true;
-					resource.dfShopGysList(arg_two).then(res => {
-						if(res.data.code == 1){
-							this.twoLoading = false;
-							let data = res.data.data;
-							this.two_title_list = data.title_list;
-							this.two_table_list = data.table_data;
-							this.two_table_list.map(item => {
-								item['feekback'] = true;
-							})
-							this.twoDialog = true;
-						}else{
-							this.$message.warning(res.data.msg);
+						this.two_title_list = [];
+						this.two_table_list = [];
+						this.supp_name = filed;
+						let arg_two = {
+							type:'shop_name',
+							shop_name:this.shop_name,
+							supplier_name:this.supp_name
 						}
-					})
-					break;
+						this.twoLoading = true;
+						this.twoDialog = true;
+						resource.dfShopGysList(arg_two).then(res => {
+							if(res.data.code == 1){
+								this.twoLoading = false;
+								let data = res.data.data;
+								this.two_title_list = data.title_list;
+								this.two_table_list = data.table_data;
+								this.two_table_list.map(item => {
+									item['feekback'] = true;
+								})
+								this.twoDialog = true;
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+						break;
 					case 'three_shop': 		//店铺明细第三层（款-订单）
-					this.firstDialog = false;
-					this.twoDialog = false;
-					this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
-					break;
+						this.firstDialog = false;
+						this.twoDialog = false;
+						this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
+						break;
 					case 'supplier': 		//供应商第一层
-					this.tableName = 'two_supplier';
-					this.supp_name = filed;
-					this.first_title = '款式';
-					let arg_three = {
-						type:'supplier_name',
-						supplier_name:this.supp_name
-					}
-					this.firstDialog = true;
-					this.firstLoading = true;
-					resource.dfShopGysList(arg_three).then(res => {
-						if(res.data.code == 1){
-							this.firstLoading = false;
-							let data = res.data.data;
-							this.first_title_list = data.title_list;
-							this.first_table_list = data.table_data;
-							this.first_table_list.map(item => {
-								item['feekback'] = true;
-							})
-						}else{
-							this.$message.warning(res.data.msg);
+						this.first_title_list = [];
+						this.first_table_list = [];
+						this.tableName = 'two_supplier';
+						this.supp_name = filed;
+						this.first_title = '款式';
+						let arg_three = {
+							type:'supplier_name',
+							supplier_name:this.supp_name
 						}
-					})
-					break;
+						this.firstDialog = true;
+						this.firstLoading = true;
+						resource.dfShopGysList(arg_three).then(res => {
+							if(res.data.code == 1){
+								this.firstLoading = false;
+								let data = res.data.data;
+								this.first_title_list = data.title_list;
+								this.first_table_list = data.table_data;
+								this.first_table_list.map(item => {
+									item['feekback'] = true;
+								})
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+						break;
 					case 'two_supplier': 		//供应商第二层（款-订单）
-					this.firstDialog = false;
-					this.twoDialog = false;
-					this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
-					break;
+						this.firstDialog = false;
+						this.twoDialog = false;
+						this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
+						break;
 					case 'three_supplier': 		//第三个供应商
-					this.tableName = 'five_supplier';
-					this.supp_name = filed;
-					this.first_title = '款式';
-					let arg_fore = {
-						date_type:this.pjsx_date_type,
-						supplier_name:this.supp_name 
-					}
-					this.firstDialog = true;
-					this.firstLoading = true;
-					resource.dfAverageDelivery(arg_fore).then(res => {
-						if(res.data.code == 1){
-							this.firstLoading = false;
-							let data = res.data.data;
-							this.first_title_list = data.title_list;
-							this.first_table_list = data.table_data;
-							this.first_table_list.map(item => {
-								item['feekback'] = true;
-							})
-						}else{
-							this.$message.warning(res.data.msg);
+						this.first_title_list = [];
+						this.first_table_list = [];
+						this.tableName = 'five_supplier';
+						this.supp_name = filed;
+						this.first_title = '款式';
+						let arg_fore = {
+							date_type:this.pjsx_date_type,
+							supplier_name:this.supp_name 
 						}
-					})
-					break;
+						this.firstDialog = true;
+						this.firstLoading = true;
+						resource.dfAverageDelivery(arg_fore).then(res => {
+							if(res.data.code == 1){
+								this.firstLoading = false;
+								let data = res.data.data;
+								this.first_title_list = data.title_list;
+								this.first_table_list = data.table_data;
+								this.first_table_list.map(item => {
+									item['feekback'] = true;
+								})
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+						break;
 					case 'fore_supplier': 		//第四个供应商
-					this.tableName = 'six_supplier';
-					this.supp_name = filed;
-					this.first_title = '款式';
-					let arg_five = {
-						date_type:this.pjsx_date_type,
-						supplier_name:this.supp_name 
-					}
-					this.firstDialog = true;
-					this.firstLoading = true;
-					resource.dfOverTime(arg_five).then(res => {
-						if(res.data.code == 1){
-							this.firstLoading = false;
-							let data = res.data.data;
-							this.first_title_list = data.title_list;
-							this.first_table_list = data.table_data;
-							this.first_table_list.map(item => {
-								item['feekback'] = true;
-							})
-						}else{
-							this.$message.warning(res.data.msg);
+						this.first_title_list = [];
+						this.first_table_list = [];
+						this.tableName = 'six_supplier';
+						this.supp_name = filed;
+						this.first_title = '款式';
+						let arg_five = {
+							date_type:this.pjsx_date_type,
+							supplier_name:this.supp_name 
 						}
-					})
-					break;
+						this.firstDialog = true;
+						this.firstLoading = true;
+						resource.dfOverTime(arg_five).then(res => {
+							if(res.data.code == 1){
+								this.firstLoading = false;
+								let data = res.data.data;
+								this.first_title_list = data.title_list;
+								this.first_table_list = data.table_data;
+								this.first_table_list.map(item => {
+									item['feekback'] = true;
+								})
+							}else{
+								this.$message.warning(res.data.msg);
+							}
+						})
+						break;
 					case 'five_supplier': 		//第三个供应商（款-订单）
-					this.firstDialog = false;
-					this.twoDialog = false;
-					this.getOrderList(9,{ksbm:filed,order_status:['Sent']});
-					break;
+						this.firstDialog = false;
+						this.twoDialog = false;
+						this.getOrderList(9,{ksbm:filed,order_status:['Sent']});
+						break;
 					case 'six_supplier': 		//第四个供应商（款-订单）
-					this.firstDialog = false;
-					this.twoDialog = false;
-					this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
-					break;
+						this.firstDialog = false;
+						this.twoDialog = false;
+						this.getOrderList(9,{ksbm:filed,order_status:['WaitConfirm','Question','WaitOuterSent','Delivering']});
+						break;
 					default:
-					return;
-				}
-			},
+						return;
+					}
+				},
 			//下钻导出
 			detailExport(type){
-				MessageBox.confirm('确认导出?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
+					MessageBox.confirm('确认导出?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
 					if(type == '1'){	//第一层 
 						let arg = {};
 						if(this.tableName == 'two_shop'){
@@ -1322,156 +1346,156 @@
 	}
 </script>
 <style lang="less" scoped>
-.send_view{
-	background-color: #ECEFF8;
-}
-.top_content{
-	height: 332px;
-	padding: 14px 24px;
-	.refresh{
-		position: absolute;
-		top: 14px;
-		right: 14px;
-		cursor: pointer;
+	.send_view{
+		background-color: #ECEFF8;
 	}
-	.top_item{
-		padding: 15px 10px; 
-		border-radius: 8px;
-		width: 480px;
-	}
-	.center_card{
-		padding: 5px 12px 5px 6px;
-		margin-bottom: 15px;
-		width: 194px;
-		height: 116px;
-		background: #FFFFFF;
-		border-radius: 8px;
-		.yuan{
-			margin-right: 6px;
-			border-radius: 4px;
-			width: 8px;
-			height: 8px;
+	.top_content{
+		height: 332px;
+		padding: 14px 24px;
+		.refresh{
+			position: absolute;
+			top: 14px;
+			right: 14px;
+			cursor: pointer;
 		}
-		.yuan_1{
-			background-color: #8BC75D;
+		.top_item{
+			padding: 15px 10px; 
+			border-radius: 8px;
+			width: 480px;
 		}
-		.rate_1{
-			color: #8BC75D;
+		.center_card{
+			padding: 5px 12px 5px 6px;
+			margin-bottom: 15px;
+			width: 194px;
+			height: 116px;
+			background: #FFFFFF;
+			border-radius: 8px;
+			.yuan{
+				margin-right: 6px;
+				border-radius: 4px;
+				width: 8px;
+				height: 8px;
+			}
+			.yuan_1{
+				background-color: #8BC75D;
+			}
+			.rate_1{
+				color: #8BC75D;
+			}
+			.yuan_2{
+				background-color: #FF993C;
+			}
+			.rate_2{
+				color: #FF993C;
+			}
+			.yuan_3{
+				background-color: #FF7272;
+			}
+			.rate_3{
+				color: #FF7272;
+			}
+			.yuan_4{
+				background-color: #2868F8;
+			}
+			.rate_4{
+				color: #2868F8;
+			}
 		}
-		.yuan_2{
-			background-color: #FF993C;
+		.center_box{
+			border-radius: 50%;
+			width: 150px;
+			height: 150px;
+			background: #5575EB;
+			cursor: pointer;
 		}
-		.rate_2{
-			color: #FF993C;
+		.today_icon{
+			top: 14px;
+			left: 14px;
+			width: 29px;
+			height: 27px;
 		}
-		.yuan_3{
-			background-color: #FF7272;
+		.background_color{
+			background-color: #ffffff;
 		}
-		.rate_3{
-			color: #FF7272;
-		}
-		.yuan_4{
-			background-color: #2868F8;
-		}
-		.rate_4{
-			color: #2868F8;
-		}
-	}
-	.center_box{
-		border-radius: 50%;
-		width: 150px;
-		height: 150px;
-		background: #5575EB;
-		cursor: pointer;
-	}
-	.today_icon{
-		top: 14px;
-		left: 14px;
-		width: 29px;
-		height: 27px;
-	}
-	.background_color{
-		background-color: #ffffff;
-	}
-	.color_item{
-		border-radius: 8px;
-		width: 144px;
-		height: 100px;
-		cursor: pointer;
-		.l_line{
-			left:-85px;
-			top:50px;
-			border-top:1px solid #5288F8;
-			border-left:1px solid #5288F8;
-			width: 85px;
+		.color_item{
+			border-radius: 8px;
+			width: 144px;
 			height: 100px;
+			cursor: pointer;
+			.l_line{
+				left:-85px;
+				top:50px;
+				border-top:1px solid #5288F8;
+				border-left:1px solid #5288F8;
+				width: 85px;
+				height: 100px;
+			}
+			.r_line{
+				right:-85px;
+				top:50px;
+				border-top:1px solid #5288F8;
+				border-right:1px solid #5288F8;
+				width: 85px;
+				height: 100px;
+			}
 		}
-		.r_line{
-			right:-85px;
-			top:50px;
-			border-top:1px solid #5288F8;
-			border-right:1px solid #5288F8;
-			width: 85px;
-			height: 100px;
+		.c_c_line{
+			height: 68px;
+			width: 1px;
+			background-color:#5288F8; 
+		}
+		.r_item{
+			width: 210px;
+			height: 116px;
+			background: #FFFFFF;
+			box-shadow: 0px 0px 8px 0px #E2EBFF;
+			border-radius: 8px;
+			cursor: pointer;
+			.send_view_icon{
+				width: 54px;
+				height: 54px;
+			}
+			.r_content{
+				height: 54px;
+			}
+			.r_l_line{
+				left: -22px;
+				top: 55px;
+				width: 22px;
+				height: 78px;
+				border-top:1px solid #5288F8;
+				border-left:1px solid #5288F8;
+			}
+			.r_r_line{
+				right: -22px;
+				top: 55px;
+				width: 22px;
+				height: 78px;
+				border-top:1px solid #5288F8;
+				border-right:1px solid #5288F8;
+			}
+		}
+		.dfdds{
+			background-color: #E3ECFF;
+		}
+		.wsh{
+			background-color: #FFE0E0;
+		}
+		.fhs{
+			background-color: #FFF9E3;
+		}
+		.ysh{
+			background-color: #E8F8E8;
 		}
 	}
-	.c_c_line{
-		height: 68px;
-		width: 1px;
-		background-color:#5288F8; 
+	.charts{
+		width: 100%;
+		height: 380px;
 	}
-	.r_item{
-		width: 210px;
-		height: 116px;
-		background: #FFFFFF;
-		box-shadow: 0px 0px 8px 0px #E2EBFF;
-		border-radius: 8px;
-		cursor: pointer;
-		.send_view_icon{
-			width: 54px;
-			height: 54px;
-		}
-		.r_content{
-			height: 54px;
-		}
-		.r_l_line{
-			left: -22px;
-			top: 55px;
-			width: 22px;
-			height: 78px;
-			border-top:1px solid #5288F8;
-			border-left:1px solid #5288F8;
-		}
-		.r_r_line{
-			right: -22px;
-			top: 55px;
-			width: 22px;
-			height: 78px;
-			border-top:1px solid #5288F8;
-			border-right:1px solid #5288F8;
-		}
+	.area_charts{
+		width: 100%;
+		height: 380px;
 	}
-	.dfdds{
-		background-color: #E3ECFF;
-	}
-	.wsh{
-		background-color: #FFE0E0;
-	}
-	.fhs{
-		background-color: #FFF9E3;
-	}
-	.ysh{
-		background-color: #E8F8E8;
-	}
-}
-.charts{
-	width: 100%;
-	height: 380px;
-}
-.area_charts{
-	width: 100%;
-	height: 380px;
-}
 </style>
 
 
