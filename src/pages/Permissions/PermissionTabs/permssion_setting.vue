@@ -52,14 +52,8 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<!-- <el-form-item label="访问权限">
-				<el-select v-model="setting_req.menu_role_id" size="small" filterable placeholder="请选择">
-					<el-option v-for="item in menu_list" :key="item.menu_role_id" :label="item.menu_role_name" :value="item.menu_role_id">
-					</el-option>
-				</el-select>
-			</el-form-item> -->
 			<el-form-item label="数据权限">
-				<el-select v-model="setting_req.data_role_id" size="small" filterable placeholder="请选择">
+				<el-select v-model="data_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
 					<el-option v-for="item in data_list" :key="item.data_role_id" :label="item.data_role_name" :value="item.data_role_id">
 					</el-option>
 				</el-select>
@@ -143,6 +137,7 @@
 				menu_list:[],			//访问权限
 				data_list:[],			//数据权限
 				menu_role_ids:[],
+				data_role_ids:[],
 				setting_req:{
 					user_id:"",
 					menu_role_id:"",
@@ -214,8 +209,10 @@
 								status: 1
 							};
 							this.menu_role_ids = [0];
+							this.data_role_ids = [0];
 						}else{					//单个设置
 							this.menu_role_ids = res.data.data.info.menu_role_id;
+							this.data_role_ids = res.data.data.info.data_role_id;
 							this.setting_req = res.data.data.info;
 						}
 						this.setting_req.user_id = setReq.user_id;
@@ -241,6 +238,7 @@
 			//提交设置
 			submitSetting(){
 				this.setting_req.menu_role_id = this.menu_role_ids.join(',');
+				this.setting_req.data_role_id = this.data_role_ids.join(',');
 				resource.userSetPost(this.setting_req).then(res => {
 					if(res.data.code == 1){
 						this.show_setting = false;
