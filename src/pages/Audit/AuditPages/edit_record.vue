@@ -37,6 +37,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="是否石狮：">
+				<el-select v-model="ksbm_type" clearable @change="getData" placeholder="全部">
+					<el-option label="是" :value="1"></el-option>
+					<el-option label="否" :value="0"></el-option>
+				</el-select>
+			</el-form-item>
 		</el-form>
 		<div style="display: flex;justify-content: flex-end;margin-bottom: 15px;" v-if="button_list.export == 1">
 			<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -292,6 +298,7 @@
 					name:'乎达'
 				}],						//所有的平台
 				from:'1',				//选中的平台
+				ksbm_type:"",
 				dataObj:{},				//返回数据
 				button_list:{},
 				detailDialog:false,		//基本信息弹框
@@ -347,6 +354,7 @@
 						opreater_name:this.commit_name,
 						ksbm:this.select_ksbm_ids.join(','),
 						from:this.from,
+						ksbm_type:this.ksbm_type,
 						status:this.status,
 					}
 					resource.logsExport(arg).then(res => {
@@ -416,6 +424,7 @@
 					opreater_name:this.commit_name,
 					ksbm:this.select_ksbm_ids.join(','),
 					from:this.from,
+					ksbm_type:this.ksbm_type,
 					status:this.status,
 					page:this.page,
 					pagesize:this.pagesize

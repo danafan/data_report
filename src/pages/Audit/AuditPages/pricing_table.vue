@@ -22,6 +22,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="是否石狮：">
+				<el-select v-model="ksbm_type" clearable @change="getData" placeholder="全部">
+					<el-option label="是" :value="1"></el-option>
+					<el-option label="否" :value="0"></el-option>
+				</el-select>
+			</el-form-item>
 		</el-form>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
@@ -163,6 +169,7 @@
 					name:'乎达'
 				}],						//所有的平台
 				from:'1',				//选中的平台
+				ksbm_type:"",
 				dataObj:{},				//返回数据
 				button_list:{},
 				detailDialog:false,		//基本信息弹框
@@ -235,6 +242,7 @@
 					ksbm:this.select_ksbm_ids.join(','),
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					from:this.from,
+					ksbm_type:this.ksbm_type,
 					page:this.page,
 					pagesize:this.pagesize
 				}

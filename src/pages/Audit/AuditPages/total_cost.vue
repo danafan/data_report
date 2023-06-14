@@ -51,6 +51,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="是否石狮：">
+				<el-select v-model="ksbm_type" clearable @change="getData" placeholder="全部">
+					<el-option label="是" :value="1"></el-option>
+					<el-option label="否" :value="0"></el-option>
+				</el-select>
+			</el-form-item>
 		</el-form>
 		<div class="buts">
 			<div class="upload_box" v-if="button_list.import == 1">
@@ -185,35 +191,35 @@
 </div>
 </template>
 <style lang="less" scoped>
-.buts{
-	margin-bottom: 15px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-}
-.dialog_row{
-	display:flex;
-	align-items: center;
-	justify-content: center;
-	.connect_line{
-		margin-left: 10px;
-		margin-right: 10px;
-	}	
-}
-.upload_box{
-	margin-right: 10px;
-	position: relative;
-	.upload_file{
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		width: 100%;
-		height: 100%;
-		opacity: 0;
+	.buts{
+		margin-bottom: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
 	}
-}
+	.dialog_row{
+		display:flex;
+		align-items: center;
+		justify-content: center;
+		.connect_line{
+			margin-left: 10px;
+			margin-right: 10px;
+		}	
+	}
+	.upload_box{
+		margin-right: 10px;
+		position: relative;
+		.upload_file{
+			position: absolute;
+			top: 0;
+			bottom: 0;
+			left: 0;
+			right: 0;
+			width: 100%;
+			height: 100%;
+			opacity: 0;
+		}
+	}
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
@@ -245,6 +251,7 @@
 					name:'乎达'
 				}],						//所有的平台
 				from:'1',				//选中的平台
+				ksbm_type:"",			//是否石狮
 				is_zero_batch:false,	//是否零批发价
 				sort_field:"",
 				sort_type:"",
@@ -375,6 +382,7 @@
 					start_launch_day:this.date && this.date.length > 0?this.date[0]:"",
 					end_launch_day:this.date && this.date.length > 0?this.date[1]:"",
 					from:this.from,
+					ksbm_type:this.ksbm_type,
 					min_batch_price:this.batch_price_min,
 					max_batch_price:this.batch_price_max,
 					min_xssl:this.min_xssl,

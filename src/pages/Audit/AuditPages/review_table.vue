@@ -22,6 +22,12 @@
 			<el-form-item>
 				<el-button type="primary" size="small" @click="getList">搜索</el-button>
 			</el-form-item>
+			<el-form-item label="是否石狮：">
+				<el-select v-model="ksbm_type" clearable @change="getData" placeholder="全部">
+					<el-option label="是" :value="1"></el-option>
+					<el-option label="否" :value="0"></el-option>
+				</el-select>
+			</el-form-item>
 		</el-form>
 		<div class="buts">
 			<el-button type="primary" size="small" @click="allAudit" v-if="button_list.audit == 1">一键审批</el-button>
@@ -306,6 +312,7 @@
 					id:'3',
 					name:'审核拒绝'
 				},],					//状态列表
+				ksbm_type:"",
 				dataObj:{},				//返回数据
 				button_list:{},
 				detailDialog:false,		//基本信息弹框
@@ -400,6 +407,7 @@
 					status:this.status,
 					ksbm:this.select_ksbm_ids.join(','),
 					supplier_ksbm:this.select_gyshh_ids.join(','),
+					ksbm_type:this.ksbm_type,
 					page:this.page,
 					pagesize:this.pagesize
 				}

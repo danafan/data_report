@@ -25,6 +25,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="是否石狮：">
+				<el-select v-model="ksbm_type" clearable @change="getData" placeholder="全部">
+					<el-option label="是" :value="1"></el-option>
+					<el-option label="否" :value="0"></el-option>
+				</el-select>
+			</el-form-item>
 		</el-form>
 		<div class="buts">
 			<el-button type="primary" plain size="small" @click="exportTable" v-if="button_list.export == 1">全部导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -204,6 +210,7 @@
 					name:'乎达'
 				}],						//所有的平台
 				from:'1',				//选中的平台
+				ksbm_type:"",
 				is_off_shelf:false,		//是否已下架
 				dataObj:{},				//返回数据
 				button_list:{},
@@ -276,6 +283,7 @@
 					supplier_ksbm:this.select_gyshh_ids.join(','),
 					is_off_shelf:this.is_off_shelf?'1':'0',
 					from:this.from,
+					ksbm_type:this.ksbm_type,
 					page:this.page,
 					pagesize:this.pagesize
 				}
