@@ -3,12 +3,12 @@
 		<el-table ref="total_table" class="total_table" size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
 			<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 			</el-table-column>
-			<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:column_width">
+			<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:item.width">
 				<template slot="header" slot-scope="scope">
 					<div class="width-100 pre-line">{{item.row_name}}</div>
 				</template>
 				<!-- 多级表头 -->
-				<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:column_width" v-for="i in item.list">
+				<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:item.width" v-for="i in item.list">
 					<template slot="header" slot-scope="scope">
 						<div class="width-100 pre-line">{{i.row_name}}</div>
 					</template>
@@ -33,12 +33,12 @@
 	<el-table ref="data_table" size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :max-height="max_height" :show-header="!total_row" v-if="!total_row || (total_row && table_data.length > 0)">
 		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
-		<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:column_width">
+		<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:item.width">
 			<template slot="header" slot-scope="scope">
 				<div class="width-100 pre-line">{{item.row_name}}</div>
 			</template>
 			<!-- 多级表头 -->
-			<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:column_width" v-for="i in item.list">
+			<el-table-column :prop="i.row_field_name" align="center" :sortable="sortableFn(i.is_sort)" :fixed="i.is_fixed == 1" show-overflow-tooltip :column-key="i.color" :width="i.type == '8'?180:i.type == '1'?100:item.width" v-for="i in item.list">
 				<template slot="header" slot-scope="scope">
 					<div class="width-100 pre-line">{{i.row_name}}</div>
 				</template>
@@ -47,59 +47,104 @@
 					<div :class="{'red_color':scope.row[i.row_field_name] < 20}" :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="i.type == '99'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
 					<!-- 营销费用经营管控-店铺营销费用投产情况-毛利率-营销费用占比 -->
 					<div :class="{'red_color':(i.row_field_name == 'mlv_rate' && scope.row[i.row_field_name] < 20) || (i.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[i.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[i.row_field_name] > 20)))}" :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else-if="i.type == '98'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
-					<!-- 进度条 -->
-					<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else-if="i.type == '1'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
-					<!-- 正负颜色 -->
-					<div :class="[{'red_color':scope.row[i.row_field_name] >= 0},{'green_color':scope.row[i.row_field_name] < 0}]" v-else-if="i.type == '2' && i.row_field_name != 'mlv_rate'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
-					<!-- 图片 -->
-					<div v-else-if="item.type == '3'">
-						<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[i.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-if="filterImage(scope.row[i.row_field_name])[0].indexOf('.jpg') > -1 || filterImage(scope.row[i.row_field_name])[0].indexOf('.png') > -1" @click.stop="handleClickStop"></el-image>
-						<div v-else>暂无</div>
+					<!-- 供应链中心-重点跟进款式-款式Top200-今日跟踪反馈 -->
+					<div class="flex ac" v-else-if="i.type == '97'">
+						<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" :disabled="i.check_disabled" @change="$emit('editFun',scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
+						<el-input @blur="$emit('editFun',scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="i.check_disabled">
+						</el-input>
 					</div>
-					<!-- 链接 -->
-					<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
-					<!-- 图表 -->
-					<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
-					<!-- 普通文字 -->
-					<div class="table_header_text" @dblclick="doCopy(scope.row[i.row_field_name])" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
-				</template>
-			</el-table-column>
-			<!-- 单级表头 -->
-			<template slot-scope="scope">
-				<!-- 营销费用经营管控-事业部项目部营销费用投产情况-毛利率-营销费用占比 -->
-				<div :class="{'red_color':scope.row[item.row_field_name] < 20}" :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == '99'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
-				<!-- 营销费用经营管控-店铺营销费用投产情况-毛利率-营销费用占比 -->
-				<div :class="{'red_color':(item.row_field_name == 'mlv_rate' && scope.row[item.row_field_name] < 20) || (item.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[item.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[item.row_field_name] > 20)))}" :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else-if="item.type == '98'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
+					<!-- 供应链中心-重点跟进款式-款式Top200-历史跟踪反馈 -->
+					<div v-else-if="i.type == '96'">
+						<el-popover placement="right" width="800" :open-delay="1000"
+						trigger="hover" @show="getRecord(scope.row.ksbm)" >
+						<el-table size="small" :data="top_200_tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="top_200_detail_loading">
+							<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+							<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+							<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+						</el-table>
+						<div class="page">
+							<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="top_200_table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="top_200_tableObj.total">
+							</el-pagination>
+						</div>
+						<el-button slot="reference" type="text" size="mini">查看</el-button>
+					</el-popover>
+				</div>
 				<!-- 进度条 -->
-				<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else-if="item.type == '1'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
+				<div :style="{width:`${i.max_value == 0?0:(80/i.max_value)*Math.abs(scope.row[i.row_field_name])}px`,background:scope.row[i.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else-if="i.type == '1'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null?i.unit:''}}</div>
 				<!-- 正负颜色 -->
-				<div :class="[{'red_color':scope.row[item.row_field_name] >= 0},{'green_color':scope.row[item.row_field_name] < 0}]" v-else-if="item.type == '2'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+				<div :class="[{'red_color':scope.row[i.row_field_name] >= 0},{'green_color':scope.row[i.row_field_name] < 0}]" v-else-if="i.type == '2' && i.row_field_name != 'mlv_rate'">{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
 				<!-- 图片 -->
-				<div v-else-if="item.type == '3'">
-					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[item.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" @click.stop="handleClickStop" v-if="filterImage(scope.row[item.row_field_name])[0].indexOf('.jpg') > -1 || filterImage(scope.row[item.row_field_name])[0].indexOf('.png') > -1"></el-image>
+				<div v-else-if="i.type == '3'">
+					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[i.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-if="filterImage(scope.row[i.row_field_name])[0].indexOf('.jpg') > -1 || filterImage(scope.row[i.row_field_name])[0].indexOf('.png') > -1" @click.stop="handleClickStop"></el-image>
 					<div v-else>暂无</div>
 				</div>
 				<!-- 链接 -->
-				<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
+				<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
 				<!-- 图表 -->
-				<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
+				<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
 				<!-- 普通文字 -->
-				<div class="table_header_text" @dblclick="doCopy(scope.row[item.row_field_name])" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+				<div class="table_header_text" @dblclick="doCopy(scope.row[i.row_field_name])" v-else>{{scope.row[i.row_field_name]}}{{scope.row[i.row_field_name] !== null&&scope.row[i.row_field_name] !== ''?i.unit:''}}</div>
 			</template>
 		</el-table-column>
-		<el-table-column label="操作" align="center" v-if="is_setting">
-			<template slot-scope="scope">
-				<el-button type="text" size="small" @click="$emit('editFn',scope.row.id)" v-if='button_list.edit == 1'>编辑</el-button>
-				<el-button type="text" size="small" @click="$emit('deleteFn',scope.row.id)" v-if='button_list.del == 1'>删除</el-button>
-				<el-button type="text" size="small" @click="$emit('detailFn',scope.row.id)" v-if='scope.row.detail'>详情</el-button>
-				<el-button type="text" size="small" @click="$emit('handleFn',scope.row.id)" v-if='scope.row.handle'>处理</el-button>
-				<el-button type="text" size="small" @click="$emit('feekbackFn',scope.row[fieldName])" v-if='scope.row.feekback'>反馈</el-button>
-			</template>
-		</el-table-column>
-	</el-table>
+		<!-- 单级表头 -->
+		<template slot-scope="scope">
+			<!-- 营销费用经营管控-事业部项目部营销费用投产情况-毛利率-营销费用占比 -->
+			<div :class="{'red_color':scope.row[item.row_field_name] < 20}" :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-if="item.type == '99'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
+			<!-- 营销费用经营管控-店铺营销费用投产情况-毛利率-营销费用占比 -->
+			<div :class="{'red_color':(item.row_field_name == 'mlv_rate' && scope.row[item.row_field_name] < 20) || (item.row_field_name == 'yx_rate' && ((scope.row.platform == '淘宝' && scope.row[item.row_field_name] > 15) || (scope.row.platform == '天猫' && scope.row[item.row_field_name] > 20)))}" :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else-if="item.type == '98'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
+			<!-- 供应链中心-重点跟进款式-款式Top200 -->
+			<div class="flex ac" v-else-if="item.type == '97'">
+				<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" :disabled="item.check_disabled" @change="$emit('editFun',scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
+				<el-input @blur="$emit('editFun',scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="item.check_disabled">
+				</el-input>
+			</div>
+			<!-- 供应链中心-重点跟进款式-款式Top200-历史跟踪反馈 -->
+			<div v-else-if="item.type == '96'">
+				<el-popover placement="right" width="800" :open-delay="1000"
+				trigger="hover" @show="getRecord(scope.row.ksbm)" >
+				<el-table size="small" :data="top_200_tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="top_200_detail_loading">
+					<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
+					<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
+					<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
+				</el-table>
+				<div class="page">
+					<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="top_200_table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="top_200_tableObj.total">
+					</el-pagination>
+				</div>
+				<el-button slot="reference" type="text" size="mini">查看</el-button>
+			</el-popover>
+		</div>
+		<!-- 进度条 -->
+		<div :style="{width:`${item.max_value == 0?0:(80/item.max_value)*Math.abs(scope.row[item.row_field_name])}px`,background:scope.row[item.row_field_name] >= 0?'#FFA39E':'#B7EB8F'}" v-else-if="item.type == '1'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null?item.unit:''}}</div>
+		<!-- 正负颜色 -->
+		<div :class="[{'red_color':scope.row[item.row_field_name] >= 0},{'green_color':scope.row[item.row_field_name] < 0}]" v-else-if="item.type == '2'">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+		<!-- 图片 -->
+		<div v-else-if="item.type == '3'">
+			<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[item.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" @click.stop="handleClickStop" v-if="filterImage(scope.row[item.row_field_name])[0].indexOf('.jpg') > -1 || filterImage(scope.row[item.row_field_name])[0].indexOf('.png') > -1"></el-image>
+			<div v-else>暂无</div>
+		</div>
+		<!-- 链接 -->
+		<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
+		<!-- 图表 -->
+		<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
+		<!-- 普通文字 -->
+		<div class="table_header_text" @dblclick="doCopy(scope.row[item.row_field_name])" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
+	</template>
+</el-table-column>
+<el-table-column label="操作" align="center" v-if="is_setting">
+	<template slot-scope="scope">
+		<el-button type="text" size="small" @click="$emit('editFn',scope.row.id)" v-if='button_list.edit == 1'>编辑</el-button>
+		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row.id)" v-if='button_list.del == 1'>删除</el-button>
+		<el-button type="text" size="small" @click="$emit('detailFn',scope.row.id)" v-if='scope.row.detail'>详情</el-button>
+		<el-button type="text" size="small" @click="$emit('handleFn',scope.row.id)" v-if='scope.row.handle'>处理</el-button>
+		<el-button type="text" size="small" @click="$emit('feekbackFn',scope.row[fieldName])" v-if='scope.row.feekback'>反馈</el-button>
+	</template>
+</el-table-column>
+</el-table>
 </div>
 </template>
 <script>
+	import demandResource from '../api/demandResource.js'
 	export default{
 		data(){
 			return{
@@ -107,7 +152,12 @@
 				commonClass:"",				//动态类名
 				show_chart_filed:[],		//需要展示图表的字段列表
 				total_table:null,
-				data_table:null
+				data_table:null,
+				top_200_ksbm:"",			//款式Top200历史跟踪反馈查看的款式编码
+				top_200_table_page:1,
+				top_200_table_pagesize:10,	
+				top_200_detail_loading:false,
+				top_200_tableObj:{}
 			}
 		},
 		props:{
@@ -191,7 +241,7 @@
 				}
 			}
 		},
-			//加载状态
+		//加载状态
 		isLoading:{
 			type:Boolean,
 		default: false
@@ -256,7 +306,7 @@
 				this.$message.success('复制失败')
 			})
 		},
-    		//过滤图片
+    	//过滤图片
 		filterImage(image){
 			if(image){
 				return image.split(',');
@@ -264,7 +314,7 @@
 				return [];
 			}
 		},
-  			//设置监听滚动事件
+  		//设置监听滚动事件
 		setScroll(){
 			this.$nextTick(() => {
 				if(this.total_row){
@@ -300,7 +350,7 @@
 		setBackground({row, rowIndex}){
 			return {'background':'#F5F7FA','color':'#333333'}
 		},
-			//排序
+		//排序
 		sortChange({ column, prop, order }) {  
 			let sort = "";
 			if(order){
@@ -321,7 +371,7 @@
 				return false;
 			}
 		},
-			//递归找到需要展示图标的字段
+		//递归找到需要展示图标的字段
 		getShowChartFiled(list) {
 			list.map(item => {
 				if(item.list && item.list.length > 0){
@@ -336,7 +386,7 @@
 				}
 			})
 		},
-			//表头加特殊背景色
+		//表头加特殊背景色
 		columnStyle({ row, column, rowIndex, columnIndex }) {
 			if(column.columnKey){
 				return `background: ${column.columnKey};color:#333333`;
@@ -344,7 +394,7 @@
 				return `background: #f4f4f4`;
 			}
 		},
-			//图表绘制
+		//图表绘制
 		chartsOptions(x_axis,series_data){
 			return {
 				xAxis: {
@@ -389,7 +439,7 @@
 				]
 			}
 		},
-			//大图点击关闭
+		//大图点击关闭
 		handleClickStop() {
 			this.$nextTick(() => {
 		          let domImageView = document.querySelector(".el-image-viewer__mask"); // 获取遮罩层dom
@@ -402,7 +452,42 @@
 		          });
 		      });
 		},
-
+		//点击查看
+		getRecord(ksbm){
+			this.top_200_table_page = 1;
+			this.top_200_ksbm = ksbm;
+			//获取详情
+			this.getTableData();
+		},
+		//获取详情
+		getTableData(){
+			let arg = {
+				ksbm:this.top_200_ksbm,
+				page:this.top_200_table_page,
+				pagesize:this.top_200_table_pagesize
+			}
+			this.top_200_detail_loading = true;
+			demandResource.editLog(arg).then(res => {
+				if(res.data.code == 1){
+					this.top_200_detail_loading = false;
+					this.top_200_tableObj = res.data.data;
+				}else{
+					this.$message.warning(res.data.msg);
+				}
+			})
+		},
+		//详情分页
+		handlePageSize(val) {
+			this.top_200_table_page = 1;
+			this.top_200_table_pagesize = val;
+				//获取列表
+			this.getTableData();
+		},
+		handlePage(val) {
+			this.top_200_table_page = val;
+				//获取列表
+			this.getTableData();
+		},
 
 	}
 }

@@ -29,9 +29,27 @@
 		</el-form>
 		<div class="buts">
 			<PopoverWidget title="指标解释" keys="top_ws"/>
-			<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<div class="flex">
+				<el-button type="primary" size="small" @click="show_custom = true">自定义列表</el-button>
+				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
 		</div>
-		<el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
+		<custom-table v-loading="loading" :isLoading="loading" tableName="before_ws" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
+		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
+		<!-- 自定义列表 -->
+		<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
+			<div class="select_box">
+				<el-checkbox-group v-model="selected_ids">
+					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+				</el-checkbox-group>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="Restore">恢复默认</el-button>
+				<el-button size="small" @click="Restore('is_close')">取消</el-button>
+				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+			</div>
+		</el-dialog>
+		<!-- <el-table size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading">
 			<el-table-column label="图片" align="center" width="180">
 				<template slot-scope="scope">
 					<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
@@ -92,7 +110,7 @@
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
 			</el-pagination>
-		</div>
+		</div> -->
 	</div>
 </template>
 <script>
@@ -104,6 +122,8 @@
 	import { MessageBox,Message } from 'element-ui';
 
 	import PopoverWidget from '../../../components/popover_widget.vue'
+	import CustomTable from '../../../components/custom_table.vue'
+	import PageWidget from '../../../components/pagination_widget.vue'
 	export default{
 		data(){
 			return{
@@ -116,9 +136,14 @@
 				sjxrrq:getNowDate(),
 				page:1,
 				pagesize:10,
-				data:[],
+				title_list:[],								//表头数据
+				table_data:[],								//表格数据
 				total:0,
-				table_sort:""
+				table_sort:"",
+				loading:false,
+				show_custom:false,						//自定义列表
+				selected_ids:[],			//当前选中的所有ID
+				view_row:[],				//当前的列表
 			}
 		},
 		created(){
@@ -200,14 +225,45 @@
 				this.getData();
 			},
 			//供应商销量排序
-			tableSortChange({ column, prop, order }) {  
-				if(order){
-					this.table_sort = prop + '-' + (order == 'ascending'?'asc':'desc');
-				}else{
-					this.table_sort = "";
-				}
+			// tableSortChange({ column, prop, order }) {  
+			// 	if(order){
+			// 		this.table_sort = prop + '-' + (order == 'ascending'?'asc':'desc');
+			// 	}else{
+			// 		this.table_sort = "";
+			// 	}
+			// 	this.getData();
+			// }, 
+			//排序回调
+			sortCallBack(sort){
+				this.table_sort = sort;
+				//获取列表
 				this.getData();
-			}, 
+			},
+			//恢复默认
+			Restore(type){
+				this.selected_ids = [];
+				this.view_row.map(item => {
+					this.selected_ids.push(item.row_id)
+				})
+				if(type == 'is_close'){
+					this.show_custom = false;
+				}
+			},
+			//自定义列
+			setColumns(){
+				var row_ids = this.selected_ids.join(',');
+				resource.setColumns({menu_id:'137',row_ids:row_ids}).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.show_custom = false;
+						this.page = 1;
+						this.pagesize = 10;
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				});
+			},
 			getData(){
 				let arg = {
 					jst_code:this.select_store_ids.join(','),
@@ -219,22 +275,17 @@
 					pagesize:this.pagesize
 				}
 				this.loading = true;
+				this.title_list = [];
 				demandResource.deforeWsList(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
 						let data = res.data.data;
-						let table_data = data.data;
-						table_data.map(item => {
-							let images = [];
-							if(item.tp != ''){
-								images.push(item.tp);
-								item.images = images;
-							}else{
-								item.images = null;
-							}
-						})
-						this.data = data.data;
-						this.total = data.total;
+						this.title_list = data.title_list;
+						this.table_data = data.table_list.data;
+						this.total = data.table_list.total;
+						// this.update_time = data.update_time;
+						this.view_row = data.view_rows;
+						this.selected_ids = data.selected_ids;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -242,17 +293,19 @@
 			}
 		},
 		components:{
-			PopoverWidget
+			PopoverWidget,
+			CustomTable,
+			PageWidget
 		}
 	}
 </script>
 <style lang="less" scoped>
-.buts{
-	margin-bottom: 15px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-}
+	.buts{
+		margin-bottom: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+	}
 </style>
 
 
