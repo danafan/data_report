@@ -587,6 +587,7 @@
 					//导出
 					var arr = [];
 					let arg = {
+						ksbm_type:this.ksbm_type,
 						start_date:this.export_date && this.export_date.length> 0?this.export_date[0]:"",
 						end_date:this.export_date && this.export_date.length> 0?this.export_date[1]:"",
 						from:this.from
