@@ -95,88 +95,40 @@
 				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="before_lb" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFun="editFun"/>
-		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
-		<!-- <el-table border size="small" :data="data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" max-height="630px" @sort-change="tableSortChange" v-loading="loading" @header-dragend="secondChange">
-			<el-table-column :index="index" :label="item.label" :prop="item.prop" :width="item.width" align="center" v-for="(item,index) in column_list" :sortable="item.is_sort?'custom':false" show-overflow-tooltip>
-				<template slot="header" slot-scope="scope">
-					<el-tooltip class="item" effect="dark" :content="item.label" placement="top-start">
-						<div class="pre-line">{{item.label}}</div>
-					</el-tooltip>
-				</template>
-				<div v-if="item.prop == 'qhghqk'">
-					<el-table-column :label="i.label" :prop="i.prop" align="center" :sortable="i.is_sort?'custom':false" v-for="(i,index) in ks_shortage_day_list">
-					</el-table-column>
+		<custom-table v-loading="loading" v-if="title_list.length > 0" :isLoading="loading" tableName="before_lb" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFun="editFun"/>
+			<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
+			<!-- 自定义列表 -->
+			<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
+				<div class="select_box">
+					<el-checkbox-group v-model="selected_ids">
+						<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+					</el-checkbox-group>
 				</div>
-				<template slot-scope="scope"> -->
-					<!-- 图片 -->
-					<!-- <div v-if="item.prop == 'images'">
-						<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
-						<div v-else></div>
-					</div> -->
-					<!-- 今日跟踪反馈 -->
-					<!-- <div style="display: flex;align-items: center" v-else-if="item.prop == 'jrgzfk'">
-						<el-checkbox style="margin-right: 5px;" :true-label='1' :false-label='0' v-model="scope.row.type" :disabled="nowDate != sjxrrq" @change="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)"></el-checkbox>
-						<el-input @blur="editFun(scope.row.today_remark,scope.row.ksbm,scope.row.type)" size="small" type="textarea" placeholder="输入反馈" v-model="scope.row.today_remark" :disabled="nowDate != sjxrrq">
-						</el-input>
-					</div> -->
-					<!-- 历史跟踪反馈 -->
-					<!-- <div v-else-if="item.prop == 'lsgzfk'">
-						<el-popover placement="right" width="800" :open-delay="1000"
-						trigger="hover" @show="getRecord(scope.row.ksbm)" >
-						<el-table size="small" :data="tableObj.data" tooltip-effect="dark" style="width: 100%;height: 400px" :header-cell-style="{'background':'#f4f4f4'}" v-loading="detail_loading">
-							<el-table-column prop="createtime" label="操作时间" width="160" align="center"></el-table-column>
-							<el-table-column prop="remark" label="反馈内容" show-overflow-tooltip align="center"></el-table-column>
-							<el-table-column prop="creater" label="操作人" width="100" show-overflow-tooltip align="center"></el-table-column>
-						</el-table>
-						<div class="page">
-							<el-pagination @size-change="handlePageSize" @current-change="handlePage" :current-page="table_page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, prev, pager, next, jumper" :total="tableObj.total">
-							</el-pagination>
-						</div>
-						<el-button slot="reference" type="text" size="mini">查看</el-button>
-					</el-popover>
-				</div> -->
-				<!-- 普通文字 -->
-				<!-- <div class='text_style' v-else>{{scope.row[item.prop]}}</div> -->
-			<!-- </template>
-		</el-table-column>
-	</el-table> -->
-	<!-- <div class="page">
-		<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
-		</el-pagination>
-	</div> -->
-	<!-- 自定义列表 -->
-	<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
-		<div class="select_box">
-			<el-checkbox-group v-model="selected_ids">
-				<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
-			</el-checkbox-group>
+				<div slot="footer" class="dialog-footer">
+					<el-button size="small" @click="Restore">恢复默认</el-button>
+					<el-button size="small" @click="Restore('is_close')">取消</el-button>
+					<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+				</div>
+			</el-dialog>
 		</div>
-		<div slot="footer" class="dialog-footer">
-			<el-button size="small" @click="Restore">恢复默认</el-button>
-			<el-button size="small" @click="Restore('is_close')">取消</el-button>
-			<el-button size="small" type="primary" @click="setColumns">保存</el-button>
-		</div>
-	</el-dialog>
-</div>
-</template>
-<script>
-	import resource from '../../../api/resource.js'
-	import operationResource from '../../../api/operationResource.js'
-	import inventoryResource from '../../../api/inventoryResource.js'
-	import demandResource from '../../../api/demandResource.js'
-	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getNextDate} from '../../../api/nowMonth.js'
+	</template>
+	<script>
+		import resource from '../../../api/resource.js'
+		import operationResource from '../../../api/operationResource.js'
+		import inventoryResource from '../../../api/inventoryResource.js'
+		import demandResource from '../../../api/demandResource.js'
+		import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getNextDate} from '../../../api/nowMonth.js'
 
-	import {exportPost} from '../../../api/export.js'
-	import { MessageBox,Message } from 'element-ui';
+		import {exportPost} from '../../../api/export.js'
+		import { MessageBox,Message } from 'element-ui';
 
-	import CustomTable from '../../../components/custom_table.vue'
-	import PopoverWidget from '../../../components/popover_widget.vue'
-	import PageWidget from '../../../components/pagination_widget.vue'
-	export default{
-		data(){
-			return{
-				nowDate:"",
+		import CustomTable from '../../../components/custom_table.vue'
+		import PopoverWidget from '../../../components/popover_widget.vue'
+		import PageWidget from '../../../components/pagination_widget.vue'
+		export default{
+			data(){
+				return{
+					nowDate:"",
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
 				gys_list:[],								//供应商列表
@@ -525,23 +477,15 @@
 				//获取列表
 				this.getData();
 			},
-			//供应商销量排序
-			// tableSortChange({ column, prop, order }) {  
-			// 	if(order){
-			// 		this.table_sort = prop + '-' + (order == 'ascending'?'asc':'desc');
-			// 	}else{
-			// 		this.table_sort = "";
-			// 	}
-			// 	this.getData();
-			// }, 
 			//恢复默认
 			Restore(type){
-				this.selected_ids = [];
-				this.view_row.map(item => {
-					this.selected_ids.push(item.row_id)
-				})
 				if(type == 'is_close'){
 					this.show_custom = false;
+				}else{
+					this.selected_ids = [];
+					this.view_row.map(item => {
+						this.selected_ids.push(item.row_id)
+					})
 				}
 			},
 			//自定义列
@@ -553,14 +497,14 @@
 						this.show_custom = false;
 						this.page = 1;
 						this.pagesize = 10;
-						this.getData();
+						this.getData(true);
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
 			//获取列表
-			getData(){
+			getData(is_custom){
 				let arg = {
 					dept_id:this.select_department_ids.join(','),
 					platform:this.select_plat_ids.join(','),
@@ -578,11 +522,15 @@
 					pagesize:this.pagesize
 				}
 				this.loading = true;
-				this.title_list = [];
+				
 				demandResource.deforeLbList(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
 						let data = res.data.data;
+						if(is_custom){
+							console.log('asdasdasd')
+							this.title_list = [];
+						}
 						let title_list = data.title_list;
 						title_list.map(item => {
 							if(item.row_field_name == 'today_remark'){
@@ -602,79 +550,6 @@
 						this.view_row = data.view_rows;
 						this.selected_ids = data.selected_ids;
 
-
-
-						// this.table_total_data = this.table_data.length > 0?data.table_total_data[0]:{};
-						
-						// 处理款式缺货情况
-						// this.ks_shortage_day_list = [];
-						// for(let i = -3;i <= 0;i++){
-						// 	let ff = {
-						// 		label:'截止到' + this.filterLabel(i,'2'),
-						// 		prop:i < 0?`qhs_${i*-1}`:'qhs',
-						// 		is_sort:i == 0?true:false
-						// 	}
-						// 	this.ks_shortage_day_list.push(ff)
-						// }
-						// let ooo = {
-						// 	label:`${res.data.data.qhs_update_time}缺货数`,
-						// 	prop:'today_qhs',
-						// 	is_sort:true
-						// }
-						// if(this.column_list[5].prop == 'today_qhs'){
-						// 	this.column_list.splice(5,1,ooo)
-						// }else{
-						// 	this.column_list.splice(5,0,ooo);
-						// }
-						// // 这里不知道为啥顺序会乱
-						// let dd = this.ks_shortage_day_list[3];
-						// this.ks_shortage_day_list.splice(3,1);
-						// this.ks_shortage_day_list.unshift(dd)
-						// //处理前几日到货数
-						// let sss = [];
-						// for(let j = -3;j <= -1;j++){
-						// 	let ddd = {
-						// 		label:this.filterLabel(j,'1'),
-						// 		prop:'dhs_' + `${j*-1}`,
-						// 		is_sort:true
-						// 	}
-						// 	sss.push(ddd)
-						// }
-						// if(this.column_list[9].prop.indexOf('dhs_') > -1){
-						// 	this.column_list.splice(9,3,...sss)
-						// }else{
-						// 	this.column_list.splice(9,0,...sss);
-						// }
-
-						// let data = res.data.data;
-						// let table_data = data.data;
-						// table_data.map(item => {
-						// 	let images = [];
-						// 	if(item.tp != ''){
-						// 		images.push(item.tp);
-						// 		item.images = images;
-						// 	}else{
-						// 		item.images = null;
-						// 	}
-						// })
-						// this.data = data.data;
-						// this.total = data.total;
-						// this.update_time = data.update_time;
-						// this.table_id = data.table_setting.table_id;
-						// if(data.table_setting.setting){
-						// 	this.edit_id = data.table_setting.edit_id;
-						// 	let setting_arr = data.table_setting.setting.split(',');
-						// 	this.column_list.map(iii => {
-						// 		let arr = setting_arr.filter(item => {
-						// 			return iii.prop == item.split('-')[0]
-						// 		})
-						// 		iii['width'] = arr.length > 0?arr[0].split('-')[1]:'80';
-						// 	})
-						// }else{
-						// 	this.column_list.map(item => {
-						// 		item['width'] = '80';
-						// 	})
-						// }
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -686,33 +561,6 @@
 				//获取列表
 				this.getData();
 			},
-			// //明细表表列宽修改
-			// secondChange(newWidth, oldWidth, column, event){
-			// 	let index = column.index;
-			// 	this.column_list[index].width = newWidth;
-			// 	let arr = [];
-			// 	this.column_list.map(item => {
-			// 		let str = item.prop + '-' + item.width;
-			// 		arr.push(str);
-			// 	})
-			// 	let arg = {
-			// 		table_id:this.table_id,
-			// 		setting:arr.join(','),
-			// 	}
-			// 	if(this.edit_id){
-			// 		arg.id = this.edit_id;
-			// 	}
-			// 	//修改宽度
-			// 	this.changeWidth(arg)
-			// },
-			// //修改宽度
-			// changeWidth(arg){
-			// 	resource.tableSetting(arg).then(res => {
-			// 		if(res.data.code != 1){
-			// 			this.$message.warning(res.data.msg);
-			// 		}
-			// 	})
-			// },
 			//编辑今日反馈
 			editFun(v,ksbm,type){
 				this.$confirm('确认提交反馈?', '提示', {
@@ -738,43 +586,7 @@
 						message: '取消'
 					});          
 				});
-			},
-			// //点击查看
-			// getRecord(ksbm){
-			// 	this.table_page = 1;
-			// 	this.ksbm = ksbm;
-			// 	//获取详情
-			// 	this.getTableData();
-			// },
-			// //获取详情
-			// getTableData(){
-			// 	let arg = {
-			// 		ksbm:this.ksbm,
-			// 		page:this.table_page,
-			// 		pagesize:this.table_pagesize
-			// 	}
-			// 	this.detail_loading = true;
-			// 	demandResource.editLog(arg).then(res => {
-			// 		if(res.data.code == 1){
-			// 			this.detail_loading = false;
-			// 			this.tableObj = res.data.data;
-			// 		}else{
-			// 			this.$message.warning(res.data.msg);
-			// 		}
-			// 	})
-			// },
-			// //详情分页
-			// handlePageSize(val) {
-			// 	this.table_page = 1;
-			// 	this.table_pagesize = val;
-			// 	//获取列表
-			// 	this.getTableData();
-			// },
-			// handlePage(val) {
-			// 	this.table_page = val;
-			// 	//获取列表
-			// 	this.getTableData();
-			// },
+			}
 		},
 		components:{
 			PopoverWidget,
