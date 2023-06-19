@@ -34,7 +34,7 @@
 				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-if="title_list.length > 0" v-loading="loading" :isLoading="loading" tableName="before_ws" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="before_ws" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
 		<!-- 自定义列表 -->
 		<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -189,13 +189,13 @@
 						this.show_custom = false;
 						this.page = 1;
 						this.pagesize = 10;
-						this.getData(true);
+						this.getData();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
-			getData(is_custom){
+			getData(){
 				let arg = {
 					jst_code:this.select_store_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
@@ -210,9 +210,6 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						let data = res.data.data;
-						if(is_custom){
-							this.title_list = [];
-						}
 						this.title_list = data.title_list;
 						this.table_data = data.table_list.data;
 						this.total = data.table_list.total;

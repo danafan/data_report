@@ -95,7 +95,7 @@
 				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="loading" v-if="title_list.length > 0" :isLoading="loading" tableName="before_lb" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFun="editFun"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="before_lb" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFun="editFun"/>
 			<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
 			<!-- 自定义列表 -->
 			<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
@@ -158,101 +158,6 @@
 				page:1,
 				pagesize:10,
 				update_time:"",				//缺货更新时间
-				column_list:[{
-					label:'图片',
-					prop:'images'
-				},{
-					label:'款式编码',
-					prop:'ksbm',
-				},{
-					label:'供应商货号',
-					prop:'gyshh',
-				},{
-					label:'现有库存',
-					prop:'xjkc',
-					is_sort:true
-				},{
-					label:'缺货跟货情况',
-					prop:'qhghqk',
-				},{
-					label:'昨日跟踪反馈',
-					prop:'yesterday_remark',
-				},{
-					label:'今日跟踪反馈',
-					prop:'jrgzfk',
-				},{
-					label:'历史跟踪反馈',
-					prop:'lsgzfk',
-				},{
-					label:'7天日均销量',
-					prop:'xssl_av7',
-					is_sort:true
-				},{
-					label:'30天销量',
-					prop:'xssl_30_sum',
-					is_sort:true
-				},{
-					label:'7天毛利率',
-					prop:'mlv_7',
-					is_sort:true
-				},{
-					label:'15天实退率',
-					prop:'stl_15',
-					is_sort:true
-				},{
-					label:'一周前15天实退率',
-					prop:'stl_15_7',
-					is_sort:true
-				},{
-					label:'7天到货率',
-					prop:'dhl_7',
-					is_sort:true
-				},{
-					label:'7天到货率(排除备货)',
-					prop:'pbh_dhl_7',
-					is_sort:true
-				},{
-					label:'前三天销量',
-					prop:'xssl_3',
-					is_sort:true
-				},{
-					label:'前两天销量',
-					prop:'xssl_2',
-					is_sort:true
-				},{
-					label:'前一天销量',
-					prop:'xssl_1',
-					is_sort:true
-				},{
-					label:'主卖店铺',
-					prop:'shop_name',
-				},{
-					label:'部门',
-					prop:'dept_name',
-				},{
-					label:'批发价',
-					prop:'pfj',
-					is_sort:true
-				},{
-					label:'审计成本',
-					prop:'sjcb',
-					is_sort:true
-				},{
-					label:'商品名称',
-					prop:'mc',
-				},{
-					label:'供应商',
-					prop:'gys',
-				},{
-					label:'供应商分类',
-					prop:'gys_type',
-				},{
-					label:'供应商等级',
-					prop:'gys_level',
-				},{
-					label:'结算方式',
-					prop:'jsfs',
-				}],
 				table_id:"",
 				edit_id:"",
 				ks_shortage_day_list:[],			//款式缺货情况对应日期数组
@@ -497,14 +402,14 @@
 						this.show_custom = false;
 						this.page = 1;
 						this.pagesize = 10;
-						this.getData(true);
+						this.getData();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
 			//获取列表
-			getData(is_custom){
+			getData(){
 				let arg = {
 					dept_id:this.select_department_ids.join(','),
 					platform:this.select_plat_ids.join(','),
@@ -527,10 +432,6 @@
 					if(res.data.code == 1){
 						this.loading = false;
 						let data = res.data.data;
-						if(is_custom){
-							console.log('asdasdasd')
-							this.title_list = [];
-						}
 						let title_list = data.title_list;
 						title_list.map(item => {
 							if(item.row_field_name == 'today_remark'){
@@ -542,14 +443,15 @@
 								item.type = '96';
 							}
 						})
+
 						this.title_list = title_list;
+
 						this.table_data = data.table_list.data;
 						this.total = data.table_list.total;
 						this.update_time = data.update_time;
 
 						this.view_row = data.view_rows;
 						this.selected_ids = data.selected_ids;
-
 					}else{
 						this.$message.warning(res.data.msg);
 					}

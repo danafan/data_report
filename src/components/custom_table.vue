@@ -1,6 +1,6 @@
 <template>
 	<div>
-		<el-table ref="total_table" class="total_table" size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
+		<el-table :key="isUpdate" ref="total_table" class="total_table" size="mini" :data="total_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :row-style="setBackground" v-if="total_row">
 			<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 			</el-table-column>
 			<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:item.width">
@@ -30,7 +30,7 @@
 			</el-table-column>
 		</el-table-column>
 	</el-table>
-	<el-table ref="data_table" size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :max-height="max_height" :show-header="!total_row" v-if="!total_row || (total_row && table_data.length > 0)">
+	<el-table :key="isUpdate" ref="data_table" size="mini" :data="table_data" tooltip-effect="dark" :header-cell-style="columnStyle" @sort-change="sortChange" :max-height="max_height" :show-header="!total_row" v-if="!total_row || (total_row && table_data.length > 0)">
 		<el-table-column fixed type="index" label="序号" align="center" v-if="show_index">
 		</el-table-column>
 		<el-table-column :prop="item.row_field_name" align="center" :sortable="sortableFn(item.is_sort)" :fixed="item.is_fixed == 1" show-overflow-tooltip v-for="item in title_list" :column-key="item.color" :width="item.type == '8'?180:item.type == '1'?100:item.width">
@@ -157,7 +157,8 @@
 				top_200_table_page:1,
 				top_200_table_pagesize:10,	
 				top_200_detail_loading:false,
-				top_200_tableObj:{}
+				top_200_tableObj:{},
+				isUpdate:false
 			}
 		},
 		props:{
@@ -280,10 +281,10 @@
 			}
 		},
 		isLoading:function(n,o){
+			this.isUpdate = !this.isUpdate;
 			if(!n){
 				this.setScroll();
 			}
-
 		}
 	},
 	mounted(){
@@ -308,7 +309,6 @@
 		},
     	//过滤图片
 		filterImage(image){
-			console.log(image)
 			if(image){
 				return image.split(',');
 			}else{
