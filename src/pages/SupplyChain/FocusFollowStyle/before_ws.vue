@@ -94,7 +94,7 @@
 			//款式编码
 			getKsbm(e){
 				if(e != ''){
-					resource.ajaxKsbm({name:e}).then(res => {
+					resource.ajaxTop50Ksbm({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.ks_list = res.data.data;
 						}else{

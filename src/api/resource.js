@@ -54,6 +54,8 @@ let path = {
 	ajaxGys:'Common/ajaxGys',										//供应商列表
 	ajaxGyshh:'Common/ajaxGyshh',									//供应商货号
 	ajaxKsbm:'Common/ajaxKsbm',										//款式编码
+	ajaxTop200Ksbm:'Common/ajaxTop200Ksbm',							//款式编码（款式top200报表）
+	ajaxTop50Ksbm:'Common/ajaxTop50Ksbm',							//款式编码（3店铺top50报表）
 	ajaxBd:'Common/ajaxBd',											//波段
 	replenishList:'buffer/replenishlist',							//补货管理列表
 	replenishTry:'replenish/try',									//补货试
@@ -519,6 +521,14 @@ export default{
 	//产品编码
 	ajaxKsbm(params){
 		return http.get(path.ajaxKsbm, params)
+	},
+	//产品编码（3店铺top50报表）
+	ajaxTop50Ksbm(params){
+		return http.get(path.ajaxTop50Ksbm, params)
+	},
+	//产品编码（款式top200报表）
+	ajaxTop200Ksbm(params){
+		return http.get(path.ajaxTop200Ksbm, params)
 	},
 	//波段列表
 	ajaxBd(params){
