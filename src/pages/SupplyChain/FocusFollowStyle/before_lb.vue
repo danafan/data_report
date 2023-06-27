@@ -439,6 +439,9 @@
 								item['check_disabled'] = this.nowDate != this.sjxrrq;
 								item['width'] = "160";
 							}
+							if(item.row_field_name == 'ksbm' || item.row_field_name == 'gyshh'){
+								item['width'] = "120";
+							}
 							if(item.row_field_name == 'lsgzfk'){
 								item.type = '96';
 							}

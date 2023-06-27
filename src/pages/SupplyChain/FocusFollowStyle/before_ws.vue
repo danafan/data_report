@@ -211,6 +211,11 @@
 						this.loading = false;
 						let data = res.data.data;
 						this.title_list = data.title_list;
+						this.title_list.map(item => {
+							if(item.row_field_name == 'ksbm' || item.row_field_name == 'gyshh'){
+								item['width'] = "120";
+							}
+						})
 						this.table_data = data.table_list.data;
 						this.total = data.table_list.total;
 						// this.update_time = data.update_time;
