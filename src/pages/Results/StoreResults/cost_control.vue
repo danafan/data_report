@@ -38,7 +38,7 @@
 				<el-button type="primary" plain size="small" @click="deptExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="dept_loading" :isLoading="dept_loading" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data"/>
+		<custom-table v-loading="dept_loading" :isLoading="dept_loading" tableName="dept_cost_control" max_height="560" :table_data="dept_business" :title_list="dept_title_list" :total_row="true" :table_total_data="dept_total_data" @sortCallBack="deptSortCallBack"/>
 		<!-- 店铺--营销费用投产情况 -->
 		<div class="flex ac jsb mb-10 mt-10">
 			<div class="custom_title">店铺--营销费用投产情况</div>
@@ -47,7 +47,7 @@
 				<el-button type="primary" plain size="small" @click="storeExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
-		<custom-table v-loading="shop_loading" :isLoading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data"/>
+		<custom-table v-loading="shop_loading" :isLoading="shop_loading" max_height="560" :table_data="shop_business" :title_list="shop_title_list" :total_row="true" :table_total_data="shop_total_data" :is_custom_sort="false" @sortCallBack="shopSortCallBack"/>
 		<page-widget :page="store_page" :pagesize="store_pagesize" :total="store_total" @handleSizeChange="storeSizeChange" @handlePageChange="storePageChange"/>
 		<!-- 每日合计--营销费用投产情况 -->
 		<div class="flex ac jsb mb-10 mt-10">
@@ -150,6 +150,7 @@
 				dept_selected_ids:[],		//当前选中ID
 				dept_total_data:{},			//项目部-营销费用投产情况（总计行）
 				dept_loading:false,
+				dept_sort:"",
 				shop_business:[],			//店铺-营销费用投产情况
 				store_total:0,
 				shop_title_list:[],			//表头
@@ -159,6 +160,7 @@
 				shop_loading:false,
 				store_pagesize:10,
 				store_page:1,
+				shop_sort:"",
 				day_data:[],				//店铺日数据
 				day_title_list:[],
 				day_view_row:[],			//自定义表头
@@ -507,7 +509,11 @@
 				});
 			},
 			//项目部-营销费用投产情况
-			deptBusiness(){
+			deptBusiness(is_custom){
+				if(is_custom){
+					this.dept_title_list = [];
+					this.dept_sort = "";
+				}
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
@@ -515,9 +521,10 @@
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
+					sort:this.dept_sort
 				}
 				this.dept_loading = true;
-				this.dept_title_list = [];
+				
 				return new Promise((resolve)=>{
 					resource.deptBusiness(arg).then(res => {
 						resolve();
@@ -547,6 +554,12 @@
 					})
 				})
 			},
+			//项目部—营销费用投产情况排序
+			deptSortCallBack(sort){
+				this.dept_sort = sort;
+				//获取列表
+				this.deptBusiness();
+			},
 			//项目部-导出
 			deptExport(){
 				MessageBox.confirm('确认导出?', '提示', {
@@ -575,7 +588,11 @@
 				});
 			},
 			//店铺—营销费用投产情况
-			shopBusiness(){
+			shopBusiness(is_custom){
+				if(is_custom){
+					this.shop_title_list = [];
+					this.shop_sort = "";
+				}
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
@@ -583,11 +600,11 @@
 					platform:this.pl.join(','),
 					dept_id:this.dept_name.join(','),
 					shop_id:this.shop_code.join(','),
+					sort:this.shop_sort,
 					page:this.store_page,
 					pagesize:this.store_pagesize
 				}
 				this.shop_loading = true;
-				this.shop_title_list = [];
 				return new Promise((resolve)=>{
 					resource.shopBusiness(arg).then(res => {
 						resolve();
@@ -618,6 +635,12 @@
 						}
 					})
 				})
+			},
+			//店铺—营销费用投产情况排序
+			shopSortCallBack(sort){
+				this.shop_sort = sort;
+				//获取列表
+				this.shopBusiness();
 			},
 			//店铺-导出
 			storeExport(){
@@ -656,7 +679,10 @@
 				this.shopBusiness();
 			},
 			// 每日合计--营销费用投产情况
-			dayBusiness(){
+			dayBusiness(is_custom){
+				if(is_custom){
+					this.total_day_title_list = [];
+				}
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
@@ -667,7 +693,7 @@
 					page:this.total_day_page,
 					pagesize:this.total_day_pagesize
 				}
-				this.total_day_title_list = [];
+				// this.total_day_title_list = [];
 				this.total_day_loading = true;
 				return new Promise((resolve)=>{
 					resource.dayBusiness(arg).then(res => {
@@ -730,7 +756,11 @@
 				this.dayBusiness();
 			},
 			//店铺日数据
-			shopDayBusiness(){
+			shopDayBusiness(is_custom){
+				if(is_custom){
+					this.day_title_list = [];
+					this.sort = "";
+				}
 				let arg = {
 					start_time:this.date && this.date.length> 0?this.date[0]:"",
 					end_time:this.date && this.date.length> 0?this.date[1]:"",
@@ -743,7 +773,6 @@
 					sort:this.sort
 				}
 				this.day_loading = true;
-				this.day_title_list = [];
 				return new Promise((resolve)=>{
 					resource.shopDayBusiness(arg).then(res => {
 						resolve();
@@ -831,20 +860,20 @@
 						this.show_custom = false;
 						//获取列表
 						if(this.custom_type == 'dept'){
-							this.deptBusiness();
+							this.deptBusiness(true);
 						}else if(this.custom_type == 'shop'){
 							this.store_page = 1;
 							this.store_pagesize = 10;
-							this.shopBusiness();
+							this.shopBusiness(true);
 						}else if(this.custom_type == 'day'){
 							this.day_page = 1;
 							this.day_pagesize = 10;
 							this.sort = "";
-							this.shopDayBusiness()
+							this.shopDayBusiness(true)
 						}else if(this.custom_type == 'total_day'){
 							this.total_day_page = 1;
 							this.total_day_pagesize = 10;
-							this.dayBusiness()
+							this.dayBusiness(true)
 						}
 					}else{
 						this.$message.warning(res.data.msg);
