@@ -84,6 +84,10 @@
 					<el-option label="可退" value="2"></el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="库存区间：">
+				<el-input style="width: 80px;" size="mini" type="number" v-model="start_kcqj" placeholder="最小"></el-input>&nbsp~&nbsp
+				<el-input style="width: 80px;" size="mini" type="number" v-model="end_kcqj" placeholder="最大"></el-input>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
@@ -270,6 +274,8 @@
 				date:getNowDate(),		//库存日期
 				is_retreat:"",			//是否可退
 				is_clear:"",			//是否清理
+				start_kcqj:"",			//库存区间最小
+				end_kcqj:"",			//库存区间最大
 				date_list:[getLastYear(1),getLastYear(0)],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
 				kcCbChart:null,			//近一年库存/成本趋势图表
@@ -376,6 +382,16 @@
 			},
 			//搜索
 			searchFn(){
+				if(this.start_kcqj != '' && !this.isZzs.test(parseFloat(this.start_kcqj))){
+					this.$message.warning('库存最小数量必须是正整数');
+					return;
+				}else if(this.end_kcqj != '' && !this.isZzs.test(parseFloat(this.end_kcqj))){
+					this.$message.warning('库存最大数量必须是正整数');
+					return;
+				}else if(parseFloat(this.start_kcqj) > parseFloat(this.end_kcqj)){
+					this.$message.warning('库存最大数量不能小于库存最小数量');
+					return;
+				}
 				this.page = 1;
 				//库存分析（页面左侧部分）
 				this.stockAnalysis();
@@ -396,6 +412,8 @@
 					is_retreat:this.is_retreat,
 					labels:this.labels,
 					is_clear:this.is_clear,
+					kc_start:this.start_kcqj,
+					kc_end:this.end_kcqj,
 					gys:this.select_gys_ids.join(',')
 				}
 				this.analysis_row_loading = true;
@@ -598,6 +616,8 @@
 					is_retreat:this.is_retreat,
 					labels:this.labels,
 					is_clear:this.is_clear,
+					kc_start:this.start_kcqj,
+					kc_end:this.end_kcqj,
 					gys:this.select_gys_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize
@@ -677,6 +697,8 @@
 						is_retreat:this.is_retreat,
 						labels:this.labels,
 						is_clear:this.is_clear,
+						kc_start:this.start_kcqj,
+						kc_end:this.end_kcqj,
 						gys:this.select_gys_ids.join(',')
 					}
 					if(this.sort != ''){
