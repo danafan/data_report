@@ -491,6 +491,7 @@
 								return params.data.name;
 							},
 						},
+						stillShowZeroSum:false,
 						data: data
 					}
 					]
