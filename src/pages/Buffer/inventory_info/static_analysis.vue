@@ -62,7 +62,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="是否可退：">
-				<el-select v-model="is_retreat" placeholder="请选择">
+				<el-select v-model="is_retreat" clearable placeholder="请选择">
 					<el-option label="不可退" value="不可退"></el-option>
 					<el-option label="可退" value="可退"></el-option>
 					<el-option label="待核实" value="待核实"></el-option>
@@ -87,6 +87,10 @@
 			<el-form-item label="库存区间：">
 				<el-input style="width: 80px;" size="mini" type="number" v-model="start_kcqj" placeholder="最小"></el-input>&nbsp~&nbsp
 				<el-input style="width: 80px;" size="mini" type="number" v-model="end_kcqj" placeholder="最大"></el-input>
+			</el-form-item>
+			<el-form-item label="成本区间：">
+				<el-input style="width: 80px;" size="mini" type="number" v-model="cb_start" placeholder="最低"></el-input>&nbsp~&nbsp
+				<el-input style="width: 80px;" size="mini" type="number" v-model="cb_end" placeholder="最高"></el-input>
 			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
@@ -276,6 +280,8 @@
 				is_clear:"",			//是否清理
 				start_kcqj:"",			//库存区间最小
 				end_kcqj:"",			//库存区间最大
+				cb_start:"",
+				cb_end:"",
 				date_list:[getLastYear(1),getLastYear(0)],	//年份列表
 				tableData:[],			//库存分析（页面左侧部分）
 				kcCbChart:null,			//近一年库存/成本趋势图表
@@ -392,6 +398,16 @@
 					this.$message.warning('库存最大数量不能小于库存最小数量');
 					return;
 				}
+				if(this.cb_start != '' && !this.isPrice.test(parseFloat(this.cb_start))){
+					this.$message.warning('成本最低价格必须是正整数');
+					return;
+				}else if(this.cb_end != '' && !this.isPrice.test(parseFloat(this.cb_end))){
+					this.$message.warning('成本最高价格必须是正整数');
+					return;
+				}else if(parseFloat(this.cb_start) > parseFloat(this.cb_end)){
+					this.$message.warning('成本最高价格不能小于库存最低价格');
+					return;
+				}
 				this.page = 1;
 				//库存分析（页面左侧部分）
 				this.stockAnalysis();
@@ -414,6 +430,8 @@
 					is_clear:this.is_clear,
 					kc_start:this.start_kcqj,
 					kc_end:this.end_kcqj,
+					cb_start:this.cb_start,
+					cb_end:this.cb_end,
 					gys:this.select_gys_ids.join(',')
 				}
 				this.analysis_row_loading = true;
@@ -619,6 +637,8 @@
 					is_clear:this.is_clear,
 					kc_start:this.start_kcqj,
 					kc_end:this.end_kcqj,
+					cb_start:this.cb_start,
+					cb_end:this.cb_end,
 					gys:this.select_gys_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize
@@ -700,6 +720,8 @@
 						is_clear:this.is_clear,
 						kc_start:this.start_kcqj,
 						kc_end:this.end_kcqj,
+						cb_start:this.cb_start,
+						cb_end:this.cb_end,
 						gys:this.select_gys_ids.join(',')
 					}
 					if(this.sort != ''){
