@@ -281,8 +281,8 @@
 			}
 		},
 		isLoading:function(n,o){
-			this.isUpdate = !this.isUpdate;
-			// this.isUpdate = `${this.tableName}_${Math.random()}`;
+			// this.isUpdate = !this.isUpdate;
+			this.isUpdate = `${this.tableName}_${Math.random()}`;
 			if(!n){
 				this.setScroll();
 			}

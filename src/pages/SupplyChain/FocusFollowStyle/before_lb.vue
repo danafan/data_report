@@ -96,39 +96,39 @@
 			</div>
 		</div>
 		<custom-table v-loading="loading" :isLoading="loading" tableName="before_lb" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFun="editFun"/>
-			<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
-			<!-- 自定义列表 -->
-			<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
-				<div class="select_box">
-					<el-checkbox-group v-model="selected_ids">
-						<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
-					</el-checkbox-group>
-				</div>
-				<div slot="footer" class="dialog-footer">
-					<el-button size="small" @click="Restore">恢复默认</el-button>
-					<el-button size="small" @click="Restore('is_close')">取消</el-button>
-					<el-button size="small" type="primary" @click="setColumns">保存</el-button>
-				</div>
-			</el-dialog>
-		</div>
-	</template>
-	<script>
-		import resource from '../../../api/resource.js'
-		import operationResource from '../../../api/operationResource.js'
-		import inventoryResource from '../../../api/inventoryResource.js'
-		import demandResource from '../../../api/demandResource.js'
-		import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getNextDate} from '../../../api/nowMonth.js'
+		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
+		<!-- 自定义列表 -->
+		<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
+			<div class="select_box">
+				<el-checkbox-group v-model="selected_ids">
+					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
+				</el-checkbox-group>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="Restore">恢复默认</el-button>
+				<el-button size="small" @click="Restore('is_close')">取消</el-button>
+				<el-button size="small" type="primary" @click="setColumns">保存</el-button>
+			</div>
+		</el-dialog>
+	</div>
+</template>
+<script>
+	import resource from '../../../api/resource.js'
+	import operationResource from '../../../api/operationResource.js'
+	import inventoryResource from '../../../api/inventoryResource.js'
+	import demandResource from '../../../api/demandResource.js'
+	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,getNextDate} from '../../../api/nowMonth.js'
 
-		import {exportPost} from '../../../api/export.js'
-		import { MessageBox,Message } from 'element-ui';
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 
-		import CustomTable from '../../../components/custom_table.vue'
-		import PopoverWidget from '../../../components/popover_widget.vue'
-		import PageWidget from '../../../components/pagination_widget.vue'
-		export default{
-			data(){
-				return{
-					nowDate:"",
+	import CustomTable from '../../../components/custom_table.vue'
+	import PopoverWidget from '../../../components/popover_widget.vue'
+	import PageWidget from '../../../components/pagination_widget.vue'
+	export default{
+		data(){
+			return{
+				nowDate:"",
 				ks_list:[],									//款式编码列表
 				select_ks_ids:[],							//选中的款式编码列表
 				gys_list:[],								//供应商列表
@@ -168,6 +168,7 @@
 				loading:false,
 				show_custom:false,						//自定义列表
 				selected_ids:[],			//当前选中的所有ID
+				data_selected_ids:[],
 				view_row:[],				//当前的列表
 			}
 		},
@@ -384,13 +385,13 @@
 			},
 			//恢复默认
 			Restore(type){
+				this.selected_ids = [];
+				this.view_row.map(item => {
+					this.selected_ids.push(item.row_id)
+				})
 				if(type == 'is_close'){
+					this.selected_ids = this.data_selected_ids;
 					this.show_custom = false;
-				}else{
-					this.selected_ids = [];
-					this.view_row.map(item => {
-						this.selected_ids.push(item.row_id)
-					})
 				}
 			},
 			//自定义列
@@ -402,14 +403,14 @@
 						this.show_custom = false;
 						this.page = 1;
 						this.pagesize = 10;
-						this.getData();
+						this.getData(true);
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
 			//获取列表
-			getData(){
+			getData(is_custom){
 				let arg = {
 					dept_id:this.select_department_ids.join(','),
 					platform:this.select_plat_ids.join(','),
@@ -427,7 +428,9 @@
 					pagesize:this.pagesize
 				}
 				this.loading = true;
-				
+				if(is_custom){
+					this.title_list = [];
+				}
 				demandResource.deforeLbList(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
@@ -455,6 +458,7 @@
 
 						this.view_row = data.view_rows;
 						this.selected_ids = data.selected_ids;
+						this.data_selected_ids = data.selected_ids;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
