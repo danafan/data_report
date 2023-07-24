@@ -403,14 +403,14 @@
 						this.show_custom = false;
 						this.page = 1;
 						this.pagesize = 10;
-						this.getData(true);
+						this.getData();
 					}else{
 						this.$message.warning(res.data.msg);
 					}
 				});
 			},
 			//获取列表
-			getData(is_custom){
+			getData(){
 				let arg = {
 					dept_id:this.select_department_ids.join(','),
 					platform:this.select_plat_ids.join(','),
@@ -428,9 +428,7 @@
 					pagesize:this.pagesize
 				}
 				this.loading = true;
-				if(is_custom){
-					this.title_list = [];
-				}
+				this.title_list = [];
 				demandResource.deforeLbList(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
