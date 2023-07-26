@@ -54,6 +54,7 @@
 					<el-option label="近三天每天销量大于10" value="2"></el-option>
 					<el-option label="近三天每天销量大于5" value="3"></el-option>
 					<el-option label="近三天销量大于3" value="4"></el-option>
+					<el-option label="外采款式Top200" value="5"></el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品类：">
