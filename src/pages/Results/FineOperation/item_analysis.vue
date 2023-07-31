@@ -11,13 +11,24 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="店铺：">
+			<el-form-item>
+				<el-select v-model="select_store_key" class="input_key">
+					<el-option label="店铺名称" :value="1">
+					</el-option>
+					<el-option label="店铺ID" :value="2">
+					</el-option>
+				</el-select>：
+				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-option v-for="item in store_list" :key="item.dept_id" :label="select_store_key == 1?item.shop_name:item.dept_name" :value="item.dept_id">
+				</el-option>
+			</el-select>
+			<!-- <el-form-item label="店铺：">
 				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false"  multiple
 				filterable
 				collapse-tags placeholder="全部">
 				<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 				</el-option>
-			</el-select>
+			</el-select> -->
 		</el-form-item>
 		<el-form-item label="产品分类：">
 			<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
@@ -256,8 +267,11 @@
 				},	 										//时间区间
 				date:[getMonthStartDate(),getCurrentDate()],//制单日期
 				store_name:"",
-				shop_list:[],								//店铺列表
-				select_shop_list:[],						//选中的店铺列表
+				// shop_list:[],								//店铺列表
+				// select_shop_list:[],						//选中的店铺列表
+				select_store_key:1,					//店铺的key值
+				store_list: [],						//店铺列表	
+				select_store_ids:[],				//选中的店铺id列表
 				plat_list:[],								//平台列表
 				select_plat_ids:[],							//选中的平台列表
 				pl_list:[],									//品类列表
@@ -324,6 +338,11 @@
 
 			}
 		},
+		watch:{
+			select_store_key:function(){
+				this.select_store_ids = [];
+			},
+		},
 		created(){
 			//平台列表
 			this.ajaxPlat();
@@ -357,7 +376,8 @@
 			getStore(){
 				resource.ajaxViewStore({name:this.store_name,platform:this.select_plat_ids.join(','),}).then(res => {
 					if(res.data.code == 1){
-						this.shop_list = res.data.data;
+						// this.shop_list = res.data.data;
+						this.store_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -413,7 +433,7 @@
 			searchFun(){
 				let req = {
 					spid:this.select_spid_list.join(','),
-					shop_id:this.select_shop_list.join(','),
+					shop_id:this.select_store_ids.join(','),
 					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
 					cpfl:this.select_pl_ids.join(','),
@@ -516,7 +536,7 @@
 			exportFun(){
 				let req = {
 					spid:this.select_spid_list.join(','),
-					shop_id:this.select_shop_list.join(','),
+					shop_id:this.select_store_ids.join(','),
 					tjrq_start:this.date && this.date.length> 0?this.date[0]:"",
 					tjrq_end:this.date && this.date.length> 0?this.date[1]:"",
 					cpfl:this.select_pl_ids.join(','),

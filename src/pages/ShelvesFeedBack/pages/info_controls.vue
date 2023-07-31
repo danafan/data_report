@@ -65,6 +65,17 @@
 			<el-table-column prop="violations_risk" show-overflow-tooltip width="120" label="违规风险" align="center"></el-table-column>
 			<el-table-column prop="severity" show-overflow-tooltip width="120" label="违规情况" align="center"></el-table-column>
 			<el-table-column prop="points" show-overflow-tooltip width="120" label="违规扣分" align="center"></el-table-column>
+			<el-table-column prop="points" show-overflow-tooltip width="120" align="center">
+				<template slot="header" slot-scope="scope">
+					<div class="mr-6">涉及订单数</div>
+					<el-tooltip class="item" effect="dark" content="导出" placement="top">
+						<i class="el-icon-upload pointer"></i>
+					</el-tooltip>
+				</template>
+				<template slot-scope="scope">
+					<div>sd</div>
+				</template>
+			</el-table-column>
 			<el-table-column show-overflow-tooltip width="120" label="商品链接" align="center">
 				<template slot-scope="scope">
 					<div v-if="!scope.row.goods_link">无</div>
@@ -542,11 +553,11 @@
 						this.$message.success(res.data.msg);
 						this.detailDialog = false;
 							//获取列表
-							this.getData();
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			}
 		},
 		components:{
@@ -555,46 +566,46 @@
 	}
 </script>
 <style lang="less" scoped>
-.buts{
-	margin-bottom: 15px;
-	display: flex;
-	justify-content: flex-end;
-}
-.big_img{
-	width: 100%;
-}
-.img_list{
-	display:flex;
-	flex-wrap: wrap;
-	.dialog_img{
-		margin-right: 10px;
-		margin-bottom: 10px;
-		position: relative;
-		width: 120px;
-		height: 120px;
-		.img{
-			width: 100%;
-			height: 100%;
-		}
-		.modal{
-			background: rgba(0,0,0,.6);
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			img{
+	.buts{
+		margin-bottom: 15px;
+		display: flex;
+		justify-content: flex-end;
+	}
+	.big_img{
+		width: 100%;
+	}
+	.img_list{
+		display:flex;
+		flex-wrap: wrap;
+		.dialog_img{
+			margin-right: 10px;
+			margin-bottom: 10px;
+			position: relative;
+			width: 120px;
+			height: 120px;
+			.img{
+				width: 100%;
+				height: 100%;
+			}
+			.modal{
+				background: rgba(0,0,0,.6);
 				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%,-50%);
-				display:block;
-				width: 30px;
-				height: 30px;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				img{
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%,-50%);
+					display:block;
+					width: 30px;
+					height: 30px;
+				}
 			}
 		}
 	}
-}
 </style>
 
 

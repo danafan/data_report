@@ -93,7 +93,6 @@
 			},
 			select_store_key:function(){
 				this.select_store_ids = [];
-				// this.emitCallBack();
 			},
 		},
 		methods:{
