@@ -1,5 +1,5 @@
 <template>
-	<div>
+	<div v-loading="export_loading">
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="事业部：">
 				<el-select v-model="dept_name_ids" multiple filterable collapse-tags clearable placeholder="全部" @change="getStoreList">
@@ -69,11 +69,11 @@
 				<template slot="header" slot-scope="scope">
 					<div class="mr-6">涉及订单数</div>
 					<el-tooltip class="item" effect="dark" content="导出" placement="top">
-						<i class="el-icon-upload pointer"></i>
+						<i class="el-icon-upload pointer" style="font-size: 14px;" @click="exportViolation"></i>
 					</el-tooltip>
 				</template>
 				<template slot-scope="scope">
-					<div>sd</div>
+					<div>{{scope.row.order_num}}</div>
 				</template>
 			</el-table-column>
 			<el-table-column show-overflow-tooltip width="120" label="商品链接" align="center">
@@ -170,39 +170,45 @@
 		<el-form-item label="违规截图：">
 			<div class="img_list">
 				<div class="dialog_img">
-					<img class="img" :src="detail_info.violations_img[0]">
-				</div>
+					<el-image 
+					class="img" :src="detail_info.violations_img[0]"
+					:preview-src-list="detail_info.violations_img">
+				</el-image>
 			</div>
-		</el-form-item>
-		<el-form-item label="违规是否需要处理：">
-			{{detail_info.deal}}
-		</el-form-item>
-		<el-form-item label="处理结果：">
-			<div class="img_list">
-				<div class="dialog_img">
-					<img class="img" :src="detail_info.result[0]">
-				</div>
+		</div>
+	</el-form-item>
+	<el-form-item label="违规是否需要处理：">
+		{{detail_info.deal}}
+	</el-form-item>
+	<el-form-item label="处理结果：">
+		<div class="img_list">
+			<div class="dialog_img">
+				<el-image 
+					class="img" :src="detail_info.result[0]"
+					:preview-src-list="detail_info.result">
+				</el-image>
 			</div>
-		</el-form-item>
-		<el-divider></el-divider>
-		<el-form-item label="审核状态：" v-if="detail_type == '1'">
-			<el-radio-group v-model="audit_status">
-				<el-radio label="5">同意</el-radio>
-				<el-radio label="4">拒绝</el-radio>
-			</el-radio-group>
-		</el-form-item>
-		<el-form-item label="审核状态：" v-if="detail_type == '2'">
-			{{detail_info.status_string}}
-		</el-form-item>
-		<el-form-item label="备注：">
-			<el-input type="textarea" :rows="3" :disabled="detail_type == '2'" placeholder="请输入备注" v-model="note">
-			</el-input>
-		</el-form-item>
-	</el-form>
-	<div slot="footer" class="dialog-footer">
-		<el-button type="primary" size="small" @click="commitAudit" v-if="detail_type == '1'">提交</el-button>
-		<el-button type="primary" size="small" @click="detailDialog = false" v-if="detail_type == '2'">关闭</el-button>
-	</div>
+		</div>
+	</el-form-item>
+	<el-divider></el-divider>
+	<el-form-item label="审核状态：" v-if="detail_type == '1'">
+		<el-radio-group v-model="audit_status">
+			<el-radio label="5">同意</el-radio>
+			<el-radio label="4">拒绝</el-radio>
+		</el-radio-group>
+	</el-form-item>
+	<el-form-item label="审核状态：" v-if="detail_type == '2'">
+		{{detail_info.status_string}}
+	</el-form-item>
+	<el-form-item label="备注：">
+		<el-input type="textarea" :rows="3" :disabled="detail_type == '2'" placeholder="请输入备注" v-model="note">
+		</el-input>
+	</el-form-item>
+</el-form>
+<div slot="footer" class="dialog-footer">
+	<el-button type="primary" size="small" @click="commitAudit" v-if="detail_type == '1'">提交</el-button>
+	<el-button type="primary" size="small" @click="detailDialog = false" v-if="detail_type == '2'">关闭</el-button>
+</div>
 </el-dialog>
 </div>
 </template>
@@ -290,7 +296,8 @@
 				},				//点击的详情
 				audit_status:'5',			//选中的审核状态
 				note:"",					//备注
-				loading:false,				
+				loading:false,			
+				export_loading:false,	
 			}
 		},
 		created(){
@@ -400,6 +407,45 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//导出违规订单
+			exportViolation(){
+				MessageBox.confirm('确认导出所有违规订单?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						violations_type:this.violations_type,
+						severity:this.violations_impact,
+						status:this.status,
+						state:this.state,
+						start_time:this.date && this.date.length > 0?this.date[0]:"",
+						end_time:this.date && this.date.length > 0?this.date[1]:"",
+						dept_name:this.dept_name_ids.join(','),
+						shop_name:this.shop_name_ids.join(','),
+						shop_code:this.shop_code_ids.join(',')	
+					}
+					this.export_loading = true;
+					shelvesResource.exportViolation(arg).then(res => {
+						let data_arr = res.data.split('\n');
+						data_arr.map((item,index) => {
+							if(index > 0){
+								let item_arr = item.split(',');
+								item_arr[item_arr.length - 1] = `${item_arr[item_arr.length - 1].toString()}`;
+								item = item_arr.join(',');
+							}
+						})
+						let fff = data_arr.join('\n');
+						exportPost("\ufeff" + fff,'违规订单列表');
+						this.export_loading = false;
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//导出
 			commitExport(){

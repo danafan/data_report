@@ -30,6 +30,7 @@ let path = {
 	editGsViolation:'offshelf/edit_gs_violation',		//工商违规-编辑违规记录
 	delGsViolation:'offshelf/del_gs_violation',			//工商违规-删除违规记录
 	gsViolationExport:'offshelf/gs_violation_export',	//工商违规记录导出
+	exportViolation:'offshelf/violation_order_export',	//违规订单导出
 
 	
 }						
@@ -157,6 +158,10 @@ export default{
 	//工商违规记录导出
 	gsViolationExport(params){
 		return http.post(path.gsViolationExport, params)
+	},
+	//违规订单导出
+	exportViolation(params){
+		return http.post(path.exportViolation, params)
 	},
 }
 
