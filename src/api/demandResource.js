@@ -47,7 +47,7 @@ let path = {
 	garmentList:'supplier/garment_list',				//成衣列表
 	statisticalListExport:'supplier/statistical_list_export',	//成衣列表导出
 	deerShop:'common/deer_shop',						//无权限店铺列表（top50/top200专用）
-	ajaxCoreGys:'Common/ajaxCoreGys',					//供应商列表
+	ajaxCoreGys:'Common/ajaxBoardAllGys',					//供应商列表
 	boardGysInfo:'supply_chain/board_gys_info',			//供应商看板-头部汇总信息
 	getGysWeekMonthTotal:'supply_chain/get_gys_weekmonth_total',	//供应商看板 本月本周销量和环比
 	getGysWeekMonthChart:'supply_chain/get_gys_weekmonth_table',	//供应商看板-本月本周销量图表
