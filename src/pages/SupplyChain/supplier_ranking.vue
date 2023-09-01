@@ -8,6 +8,9 @@
 				<InventoryAnalysis v-if="item.web_url == 'inventory_analysis'"/>
 				<UseRecord v-if="item.web_url == 'use_record'"/>
 			</el-tab-pane>
+			<el-tab-pane label="档口到货统计" lazy name="arrival_statistics" class="tab_pane_box">
+				<ArrivalStatistics/>
+			</el-tab-pane>
 		</el-tabs>
 	</div>
 </template>
@@ -22,6 +25,7 @@
 	import StyleRankingPage from './SupplierRanking/style_ranking_page.vue'
 	import InventoryAnalysis from './SupplierRanking/inventory_analysis.vue'
 	import UseRecord from './SupplierRanking/use_record.vue'
+	import ArrivalStatistics from './SupplierRanking/arrival_statistics.vue'
 	export default{
 		data(){
 			return{
@@ -64,7 +68,8 @@
 			SupplierDataIndex,
 			StyleRankingPage,
 			InventoryAnalysis,
-			UseRecord
+			UseRecord,
+			ArrivalStatistics
 		}
 	}
 </script>
