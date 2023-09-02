@@ -24,21 +24,27 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small">搜索</el-button>
+				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="flex">
 			<div class="flex-1 bar_line" id='bar_line' v-loading="chart_loading"></div>
 			<div class="pie" id='pie' v-loading="chart_loading"></div>
 		</div>
-		<div class="flex">
-			<div class="flex-1">
-				<PopoverWidget class="table_title" title="款式采购明细" :show_popover="false"/>
+		<div class="flex jsb">
+			<div style="width:49%">
+				<div class="flex ac jsb">
+					<PopoverWidget class="table_title" title="款式采购明细" :show_popover="false"/>
+					<el-button type="primary" plain size="small" @click="exportFn('ksbm')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<custom-table v-loading="ksbm_purchase_loading" :isLoading="ksbm_purchase_loading" tableName="ksbm_purchase" max_height="680" :table_data="ksbm_purchase_data" :title_list="purchase_title_list" :is_custom_sort="false" @sortCallBack="ksbmSortCallBack"/>
 				<page-widget :page="purchase_page" :pagesize="purchase_pagesize" :total="purchase_total" :pagerCount="5" @handleSizeChange="purchaseHandleSizeChange" @handlePageChange="purchaseHandlePageChange"/>
 			</div>
-			<div style="width:50%;margin-left: 30px">
-				<PopoverWidget class="table_title" title="供应商采购明细" :show_popover="false"/>
+			<div style="width:49%">
+				<div class="flex ac jsb">
+					<PopoverWidget class="table_title" title="供应商采购明细" :show_popover="false"/>
+					<el-button type="primary" plain size="small" @click="exportFn('gys')">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				</div>
 				<custom-table v-loading="gys_purchase_loading" :isLoading="gys_purchase_loading" tableName="ksbm_purchase" max_height="680" :table_data="gys_purchase_data" :title_list="gys_title_list" :is_custom_sort="false" @sortCallBack="gysSortCallBack"/>
 				<page-widget :page="gys_page" :pagesize="gys_pagesize" :total="gys_total" :pagerCount="5" @handleSizeChange="gysHandleSizeChange" @handlePageChange="gysHandlePageChange"/>
 			</div>
@@ -49,6 +55,8 @@
 	import {getMonthStartDate,getCurrentDate,getLastMonthStartDate,getLastMonthEndDate,getSomeDay,getNowDate,lastMonthDate} from '../../../api/nowMonth.js'
 	import resource from '../../../api/resource.js'
 	import operationResource from '../../../api/operationResource.js'
+	import {exportPost} from '../../../api/export.js'
+	import { MessageBox,Message } from 'element-ui';
 
 	import CustomTable from '../../../components/custom_table.vue'
 	import PageWidget from '../../../components/pagination_widget.vue'
@@ -128,6 +136,21 @@
 			this.dayDhlChart();
 		},
 		methods:{
+			//搜索
+			searchFn(){
+				this.purchase_page = 1;
+				this.purchase_pagesize = 10;
+				this.ksbm_sort = "";
+				this.gys_page = 1;
+				this.gys_pagesize = 10;
+				this.gys_sort = "";
+				//获取顶部两个图表数据
+				this.dayDhlChart();
+				//款式采购明细
+				this.ksbmPurchaseList();
+				//供应商采购明细
+				this.gysPurchaseList();
+			},
 			//款式编码
 			getKsbm(e){
 				if(e != ''){
@@ -196,12 +219,12 @@
 						this.barlineChart.setOption(this.setBarLineOptions(x_axis,cgsl_data,dhl_data,avg_dhl));
 						// 饼图数据
 						let total_num =  data.ck_lists.reduce((total, currentValue, currentIndex, arr) => {
-							return currentValue.cgsl ? (total + currentValue.cgsl) : total;
+							return currentValue.cgsl ? (total + parseInt(currentValue.cgsl)) : total;
 						}, 0);
 						let pie_series_data = data.ck_lists.map(item => {
 							let o = {
 								value:item.cgsl,
-								zb:this.getZb(total_num,item.cgsl),
+								zb:this.getZb(parseInt(total_num),parseInt(item.cgsl)),
 								name:item.ckmc
 							}
 							return o;
@@ -219,6 +242,9 @@
 			},
 			//计算百分比
 			getZb(total,num){
+				if(num == 0 || total == 0){
+					return 0
+				}
 				return ((num/total)*100).toFixed(2);
 			},
 			//采购数量/到货率图表
@@ -368,7 +394,9 @@
 					ckmc:this.ck_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
-					sort:this.ksbm_sort
+					sort:this.ksbm_sort,
+					page:this.purchase_page,
+					pagesize:this.purchase_pagesize
 				}
 				this.ksbm_purchase_loading = true;
 				operationResource.ksbmPurchaseList(arg).then(res => {
@@ -382,6 +410,41 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//款式采购明细导出
+			exportFn(type){
+				MessageBox.confirm('确认导出?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						start_date:this.date && this.date.length> 0?this.date[0]:"",
+						end_date:this.date && this.date.length> 0?this.date[1]:"",
+						ckmc:this.ck_ids.join(','),
+						gys:this.select_gys_ids.join(','),
+						ksbm:this.select_ks_ids.join(','),
+						sort:type == 'ksbm'?this.ksbm_sort:this.gys_sort,
+					}
+					if(type == 'ksbm'){
+						operationResource.ksbmPurchaseListExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'款式采购明细');
+							}
+						})
+					}else{
+						operationResource.gysPurchaseListExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'供应商采购明细');
+							}
+						})
+					}
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
+				});
 			},
 			//款式排序回调
 			ksbmSortCallBack(sort){
@@ -408,7 +471,9 @@
 					ckmc:this.ck_ids.join(','),
 					gys:this.select_gys_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
-					sort:this.gys_sort
+					sort:this.gys_sort,
+					page:this.gys_page,
+					pagesize:this.gys_pagesize
 				}
 				this.gys_purchase_loading = true;
 				operationResource.gysPurchaseList(arg).then(res => {

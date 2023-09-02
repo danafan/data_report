@@ -57,7 +57,9 @@ let path = {
 	goodsDetailsExport:'supplier/goods_details_export',	//退款情况看板（店铺商品明细导出）
 	dayDhlChart:'supplier_arraival/day_dhl_chart',		//到货率每日波动和采购数量仓库分布
 	ksbmPurchaseList:'supplier_arraival/ksbm_purchase_list',	//档口到货统计-款式采购明细
+	ksbmPurchaseListExport:'supplier_arraival/ksbm_purchase_list_export',	//档口到货统计-款式采购明细（导出）
 	gysPurchaseList:'supplier_arraival/gys_purchase_list',		//档口到货统计-供应商采购明细
+	gysPurchaseListExport:'supplier_arraival/gys_purchase_list_export',	//档口到货统计-供应商采购明细（导出）
 }						
 export default{
 	//获取款式编码
@@ -288,9 +290,17 @@ export default{
 	ksbmPurchaseList(params){
 		return http.get(path.ksbmPurchaseList, params)
 	},
+	//档口到货统计-款式采购明细（导出）
+	ksbmPurchaseListExport(params){
+		return http.post(path.ksbmPurchaseListExport, params)
+	},
 	//档口到货统计-供应商采购明细
 	gysPurchaseList(params){
 		return http.get(path.gysPurchaseList, params)
+	},
+	//档口到货统计-供应商采购明细（导出）
+	gysPurchaseListExport(params){
+		return http.post(path.gysPurchaseListExport, params)
 	},
 }
 
