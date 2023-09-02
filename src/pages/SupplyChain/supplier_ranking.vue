@@ -7,9 +7,7 @@
 				<StyleRankingPage v-if="item.web_url == 'style_ranking_page'"/>
 				<InventoryAnalysis v-if="item.web_url == 'inventory_analysis'"/>
 				<UseRecord v-if="item.web_url == 'use_record'"/>
-			</el-tab-pane>
-			<el-tab-pane label="档口到货统计" lazy name="arrival_statistics" class="tab_pane_box">
-				<ArrivalStatistics/>
+				<ArrivalStatistics v-if="item.web_url == 'arrival_statistics'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>

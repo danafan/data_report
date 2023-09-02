@@ -1,6 +1,6 @@
 <template>
 	<div class="flex mt-15 jse">
-		<el-pagination @size-change="handleSizeChange" @current-change="handlePageChange" :current-page="page" :pager-count="11" :page-size="pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
+		<el-pagination @size-change="handleSizeChange" @current-change="handlePageChange" :current-page="page" :pager-count="pagerCount" :page-size="pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="total">
 		</el-pagination>
 	</div>
 </template>
@@ -21,6 +21,11 @@
 			total:{
 				type:Number,
 				default:0
+			},
+			//展示的页码数量
+			pagerCount:{
+				type:Number,
+				default:11
 			},
 		},
 		methods:{

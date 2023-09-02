@@ -56,6 +56,8 @@ let path = {
 	pddDeptSales:'audit/pdd_dept_sales',				//拼多多项目部销售统计
 	goodsDetailsExport:'supplier/goods_details_export',	//退款情况看板（店铺商品明细导出）
 	dayDhlChart:'supplier_arraival/day_dhl_chart',		//到货率每日波动和采购数量仓库分布
+	ksbmPurchaseList:'supplier_arraival/ksbm_purchase_list',	//档口到货统计-款式采购明细
+	gysPurchaseList:'supplier_arraival/gys_purchase_list',		//档口到货统计-供应商采购明细
 }						
 export default{
 	//获取款式编码
@@ -281,6 +283,14 @@ export default{
 	//到货率每日波动和采购数量仓库分布
 	dayDhlChart(params){
 		return http.get(path.dayDhlChart, params)
+	},
+	//档口到货统计-款式采购明细
+	ksbmPurchaseList(params){
+		return http.get(path.ksbmPurchaseList, params)
+	},
+	//档口到货统计-供应商采购明细
+	gysPurchaseList(params){
+		return http.get(path.gysPurchaseList, params)
 	},
 }
 
