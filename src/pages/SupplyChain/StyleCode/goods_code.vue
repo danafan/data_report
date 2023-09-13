@@ -52,8 +52,28 @@
 			<el-button type="primary" plain size="small" @click="export_dialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			<el-button type="primary" size="small" @click="addKsbm">添加<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="skuList" @deleteFn="deleteFn" @editFn="editKsbm"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="skuList" @addSpecFn="addSpecFn" @deleteFn="deleteFn" @editFn="editKsbm"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
+		<!-- sku资料 -->
+		<el-dialog title="sku资料" @close="closeAddSku" width="30%" :visible.sync="add_sku_dialog">
+			<div>
+				<el-form size="small">
+					<el-form-item label="款号：">
+						<div>{{ksbm}}</div>
+					</el-form-item>
+					<el-form-item label="颜色：" required>
+						<el-input style="width: 192px;" v-model="colors" clearable placeholder="请输入颜色"></el-input>
+					</el-form-item>
+					<el-form-item label="尺码：" required>
+						<el-input style="width: 192px;" v-model="sizes" clearable placeholder="请输入尺码"></el-input>
+					</el-form-item>
+				</el-form>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="add_sku_dialog = false">取 消</el-button>
+				<el-button size="small" type="primary" @click="commitAddSpecFn">确 定</el-button>
+			</div>
+		</el-dialog>
 		<!-- 导出 -->
 		<el-dialog title="请选择导出类型" width="25%" @close="export_type = 1" :visible.sync="export_dialog">
 			<el-radio-group v-model="export_type">
@@ -301,6 +321,10 @@
 				xb_list:[],									//性别列表
 				gys_list:[],								//供应商列表
 				ksbm_id:"",									//点击的款式编码ID
+				ksbm:"",									//款式编码
+				colors:"",									//颜色
+				sizes:"",									//尺码
+				add_sku_dialog:false,						//增加款式资料弹窗
 				form:{	
 					fill_user_id:'',							//选中的填写人
 					year:"",									//选中的年份
@@ -499,6 +523,44 @@
 				this.table_sort = sort;
 				//获取列表
 				this.getData();
+			},
+			//增加sku资料
+			addSpecFn(info){
+				this.ksbm_id = info.ksbm_id;
+				this.ksbm = info.ksbm;
+				this.add_sku_dialog = true;
+			},
+			//关闭sku资料
+			closeAddSku(){
+				this.ksbm = "";									//款式编码
+				this.colors = "";									//颜色
+				this.sizes = "";									//尺码
+			},
+			//提交添加sku资料
+			commitAddSpecFn(){
+				if(this.colors == ''){
+					this.$message.warning('请输入颜色');
+					return
+				}
+				if(this.sizes == ''){
+					this.$message.warning('请输入尺码');
+					return
+				}
+				let arg = {
+					ksbm_id:this.ksbm_id,
+					colors:this.colors,
+					sizes:this.sizes,
+				}
+				demandResource.addSpec(arg).then(res => {
+					if(res.data.code == 1){
+						this.$message.success(res.data.msg);
+						this.add_sku_dialog = false;
+						//获取列表
+						this.getData();
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
 			},
 			//删除款式编码
 			deleteFn(ksbm_id){

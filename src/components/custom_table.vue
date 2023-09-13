@@ -133,6 +133,7 @@
 </el-table-column>
 <el-table-column label="操作" :width="setting_width" align="center" fixed="right" v-if="is_setting">
 	<template slot-scope="scope">
+		<el-button type="text" size="small" @click="$emit('addSpecFn',{[fieldName]:scope.row[fieldName],ksbm:scope.row.ksbm})" v-if='button_list.add_spec == 1 && scope.row.status == 1'>增加</el-button>
 		<el-button type="text" size="small" @click="$emit('editFn',scope.row[fieldName])" v-if='button_list.edit == 1'>编辑</el-button>
 		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if='button_list.del == 1'>删除</el-button>
 		<el-button type="text" size="small" @click="$emit('detailFn',scope.row[fieldName])" v-if='scope.row.detail'>详情</el-button>

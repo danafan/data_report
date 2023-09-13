@@ -79,6 +79,7 @@ let path = {
 	addKsbm:'jst_ksbm_sku/add_ksbm',								//添加款式编码
 	skuList:'jst_ksbm_sku/sku_list',								//sku列表
 	ajaxJstSupplier:'Common/ajaxJstSupplier',						//聚水潭供应商
+	addSpec:'jst_ksbm_sku/add_spec',								//增加sku资料
 	
 }						
 export default{
@@ -401,6 +402,10 @@ export default{
 	//聚水潭供应商
 	ajaxJstSupplier(params){
 		return http.get(path.ajaxJstSupplier, params)
+	},
+	//增加sku资料
+	addSpec(params){
+		return http.post(path.addSpec, params)
 	},
 }
 
