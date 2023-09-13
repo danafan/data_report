@@ -77,6 +77,8 @@ let path = {
 	delKsbm:'jst_ksbm_sku/del_ksbm',								//删除款式
 	editKsbm:'jst_ksbm_sku/edit_ksbm',								//查看/编辑款式编码
 	addKsbm:'jst_ksbm_sku/add_ksbm',								//添加款式编码
+	skuList:'jst_ksbm_sku/sku_list',								//sku列表
+	ajaxJstSupplier:'Common/ajaxJstSupplier',						//聚水潭供应商
 	
 }						
 export default{
@@ -391,6 +393,14 @@ export default{
 	//添加款式编码
 	addKsbm(params){
 		return http.post(path.addKsbm, params)
+	},
+	//sku列表
+	skuList(params){
+		return http.get(path.skuList, params)
+	},
+	//聚水潭供应商
+	ajaxJstSupplier(params){
+		return http.get(path.ajaxJstSupplier, params)
 	},
 }
 

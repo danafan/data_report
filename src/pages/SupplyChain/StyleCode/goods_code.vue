@@ -19,6 +19,15 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="供应商：">
+				<el-select v-model="supplier_id" clearable filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getSupplier">
+					<el-option v-for="item in supplier_list" :key="item.supplier_id" :label="item.supplier_name" :value="item.supplier_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="供应商货号：">
+				<el-input v-model="supplier_ksbm" clearable placeholder="请输入供应商货号"></el-input>
+			</el-form-item>
 			<el-form-item label="状态:">
 				<el-select v-model="status" clearable placeholder="全部">
 					<el-option label="生成成功" :value="1"></el-option>
@@ -43,7 +52,7 @@
 			<el-button type="primary" plain size="small" @click="export_dialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			<el-button type="primary" size="small" @click="addKsbm">添加<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="before_lb" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @deleteFn="deleteFn" @editFn="editKsbm"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="skuList" @deleteFn="deleteFn" @editFn="editKsbm"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
 		<!-- 导出 -->
 		<el-dialog title="请选择导出类型" width="25%" @close="export_type = 1" :visible.sync="export_dialog">
@@ -117,8 +126,8 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="供应商：">
-						<el-select v-model="form.gys" clearable filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys">
-							<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+						<el-select v-model="form.supplier_id" clearable filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys">
+							<el-option v-for="item in gys_list" :key="item.supplier_id" :label="item.supplier_name" :value="item.supplier_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -152,7 +161,7 @@
 						<el-input style="width: 192px;" type="number" v-model="form.bcdj" clearable placeholder="请输入包材单价"></el-input>
 					</el-form-item>
 					<el-form-item label="供应商货号：">
-						<el-input style="width: 192px;" v-model="form.gyshh" clearable placeholder="请输入供应商货号"></el-input>
+						<el-input style="width: 192px;" v-model="form.supplier_ksbm" clearable placeholder="请输入供应商货号"></el-input>
 					</el-form-item>
 					<el-form-item label="面料成分：" required>
 						<el-input style="width: 192px;" v-model="form.mlcf" clearable placeholder="请输入面料成分"></el-input>
@@ -194,6 +203,28 @@
 			<div slot="footer" class="dialog-footer">
 				<el-button size="small" @click="add_edit_dialog = false">取 消</el-button>
 				<el-button size="small" type="primary" @click="commitFn">确 定</el-button>
+			</div>
+		</el-dialog>
+		<!-- 商品编码 -->
+		<el-dialog title="商品编码" @close="closeSkuDialog" :visible.sync="sku_dialog">
+			<div>
+				<el-form :inline="true" size="small" class="demo-form-inline">
+					<el-form-item label="商品sku编码：">
+						<el-input v-model="sku" clearable placeholder="请输入商品sku编码"></el-input>
+					</el-form-item>
+					<el-form-item label="同步状态：">
+						<el-select v-model="status_id" clearable placeholder="全部">
+							<el-option v-for="item in sku_status" :key="item.id" :label="item.label" :value="item.id">
+							</el-option>
+						</el-select>
+					</el-form-item>
+					<el-form-item>
+						<el-button type="primary" size="small" @click="SkuHandleCurrentChange(1)">搜索</el-button>
+					</el-form-item>
+				</el-form>
+				<div class="flex jse">合计：{{sku_total}}条</div>
+				<custom-table v-loading="sku_loading" :isLoading="sku_loading" tableName="sku_table" max_height="630" :table_data="sku_table_data" :title_list="sku_title_list"/>
+				<page-widget :page="sku_page" :pagesize="sku_pagesize" :total="sku_total" @handleSizeChange="skuHandleSizeChange" @handlePageChange="skuHandleCurrentChange"/>
 			</div>
 		</el-dialog>
 	</div>
@@ -248,6 +279,9 @@
 				},	 										
 				date:[getMonthStartDate(),getCurrentDate()],			//时间区间
 				is_today:0,
+				supplier_list:[],							//供应商列表
+				supplier_id:"",								//选中的供应商
+				supplier_ksbm:"",							//供应商货号
 				page:1,
 				pagesize:10,
 				title_list:[],								//表头数据
@@ -257,10 +291,10 @@
 				table_sort:"",
 				loading:false,
 				export_dialog:false,						//导出弹窗
-				export_type:1,								//导出类型（1:基础资料；商品sku编码）
+				export_type:1,							//导出类型（1:基础资料；商品sku编码）
 				import_dialog:false,						//导入
 				add_edit_dialog:false,						//添加/编辑弹窗
-				dialog_type:'',								//添加/编辑弹窗类型（1:添加；2:编辑）
+				dialog_type:'',							//添加/编辑弹窗类型（1:添加；2:编辑）
 				user_list:[],								//填写人列表
 				year_list:[],								//年份列表
 				jj_list:[],									//季节列表
@@ -291,14 +325,32 @@
 					cz:"",										//材质
 					ppmc:"",									//品牌名称
 					plbm:"",									//品类编码
-					gys:"",										//供应商
-					gyshh:"",									//供应商货号
+					supplier_id:"",										//供应商
+					supplier_ksbm:"",									//供应商货号
 					mlcf:"",									//面料成分
 					safe_level:"",								//安全技术级别
 					cbj:"",										//成本价
 					sxz:"",										//上下装
-				}
-				
+				},								  //详情内容
+				sku_dialog:false,							//sku弹窗
+				sku:"",										//sku
+				sku_status:[{
+					label:'未同步',
+					id:0
+				},{
+					label:'已同步',
+					id:1
+				},{
+					label:'同步失败',
+					id:2
+				}],											//同步状态
+				status_id:"",								//选中的同步状态
+				sku_page:1,
+				sku_pagesize:10,
+				sku_loading:false,
+				sku_title_list:[],								//表头数据
+				sku_table_data:[],								//表格数据
+				sku_total:0,
 			}
 		},
 		created(){
@@ -310,10 +362,22 @@
 			this.getData();
 		},
 		methods:{
-			//供应商列表
+			//筛选条件供应商列表
+			getSupplier(e){
+				if(e != ''){
+					demandResource.ajaxJstSupplier({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.supplier_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//添加/编辑供应商列表
 			getGys(e){
 				if(e != ''){
-					resource.ajaxGys({name:e}).then(res => {
+					demandResource.ajaxJstSupplier({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.gys_list = res.data.data;
 						}else{
@@ -348,10 +412,17 @@
 					demandResource.importKsbm({file:files[0]}).then(res => {
 						this.$refs.csvUpload.value = null;
 						if(res.data.code == 1){
-							this.$message.success(res.data.msg);
-							this.page = 1;
-							//获取列表
-							this.getData();
+							let data = res.data.data;
+							this.$alert(`导入基本资料${data.total_ksbm_num}条，已生成${data.total_sku_num}条商品款式编码，${data.total_fail_num}条未生成`,'提示', {
+								confirmButtonText: '我知道了',
+								callback: action => {
+									this.$message.success(res.data.msg);
+									this.page = 1;
+									//获取列表
+									this.getData();
+								}
+							});
+							
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -369,6 +440,8 @@
 					status:this.status,
 					is_today:this.is_today,
 					ksbm:this.ksbm,
+					supplier_id:this.supplier_id,
+					supplier_ksbm:this.supplier_ksbm,
 					sort:this.table_sort,
 					type:this.export_type
 				}
@@ -401,6 +474,8 @@
 					status:this.status,
 					is_today:this.is_today,
 					ksbm:this.ksbm,
+					supplier_id:this.supplier_id,
+					supplier_ksbm:this.supplier_ksbm,
 					sort:this.table_sort,
 					page:this.page,
 					pagesize:this.pagesize
@@ -563,7 +638,51 @@
 						})
 					}
 				}
-			}
+			},
+			//获取sku列表
+			skuList(ksbm_id){
+				let arg = {
+					ksbm_id:ksbm_id,
+					sku:this.sku,
+					status:this.status_id,
+					page:this.sku_page,
+					pagesize:this.sku_pagesize
+				}
+				this.sku_dialog = true;
+				this.sku_loading = true;
+				demandResource.skuList(arg).then(res => {
+					if(res.data.code == 1){
+						this.sku_loading = false;
+						let data = res.data.data;
+						this.sku_title_list = data.title_list;
+						this.sku_table_data = data.table_data.data;
+						this.sku_total = data.table_data.total;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//关闭sku列表
+			closeSkuDialog(){
+				this.sku = "";
+				this.status_id = "";
+				this.sku_page = 1;
+				this.sku_pagesize = 10;
+				this.sku_title_list = [];								//表头数据
+				this.sku_table_data = [];								//表格数据
+				this.sku_total = 0;
+			},
+			//分页
+			skuHandleSizeChange(val) {
+				this.sku_pagesize = val;
+				//获取列表
+				this.skuList();
+			},
+			skuHandleCurrentChange(val) {
+				this.sku_page = val;
+				//获取列表
+				this.skuList();
+			},
 			
 		},
 		components:{
