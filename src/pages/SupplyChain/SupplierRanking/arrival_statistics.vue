@@ -34,7 +34,7 @@
 		<div class="flex jsb">
 			<div style="width:49%">
 				<div class="flex ac jsb">
-					<PopoverWidget class="table_title" title="款式采购明细" :show_popover="false"/>
+					<PopoverWidget class="table_title" title="款式采购明细" keys="ksbm_purchase"/>
 					<el-button type="primary" plain size="small" @click="exportFn('ksbm')">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
 				<custom-table v-loading="ksbm_purchase_loading" :isLoading="ksbm_purchase_loading" tableName="ksbm_purchase" max_height="680" :table_data="ksbm_purchase_data" :title_list="purchase_title_list" :is_custom_sort="false" @sortCallBack="ksbmSortCallBack"/>

@@ -891,6 +891,7 @@
 					reader.onload = (e) => {
 						const data = e.target.result;
 						const { header, results } = excel.read(data, "array");
+						
 						var new_xssrzb = [];
 						var isx = true;
 						results.map((item,index) => {

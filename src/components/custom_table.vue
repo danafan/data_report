@@ -23,7 +23,7 @@
 					<div class="table_header_text">{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
 				</template>
 			</el-table-column>
-			<el-table-column label="操作" align="center" v-if="is_setting">
+			<el-table-column label="操作" :width="setting_width" fixed="right" align="center" v-if="is_setting">
 				<template slot-scope="scope">
 
 				</template>
@@ -131,12 +131,12 @@
 		<div class="table_header_text" @dblclick="doCopy(scope.row[item.row_field_name])" v-else>{{scope.row[item.row_field_name]}}{{scope.row[item.row_field_name] !== null&&scope.row[item.row_field_name] !== ''?item.unit:''}}</div>
 	</template>
 </el-table-column>
-<el-table-column label="操作" align="center" v-if="is_setting">
+<el-table-column label="操作" :width="setting_width" align="center" fixed="right" v-if="is_setting">
 	<template slot-scope="scope">
-		<el-button type="text" size="small" @click="$emit('editFn',scope.row.id)" v-if='button_list.edit == 1'>编辑</el-button>
-		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row.id)" v-if='button_list.del == 1'>删除</el-button>
-		<el-button type="text" size="small" @click="$emit('detailFn',scope.row.id)" v-if='scope.row.detail'>详情</el-button>
-		<el-button type="text" size="small" @click="$emit('handleFn',scope.row.id)" v-if='scope.row.handle'>处理</el-button>
+		<el-button type="text" size="small" @click="$emit('editFn',scope.row[fieldName])" v-if='button_list.edit == 1'>编辑</el-button>
+		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if='button_list.del == 1'>删除</el-button>
+		<el-button type="text" size="small" @click="$emit('detailFn',scope.row[fieldName])" v-if='scope.row.detail'>详情</el-button>
+		<el-button type="text" size="small" @click="$emit('handleFn',scope.row[fieldName])" v-if='scope.row.handle'>处理</el-button>
 		<el-button type="text" size="small" @click="$emit('feekbackFn',scope.row[fieldName])" v-if='scope.row.feekback'>反馈</el-button>
 	</template>
 </el-table-column>
@@ -207,7 +207,7 @@
 				type:Boolean,
 			default:true
 			},
-			//下钻时取的参数
+			//操作时取的参数
 			fieldName:{
 				type:String,
 			default:''
@@ -226,6 +226,11 @@
 			is_setting:{
 				type:Boolean,
 			default:false
+			},
+			//操作列宽度
+			setting_width:{
+				type:String,
+			default:'120'
 			},
 			//排序拼接类型(true:数字；false：字母)
 			sort_num:{

@@ -70,6 +70,13 @@ let path = {
 	kssxCrossplot:'supplier/kssx_crossplot',						//供应商市场维度-交叉图
 	kssxList:'supplier/kssx_list',									//供应商市场维度-明细
 	kssxExport:'supplier/kssx_export',								//供应商市场维度-明细导出
+	ajaxSetting:'jst_ksbm_sku/ajax_setting',						//款式编码获取参数配置
+	ksbmList:'jst_ksbm_sku/ksbm_list',								//款式编码款式列表
+	exportKsbm:'jst_ksbm_sku/export_ksbm',							//款式编码导出
+	importKsbm:'jst_ksbm_sku/import_ksbm',							//款式编码导入
+	delKsbm:'jst_ksbm_sku/del_ksbm',								//删除款式
+	editKsbm:'jst_ksbm_sku/edit_ksbm',								//查看/编辑款式编码
+	addKsbm:'jst_ksbm_sku/add_ksbm',								//添加款式编码
 	
 }						
 export default{
@@ -352,6 +359,38 @@ export default{
 	//供应商市场维度-明细导出
 	kssxExport(params){
 		return http.post(path.kssxExport, params)
+	},
+	//款式编码获取参数配置
+	ajaxSetting(params){
+		return http.get(path.ajaxSetting, params)
+	},
+	//款式编码款式列表
+	ksbmList(params){
+		return http.get(path.ksbmList, params)
+	},
+	//款式编码导出
+	exportKsbm(params){
+		return http.get(path.exportKsbm, params)
+	},
+	//款式编码导入
+	importKsbm(params){
+		return http.post(path.importKsbm, params)
+	},
+	//删除款式编码
+	delKsbm(params){
+		return http.post(path.delKsbm, params)
+	},
+	//查看款式编码
+	editKsbmGet(params){
+		return http.get(path.editKsbm, params)
+	},
+	//编辑款式编码
+	editKsbmPost(params){
+		return http.post(path.editKsbm, params)
+	},
+	//添加款式编码
+	addKsbm(params){
+		return http.post(path.addKsbm, params)
 	},
 }
 
