@@ -80,6 +80,10 @@ let path = {
 	skuList:'jst_ksbm_sku/sku_list',								//sku列表
 	ajaxJstSupplier:'Common/ajaxJstSupplier',						//聚水潭供应商
 	addSpec:'jst_ksbm_sku/add_spec',								//增加sku资料
+	settingList:'jst_ksbm_sku/setting_list',						//资料配置列表
+	addSetting:'jst_ksbm_sku/add_setting',							//添加资料配置项
+	editSetting:'jst_ksbm_sku/edit_setting',						//编辑资料配置项
+	delSetting:'jst_ksbm_sku/del_setting',							//删除资料配置项
 	
 }						
 export default{
@@ -406,6 +410,22 @@ export default{
 	//增加sku资料
 	addSpec(params){
 		return http.post(path.addSpec, params)
+	},
+	//资料配置列表
+	settingList(params){
+		return http.get(path.settingList, params)
+	},
+	//添加资料配置项
+	addSetting(params){
+		return http.post(path.addSetting, params)
+	},
+	//编辑资料配置项
+	editSetting(params){
+		return http.post(path.editSetting, params)
+	},
+	//删除资料配置项
+	delSetting(params){
+		return http.post(path.delSetting, params)
 	},
 }
 

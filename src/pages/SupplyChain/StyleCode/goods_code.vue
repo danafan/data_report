@@ -45,12 +45,12 @@
 		</el-form>
 		<div class="buts">
 			<!-- <PopoverWidget title="指标解释" :update_time="update_time" keys="top_lb"/> -->
-			<el-button type="primary" size="small" @click="import_dialog = true">
+			<el-button type="primary" size="small" @click="import_dialog = true" v-if="button_list.import == 1">
 				导入
 				<i class="el-icon-upload el-icon--right"></i>
 			</el-button>
-			<el-button type="primary" plain size="small" @click="export_dialog = true">导出<i class="el-icon-download el-icon--right"></i></el-button>
-			<el-button type="primary" size="small" @click="addKsbm">添加<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
+			<el-button type="primary" plain size="small" @click="export_dialog = true" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<el-button type="primary" size="small" @click="addKsbm" v-if="button_list.add == 1">添加<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 		</div>
 		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="skuList" @addSpecFn="addSpecFn" @deleteFn="deleteFn" @editFn="editKsbm"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
@@ -679,6 +679,7 @@
 					if(this.dialog_type == '1'){	//添加
 						demandResource.addKsbm(this.form).then(res => {
 							if(res.data.code == 1){
+								this.add_edit_dialog = false;
 								this.$message.success(res.data.msg);
 								//获取列表
 								this.getData();
@@ -691,6 +692,7 @@
 						arg['ksbm_id'] = this.ksbm_id;
 						demandResource.editKsbmPost(arg).then(res => {
 							if(res.data.code == 1){
+								this.add_edit_dialog = false;
 								this.$message.success(res.data.msg);
 								//获取列表
 								this.getData();
