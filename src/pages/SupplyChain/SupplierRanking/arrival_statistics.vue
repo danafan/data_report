@@ -206,9 +206,11 @@
 						let day_chart = data.day_chart;
 						let cgsl_data = [];
 						let dhl_data = [];
+						let rksl_data = [];
 						day_chart.map(item => {
 							cgsl_data.push(item.cgsl);
 							dhl_data.push(item.dhl);
+							rksl_data.push(item.rksl);
 						})
 
 						var bar_line = document.getElementById('bar_line');
@@ -216,7 +218,7 @@
 						if (this.barlineChart == null) { 
 							this.barlineChart = echarts.init(bar_line);
 						}
-						this.barlineChart.setOption(this.setBarLineOptions(x_axis,cgsl_data,dhl_data,avg_dhl));
+						this.barlineChart.setOption(this.setBarLineOptions(x_axis,cgsl_data,dhl_data,rksl_data,avg_dhl));
 						// 饼图数据
 						let total_num =  data.ck_lists.reduce((total, currentValue, currentIndex, arr) => {
 							return currentValue.cgsl ? (total + parseInt(currentValue.cgsl)) : total;
@@ -248,7 +250,7 @@
 				return ((num/total)*100).toFixed(2);
 			},
 			//采购数量/到货率图表
-			setBarLineOptions(x_axis,cgsl_data,dhl_data,avg_dhl){
+			setBarLineOptions(x_axis,cgsl_data,dhl_data,rksl_data,avg_dhl){
 				return {
 					title: {
 						text: '到货率每日波动'
@@ -258,7 +260,8 @@
 						formatter: function (params) {
 							let tip = '采购日期：' + params[0].axisValueLabel + "</br>"
 							+ params[0].seriesName  + '：' + params[0].value + "</br>"
-							+ params[1].seriesName  + '：' + params[1].value + '%' + "</br>";
+							+ params[1].seriesName  + '：' + params[1].value + "</br>"
+							+ params[2].seriesName  + '：' + params[2].value + '%';
 							return tip;
 						},
 						backgroundColor:"rgba(0,0,0,.8)",
@@ -271,7 +274,7 @@
 						}
 					},
 					legend: {
-						data: ['采购数量', '到货率']
+						data: ['采购数量','入库数量', '到货率']
 					},
 					grid: {
 						left:'50',
@@ -290,7 +293,7 @@
 					yAxis: [
 					{
 						type: 'value',
-						name: '采购数量',
+						name: '采购/入库数量',
 						axisLabel: {
 							formatter: '{value}'
 						}
@@ -307,7 +310,14 @@
 					{
 						name: '采购数量',
 						type: 'bar',
+						stack: 'Ad',
 						data: cgsl_data
+					},
+					{
+						name: '入库数量',
+						type: 'bar',
+						stack: 'Ad',
+						data: rksl_data
 					},
 					{
 						name: '到货率',

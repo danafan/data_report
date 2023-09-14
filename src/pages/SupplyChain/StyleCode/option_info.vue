@@ -110,11 +110,6 @@
 						this.table_data = data.table_data.data;
 						this.total = data.table_data.total;
 						this.button_list = data.button_list;
-						// this.button_list = {
-						// 	add: 1,
-						// 	edit: 1,
-						// 	del: 1
-						// };
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -133,7 +128,13 @@
 			},
 			//点击编辑
 			editInfo(setting_id){
+				let infos = this.table_data.map(item => {
+					console.log(setting_id)
+					return item.setting_id == setting_id;
+				})
+
 				let info = this.table_data.filter(item => {
+					console.log(setting_id)
 					return item.setting_id == setting_id;
 				})
 				this.code = info[0].code;						//代码

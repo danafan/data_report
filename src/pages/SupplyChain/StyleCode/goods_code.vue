@@ -52,7 +52,7 @@
 			<el-button type="primary" plain size="small" @click="export_dialog = true" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			<el-button type="primary" size="small" @click="addKsbm" v-if="button_list.add == 1">添加<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="skuList" @addSpecFn="addSpecFn" @deleteFn="deleteFn" @editFn="editKsbm"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="tableCallBack" @addSpecFn="addSpecFn" @deleteFn="deleteFn" @editFn="editKsbm"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
 		<!-- sku资料 -->
 		<el-dialog title="sku资料" @close="closeAddSku" width="30%" :visible.sync="add_sku_dialog">
@@ -146,8 +146,8 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="供应商：">
-						<el-select v-model="form.supplier_id" clearable filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys">
-							<el-option v-for="item in gys_list" :key="item.supplier_id" :label="item.supplier_name" :value="item.supplier_id">
+						<el-select v-model="form.supplier_name" clearable filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys">
+							<el-option v-for="item in gys_list" :key="item.supplier_name" :label="item.supplier_name" :value="item.supplier_name">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -239,7 +239,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item>
-						<el-button type="primary" size="small" @click="SkuHandleCurrentChange(1)">搜索</el-button>
+						<el-button type="primary" size="small" @click="skuHandleCurrentChange(1)">搜索</el-button>
 					</el-form-item>
 				</el-form>
 				<div class="flex jse">合计：{{sku_total}}条</div>
@@ -349,7 +349,7 @@
 					cz:"",										//材质
 					ppmc:"",									//品牌名称
 					plbm:"",									//品类编码
-					supplier_id:"",										//供应商
+					supplier_name:"",										//供应商
 					supplier_ksbm:"",									//供应商货号
 					mlcf:"",									//面料成分
 					safe_level:"",								//安全技术级别
@@ -703,10 +703,16 @@
 					}
 				}
 			},
+			//点击款号获取商品编码
+			tableCallBack(ksbm_id){
+				this.ksbm_id = ksbm_id;
+				//获取sku列表
+				this.skuList();
+			},
 			//获取sku列表
-			skuList(ksbm_id){
+			skuList(){
 				let arg = {
-					ksbm_id:ksbm_id,
+					ksbm_id:this.ksbm_id,
 					sku:this.sku,
 					status:this.status_id,
 					page:this.sku_page,
