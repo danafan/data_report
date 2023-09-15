@@ -20,10 +20,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="供应商：">
-				<el-select v-model="supplier_id" clearable filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getSupplier">
-					<el-option v-for="item in supplier_list" :key="item.supplier_id" :label="item.supplier_name" :value="item.supplier_id">
-					</el-option>
-				</el-select>
+				<el-input v-model="supplier_name" clearable placeholder="请输入供应商"></el-input>
 			</el-form-item>
 			<el-form-item label="供应商货号：">
 				<el-input v-model="supplier_ksbm" clearable placeholder="请输入供应商货号"></el-input>
@@ -146,10 +143,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="供应商：">
-						<el-select v-model="form.supplier_name" clearable filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys">
-							<el-option v-for="item in gys_list" :key="item.supplier_name" :label="item.supplier_name" :value="item.supplier_name">
-							</el-option>
-						</el-select>
+						<el-input style="width: 192px;" v-model="form.supplier_name" clearable placeholder="请输入供应商"></el-input>
 					</el-form-item>
 				</el-form>
 				<el-form size="small" label-width="110px">
@@ -297,10 +291,10 @@
 						}
 					}]
 				},	 										
-				date:[getMonthStartDate(),getCurrentDate()],			//时间区间
+				date:[getMonthStartDate(),getCurrentDate()],//时间区间
 				is_today:0,
 				supplier_list:[],							//供应商列表
-				supplier_id:"",								//选中的供应商
+				supplier_name:"",							//选中的供应商
 				supplier_ksbm:"",							//供应商货号
 				page:1,
 				pagesize:10,
@@ -349,15 +343,15 @@
 					cz:"",										//材质
 					ppmc:"",									//品牌名称
 					plbm:"",									//品类编码
-					supplier_name:"",										//供应商
-					supplier_ksbm:"",									//供应商货号
+					supplier_name:"",							//供应商
+					supplier_ksbm:"",							//供应商货号
 					mlcf:"",									//面料成分
 					safe_level:"",								//安全技术级别
 					cbj:"",										//成本价
 					sxz:"",										//上下装
-				},								  //详情内容
-				sku_dialog:false,							//sku弹窗
-				sku:"",										//sku
+				},								  				//详情内容
+				sku_dialog:false,								//sku弹窗
+				sku:"",											//sku
 				sku_status:[{
 					label:'未同步',
 					id:0
@@ -367,8 +361,8 @@
 				},{
 					label:'同步失败',
 					id:2
-				}],											//同步状态
-				status_id:"",								//选中的同步状态
+				}],												//同步状态
+				status_id:"",									//选中的同步状态
 				sku_page:1,
 				sku_pagesize:10,
 				sku_loading:false,
@@ -387,17 +381,17 @@
 		},
 		methods:{
 			//筛选条件供应商列表
-			getSupplier(e){
-				if(e != ''){
-					demandResource.ajaxJstSupplier({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.supplier_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
+			// getSupplier(e){
+			// 	if(e != ''){
+			// 		demandResource.ajaxJstSupplier({name:e}).then(res => {
+			// 			if(res.data.code == 1){
+			// 				this.supplier_list = res.data.data;
+			// 			}else{
+			// 				this.$message.warning(res.data.msg);
+			// 			}
+			// 		})
+			// 	}
+			// },
 			//添加/编辑供应商列表
 			getGys(e){
 				if(e != ''){
@@ -464,7 +458,7 @@
 					status:this.status,
 					is_today:this.is_today,
 					ksbm:this.ksbm,
-					supplier_id:this.supplier_id,
+					supplier_name:this.supplier_name,
 					supplier_ksbm:this.supplier_ksbm,
 					sort:this.table_sort,
 					type:this.export_type
@@ -498,7 +492,7 @@
 					status:this.status,
 					is_today:this.is_today,
 					ksbm:this.ksbm,
-					supplier_id:this.supplier_id,
+					supplier_name:this.supplier_name,
 					supplier_ksbm:this.supplier_ksbm,
 					sort:this.table_sort,
 					page:this.page,

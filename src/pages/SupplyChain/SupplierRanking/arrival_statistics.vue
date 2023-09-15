@@ -310,13 +310,11 @@
 					{
 						name: '采购数量',
 						type: 'bar',
-						stack: 'Ad',
 						data: cgsl_data
 					},
 					{
 						name: '入库数量',
 						type: 'bar',
-						stack: 'Ad',
 						data: rksl_data
 					},
 					{
