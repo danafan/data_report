@@ -377,7 +377,7 @@ export default{
 	},
 	//款式编码导出
 	exportKsbm(params){
-		return http.get(path.exportKsbm, params)
+		return http.post(path.exportKsbm, params)
 	},
 	//款式编码导入
 	importKsbm(params){

@@ -162,7 +162,7 @@
 					}).then(() => {
 						let arg = {
 							type:this.type,
-							code:this.code,
+							setting_code:this.code,
 							code_value:this.code_value
 						}
 						if(this.dialog_type == '1'){	//添加

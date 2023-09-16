@@ -58,10 +58,10 @@
 					<el-form-item label="款号：">
 						<div>{{ksbm}}</div>
 					</el-form-item>
-					<el-form-item label="颜色：" required>
+					<el-form-item label="颜色：">
 						<el-input style="width: 192px;" v-model="colors" clearable placeholder="请输入颜色"></el-input>
 					</el-form-item>
-					<el-form-item label="尺码：" required>
+					<el-form-item label="尺码：">
 						<el-input style="width: 192px;" v-model="sizes" clearable placeholder="请输入尺码"></el-input>
 					</el-form-item>
 				</el-form>
@@ -142,7 +142,7 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="供应商：">
+					<el-form-item label="供应商：" required>
 						<el-input style="width: 192px;" v-model="form.supplier_name" clearable placeholder="请输入供应商"></el-input>
 					</el-form-item>
 				</el-form>
@@ -174,7 +174,7 @@
 					<el-form-item label="包材单价：" required>
 						<el-input style="width: 192px;" type="number" v-model="form.bcdj" clearable placeholder="请输入包材单价"></el-input>
 					</el-form-item>
-					<el-form-item label="供应商货号：">
+					<el-form-item label="供应商货号：" required>
 						<el-input style="width: 192px;" v-model="form.supplier_ksbm" clearable placeholder="请输入供应商货号"></el-input>
 					</el-form-item>
 					<el-form-item label="面料成分：" required>
@@ -380,30 +380,6 @@
 			this.getData();
 		},
 		methods:{
-			//筛选条件供应商列表
-			// getSupplier(e){
-			// 	if(e != ''){
-			// 		demandResource.ajaxJstSupplier({name:e}).then(res => {
-			// 			if(res.data.code == 1){
-			// 				this.supplier_list = res.data.data;
-			// 			}else{
-			// 				this.$message.warning(res.data.msg);
-			// 			}
-			// 		})
-			// 	}
-			// },
-			//添加/编辑供应商列表
-			getGys(e){
-				if(e != ''){
-					demandResource.ajaxJstSupplier({name:e}).then(res => {
-						if(res.data.code == 1){
-							this.gys_list = res.data.data;
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}
-			},
 			//获取参数配置
 			ajaxSetting(){
 				demandResource.ajaxSetting().then(res => {
@@ -532,14 +508,11 @@
 			},
 			//提交添加sku资料
 			commitAddSpecFn(){
-				if(this.colors == ''){
-					this.$message.warning('请输入颜色');
+				if(this.colors == '' && this.sizes == ''){
+					this.$message.warning('颜色和尺码不能全部为空！');
 					return
 				}
-				if(this.sizes == ''){
-					this.$message.warning('请输入尺码');
-					return
-				}
+				
 				let arg = {
 					ksbm_id:this.ksbm_id,
 					colors:this.colors,
@@ -637,6 +610,8 @@
 					this.$message.warning('请选择品牌名称!');
 				}else if(this.form.plbm == ''){
 					this.$message.warning('请选择品类编码!');
+				}else if(this.form.supplier_name == ''){
+					this.$message.warning('请选择供应商!');
 				}else if(this.form.cpmc == ''){
 					this.$message.warning('请选择产品名称!');
 				}else if(this.form.bzj == ''){
@@ -651,6 +626,8 @@
 					this.$message.warning('请输入填充物成分!');
 				}else if(this.form.bcdj == ''){
 					this.$message.warning('请输入包材单价!');
+				}else if(this.form.supplier_ksbm == ''){
+					this.$message.warning('请输入供应商货号!');
 				}else if(this.form.mlcf == ''){
 					this.$message.warning('请输入面料成分!');
 				}else if(this.form.dpj == ''){
