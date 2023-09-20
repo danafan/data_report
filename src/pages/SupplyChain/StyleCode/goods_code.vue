@@ -64,6 +64,7 @@
 					<el-form-item label="尺码：">
 						<el-input style="width: 192px;" v-model="sizes" clearable placeholder="请输入尺码"></el-input>
 					</el-form-item>
+					<div style="color:red;font-size:12px">注：填写颜色/尺码 分号(;)隔开，填写尺码 中划线(-)为范围</div>
 				</el-form>
 			</div>
 			<div slot="footer" class="dialog-footer">
@@ -119,10 +120,10 @@
 						<el-input style="width: 192px;" v-model="form.xlbm" clearable placeholder="请输入小类编码"></el-input>
 					</el-form-item>
 					<el-form-item label="颜色：" required>
-						<el-input style="width: 192px;" v-model="form.color" clearable placeholder="请输入颜色"></el-input>
+						<el-input style="width: 192px;" v-model="form.color" clearable placeholder="颜色需分号(;)间隔"></el-input>
 					</el-form-item>
 					<el-form-item label="尺码：" required>
-						<el-input style="width: 192px;" v-model="form.size" clearable placeholder="请输入尺码"></el-input>
+						<el-input style="width: 192px;" v-model="form.size" clearable placeholder="尺码用(;)区间(-)"></el-input>
 					</el-form-item>
 					<el-form-item label="里料成分：" required>
 						<el-input style="width: 192px;" v-model="form.llcf" clearable placeholder="请输入里料成分"></el-input>
@@ -272,7 +273,7 @@
 						text: '当月',
 						onClick(picker) {
 							const start = getMonthStartDate();
-							const end = getCurrentDate();
+							const end = getNowDate();
 							picker.$emit('pick', [start, end]);
 						}
 					},{
@@ -291,7 +292,7 @@
 						}
 					}]
 				},	 										
-				date:[getMonthStartDate(),getCurrentDate()],//时间区间
+				date:[getMonthStartDate(),getNowDate()],//时间区间
 				is_today:0,
 				supplier_list:[],							//供应商列表
 				supplier_name:"",							//选中的供应商
@@ -607,7 +608,7 @@
 									this.form[k] = parseInt(data[k]);
 								}
 							}else{
-								this.form[k] = data[k];
+								this.form[k] = data[k] == 0?'':data[k];
 							}
 						}
 					}else{
