@@ -133,14 +133,20 @@
 </el-table-column>
 <el-table-column label="操作" :width="setting_width" align="center" fixed="right" v-if="is_setting">
 	<template slot-scope="scope">
-		<!-- 生成款式编码 -->
+		<!-- 生成款式编码【增加】 -->
 		<el-button type="text" size="small" @click="$emit('addSpecFn',{[fieldName]:scope.row[fieldName],ksbm:scope.row.ksbm})" v-if='button_list.add_spec == 1 && scope.row.status == 1'>增加</el-button>
-		<!-- 生成款式编码 -->
+		<!-- 生成款式编码【编辑】 -->
 		<el-button type="text" size="small" @click="$emit('editFn',scope.row[fieldName])" v-if="tableName == 'ksbm_table' && button_list.edit == 1 && scope.row.status == '0'">编辑</el-button>
-		<el-button type="text" size="small" @click="$emit('editFn',scope.row[fieldName])" v-if="tableName != 'ksbm_table' && button_list.edit == 1">编辑</el-button>
-		<!-- 生成款式编码 -->
+		<!-- 配置资料【编辑】 -->
+		<el-button type="text" size="small" @click="$emit('editFn',scope.row[fieldName])" v-if="tableName == 'option_info' && button_list.edit == 1 && scope.row.used_status == '0'">编辑</el-button>
+		<!-- 普通【编辑】 -->
+		<el-button type="text" size="small" @click="$emit('editFn',scope.row[fieldName])" v-if="(tableName != 'ksbm_table' && tableName != 'option_info') && button_list.edit == 1">编辑</el-button>
+		<!-- 生成款式编码【删除】 -->
 		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if="tableName == 'ksbm_table' && button_list.del == 1 && scope.row.status == '0'">删除</el-button>
-		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if="tableName != 'ksbm_table' && button_list.del == 1">删除</el-button>
+		<!-- 配置资料【删除】 -->
+		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if="tableName == 'option_info' && button_list.del == 1 && scope.row.used_status == '0'">删除</el-button>
+		<!-- 普通【删除】 -->
+		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if="(tableName != 'ksbm_table' && tableName != 'option_info') && button_list.del == 1">删除</el-button>
 		<el-button type="text" size="small" @click="$emit('detailFn',scope.row[fieldName])" v-if='scope.row.detail'>详情</el-button>
 		<el-button type="text" size="small" @click="$emit('handleFn',scope.row[fieldName])" v-if='scope.row.handle'>处理</el-button>
 		<el-button type="text" size="small" @click="$emit('feekbackFn',scope.row[fieldName])" v-if='scope.row.feekback'>反馈</el-button>

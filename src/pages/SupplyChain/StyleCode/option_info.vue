@@ -16,7 +16,7 @@
 		<div class="buts">
 			<el-button type="primary" size="small" @click="addInfo" v-if="button_list.add == 1">添加<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="setting_list"fieldName="setting_id" :table_data="table_data" :title_list="title_list" @deleteFn="deleteInfo" @editFn="editInfo" :is_custom_sort="false" :is_setting="true" :button_list="button_list" @sortCallBack="sortCallBack" max_height="630px"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="option_info"fieldName="setting_id" :table_data="table_data" :title_list="title_list" @deleteFn="deleteInfo" @editFn="editInfo" :is_custom_sort="false" :is_setting="true" :button_list="button_list" @sortCallBack="sortCallBack" max_height="630px"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
 		<!-- 添加/编辑弹窗 -->
 		<el-dialog title="配置资料" @close="closeDialog" width="30%" :visible.sync="show_dialog">

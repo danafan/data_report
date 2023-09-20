@@ -2,7 +2,7 @@
 	<div>
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
-				<GoodsCode v-if="item.web_url == 'goods_code'"/>
+				<GoodsCode :activeTab="activeTab" v-if="item.web_url == 'goods_code'"/>
 				<OptionInfo v-if="item.web_url == 'option_info'"/>
 			</el-tab-pane>
 		</el-tabs>

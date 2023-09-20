@@ -56,7 +56,7 @@
 			<div>
 				<el-form size="small">
 					<el-form-item label="款号：">
-						<div>{{ksbm}}</div>
+						<div>{{spec_ksbm}}</div>
 					</el-form-item>
 					<el-form-item label="颜色：">
 						<el-input style="width: 192px;" v-model="colors" clearable placeholder="请输入颜色"></el-input>
@@ -121,7 +121,7 @@
 					<el-form-item label="颜色：" required>
 						<el-input style="width: 192px;" v-model="form.color" clearable placeholder="请输入颜色"></el-input>
 					</el-form-item>
-					<el-form-item label="尺码：">
+					<el-form-item label="尺码：" required>
 						<el-input style="width: 192px;" v-model="form.size" clearable placeholder="请输入尺码"></el-input>
 					</el-form-item>
 					<el-form-item label="里料成分：" required>
@@ -131,13 +131,13 @@
 						<el-input style="width: 192px;" v-model="form.zxbz" clearable placeholder="请输入执行标准"></el-input>
 					</el-form-item>
 					<el-form-item label="品牌名称：" required>
-						<el-select v-model="form.ppmc" clearable filterable placeholder="全部">
+						<el-select v-model="form.ppmc" clearable filterable placeholder="请选择品牌名称">
 							<el-option v-for="item in ppmc" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="品类编码：" required>
-						<el-select v-model="form.plbm" clearable filterable placeholder="全部">
+						<el-select v-model="form.plbm" clearable filterable placeholder="请选择品类编码">
 							<el-option v-for="item in plbm" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
@@ -160,7 +160,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="性别：" required>
-						<el-select size="small" clearable v-model="form.xb" filterable placeholder="请选择季节">
+						<el-select size="small" clearable v-model="form.xb" filterable placeholder="请选择性别">
 							<el-option v-for="item in xb_list" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
@@ -315,7 +315,7 @@
 				xb_list:[],									//性别列表
 				gys_list:[],								//供应商列表
 				ksbm_id:"",									//点击的款式编码ID
-				ksbm:"",									//款式编码
+				spec_ksbm:"",								//款式编码
 				colors:"",									//颜色
 				sizes:"",									//尺码
 				add_sku_dialog:false,						//增加款式资料弹窗
@@ -349,7 +349,7 @@
 					safe_level:"",								//安全技术级别
 					cbj:"",										//成本价
 					sxz:"",										//上下装
-				},								  				//详情内容
+				},								  	  //详情内容
 				sku_dialog:false,								//sku弹窗
 				sku:"",											//sku
 				sku_status:[{
@@ -361,7 +361,7 @@
 				},{
 					label:'同步失败',
 					id:2
-				}],												//同步状态
+				}],										  //同步状态
 				status_id:"",									//选中的同步状态
 				sku_page:1,
 				sku_pagesize:10,
@@ -369,6 +369,21 @@
 				sku_title_list:[],								//表头数据
 				sku_table_data:[],								//表格数据
 				sku_total:0,
+			}
+		},
+		props:{
+			//监听当前页面
+			activeTab:{
+				type:String,
+			default:''
+			}
+		},
+		watch:{
+			activeTab:function(n,o){
+				if(n == 'goods_code'){
+					//获取参数配置
+					this.ajaxSetting();
+				}
 			}
 		},
 		created(){
@@ -407,10 +422,11 @@
 						this.$refs.csvUpload.value = null;
 						if(res.data.code == 1){
 							let data = res.data.data;
-							this.$alert(`导入基本资料${data.total_ksbm_num}条，已生成${data.total_sku_num}条商品款式编码，${data.total_fail_num}条未生成`,'提示', {
+							this.$alert(`导入基本资料${data.total_ksbm_num}条，已生成${data.total_sku_num}条商品款式编码`,'提示', {
 								confirmButtonText: '我知道了',
 								callback: action => {
 									this.$message.success(res.data.msg);
+									this.import_dialog = false;
 									this.page = 1;
 									//获取列表
 									this.getData();
@@ -480,6 +496,11 @@
 						this.loading = false;
 						let data = res.data.data;
 						this.title_list = data.title_list;
+						this.title_list.map(item => {
+							if(item.row_field_name == 'ksbm'){
+								item['width'] = '120'
+							}
+						});
 						this.table_data = data.table_data.data;
 						this.total = data.table_data.total;
 						this.button_list = data.button_list;
@@ -497,7 +518,7 @@
 			//增加sku资料
 			addSpecFn(info){
 				this.ksbm_id = info.ksbm_id;
-				this.ksbm = info.ksbm;
+				this.spec_ksbm = info.ksbm;
 				this.add_sku_dialog = true;
 			},
 			//关闭sku资料
@@ -579,7 +600,15 @@
 					if(res.data.code == 1){
 						let data = res.data.data;
 						for(let k in this.form){
-							this.form[k] = k == 'year' || k == 'fill_user_id' || k == 'ppmc' || k == 'plbm' || k == 'jj' || k == 'xb'?parseInt(data[k]):data[k];
+							if(k == 'year' || k == 'ppmc' || k == 'plbm' || k == 'jj' || k == 'xb'){
+								if(data[k] == '' || data[k] == 0){
+									this.form[k] = '';
+								}else{
+									this.form[k] = parseInt(data[k]);
+								}
+							}else{
+								this.form[k] = data[k];
+							}
 						}
 					}else{
 						this.$message.warning(res.data.msg);
@@ -602,6 +631,8 @@
 					this.$message.warning('请输入小类编码!');
 				}else if(this.form.color == ''){
 					this.$message.warning('请输入颜色!');
+				}else if(this.form.size == ''){
+					this.$message.warning('请输入尺码!');
 				}else if(this.form.llcf == ''){
 					this.$message.warning('请输入里料成分!');
 				}else if(this.form.zxbz == ''){
