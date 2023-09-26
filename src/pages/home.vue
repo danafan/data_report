@@ -98,10 +98,10 @@
 				<!-- <el-menu-item index="/promotion_performance">
 					<i class="el-icon-s-promotion"></i>
 					<span slot="title">推广绩效</span>
-				</el-menu-item>
-				<el-menu-item index="/individual_performance">
+				</el-menu-item> -->
+				<!-- <el-menu-item index="/dyy_shop_data">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">个人绩效综合看板</span>
+					<span slot="title">代运营店铺数据</span>
 				</el-menu-item> -->
 			</el-menu>
 		</div>

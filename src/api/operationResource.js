@@ -60,6 +60,9 @@ let path = {
 	ksbmPurchaseListExport:'supplier_arraival/ksbm_purchase_list_export',	//档口到货统计-款式采购明细（导出）
 	gysPurchaseList:'supplier_arraival/gys_purchase_list',		//档口到货统计-供应商采购明细
 	gysPurchaseListExport:'supplier_arraival/gys_purchase_list_export',	//档口到货统计-供应商采购明细（导出）
+	dyyShopPlatform:'dyy_shop/ajax_shop',				//代运营店铺数据店铺和平台列表
+	dyyShopList:'dyy_shop/list',						//代运营数据列表
+	dyyShopExport:'dyy_shop/export',					//代运营数据导出
 }						
 export default{
 	//获取款式编码
@@ -301,6 +304,18 @@ export default{
 	//档口到货统计-供应商采购明细（导出）
 	gysPurchaseListExport(params){
 		return http.post(path.gysPurchaseListExport, params)
+	},
+	//代运营店铺数据店铺和平台列表
+	dyyShopPlatform(params){
+		return http.get(path.dyyShopPlatform, params)
+	},
+	//代运营数据列表
+	dyyShopList(params){
+		return http.get(path.dyyShopList, params)
+	},
+	//代运营数据导出
+	dyyShopExport(params){
+		return http.post(path.dyyShopExport, params)
 	},
 }
 
