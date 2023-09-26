@@ -303,7 +303,7 @@
 			if(!n){
 				this.setScroll();
 			}
-		}
+		},
 	},
 	mounted(){
 		this.setScroll();

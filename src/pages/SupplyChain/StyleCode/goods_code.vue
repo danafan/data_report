@@ -101,12 +101,13 @@
 			</div>
 		</el-dialog>
 		<!-- 添加/编辑 -->
-		<el-dialog :title="dialog_type == '1'?'添加款式编码':'编辑款式编码'" @close="closeDialog" width="60%" :visible.sync="add_edit_dialog">
+		<el-dialog :title="dialog_type == '1'?'添加款式编码':'编辑款式编码'" @close="closeDialog" width="67%" :visible.sync="add_edit_dialog">
 			<div class="flex jsa">
-				<el-form size="small" label-width="100px">
-					<el-form-item label="填写人：" required>
-						<el-select size="small" clearable v-model="form.fill_user_id" filterable placeholder="请选择填写人">
-							<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
+				<!-- 第一列 -->
+				<el-form label-width="130px" :inline="true" size="small" class="demo-form-inline">
+					<el-form-item label="品牌名称：" required>
+						<el-select v-model="form.ppmc" clearable filterable placeholder="请选择商品品牌">
+							<el-option v-for="item in ppmc" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -115,44 +116,6 @@
 							<el-option v-for="item in year_list" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
-					</el-form-item>
-					<el-form-item label="小类编码：" required>
-						<el-input style="width: 192px;" v-model="form.xlbm" clearable placeholder="请输入小类编码"></el-input>
-					</el-form-item>
-					<el-form-item label="颜色：" required>
-						<el-input style="width: 192px;" v-model="form.color" clearable placeholder="颜色需分号(;)间隔"></el-input>
-					</el-form-item>
-					<el-form-item label="尺码：" required>
-						<el-input style="width: 192px;" v-model="form.size" clearable placeholder="尺码用(;)区间(-)"></el-input>
-					</el-form-item>
-					<el-form-item label="里料成分：" required>
-						<el-input style="width: 192px;" v-model="form.llcf" clearable placeholder="请输入里料成分"></el-input>
-					</el-form-item>
-					<el-form-item label="执行标准：" required>
-						<el-input style="width: 192px;" v-model="form.zxbz" clearable placeholder="请输入执行标准"></el-input>
-					</el-form-item>
-					<el-form-item label="品牌名称：" required>
-						<el-select v-model="form.ppmc" clearable filterable placeholder="请选择品牌名称">
-							<el-option v-for="item in ppmc" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item label="品类编码：" required>
-						<el-select v-model="form.plbm" clearable filterable placeholder="请选择品类编码">
-							<el-option v-for="item in plbm" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
-							</el-option>
-						</el-select>
-					</el-form-item>
-					<el-form-item label="供应商：" required>
-						<el-input style="width: 192px;" v-model="form.supplier_name" clearable placeholder="请输入供应商"></el-input>
-					</el-form-item>
-				</el-form>
-				<el-form size="small" label-width="110px">
-					<el-form-item label="产品名称：" required>
-						<el-input style="width: 192px;" v-model="form.cpmc" clearable placeholder="请输入产品名称"></el-input>
-					</el-form-item>
-					<el-form-item label="标准价：" required>
-						<el-input style="width: 192px;" type="number" v-model="form.bzj" clearable placeholder="请输入标准价"></el-input>
 					</el-form-item>
 					<el-form-item label="季节：" required>
 						<el-select size="small" clearable v-model="form.jj" filterable placeholder="请选择季节">
@@ -166,52 +129,95 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="版型：" required>
-						<el-input style="width: 192px;" v-model="form.bx" clearable placeholder="请输入版型"></el-input>
+					<el-form-item label="品类编码：" required>
+						<el-select v-model="form.plbm" clearable filterable placeholder="请选择品类编码">
+							<el-option v-for="item in plbm" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
+							</el-option>
+						</el-select>
 					</el-form-item>
-					<el-form-item label="填充物成分：" required>
-						<el-input style="width: 192px;" v-model="form.tcwcf" clearable placeholder="请输入填充物成分"></el-input>
+					<el-form-item label="尺码：" required>
+						<el-input style="width: 192px;" v-model="form.size" clearable placeholder="尺码用(;)区间(-)"></el-input>
 					</el-form-item>
-					<el-form-item label="包材单价：" required>
-						<el-input style="width: 192px;" type="number" v-model="form.bcdj" clearable placeholder="请输入包材单价"></el-input>
+					<el-form-item label="颜色：" required>
+						<el-input style="width: 192px;" v-model="form.color" clearable placeholder="颜色需分号(;)间隔"></el-input>
 					</el-form-item>
-					<el-form-item label="供应商货号：" required>
-						<el-input style="width: 192px;" v-model="form.supplier_ksbm" clearable placeholder="请输入供应商货号"></el-input>
+					<el-form-item label="产品名称：" required>
+						<el-input style="width: 192px;" v-model="form.cpmc" clearable placeholder="请输入产品名称"></el-input>
 					</el-form-item>
 					<el-form-item label="面料成分：" required>
 						<el-input style="width: 192px;" v-model="form.mlcf" clearable placeholder="请输入面料成分"></el-input>
 					</el-form-item>
-					<el-form-item label="安全技术级别：">
+					<el-form-item label="安全技术级别：" required>
 						<el-input style="width: 192px;" v-model="form.safe_level" clearable placeholder="请输入安全技术级别"></el-input>
 					</el-form-item>
-				</el-form>
-				<el-form size="small" label-width="130px">
-					<el-form-item label="吊牌价：" required>
-						<el-input style="width: 192px;" type="number" v-model="form.dpj" clearable placeholder="请输入吊牌价"></el-input>
-					</el-form-item>
-					<el-form-item label="开发款号：" required>
-						<el-input style="width: 192px;" v-model="form.kfkh" clearable placeholder="请输入开发款号"></el-input>
-					</el-form-item>
-					<el-form-item label="大类名称：" required>
-						<el-input style="width: 192px;" v-model="form.dlmc" clearable placeholder="请输入大类名称"></el-input>
-					</el-form-item>
-					<el-form-item label="面料名称：" required>
-						<el-input style="width: 192px;" v-model="form.mlmc" clearable placeholder="请输入面料名称"></el-input>
-					</el-form-item>
-					<el-form-item label="生产厂商.名称：" required>
-						<el-input style="width: 192px;" v-model="form.sccs" clearable placeholder="请输入生产厂商.名称"></el-input>
-					</el-form-item>
-					<el-form-item label="标费档次.名称：" required>
-						<el-input style="width: 192px;" v-model="form.bfdc" clearable placeholder="请输入标费档次.名称"></el-input>
-					</el-form-item>
-					<el-form-item label="材质：">
-						<el-input style="width: 192px;" v-model="form.cz" clearable placeholder="请输入材质"></el-input>
+					<el-form-item label="执行标准：" required>
+						<el-input style="width: 192px;" v-model="form.zxbz" clearable placeholder="请输入执行标准"></el-input>
 					</el-form-item>
 					<el-form-item label="成本价：" required>
 						<el-input style="width: 192px;" type="number" v-model="form.cbj" clearable placeholder="请输入成本价"></el-input>
 					</el-form-item>
-					<el-form-item label="上下装：" required>
+					<el-form-item label="吊牌价：" required>
+						<el-input style="width: 192px;" type="number" v-model="form.dpj" clearable placeholder="请输入吊牌价"></el-input>
+					</el-form-item>
+					<el-form-item label="供应商：" required>
+						<el-input style="width: 192px;" v-model="form.supplier_name" clearable placeholder="请输入供应商"></el-input>
+					</el-form-item>
+					<el-form-item label="供应商货号：" required>
+						<el-input style="width: 192px;" v-model="form.supplier_ksbm" clearable placeholder="请输入供应商货号"></el-input>
+					</el-form-item>
+					<el-form-item label="系列：" required>
+						<el-input style="width: 192px;" v-model="form.xl" clearable placeholder="请输入系列"></el-input>
+					</el-form-item>
+					<el-form-item label="69码：" required>
+						<el-input style="width: 192px;" v-model="form.sn_69" clearable placeholder="请输入69码"></el-input>
+					</el-form-item>
+					<el-form-item label="商品标签：" required>
+						<el-input style="width: 192px;" v-model="form.labels" clearable placeholder="请输入商品标签"></el-input>
+					</el-form-item>
+					<el-form-item label="开发款号：">
+						<el-input style="width: 192px;" v-model="form.kfkh" clearable placeholder="请输入开发款号"></el-input>
+					</el-form-item>
+					<el-form-item label="大类名称：">
+						<el-input style="width: 192px;" v-model="form.dlmc" clearable placeholder="请输入大类名称"></el-input>
+					</el-form-item>
+					<el-form-item label="小类编码：">
+						<el-input style="width: 192px;" v-model="form.xlbm" clearable placeholder="请输入小类编码"></el-input>
+					</el-form-item>
+					<el-form-item label="版型名称：">
+						<el-input style="width: 192px;" v-model="form.bx" clearable placeholder="版型名称"></el-input>
+					</el-form-item>
+					<el-form-item label="面料名称：">
+						<el-input style="width: 192px;" v-model="form.mlmc" clearable placeholder="请输入面料名称"></el-input>
+					</el-form-item>
+					<el-form-item label="里料成分：">
+						<el-input style="width: 192px;" v-model="form.llcf" clearable placeholder="请输入里料成分"></el-input>
+					</el-form-item>
+					<el-form-item label="填充物成分：">
+						<el-input style="width: 192px;" v-model="form.tcwcf" clearable placeholder="请输入填充物成分"></el-input>
+					</el-form-item>
+					<el-form-item label="生产厂商.名称：">
+						<el-input style="width: 192px;" v-model="form.sccs" clearable placeholder="请输入生产厂商.名称"></el-input>
+					</el-form-item>
+					<el-form-item label="包材单价：">
+						<el-input style="width: 192px;" type="number" v-model="form.bcdj" clearable placeholder="请输入包材单价"></el-input>
+					</el-form-item>
+					<el-form-item label="标费档次.名称：">
+						<el-input style="width: 192px;" v-model="form.bfdc" clearable placeholder="请输入标费档次.名称"></el-input>
+					</el-form-item>
+					<el-form-item label="标准价：">
+						<el-input style="width: 192px;" type="number" v-model="form.bzj" clearable placeholder="请输入标准价"></el-input>
+					</el-form-item>
+					<el-form-item label="上下装：">
 						<el-input style="width: 192px;" v-model="form.sxz" clearable placeholder="请输入上下装"></el-input>
+					</el-form-item>
+					<el-form-item label="材质：">
+						<el-input style="width: 192px;" v-model="form.cz" clearable placeholder="请输入材质"></el-input>
+					</el-form-item>
+					<el-form-item label="填写人：">
+						<el-select size="small" clearable v-model="form.fill_user_id" filterable placeholder="请选择填写人">
+							<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
+							</el-option>
+						</el-select>
 					</el-form-item>
 				</el-form>
 			</div>
@@ -346,6 +352,9 @@
 					plbm:"",									//品类编码
 					supplier_name:"",							//供应商
 					supplier_ksbm:"",							//供应商货号
+					xl:"",										//系列
+					sn_69:"",									//69码
+					labels:"",									//商品标签
 					mlcf:"",									//面料成分
 					safe_level:"",								//安全技术级别
 					cbj:"",										//成本价
@@ -611,6 +620,7 @@
 								this.form[k] = data[k] == 0?'':data[k];
 							}
 						}
+						console.log(this.form)
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -624,60 +634,40 @@
 			},
 			//添加/编辑保存	
 			commitFn(){
-				if(this.form.fill_user_id == ''){
-					this.$message.warning('请选择填写人!');
+				if(this.form.ppmc == ''){
+					this.$message.warning('请选择品牌名称!');
 				}else if(this.form.year == ''){
 					this.$message.warning('请选择年份!');
-				}else if(this.form.xlbm == ''){
-					this.$message.warning('请输入小类编码!');
-				}else if(this.form.color == ''){
-					this.$message.warning('请输入颜色!');
-				}else if(this.form.size == ''){
-					this.$message.warning('请输入尺码!');
-				}else if(this.form.llcf == ''){
-					this.$message.warning('请输入里料成分!');
-				}else if(this.form.zxbz == ''){
-					this.$message.warning('请输入执行标准!');
-				}else if(this.form.ppmc == ''){
-					this.$message.warning('请选择品牌名称!');
-				}else if(this.form.plbm == ''){
-					this.$message.warning('请选择品类编码!');
-				}else if(this.form.supplier_name == ''){
-					this.$message.warning('请选择供应商!');
-				}else if(this.form.cpmc == ''){
-					this.$message.warning('请选择产品名称!');
-				}else if(this.form.bzj == ''){
-					this.$message.warning('请输入标准价!');
 				}else if(this.form.jj == ''){
 					this.$message.warning('请选择季节!');
 				}else if(this.form.xb == ''){
 					this.$message.warning('请选择性别!');
-				}else if(this.form.bx == ''){
-					this.$message.warning('请输入版型!');
-				}else if(this.form.tcwcf == ''){
-					this.$message.warning('请输入填充物成分!');
-				}else if(this.form.bcdj == ''){
-					this.$message.warning('请输入包材单价!');
-				}else if(this.form.supplier_ksbm == ''){
-					this.$message.warning('请输入供应商货号!');
+				}else if(this.form.plbm == ''){
+					this.$message.warning('请选择品类编码!');
+				}else if(this.form.size == ''){
+					this.$message.warning('请输入尺码!');
+				}else if(this.form.color == ''){
+					this.$message.warning('请输入颜色!');
 				}else if(this.form.mlcf == ''){
 					this.$message.warning('请输入面料成分!');
-				}else if(this.form.dpj == ''){
-					this.$message.warning('请输入吊牌价!');
-				}else if(this.form.kfkh == ''){
-					this.$message.warning('请输入开发款号!');
-				}else if(this.form.dlmc == ''){
-					this.$message.warning('请输入大类名称!');
-				}else if(this.form.mlmc == ''){
-					this.$message.warning('请输入面料名称!');
-				}else if(this.form.sccs == ''){
-					this.$message.warning('请输入生产厂商.名称!');
-				}else if(this.form.bfdc == ''){
-					this.$message.warning('请输入标费档次.名称!');
+				}else if(this.form.safe_level == ''){
+					this.$message.warning('请输入安全技术级别!');
+				}else if(this.form.zxbz == ''){
+					this.$message.warning('请输入执行标准!');
 				}else if(this.form.cbj == ''){
 					this.$message.warning('请输入成本价!');
-				}else if(this.form.sxz == ''){
-					this.$message.warning('请输入上下装!');
+				}else if(this.form.dpj == ''){
+					this.$message.warning('请输入吊牌价!');
+				}else if(this.form.supplier_name == ''){
+					this.$message.warning('请选择供应商!');
+				}else if(this.form.supplier_ksbm == ''){
+					this.$message.warning('请输入供应商货号!');
+				}else if(this.form.xl == ''){
+					this.$message.warning('请输入系列!');
+				}else if(this.form.sn_69 == ''){
+					this.$message.warning('请输入69码!');
+				}else if(this.form.labels == ''){
+					this.$message.warning('请输入商品标签!');
 				}else{
 					if(this.dialog_type == '1'){	//添加
 						demandResource.addKsbm(this.form).then(res => {

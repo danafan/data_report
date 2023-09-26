@@ -16,7 +16,7 @@
 				<el-input v-model="gyshh" clearable placeholder="请输入供应商货号"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="mini" @click="handlePageChange(1)">搜索</el-button>
+				<el-button type="primary" size="mini" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="flex ac jsb mb-10">
@@ -81,6 +81,7 @@
 				title_list:[],
 				total:0,
 				update_time:"",
+				d:1
 			}
 		},
 		created(){
@@ -105,6 +106,11 @@
 						}
 					})
 				}
+			},
+			searchFn(){
+				this.title_list = [];
+				this.sort = "";
+				this.handlePageChange(1);
 			},
 			//获取数据
 			getData(){
