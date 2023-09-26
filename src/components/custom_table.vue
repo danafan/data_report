@@ -133,6 +133,8 @@
 </el-table-column>
 <el-table-column label="操作" :width="setting_width" align="center" fixed="right" v-if="is_setting">
 	<template slot-scope="scope">
+		<!-- 生成款式编码【确认同步】 -->
+		<el-button type="text" size="small" @click="$emit('syncJst',scope.row[fieldName])" v-if='button_list.sync == 1 && scope.row.sync_status == 1'>确认同步</el-button>
 		<!-- 生成款式编码【增加】 -->
 		<el-button type="text" size="small" @click="$emit('addSpecFn',{[fieldName]:scope.row[fieldName],ksbm:scope.row.ksbm})" v-if='button_list.add_spec == 1 && scope.row.status == 1'>增加</el-button>
 		<!-- 生成款式编码【编辑】 -->

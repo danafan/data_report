@@ -49,7 +49,7 @@
 			<el-button type="primary" plain size="small" @click="export_dialog = true" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			<el-button type="primary" size="small" @click="addKsbm" v-if="button_list.add == 1">添加<i class="el-icon-circle-plus-outline el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="tableCallBack" @addSpecFn="addSpecFn" @deleteFn="deleteFn" @editFn="editKsbm"/>
+		<custom-table v-loading="loading" :isLoading="loading" tableName="ksbm_table" max_height="630" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack" :is_setting="true" :button_list="button_list" fieldName="ksbm_id" @tableCallBack="tableCallBack" @addSpecFn="addSpecFn" @deleteFn="deleteFn" @editFn="editKsbm" @syncJst="syncJst"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handleCurrentChange"/>
 		<!-- sku资料 -->
 		<el-dialog title="sku资料" @close="closeAddSku" width="30%" :visible.sync="add_sku_dialog">
@@ -586,6 +586,32 @@
 					});          
 				});
 			},
+			//同步聚水潭
+			syncJst(ksbm_id){
+				this.$confirm('确认同步聚水潭?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						ksbm_id:ksbm_id
+					}
+					demandResource.syncJst(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}).catch(() => {
+					this.$message({
+						type: 'info',
+						message: '已取消'
+					});          
+				});
+			},
 			//获取用户列表
 			getUserList(){
 				formDataResource.ajaxUser().then(res => {
@@ -620,7 +646,6 @@
 								this.form[k] = data[k] == 0?'':data[k];
 							}
 						}
-						console.log(this.form)
 					}else{
 						this.$message.warning(res.data.msg);
 					}

@@ -29,7 +29,7 @@
 	</div>
 </template>
 <script>
-	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate} from '../../api/nowMonth.js'
+	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,lastXDate} from '../../api/nowMonth.js'
 	import operationResource from '../../api/operationResource.js'
 
 	import {exportPost} from '../../api/export.js'
@@ -64,13 +64,13 @@
 						}
 					}]
 				},	 										
-				date:[getNowDate(),getNowDate()],			//时间区间
-				dp_list:[],						//店铺列表
-				dp_ids:[],						//选中的店铺
-				pt_list:[],						//平台列表
-				pt_ids:[],						//选择平台
+				date:[lastXDate(7),lastXDate(1)],			//时间区间
+				dp_list:[],									//店铺列表
+				dp_ids:[],									//选中的店铺
+				pt_list:[],									//平台列表
+				pt_ids:[],									//选择平台
 				page:1,			
-				pagesize:20,			
+				pagesize:15,			
 				sort:"",
 				loading:false,
 				table_data:[],

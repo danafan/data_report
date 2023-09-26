@@ -84,7 +84,8 @@ let path = {
 	addSetting:'jst_ksbm_sku/add_setting',							//添加资料配置项
 	editSetting:'jst_ksbm_sku/edit_setting',						//编辑资料配置项
 	delSetting:'jst_ksbm_sku/del_setting',							//删除资料配置项
-	
+	syncJst:'jst_ksbm_sku/sync_jst',								//同步聚水潭
+			
 }						
 export default{
 	//需求列表
@@ -426,6 +427,10 @@ export default{
 	//删除资料配置项
 	delSetting(params){
 		return http.post(path.delSetting, params)
+	},
+	//同步聚水潭
+	syncJst(params){
+		return http.post(path.syncJst, params)
 	},
 }
 
