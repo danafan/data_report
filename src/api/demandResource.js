@@ -85,6 +85,7 @@ let path = {
 	editSetting:'jst_ksbm_sku/edit_setting',						//编辑资料配置项
 	delSetting:'jst_ksbm_sku/del_setting',							//删除资料配置项
 	syncJst:'jst_ksbm_sku/sync_jst',								//同步聚水潭
+	grabSkuExport:'supply_chain/grab_sku_export',				//导出缺货sku
 			
 }						
 export default{
@@ -431,6 +432,10 @@ export default{
 	//同步聚水潭
 	syncJst(params){
 		return http.post(path.syncJst, params)
+	},
+	//导出缺货sku
+	grabSkuExport(params){
+		return http.post(path.grabSkuExport, params)
 	},
 }
 

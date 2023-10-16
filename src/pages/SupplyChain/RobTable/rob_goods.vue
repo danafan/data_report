@@ -37,7 +37,10 @@
 		</el-form>
 		<div class="export_row">
 			<div class="update_time">更新时间：{{dataObj.update_time}}</div>
-			<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			<div class="flex">
+				<el-button type="primary" plain size="mini" @click="exportGrabSku">导出缺货sku<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="mini" @click="exportFile">导出<i class="el-icon-download el-icon--right"></i></el-button>
+			</div>
 		</div>
 		<el-table size="small" ref="multipleTable" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" max-height="630px" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" v-loading="loading" @sort-change="tableSortChange">
 			<el-table-column prop="gys" label="供应商" align="center" show-overflow-tooltip sortable="custom">
@@ -247,6 +250,31 @@
 					}else{
 						this.$message.warning(res.data.msg);
 					}
+				});
+			},
+			//导出缺货sku
+			exportGrabSku(){
+				MessageBox.confirm('确认导出缺货sku?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						ksbm:this.select_ks_ids.join(','),
+						gys:this.select_gys_ids.join(','),
+						gysbm:this.select_gyshh_ids.join(','),
+						sfcxqh:this.sfcxqh,
+						sfqlb:this.sfqlb,
+						sort:this.table_sort
+					}
+					demandResource.grabSkuExport(arg).then(res => {
+						exportPost("\ufeff" + res.data,'缺货sku报表');
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消导出'
+					});          
 				});
 			},
 			//导出
