@@ -79,7 +79,11 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
-			<el-table-column prop="supplier_ksbm" show-overflow-tooltip label="供应商款号" width="120" align="center"></el-table-column>
+			<el-table-column prop="supplier_ksbm" show-overflow-tooltip label="供应商款号" width="120" align="center">
+				<template slot-scope="scope">
+					<el-input size="small" v-model="scope.row.supplier_ksbm" @focus="onKsbmFocus(scope.row.supplier_ksbm)" @change="editSupplierKsbm($event,scope.row)" placeholder="输入供应商款号"></el-input>
+				</template>
+			</el-table-column>
 			<el-table-column label="批发价" width="120" align="center">
 				<template slot-scope="scope">
 					<el-input size="small" @mousewheel.native.prevent type="number" v-model="scope.row.batch_price" @change="editFun('batch_price',scope.row.id,scope.row.batch_price)" placeholder="输入批发价" :disabled="button_list.edit_batch_price != 1"></el-input>
@@ -290,6 +294,7 @@
 				export_date:[],			//导出日期区间
 				user_type:"",
 				current_supplier:"",	//当前点击的供应商
+				current_supplier_ksbm:'',	//当前点击的供应商款号
 				feedBackDialog:false,	//点击反馈的弹窗
 				id:"",					//点击反馈的ID
 				ksbm:"",				//点击反馈的编码
@@ -532,9 +537,13 @@
 					})
 				};
 			},
-			//获取焦点
+			//修改供应商获取焦点
 			onFocus(e){
 				this.current_supplier = e;
+			},
+			//修改供应商款号获取焦点
+			onKsbmFocus(e){
+				this.current_supplier_ksbm = e;
 			},
 			//单独修改供应商
 			editSupplier(e,row){
@@ -556,6 +565,32 @@
 					})
 				}).catch(() => {
 					row.supplier = this.current_supplier;
+					this.$message({
+						type: 'info',
+						message: '取消更改'
+					});          
+				});
+			},
+			//修改供应商款号
+			editSupplierKsbm(e,row){
+				this.$confirm(`原供应商款号${this.current_supplier_ksbm} 更新供应商款号${e}?`, '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					let arg = {
+						id:row.id,
+						supplier_ksbm:e
+					}
+					resource.editSupplierKsbm(arg).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}).catch(() => {
+					row.supplier_ksbm = this.current_supplier_ksbm;
 					this.$message({
 						type: 'info',
 						message: '取消更改'

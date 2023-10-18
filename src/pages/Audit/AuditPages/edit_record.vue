@@ -90,7 +90,7 @@
 						<div class="label">更新供应商：</div>
 						<div>{{detailObj.edit_supplier}}</div>
 					</div>
-					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3 || detailObj.type == 4">
+					<div class="content_row" v-if="detailObj.type == '0' || detailObj.type == '1' || detailObj.type == 3 || detailObj.type == 4 || detailObj.type == 7">
 						<div class="label">供应商款号：</div>
 						<div>{{detailObj.supplier_ksbm}}</div>
 					</div>

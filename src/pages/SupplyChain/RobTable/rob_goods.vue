@@ -82,7 +82,7 @@
 		<!-- 下钻 -->
 		<el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
 			<el-table :data="data" size="mini" @sort-change="detailSortChange">
-				<el-table-column align="center" prop="ksbm" label="款号"></el-table-column>
+				<el-table-column align="center" prop="ksbm" show-overflow-tooltip label="款号"></el-table-column>
 				<el-table-column align="center" prop="color" label="图片">
 					<template slot-scope="scope">
 						<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>

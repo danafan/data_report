@@ -91,6 +91,7 @@ let path = {
 	xhsBillExport:'audit/xhs_bill_export',					//小红书账单导出
 	ajaxJdBillShops:'audit/ajax_jd_bill_shops',				//ajax京东账单-店铺列表
 	ytSendOrder:'audit/yt_send_order',						//sd报表批量导入内部订单号
+	editSupplierKsbm:'audit/edit_supplier_ksbm',			//单独修改供应商款号
 }							
 export default{
 	//款式编码列表
@@ -460,6 +461,10 @@ export default{
 	//sd报表批量导入内部订单号
 	ytSendOrder(params){
 		return http.post(path.ytSendOrder, params)
+	},
+	//单独修改供应商款号
+	editSupplierKsbm(params){
+		return http.post(path.editSupplierKsbm, params)
 	},
 }
 
