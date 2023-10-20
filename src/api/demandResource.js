@@ -85,7 +85,8 @@ let path = {
 	editSetting:'jst_ksbm_sku/edit_setting',						//编辑资料配置项
 	delSetting:'jst_ksbm_sku/del_setting',							//删除资料配置项
 	syncJst:'jst_ksbm_sku/sync_jst',								//同步聚水潭
-	grabSkuExport:'supply_chain/grab_sku_export',				//导出缺货sku
+	grabSkuExport:'supply_chain/grab_sku_export',					//导出缺货sku
+	ajaxTopSpmc:'common/ajax_mc',									//款式top200获取品类列表
 			
 }						
 export default{
@@ -436,6 +437,10 @@ export default{
 	//导出缺货sku
 	grabSkuExport(params){
 		return http.post(path.grabSkuExport, params)
+	},
+	//款式top200获取商品名称列表
+	ajaxTopSpmc(params){
+		return http.get(path.ajaxTopSpmc, params)
 	},
 }
 

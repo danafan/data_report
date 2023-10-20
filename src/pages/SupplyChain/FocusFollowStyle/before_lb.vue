@@ -58,8 +58,8 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品类：">
-				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
-					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
+				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable remote reserve-keyword :remote-method="ajaxTopSpmc" collapse-tags placeholder="全部">
+					<el-option v-for="item in goods_name_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -152,7 +152,7 @@
 				select_store_ids:[],						//选中的店铺id列表
 				sjxrrq:getNowDate(),
 				type:"1",
-				pl_list:[],									//品类列表
+				goods_name_list:[],							//品类列表
 				select_pl_ids:[],							//选中的品类列表
 				pp_list:[],									//品牌列表
 				select_pp_list:[],							//选中的品牌列表
@@ -183,10 +183,10 @@
 			this.getStoreList()
 			//获取供应商分类
 			this.getGysfl();
-			//品类
-			this.getPl();
 			//品牌列表
 			this.ajaxPp();
+			//获取商品名称列表
+			// this.ajaxTopSpmc();
 			//获取列表
 			this.getData();
 		},
@@ -259,21 +259,6 @@
 					}
 				})
 			},
-			//品类列表
-			getPl(){
-				if(this.$store.state.pl_list.length == 0){  //品类列表是空的
-					resource.ajaxPl().then(res => {
-						if(res.data.code == 1){
-							this.pl_list = res.data.data;
-							this.$store.commit('setPlList',this.pl_list);
-						}else{
-							this.$message.warning(res.data.msg);
-						}
-					})
-				}else{
-					this.pl_list = this.$store.state.pl_list;
-				}
-			},
 			//品牌列表
 			ajaxPp(){
 				resource.ajaxDeerShopPp().then(res => {
@@ -283,6 +268,18 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//品类列表
+			ajaxTopSpmc(e){
+				if(e != ''){
+					demandResource.ajaxTopSpmc({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.goods_name_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//表格前几天到货数
 			filterLabel(num,type){
