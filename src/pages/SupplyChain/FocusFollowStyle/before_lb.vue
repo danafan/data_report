@@ -70,7 +70,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
+				<el-button type="primary" size="small" @click="handleCurrentChange(1,true)">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="buts">
@@ -376,10 +376,10 @@
 				//获取列表
 				this.getData();
 			},
-			handleCurrentChange(val) {
+			handleCurrentChange(val,bool) {
 				this.page = val;
 				//获取列表
-				this.getData();
+				this.getData(bool);
 			},
 			//恢复默认
 			Restore(type){

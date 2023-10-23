@@ -81,7 +81,7 @@
 			<el-table-column prop="ksbm" label="新编码" width="120" align="center"></el-table-column>
 			<el-table-column prop="supplier_ksbm" show-overflow-tooltip label="供应商款号" width="120" align="center">
 				<template slot-scope="scope">
-					<el-input size="small" v-model="scope.row.supplier_ksbm" @focus="onKsbmFocus(scope.row.supplier_ksbm)" @change="editSupplierKsbm($event,scope.row)" placeholder="输入供应商款号"></el-input>
+					<el-input size="small" v-model="scope.row.supplier_ksbm" @focus="onKsbmFocus(scope.row.supplier_ksbm)" @change="editSupplierKsbm($event,scope.row)" placeholder="输入供应商款号" :disabled="button_list.edit_supplier_ksbm != 1"></el-input>
 				</template>
 			</el-table-column>
 			<el-table-column label="批发价" width="120" align="center">
