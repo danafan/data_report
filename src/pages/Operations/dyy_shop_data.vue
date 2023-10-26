@@ -17,6 +17,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="品牌：">
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable reserve-keyword placeholder="请输入品牌" collapse-tags>
+					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
@@ -31,6 +37,7 @@
 <script>
 	import {getMonthStartDate,getCurrentDate,getNowDate,getLastMonthStartDate,getLastMonthEndDate,lastXDate} from '../../api/nowMonth.js'
 	import operationResource from '../../api/operationResource.js'
+	import commonResource from '../../api/resource.js'
 
 	import {exportPost} from '../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
@@ -69,6 +76,8 @@
 				dp_ids:[],									//选中的店铺
 				pt_list:[],									//平台列表
 				pt_ids:[],									//选择平台
+				pp_list:[],									//品牌列表
+				select_pp_list:[],							//选中的品牌列表
 				page:1,			
 				pagesize:15,			
 				sort:"",
@@ -94,6 +103,7 @@
 						let data = res.data.data;
 						this.dp_list = data.dp_list;
 						this.pt_list = data.pt_list;
+						this.pp_list = data.pp_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -106,6 +116,7 @@
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
 					dp:this.dp_ids.join(','),
 					pt:this.pt_ids.join(','),
+					pp:this.select_pp_list.join(','),
 					page:this.page,
 					pagesize:this.pagesize,
 					sort:this.sort
@@ -142,6 +153,7 @@
 						end_date:this.date && this.date.length> 0?this.date[1]:"",
 						dp:this.dp_ids.join(','),
 						pt:this.pt_ids.join(','),
+						pp:this.select_pp_list.join(','),
 						sort:this.sort
 					}
 					operationResource.dyyShopExport(arg).then(res => {
