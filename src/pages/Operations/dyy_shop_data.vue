@@ -40,6 +40,7 @@
 	import commonResource from '../../api/resource.js'
 
 	import {exportPost} from '../../api/export.js'
+	import { getQianNumber } from '../../utils/tool'
 	import { MessageBox,Message } from 'element-ui';
 
 	import CustomTable from '../../components/custom_table.vue'
@@ -96,6 +97,7 @@
 			this.getData();
 		},
 		methods:{
+			getQianNumber,
 			//获取店铺和平台列表
 			dyyShopPlatform(){
 				operationResource.dyyShopPlatform().then(res => {
@@ -128,6 +130,11 @@
 						let data = res.data.data;
 						this.title_list = data.title_list;
 						this.table_data = data.table_data.data;
+						this.table_data.map(item => {
+							item.zfje = this.getQianNumber(item.zfje);
+							item.cgtkje = this.getQianNumber(item.cgtkje);
+							item.sjje = this.getQianNumber(item.sjje);
+						})
 						if(this.table_data.length > 0){
 							this.table_total_data = this.table_data[0];
 							this.table_data.splice(0,1);

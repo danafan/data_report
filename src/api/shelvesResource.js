@@ -31,6 +31,7 @@ let path = {
 	delGsViolation:'offshelf/del_gs_violation',			//工商违规-删除违规记录
 	gsViolationExport:'offshelf/gs_violation_export',	//工商违规记录导出
 	exportViolation:'offshelf/violation_order_export',	//违规订单导出
+	delOffKsbm:'offshelf/del_off_ksbm',					//删除下架款
 
 	
 }						
@@ -162,6 +163,10 @@ export default{
 	//违规订单导出
 	exportViolation(params){
 		return http.post(path.exportViolation, params)
+	},
+	//删除下架款
+	delOffKsbm(params){
+		return http.post(path.delOffKsbm, params)
 	},
 }
 

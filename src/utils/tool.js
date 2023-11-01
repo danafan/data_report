@@ -44,4 +44,13 @@ export function importExcel(file,key){
 		reader.readAsBinaryString(file);
 	});
 }
+//千分位
+export function getQianNumber(number) {
+	const num = String(number)
+	const reg = /\d{1,3}(?=(\d{3})+$)/g
+	const res = num.replace(/^(-?)(\d+)((\.\d+)?)$/, function(match, s1, s2, s3) {
+		return s1 + s2.replace(reg, '$&,') + s3
+	})
+	return res
+}
 

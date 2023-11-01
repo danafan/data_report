@@ -25,6 +25,11 @@
 			<el-table-column show-overflow-tooltip prop="off_reason" label="下架原因" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip prop="tjr" label="提交人" align="center"></el-table-column>
 			<el-table-column show-overflow-tooltip prop="add_time" label="提交时间" align="center"></el-table-column>
+			<el-table-column label="操作" align="center" width="120" fixed="right">
+				<template slot-scope="scope">
+					<el-button type="text" size="small" @click="delOffKsbm(scope.row.id)" v-if="dataObj.button_list.del_ksbm == 1">删除</el-button>
+				</template>
+			</el-table-column>
 		</el-table>
 		<div class="page">
 			<el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange" :current-page="page" :pager-count="11" :page-size="pagesize" :page-sizes="[5, 10, 15, 20]" layout="total, sizes, prev, pager, next, jumper" :total="dataObj.total">
@@ -49,29 +54,29 @@
 	</div>
 </template>
 <style lang="less" scoped>
-.buts{
-	margin-bottom: 15px;
-	display: flex;
-	align-items: center;
-	justify-content: flex-end;
-}
-.down_box{
-	display:flex;
-	.upload_box{
-		margin-left: 10px;
-		position: relative;
-		.upload_file{
-			position: absolute;
-			top: 0;
-			bottom: 0;
-			left: 0;
-			right: 0;
-			width: 100%;
-			height: 100%;
-			opacity: 0;
+	.buts{
+		margin-bottom: 15px;
+		display: flex;
+		align-items: center;
+		justify-content: flex-end;
+	}
+	.down_box{
+		display:flex;
+		.upload_box{
+			margin-left: 10px;
+			position: relative;
+			.upload_file{
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0;
+			}
 		}
 	}
-}
 </style>
 <script>
 	import resource from '../../../api/shelvesResource.js'
@@ -189,6 +194,29 @@
 						this.$message.warning(res.data.msg);
 					}
 				})
+			},
+			//删除下架款
+			delOffKsbm(id){
+				MessageBox.confirm('确认删除此条记录吗?', '提示', {
+					confirmButtonText: '确定',
+					cancelButtonText: '取消',
+					type: 'warning'
+				}).then(() => {
+					resource.delOffKsbm({id:id}).then(res => {
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							//获取列表
+							this.getList();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}).catch(() => {
+					Message({
+						type: 'info',
+						message: '取消删除'
+					});          
+				});
 			},
 			//分页
 			handleSizeChange(val) {
