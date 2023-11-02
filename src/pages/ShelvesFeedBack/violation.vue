@@ -16,7 +16,7 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="统计日期:">
+			<el-form-item label="投诉日期:">
 				<el-date-picker
 				v-model="date"
 				type="daterange"
@@ -28,6 +28,12 @@
 				:picker-options="pickerOptions">
 			</el-date-picker>
 		</el-form-item>
+		<el-form-item label="处理进度：">
+				<el-select v-model="handle_status" clearable placeholder="全部">
+					<el-option v-for="item in handle_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
 		<el-form-item>
 			<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
 		</el-form-item>
@@ -57,15 +63,27 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="内容：" required>
+			<el-form-item label="投诉内容：" required>
 				<el-input type="textarea" style="width: 192px" :rows="3" v-model="info.content" placeholder="请输入内容"></el-input>
 			</el-form-item>
 			<el-form-item label="投诉单：" required>
-				<uploads-file :multiple="false" :current_images="current_images" @callback="uploadCallBack" v-if="showDialog"/>
+				<uploads-file :current_images="current_images" :max_num="2" @callback="uploadCallBack" v-if="showDialog"/>
 			</el-form-item>
 			<el-form-item label="投诉日期：" required>
 				<el-date-picker v-model="info.date" value-format="yyyy-MM-dd" type="date" placeholder="投诉日期">
 				</el-date-picker>
+			</el-form-item>
+			<el-form-item label="处理进度：" required>
+				<el-select v-model="info.handle_status" clearable placeholder="请选择处理进度">
+					<el-option v-for="item in handle_list" :key="item.id" :label="item.name" :value="item.id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="处理凭证：" required>
+				<uploads-file :current_images="voucher_images" :max_num="2" @callback="uploadVoucherCallBack" v-if="showDialog"/>
+			</el-form-item>
+			<el-form-item label="处理结果：" required>
+				<el-input type="textarea" style="width: 192px" :rows="3" v-model="info.handle_result" placeholder="请输入内容"></el-input>
 			</el-form-item>
 		</el-form>
 		<div slot="footer" class="dialog-footer">
@@ -114,6 +132,7 @@
 					}]
 				},	 										
 				date:[],	//统计日期
+				handle_status:0,				//处理进度
 				order_no:"",					//订单编号
 				shop_list:[],					//店铺列表
 				shop_list_ids:[],				//选中的店铺列表
@@ -130,14 +149,25 @@
 				showDialog:false,
 				id:"",							//当前选中的ID
 				info:{
-					shop_name:"",					
-					order_no:"",
 					type:"",
-					image:"",
-					content:"",
-					date:""
+					date:"",	
+					image:"",	
+					content:"",	
+					shop_name:"",		
+					order_no:"",
+					handle_status:"",
+					handle_voucher:"",
+					handle_result:""
 				},
-				current_images:[],				//获取详情的当前图片列表
+				handle_list:[{
+					id:0,
+					name:'未处理'
+				},{
+					id:1,
+					name:'已处理'
+				}],								//处理进度列表
+				current_images:[],				//详情的投诉单列表
+				voucher_images:[],				//详情的处理凭证列表
 			}
 		},
 		created(){
@@ -190,6 +220,7 @@
 						type:this.type_list_ids.join(','),
 						start_date:this.date && this.date.length> 0?this.date[0]:"",
 						end_date:this.date && this.date.length> 0?this.date[1]:"",
+						handle_status:this.handle_status
 					}
 					resource.gsViolationExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'工商违规记录');
@@ -209,6 +240,7 @@
 					type:this.type_list_ids.join(','),
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
+					handle_status:this.handle_status,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -219,7 +251,24 @@
 						let data = res.data.data;
 						this.table_list = data.table_data.data;
 						this.table_list.map(item => {
-							item['pic'] = data.domain + item.pic;
+							if(item.pic){
+								let pic_arr = [];
+								item.pic.split(',').map(pic_item => {
+									pic_arr.push(data.domain + pic_item);
+								})
+								item['pic'] = pic_arr.join(',');
+							}else{
+								item['pic'] = '';
+							}
+							if(item.handle_voucher){
+								let voucher_arr = [];
+								item.handle_voucher.split(',').map(voucher_item => {
+									voucher_arr.push(data.domain + voucher_item);
+								})
+								item['handle_voucher'] = voucher_arr.join(',');
+							}else{
+								item['handle_voucher'] = '';
+							}
 						})
 						this.title_list = data.title_list;
 						this.total = data.table_data.total;
@@ -254,12 +303,28 @@
 							this.info[k] = data[k];
 						}
 						this.id = data.id;
-						let o = {
-							domain:data.domain,
-							urls:data.image,
-							is_del:false
+
+						if(data.image){
+							data.image.split(',').map(image_item => {
+								let image_obj = {
+									domain:data.domain,
+									urls:image_item,
+									is_del:false
+								}
+								this.current_images.push(image_obj);
+							})
 						}
-						this.current_images.push(o);
+
+						if(data.handle_voucher){
+							data.handle_voucher.split(',').map(voucher_item => {
+								let voucher_obj = {
+									domain:data.domain,
+									urls:voucher_item,
+									is_del:false
+								}
+								this.voucher_images.push(voucher_obj);
+							})
+						}
 						this.dialog_type = '2';
 						this.showDialog = true;
 					}else{
@@ -293,18 +358,26 @@
 			//关闭弹窗
 			closeDialog(){
 				this.info = {
-					shop_name:"",					
-					order_no:"",
 					type:"",
-					image:"",
-					content:"",
-					date:""
+					date:"",	
+					image:"",	
+					content:"",	
+					shop_name:"",		
+					order_no:"",
+					handle_status:"",
+					handle_voucher:"",
+					handle_result:""
 				};
 				this.current_images = [];
+				this.voucher_images = [];
 			},
-			//监听图片变化并赋值
+			//投诉单图片回调
 			uploadCallBack(v){
-				this.info.image = v.length > 0?v[0]:'';
+				this.info.image = v.join(',');
+			},
+			//处理进度图片回调
+			uploadVoucherCallBack(v){
+				this.info.handle_voucher = v.join(',');
 			},
 			//弹窗提交
 			commitDialog(){
@@ -325,6 +398,15 @@
 					return;
 				}else if(!this.info.date){
 					this.$message.warning('请选择投诉日期!');
+					return;
+				}else if(!this.info.handle_status){
+					this.$message.warning('请选择处理进度!');
+					return;
+				}else if(!this.info.handle_voucher){
+					this.$message.warning('请上传处理凭证!');
+					return;
+				}else if(!this.info.handle_result){
+					this.$message.warning('请输入处理结果!');
 					return;
 				}
 				if(this.dialog_type == '1'){	//创建

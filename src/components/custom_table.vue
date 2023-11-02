@@ -224,7 +224,7 @@
 			//操作时取的参数
 			fieldName:{
 				type:String,
-			default:''
+			default:'id'
 			},
 			//表格名称（用于区分点击的哪个表格）
 			tableName:{
