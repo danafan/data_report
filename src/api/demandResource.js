@@ -87,6 +87,9 @@ let path = {
 	syncJst:'jst_ksbm_sku/sync_jst',								//同步聚水潭
 	grabSkuExport:'supply_chain/grab_sku_export',					//导出缺货sku
 	ajaxTopSpmc:'common/ajax_mc',									//款式top200获取品类列表
+	wmsOffshelf:'offshelf/wms_offshelf',							//下架款数据（仓库查看）
+	wmsOffshelfExport:'offshelf/wms_offshelf_export',				//下架款数据（仓库查看）导出
+	ajaxWmsOffshelfFrom:'offshelf/ajax_wms_offshelf_from',			//下架来源
 			
 }						
 export default{
@@ -441,6 +444,18 @@ export default{
 	//款式top200获取商品名称列表
 	ajaxTopSpmc(params){
 		return http.get(path.ajaxTopSpmc, params)
+	},
+	//下架款数据（仓库查看）
+	wmsOffshelf(params){
+		return http.get(path.wmsOffshelf, params)
+	},
+	//下架款数据（仓库查看）导出
+	wmsOffshelfExport(params){
+		return http.post(path.wmsOffshelfExport, params)
+	},
+	//下架来源
+	ajaxWmsOffshelfFrom(params){
+		return http.get(path.ajaxWmsOffshelfFrom, params)
 	},
 }
 
