@@ -48,7 +48,9 @@ export function middleWare(params,type) {
      key != "version_describe" && 
      key != "without_describe" && 
      key != "special_content" && 
-     key != "operation_remark"){
+     key != "operation_remark" &&
+     key != "content" &&
+     key != "handle_result"){
       sign_arr.push(`${key}=${sort_obj[key]}`);
     }
   }
