@@ -73,16 +73,16 @@
 				<el-date-picker v-model="info.date" value-format="yyyy-MM-dd" type="date" placeholder="投诉日期">
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item label="处理进度：" required>
-				<el-select v-model="info.handle_status" clearable placeholder="请选择处理进度">
+			<el-form-item label="处理进度：">
+				<el-select v-model="info.handle_status" placeholder="请选择处理进度">
 					<el-option v-for="item in handle_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="处理凭证：" required>
+			<el-form-item label="处理凭证：">
 				<uploads-file :current_images="voucher_images" :max_num="2" @callback="uploadVoucherCallBack" v-if="showDialog"/>
 			</el-form-item>
-			<el-form-item label="处理结果：" required>
+			<el-form-item label="处理结果：">
 				<el-input type="textarea" style="width: 192px" :rows="3" v-model="info.handle_result" placeholder="请输入内容"></el-input>
 			</el-form-item>
 		</el-form>
@@ -155,7 +155,7 @@
 					content:"",	
 					shop_name:"",		
 					order_no:"",
-					handle_status:"",
+					handle_status:0,
 					handle_voucher:"",
 					handle_result:""
 				},
@@ -364,7 +364,7 @@
 					content:"",	
 					shop_name:"",		
 					order_no:"",
-					handle_status:"",
+					handle_status:0,
 					handle_voucher:"",
 					handle_result:""
 				};
@@ -398,15 +398,6 @@
 					return;
 				}else if(!this.info.date){
 					this.$message.warning('请选择投诉日期!');
-					return;
-				}else if(!this.info.handle_status){
-					this.$message.warning('请选择处理进度!');
-					return;
-				}else if(!this.info.handle_voucher){
-					this.$message.warning('请上传处理凭证!');
-					return;
-				}else if(!this.info.handle_result){
-					this.$message.warning('请输入处理结果!');
 					return;
 				}
 				if(this.dialog_type == '1'){	//创建

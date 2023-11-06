@@ -4,7 +4,7 @@
 			<el-form-item label="款式编码：">
 				<el-input v-model="ksbm" placeholder="供应商款式编码/线上款式编码"></el-input>
 			</el-form-item>
-			<el-form-item label="类型：">
+			<el-form-item label="下架来源：">
 				<el-select v-model="from_type_ids" clearable multiple filterable placeholder="请输入类型" collapse-tags>
 					<el-option v-for="item in from_type_list" :key="item.value" :label="item.name" :value="item.value">
 					</el-option>
@@ -57,7 +57,7 @@
 		methods:{
 			//下架来源
 			ajaxWmsOffshelfFrom(){
-				resource.wmsOffshelf().then(res => {
+				resource.ajaxWmsOffshelfFrom().then(res => {
 					if(res.data.code == 1){
 						this.from_type_list = res.data.data;
 					}else{

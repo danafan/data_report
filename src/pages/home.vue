@@ -99,10 +99,10 @@
 					<i class="el-icon-s-promotion"></i>
 					<span slot="title">推广绩效</span>
 				</el-menu-item> -->
-				<el-menu-item index="/delist_data">
+				<!-- <el-menu-item index="/delist_data">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">下架款数据</span>
-				</el-menu-item>
+				</el-menu-item> -->
 			</el-menu>
 		</div>
 		<el-main class="main">
