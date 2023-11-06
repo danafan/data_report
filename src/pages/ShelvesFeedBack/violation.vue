@@ -54,6 +54,9 @@
 			<el-form-item label="店铺名称：" required>
 				<el-input v-model="info.shop_name" style="width: 192px" placeholder="店铺名称"></el-input>
 			</el-form-item>
+			<el-form-item label="公司名称：" required>
+				<el-input v-model="info.company" style="width: 192px" placeholder="公司名称"></el-input>
+			</el-form-item>
 			<el-form-item label="订单编号：" required>
 				<el-input v-model="info.order_no" style="width: 192px" placeholder="订单编号"></el-input>
 			</el-form-item>
@@ -153,7 +156,8 @@
 					date:"",	
 					image:"",	
 					content:"",	
-					shop_name:"",		
+					shop_name:"",	
+					company:"",	
 					order_no:"",
 					handle_status:0,
 					handle_voucher:"",
@@ -362,7 +366,8 @@
 					date:"",	
 					image:"",	
 					content:"",	
-					shop_name:"",		
+					shop_name:"",	
+					company:"",		
 					order_no:"",
 					handle_status:0,
 					handle_voucher:"",
@@ -383,6 +388,9 @@
 			commitDialog(){
 				if(this.info.shop_name == ''){
 					this.$message.warning('请输入店铺名称!');
+					return;
+				}else if(this.info.company == ''){
+					this.$message.warning('请输入公司名称!');
 					return;
 				}else if(this.info.order_no == ''){
 					this.$message.warning('请输入订单编号!');
