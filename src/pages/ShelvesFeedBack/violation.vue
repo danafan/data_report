@@ -35,7 +35,7 @@
 				</el-select>
 			</el-form-item>
 		<el-form-item>
-			<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
+			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 		</el-form-item>
 	</el-form>
 	<div class="flex ac jse mb-15">
@@ -235,6 +235,13 @@
 						message: '取消导出'
 					});          
 				});
+			},
+			//点击搜索
+			searchFn(){
+				this.title_list = [];
+				this.page = 1;
+				//获取列表
+				this.getData();
 			},
 			//获取列表
 			getData(){
