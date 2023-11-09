@@ -5,8 +5,14 @@
 				<el-input v-model="ksbm" placeholder="供应商款式编码/线上款式编码"></el-input>
 			</el-form-item>
 			<el-form-item label="下架来源：">
-				<el-select v-model="from_type_ids" clearable multiple filterable placeholder="请输入类型" collapse-tags>
+				<el-select v-model="from_type_ids" clearable multiple filterable placeholder="请选择下架来源" collapse-tags>
 					<el-option v-for="item in from_type_list" :key="item.value" :label="item.name" :value="item.value">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="仓库位置：">
+				<el-select v-model="ckwz_ids" clearable multiple filterable placeholder="请选择仓库位置" collapse-tags>
+					<el-option v-for="item in ckwz_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -37,6 +43,8 @@
 			return{
 				from_type_list:[],				//下架来源
 				from_type_ids:[],				//选中的下架来源
+				ckwz_list:[],					//仓库位置列表
+				ckwz_ids:[],					//选中的仓库位置
 				ksbm:"",						//款式编码
 				remark:"",						//下架备注
 				page:1,
@@ -51,6 +59,8 @@
 		created(){
 			//下架来源
 			this.ajaxWmsOffshelfFrom();
+			//仓库位置列表
+			this.ajaxOffshelfWms();
 			//获取列表
 			this.getData();
 		},
@@ -65,11 +75,22 @@
 					}
 				})
 			},
+			//仓库位置列表
+			ajaxOffshelfWms(){
+				resource.ajaxOffshelfWms().then(res => {
+					if(res.data.code == 1){
+						this.ckwz_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取列表
 			getData(){
 				let arg = {
 					ksbm:this.ksbm,
 					from_type:this.from_type_ids.join(','),
+					ckwz:this.ckwz_ids.join(','),
 					remark:this.remark,
 					page:this.page,
 					pagesize:this.pagesize
@@ -101,6 +122,7 @@
 					let arg = {
 						ksbm:this.ksbm,
 						from_type:this.from_type_ids.join(','),
+						ckwz:this.ckwz_ids.join(','),
 						remark:this.remark,
 					}
 					resource.wmsOffshelfExport(arg).then(res => {

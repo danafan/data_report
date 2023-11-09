@@ -90,6 +90,7 @@ let path = {
 	wmsOffshelf:'offshelf/wms_offshelf',							//下架款数据（仓库查看）
 	wmsOffshelfExport:'offshelf/wms_offshelf_export',				//下架款数据（仓库查看）导出
 	ajaxWmsOffshelfFrom:'offshelf/ajax_wms_offshelf_from',			//下架来源
+	ajaxOffshelfWms:'offshelf/ajax_offshelf_wms',					//仓库位置列表
 			
 }						
 export default{
@@ -456,6 +457,10 @@ export default{
 	//下架来源
 	ajaxWmsOffshelfFrom(params){
 		return http.get(path.ajaxWmsOffshelfFrom, params)
+	},
+	//仓库位置列表
+	ajaxOffshelfWms(params){
+		return http.get(path.ajaxOffshelfWms, params)
 	},
 }
 
