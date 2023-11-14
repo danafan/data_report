@@ -123,10 +123,18 @@
 				>
 			</el-pagination>
 		</div>
-		<span slot="footer" class="dialog-footer">
-			<el-button size="mini" type="primary" @click="detailDialog = false">关闭</el-button>
-		</span>
+		<!-- 截图 -->
+		<el-dialog
+		width="30%"
+		title="截图（长按保存）"
+		:visible.sync="show_jt"
+		append-to-body>
+		<img style="width:100%" :src="imgUrl">
 	</el-dialog>
+	<span slot="footer" class="dialog-footer">
+		<el-button size="mini" type="primary" @click="detailDialog = false">关闭</el-button>
+	</span>
+</el-dialog>
 </div>
 </template>
 <style type="text/css">
@@ -175,8 +183,9 @@
 				ksbm:"",
 				detail_sort:"",
 				data:[],
-				sss:"",
-				total:0
+				total:0,
+				show_jt:false,
+				imgUrl:""
 			}
 		},
 		created(){
@@ -199,18 +208,9 @@
 					backgroundColor: '#fff', 
 				}).then(canvas => {
         			// 转成图片，生成图片地址
-					var imgUrl = canvas.toDataURL('image/png')
-					var eleLink = document.createElement('a')
-        			eleLink.href = imgUrl // 转换后的图片地址
-        			eleLink.download = '款式信息'
-        			// 触发点击
-        			document.body.appendChild(eleLink)
-        			eleLink.click()
-        			// 然后移除
-        			document.body.removeChild(eleLink)
+					this.imgUrl = canvas.toDataURL('image/png');
+					this.show_jt = true;
         		})
-				cloneDom.style.display = 'none'
-				this.$message.success('截图已保存至本地')	
 			},
 			//指定行颜色
 			tableRowClassName(row, rowIndex) {
