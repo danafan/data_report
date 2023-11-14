@@ -81,34 +81,36 @@
 		</div>
 		<!-- 下钻 -->
 		<el-dialog title="款式信息" @close="closeDetail" :visible.sync="detailDialog">
-			<el-table :data="data" size="mini" @sort-change="detailSortChange">
-				<el-table-column align="center" prop="ksbm" show-overflow-tooltip label="款号"></el-table-column>
-				<el-table-column align="center" prop="color" label="图片">
-					<template slot-scope="scope">
-						<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
-						<div v-else></div>
-					</template>
-				</el-table-column>
-				<el-table-column align="center" prop="color" label="颜色"></el-table-column>
-				<el-table-column align="center" prop="size" label="尺码"></el-table-column>
-				<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
-				</el-table-column>
-				<el-table-column prop="df_qhs" label="缺货数(包含代发)" align="center" width="120px" show-overflow-tooltip sortable="custom">
-				</el-table-column>
-				<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
-				</el-table-column>
-				<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip sortable="custom">
-				</el-table-column>
-				<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip sortable="custom">
-				</el-table-column>
-				<el-table-column prop="dhs" label="今日到货数" width="120px" align="center" show-overflow-tooltip sortable="custom">
-				</el-table-column>
-				<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
-				</el-table-column>
-				<el-table-column prop="sfcxqh" label="是否持续缺货" width="100px" align="center" show-overflow-tooltip>
-				</el-table-column>
-				
-			</el-table>
+			<el-button size="mini" type="primary" plain icon="el-icon-download" @click="downLoadImage">导出截图</el-button>
+			<div ref="imageDom">
+				<el-table :data="data" style="width: 100%" size="mini" @sort-change="detailSortChange">
+					<el-table-column align="center" prop="ksbm" show-overflow-tooltip label="款号"></el-table-column>
+					<el-table-column align="center" prop="color" label="图片">
+						<template slot-scope="scope">
+							<el-image :z-index="2006" style="width: 50px;height: 50px" :src="scope.row.images[0]" fit="scale-down" :preview-src-list="scope.row.images" v-if="scope.row.images"></el-image>
+							<div v-else></div>
+						</template>
+					</el-table-column>
+					<el-table-column align="center" prop="color" label="颜色"></el-table-column>
+					<el-table-column align="center" prop="size" label="尺码"></el-table-column>
+					<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column prop="df_qhs" label="缺货数(包含代发)" align="center" width="120px" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column prop="7_xssl" label="7天销量" align="center" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column prop="kc" label="现有库存" align="center" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column prop="dhs" label="今日到货数" width="120px" align="center" show-overflow-tooltip sortable="custom">
+					</el-table-column>
+					<el-table-column prop="sfq200" label="是否前200款" align="center" show-overflow-tooltip>
+					</el-table-column>
+					<el-table-column prop="sfcxqh" label="是否持续缺货" width="100px" align="center" show-overflow-tooltip>
+					</el-table-column>
+				</el-table>
+			</div>
 			<div class="page">
 				<el-pagination
 				@size-change="detailSizeChange"
@@ -128,27 +130,29 @@
 </div>
 </template>
 <style type="text/css">
-.red_color{
-	background: #F6BD16!important;
-}
+	.red_color{
+		background: #F6BD16!important;
+	}
 </style>
 <style lang="less" scoped>
-.export_row{
-	margin-bottom:5px;
-	display: flex;
-	align-items: center;
-	justify-content: space-between;
-	.update_time{
-		color: red;
-		font-size: 14px; 
+	.export_row{
+		margin-bottom:5px;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		.update_time{
+			color: red;
+			font-size: 14px; 
+		}
 	}
-}
 </style>
 <script>
 	import resource from '../../../api/resource.js'
 	import demandResource from '../../../api/demandResource.js'
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+	import html2canvas from 'html2canvas'
+	import axios from 'axios'
 	export default{
 		data(){
 			return{
@@ -171,6 +175,7 @@
 				ksbm:"",
 				detail_sort:"",
 				data:[],
+				sss:"",
 				total:0
 			}
 		},
@@ -179,6 +184,34 @@
 			this.getList();
 		},
 		methods:{
+			//一键截图
+			downLoadImage() {
+				var width = this.$refs.imageDom.style.width
+				var cloneDom = this.$refs.imageDom.cloneNode(true)
+				cloneDom.style.position = 'absolute'
+				cloneDom.style.top = '0px'
+				cloneDom.style.zIndex = '-1'
+				cloneDom.style.width = width
+				document.body.appendChild(cloneDom)
+				html2canvas(cloneDom, {
+					useCORS: true, 
+					allowTaint: true,
+					backgroundColor: '#fff', 
+				}).then(canvas => {
+        			// 转成图片，生成图片地址
+					var imgUrl = canvas.toDataURL('image/png')
+					var eleLink = document.createElement('a')
+        			eleLink.href = imgUrl // 转换后的图片地址
+        			eleLink.download = '款式信息'
+        			// 触发点击
+        			document.body.appendChild(eleLink)
+        			eleLink.click()
+        			// 然后移除
+        			document.body.removeChild(eleLink)
+        		})
+				cloneDom.style.display = 'none'
+				this.$message.success('截图已保存至本地')	
+			},
 			//指定行颜色
 			tableRowClassName(row, rowIndex) {
 				if (row.row.sfq200 == '是') {
