@@ -38,7 +38,7 @@
 		<el-table ref="multipleTable" size="small" :data="table_data.data" tooltip-effect="dark" style="width: 100%" @sort-change="sortChange" v-loading="loading">
 			<el-table-column :prop="item.field" :label="item.name" :sortable="item.is_sort == 1?'custom':false" align="center" v-for="item in title_list" show-overflow-tooltip>
 				<template slot-scope="scope">
-					<div >{{scope.row[item.field]}}</div>
+					<div :class="[{'red_color':item.field == 'qmye' && parseFloat(scope.row[item.field]) > 1000},{'green_color':item.field == 'yebhts' && scope.row.yebhts >= 30}]">{{scope.row[item.field]}}</div>
 				</template>
 			</el-table-column>
 		</el-table>
@@ -64,6 +64,12 @@
 		font-size: 12px;
 		color: red;
 	}
+}
+.red_color{
+	color: red;
+}
+.green_color{
+	color: green;
 }
 </style>
 <script>
