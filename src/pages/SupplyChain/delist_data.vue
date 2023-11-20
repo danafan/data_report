@@ -20,13 +20,13 @@
 				<el-input v-model="remark" placeholder="下架备注"></el-input>
 			</el-form-item>
 			<el-form-item>
-				<el-button type="primary" size="small" @click="handlePageChange(1)">搜索</el-button>
+				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
 		</el-form>
 		<div class="flex ac jse mb-15">
 			<el-button type="primary" plain size="small" v-if="button_list.export == 1" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
-		<custom-table v-loading="loading" max_height="9999" :button_list="button_list" :table_data="table_list" :title_list="title_list"/>
+		<custom-table v-loading="loading" max_height="9999" :button_list="button_list" :table_data="table_list" :title_list="title_list" @sortCallBack="sortCallBack"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 	</div>
 </template>
@@ -47,6 +47,7 @@
 				ckwz_ids:[],					//选中的仓库位置
 				ksbm:"",						//款式编码
 				remark:"",						//下架备注
+				sort:"",
 				page:1,
 				pagesize:10,				
 				total:0,
@@ -65,6 +66,13 @@
 			this.getData();
 		},
 		methods:{
+			//点击搜索
+			searchFn(){
+				this.page = 1;
+				this.title_list = [];
+				//获取列表
+				this.getData();
+			},
 			//下架来源
 			ajaxWmsOffshelfFrom(){
 				resource.ajaxWmsOffshelfFrom().then(res => {
@@ -85,6 +93,12 @@
 					}
 				})
 			},
+			//款式编码排序回调
+			sortCallBack(sort){
+				this.sort = sort;
+				//获取列表
+				this.getData();
+			},
 			//获取列表
 			getData(){
 				let arg = {
@@ -92,6 +106,7 @@
 					from_type:this.from_type_ids.join(','),
 					ckwz:this.ckwz_ids.join(','),
 					remark:this.remark,
+					sort:this.sort,
 					page:this.page,
 					pagesize:this.pagesize
 				}
@@ -124,6 +139,7 @@
 						from_type:this.from_type_ids.join(','),
 						ckwz:this.ckwz_ids.join(','),
 						remark:this.remark,
+						sort:this.sort,
 					}
 					resource.wmsOffshelfExport(arg).then(res => {
 						exportPost("\ufeff" + res.data,'下架款数据（仓库查看）');

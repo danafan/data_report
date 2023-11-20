@@ -3,6 +3,7 @@
 		<el-tabs v-model="activeTab" @tab-click="checkTab">
 			<el-tab-pane :label="item.menu_name" lazy :name="item.web_url" class="tab_pane_box" v-for="item in menu_list">
 				<Procurement v-if="item.web_url == 'procurement'"/>
+				<InventoryInfo v-if="item.web_url == 'inventory_info'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -13,7 +14,8 @@
 }
 </style>
 <script>
-	import Procurement from './procurement/procurement.vue'
+	import Procurement from './pages/procurement.vue'
+	import InventoryInfo from './pages/inventory_info.vue'
 	export default{
 		data(){
 			return{
@@ -53,6 +55,7 @@
 		},
 		components:{
 			Procurement,
+			InventoryInfo
 		}
 	}
 </script>
