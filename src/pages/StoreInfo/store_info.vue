@@ -26,7 +26,7 @@
 			<el-table-column prop="jst_code" label="聚水潭ID" align="center"></el-table-column>
 			<el-table-column width="160" show-overflow-tooltip prop="shop_code" label="店铺ID" align="center"></el-table-column>
 			<el-table-column prop="yy_t8_code" label="T8编码" align="center"></el-table-column>
-			<el-table-column prop="yy_t6_code" label="T6编码" align="center"></el-table-column>
+			<el-table-column prop="yy_t6_code" label="店铺编码" align="center"></el-table-column>
 			<el-table-column prop="company" label="核算主体" align="center"></el-table-column>
 			<el-table-column prop="platform" label="平台" align="center"></el-table-column>
 		</el-table>
