@@ -1,15 +1,15 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="款式编码：">
-				<el-select v-model="ksbm_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="getKsbm" collapse-tags>
-					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
-					</el-option>
-				</el-select>
-			</el-form-item>
 			<el-form-item label="供应商：">
 				<el-select v-model="gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="款式编码：">
+				<el-select v-model="ksbm_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入款式编码" :remote-method="getKsbm" collapse-tags>
+					<el-option v-for="item in ksbm_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -18,7 +18,7 @@
 			</el-form-item>
 		</el-form>
 		<div class="flex">
-			<div class="flex-1" style="margin-right:15px">
+			<div style="width:650px;margin-right:15px">
 				<div class="flex ac jsb mb-15">
 					<PopoverWidget title="供应商库存" :show_popover="false"/>
 					<el-button type="primary" plain size="small" v-if="gys_button_list.export == 1" @click="exportFn(1)">导出<i class="el-icon-download el-icon--right"></i></el-button>
@@ -179,7 +179,7 @@
 			getKsbmData(){
 				let arg = {
 					ksbm:this.ksbm_ids.join(','),
-					gys:this.ksbm_ids.join(','),
+					gys:this.gys_ids.join(','),
 					sort:this.ksbm_sort,
 					type:2,
 					page:this.ksbm_page,
@@ -216,7 +216,7 @@
 					type: 'warning'
 				}).then(() => {
 					let arg = {
-						gys:this.ksbm_ids.join(','),
+						gys:this.gys_ids.join(','),
 						sort:type == 1?this.gys_sort:this.ksbm_sort,
 						type:type,
 					}
