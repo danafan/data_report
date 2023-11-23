@@ -29,6 +29,12 @@
 				</el-select>
 			</el-form-item>
 		</el-form>
+		<div class="flex jse" style="margin-bottom: 5px;">
+			<el-button type="primary" size="small" @click="import_dialog = true" v-if="button_list.batch_apply == 1">
+				批量调价
+				<i class="el-icon-upload el-icon--right"></i>
+			</el-button>
+		</div>
 		<el-table size="small" :data="dataObj.data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" v-loading="loading">
 			<el-table-column type="index" label="序号" align="center" fixed="left"></el-table-column>
 			<el-table-column prop="supplier" label="供应商" align="center"></el-table-column>
@@ -112,41 +118,74 @@
 				<el-button type="primary" size="small" @click="commitAduit">提交</el-button>
 			</div>
 		</el-dialog>
+		<!-- 导入 -->
+		<el-dialog title="导入" :visible.sync="import_dialog" width="30%">
+			<div class="down_box">
+				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadPrice">
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="import_dialog = false">取 消</el-button>
+			</div>
+		</el-dialog>
 	</div>
 </template>
 <style lang="less" scoped>
-.img_list{
-	display:flex;
-	flex-wrap: wrap;
-	.dialog_img{
-		margin-right: 10px;
-		margin-bottom: 10px;
-		position: relative;
-		width: 120px;
-		height: 120px;
-		.img{
-			width: 100%;
-			height: 100%;
-		}
-		.modal{
-			background: rgba(0,0,0,.6);
-			position: absolute;
-			top: 0;
-			left: 0;
-			width: 100%;
-			height: 100%;
-			img{
+	.img_list{
+		display:flex;
+		flex-wrap: wrap;
+		.dialog_img{
+			margin-right: 10px;
+			margin-bottom: 10px;
+			position: relative;
+			width: 120px;
+			height: 120px;
+			.img{
+				width: 100%;
+				height: 100%;
+			}
+			.modal{
+				background: rgba(0,0,0,.6);
 				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%,-50%);
-				display:block;
-				width: 30px;
-				height: 30px;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				img{
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%,-50%);
+					display:block;
+					width: 30px;
+					height: 30px;
+				}
 			}
 		}
 	}
-}
+	.down_box{
+		display:flex;
+		.upload_box{
+			margin-left: 10px;
+			position: relative;
+			.upload_file{
+				position: absolute;
+				top: 0;
+				bottom: 0;
+				left: 0;
+				right: 0;
+				width: 100%;
+				height: 100%;
+				opacity: 0;
+			}
+		}
+	}
 </style>
 <script>
 	import resource from '../../../api/auditResource.js'
@@ -182,7 +221,8 @@
 				end_date:"",
 				domain:"",				//文件前缀
 				url:"",					//csv后缀
-				loading:false
+				loading:false,
+				import_dialog:false,	//导入弹窗
 			}
 		},
 		created(){
@@ -224,6 +264,28 @@
 					resource.ajaxSupplierKsbm({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.gyshh_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
+			},
+			//下载模版
+			downTemplate(){
+				window.open(`${this.downLoadUrl}/审计系统批量调价模板.xlsx`);
+			},
+			//导入
+			uploadPrice(e){
+				let files = e.target.files;
+				if (files.length > 0) {
+					resource.batchApply({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						this.import_dialog = false;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.page = 1;
+							//获取列表
+							this.getData();
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -339,7 +401,7 @@
 				};
 				if(this.show_img.length == 0){
 					this.$message.warning('请上传图片!');
-						return;
+					return;
 				}
 				var img_arr = [];
 				this.show_img.map(item => {

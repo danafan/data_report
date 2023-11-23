@@ -92,6 +92,7 @@ let path = {
 	ajaxJdBillShops:'audit/ajax_jd_bill_shops',				//ajax京东账单-店铺列表
 	ytSendOrder:'audit/yt_send_order',						//sd报表批量导入内部订单号
 	editSupplierKsbm:'audit/edit_supplier_ksbm',			//单独修改供应商款号
+	batchApply:'audit/batch_apply',							//调价表-批量导入申请调价接口
 }							
 export default{
 	//款式编码列表
@@ -465,6 +466,10 @@ export default{
 	//单独修改供应商款号
 	editSupplierKsbm(params){
 		return http.post(path.editSupplierKsbm, params)
+	},
+	//调价表-批量导入申请调价接口
+	batchApply(params){
+		return http.post(path.batchApply, params)
 	},
 }
 
