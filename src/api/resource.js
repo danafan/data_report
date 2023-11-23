@@ -275,6 +275,7 @@ let path = {
 	dayBusinessExport:'supplier/day_business_export',				//每日合计--营销费用投产情况导出
 	ajaxLabels:'stock_analysis/ajax_labels',						//获取标签列表
 	ajaxCk:'supplier_arraival/ajaxCk',								//仓库列表（档口到货统计）
+	ajaxSettlementSupplier:'Common/ajaxSettlementSupplier',			//结算供应商列表
 		
 
 }					
@@ -1410,6 +1411,10 @@ export default{
 	//仓库列表（档口到货统计）
 	ajaxCk(params){
 		return http.get(path.ajaxCk, params)
+	},
+	//结算供应商列表
+	ajaxSettlementSupplier(params){
+		return http.get(path.ajaxSettlementSupplier, params)
 	},
 }
 

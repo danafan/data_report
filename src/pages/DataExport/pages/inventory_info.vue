@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="供应商：">
-				<el-select v-model="gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入供应商" :remote-method="getGys" collapse-tags>
+			<el-form-item label="结算供应商：">
+				<el-select v-model="gys_ids" clearable multiple filterable remote reserve-keyword placeholder="请输入结算供应商" :remote-method="getGys" collapse-tags>
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -20,7 +20,7 @@
 		<div class="flex">
 			<div style="width:650px;margin-right:15px">
 				<div class="flex ac jsb mb-15">
-					<PopoverWidget title="供应商库存" :show_popover="false"/>
+					<PopoverWidget title="结算供应商库存" :show_popover="false"/>
 					<el-button type="primary" plain size="small" v-if="gys_button_list.export == 1" @click="exportFn(1)">导出<i class="el-icon-download el-icon--right"></i></el-button>
 				</div>
 				<custom-table v-loading="gys_loading" max_height="9999" :table_data="gys_table_list" :title_list="gys_title_list" @sortCallBack="gysSortCallBack"/>
@@ -97,7 +97,7 @@
 			//供应商列表
 			getGys(e){
 				if(e != ''){
-					commonResource.ajaxGys({name:e}).then(res => {
+					commonResource.ajaxSettlementSupplier({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.gys_list = res.data.data;
 						}else{
