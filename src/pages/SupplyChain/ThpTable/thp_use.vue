@@ -2,19 +2,19 @@
 	<div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="仓库位置：">
-				<el-select v-model="ckwzpj_ids" clearable multiple filterable collapse-tags placeholder="全部" @focus="setOptionWidth">
+				<el-select v-model="ckwzpj_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部" @focus="setOptionWidth">
 					<el-option v-for="item in ckwzpj" :key="item" :label="item" :value="item" :style="{width:selectOptionWidth}">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品牌：">
-				<el-select v-model="pp_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="pp_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in pp" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="部门归属：">
-				<el-select v-model="gs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="gs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in gs" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

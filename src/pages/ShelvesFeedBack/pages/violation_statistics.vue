@@ -2,19 +2,19 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="事业部：">
-				<el-select v-model="dept_name_ids" multiple filterable collapse-tags clearable placeholder="全部" @change="getStoreList">
+				<el-select v-model="dept_name_ids" multiple filterable collapse-tags reserve-keyword clearable placeholder="全部" @change="getStoreList">
 					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
-				<el-select v-model="shop_name_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="shop_name_ids" clearable multiple filterable reserve-keyword collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺ID：">
-				<el-select v-model="shop_code_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="shop_code_ids" clearable multiple filterable reserve-keyword collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_code" :value="item.shop_code">
 					</el-option>
 				</el-select>

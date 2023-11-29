@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" :popper-append-to-body="false" filterable placeholder="全部">
+				<el-select v-model="select_plat_ids" :popper-append-to-body="false" filterable reserve-keyword placeholder="全部">
 					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

@@ -6,7 +6,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStore" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_plat_ids" clearable :popper-append-to-body="false" @change="getStore" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -18,20 +18,13 @@
 					<el-option label="店铺ID" :value="2">
 					</el-option>
 				</el-select>：
-				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags reserve-keywordplaceholder="全部">
 				<el-option v-for="item in store_list" :key="item.dept_id" :label="select_store_key == 1?item.shop_name:item.dept_name" :value="item.dept_id">
 				</el-option>
 			</el-select>
-			<!-- <el-form-item label="店铺：">
-				<el-select v-model="select_shop_list" clearable :popper-append-to-body="false"  multiple
-				filterable
-				collapse-tags placeholder="全部">
-				<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-				</el-option>
-			</el-select> -->
 		</el-form-item>
 		<el-form-item label="产品分类：">
-			<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+			<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 				<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>

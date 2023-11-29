@@ -6,7 +6,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
-				<el-select v-model="dpmc_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="dpmc_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.shop_name" :value="item.shop_name">
 					</el-option>
 				</el-select>

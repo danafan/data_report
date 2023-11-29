@@ -16,7 +16,7 @@
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item label="公司：">
-			<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+			<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 				<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>

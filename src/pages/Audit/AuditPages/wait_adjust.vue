@@ -98,7 +98,7 @@
 		<el-dialog title="转交给同事" width="30%" center :close-on-click-modal="false" @close="handle_user_id = ''" :visible.sync="hand_over_dialog">
 			<el-form size="small" class="demo-form-inline">
 				<el-form-item label="转交人：">
-					<el-select size="small" clearable v-model="handle_user_id" :popper-append-to-body="false" filterable placeholder="请选择转交人">
+					<el-select size="small" clearable v-model="handle_user_id" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择转交人">
 						<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 						</el-option>
 					</el-select>

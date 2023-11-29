@@ -6,7 +6,7 @@
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺名称：">
-				<el-select v-model="shop_id" :popper-append-to-body="false" clearable filterable placeholder="请选择店铺">
+				<el-select v-model="shop_id" :popper-append-to-body="false" clearable filterable reserve-keyword placeholder="请选择店铺">
 					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_code">
 					</el-option>
 				</el-select>

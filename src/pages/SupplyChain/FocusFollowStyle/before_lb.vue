@@ -8,17 +8,18 @@
 				:props="props"
 				@change="getIds"
 				filterable
+				reserve-keyword
 				collapse-tags
 				clearable></el-cascader>
 			</el-form-item>
 			<el-form-item label="平台:">
-				<el-select v-model="select_plat_ids" clearable @change="getStoreList" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_plat_ids" clearable @change="getStoreList" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
-				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 					</el-option>
 				</el-select>
@@ -64,7 +65,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品牌：">
-				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_pp_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in pp_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

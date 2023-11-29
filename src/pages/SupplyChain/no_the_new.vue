@@ -27,7 +27,7 @@
 				<div class="table_title">店铺上架统计</div>
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="事业部：">
-						<el-select size="mini" v-model="dept_name" multiple filterable collapse-tags clearable placeholder="全部" @change="storePageChange(1)">
+						<el-select size="mini" v-model="dept_name" multiple filterable collapse-tags reserve-keyword clearable placeholder="全部" @change="storePageChange(1)">
 							<el-option v-for="item in dept_list" :key="item.dept_name" :label="item.dept_name" :value="item.dept_name">
 							</el-option>
 						</el-select>

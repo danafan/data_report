@@ -8,7 +8,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="季节：">
-				<el-select v-model="select_jj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_jj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option label="春" value="春"></el-option>
 					<el-option label="夏" value="夏"></el-option>
 					<el-option label="秋" value="秋"></el-option>
@@ -23,13 +23,13 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品类：">
-				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="自有货品：">
-				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option label="CHRISUNO" value="CHRISUNO"></el-option>
 					<el-option label="白坯" value="白坯"></el-option>
 					<el-option label="自主款" value="自主款"></el-option>

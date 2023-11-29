@@ -8,13 +8,13 @@
 				<el-input v-model="supplier" clearable placeholder="输入供应商"></el-input>
 			</el-form-item>
 			<el-form-item label="部门：">
-				<el-select v-model="dept_name" clearable :popper-append-to-body="false" filterable placeholder="全部">
+				<el-select v-model="dept_name" clearable :popper-append-to-body="false" filterable reserve-keyword placeholder="全部">
 					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺：">
-				<el-select v-model="shop_name" clearable :popper-append-to-body="false" filterable placeholder="全部">
+				<el-select v-model="shop_name" clearable :popper-append-to-body="false" filterable reserve-keyword placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

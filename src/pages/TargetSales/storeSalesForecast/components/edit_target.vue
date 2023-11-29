@@ -33,6 +33,7 @@
 						:popper-append-to-body="false"
 						remote
 						filterable
+						reserve-keyword
 						placeholder="请选择店长"
 						@change="changeUser"
 						:remote-method="getAjaxUser"
@@ -55,7 +56,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="参考店铺：">
-				<el-select v-model="reference_jst_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
+				<el-select v-model="reference_jst_code" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
 					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.jst_code">
 					</el-option>
 				</el-select>

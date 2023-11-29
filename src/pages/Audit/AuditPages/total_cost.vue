@@ -122,7 +122,7 @@
 		<!-- 替换弹框 -->
 		<el-dialog :title="`【${this.from =='1'?'德儿':'乎达'}】替换供应商`" center @close="closeDialog" width="45%" :close-on-click-modal="false" :visible.sync="replaceDialog">
 			<div class="dialog_row">
-				<el-select v-model="old_gys" size="small" clearable :popper-append-to-body="false" filterable remote placeholder="搜索原供应商" :remote-method="getGys">
+				<el-select v-model="old_gys" size="small" clearable :popper-append-to-body="false" filterable reserve-keyword remote placeholder="搜索原供应商" :remote-method="getGys">
 					<el-option v-for="item in gys_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

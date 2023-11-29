@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺：">
-				<el-select v-model="shop_list_ids" clearable multiple filterable placeholder="请输入店铺" collapse-tags>
+				<el-select v-model="shop_list_ids" clearable multiple filterable reserve-keyword placeholder="请输入店铺" collapse-tags>
 					<el-option v-for="item in shop_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -11,7 +11,7 @@
 				<el-input v-model="order_no" placeholder="订单编号"></el-input>
 			</el-form-item>
 			<el-form-item label="类型：">
-				<el-select v-model="type_list_ids" clearable multiple filterable placeholder="请输入类型" collapse-tags>
+				<el-select v-model="type_list_ids" clearable multiple filterable reserve-keyword placeholder="请输入类型" collapse-tags>
 					<el-option v-for="item in type_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

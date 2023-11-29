@@ -47,13 +47,13 @@
 	<el-dialog title="设置" width="30%" :visible.sync="show_setting">
 		<el-form>
 			<el-form-item label="访问权限：">
-				<el-select v-model="menu_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="menu_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in menu_list" :key="item.menu_role_id" :label="item.menu_role_name" :value="item.menu_role_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="数据权限">
-				<el-select v-model="data_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="data_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in data_list" :key="item.data_role_id" :label="item.data_role_name" :value="item.data_role_id">
 					</el-option>
 				</el-select>

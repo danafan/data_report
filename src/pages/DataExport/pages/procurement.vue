@@ -6,13 +6,13 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="仓储方：">
-				<el-select v-model="wms_co_id" clearable :popper-append-to-body="false" filterable placeholder="全部">
+				<el-select v-model="wms_co_id" clearable :popper-append-to-body="false" filterable reserve-keyword placeholder="全部">
 					<el-option v-for="item in wms_list" :key="item.wms_co_id" :label="item.name" :value="item.wms_co_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="仓库类型：">
-				<el-select v-model="wh_id" clearable :popper-append-to-body="false" filterable placeholder="全部">
+				<el-select v-model="wh_id" clearable :popper-append-to-body="false" filterable reserve-keyword placeholder="全部">
 					<el-option v-for="item in wh_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>

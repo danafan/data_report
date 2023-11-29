@@ -6,7 +6,7 @@
 			<div class="form_box">
 				<el-form size="small">
 					<el-form-item label="店铺：" required>
-						<el-select v-model="store_code" clearable filterable :popper-append-to-body="false" placeholder="全部">
+						<el-select v-model="store_code" clearable filterable reserve-keyword :popper-append-to-body="false" placeholder="全部">
 							<el-option v-for="item in store_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_name">
 							</el-option>
 						</el-select>

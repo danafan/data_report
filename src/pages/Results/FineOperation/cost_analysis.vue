@@ -3,19 +3,19 @@
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<dps @callBack="checkReq"></dps>
 			<el-form-item label="公司：">
-				<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部" @change="ajaxXmmc">
+				<el-select v-model="company" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部" @change="ajaxXmmc">
 					<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="用友店铺ID：">
-				<el-select v-model="select_yyshop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部" @change="ajaxXmmc">
+				<el-select v-model="select_yyshop_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部" @change="ajaxXmmc">
 					<el-option v-for="item in yyshop_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="项目大类：">
-				<el-select v-model="select_xmdl_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_xmdl_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in xmdl_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -27,7 +27,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="项目名称：">
-				<el-select v-model="select_xmmc_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_xmmc_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in xmmc_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -136,7 +136,7 @@
 			<el-tab-pane label="明细" name="mx" class="tab_pane_box">
 				<el-form :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="项目名称：">
-						<el-select v-model="selected_mx_xmmc_list" filterable clearable multiple collapse-tags placeholder="全部" @change="changeXmmc">
+						<el-select v-model="selected_mx_xmmc_list" filterable clearable multiple collapse-tags reserve-keyword placeholder="全部" @change="changeXmmc">
 							<el-option v-for="item in mx_xmmc_list" :key="item" :label="item" :value="item">
 							</el-option>
 						</el-select>

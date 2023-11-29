@@ -7,7 +7,7 @@
 				</el-date-picker>
 			</el-form-item>
 		<el-form-item label="产品分类：">
-			<el-select v-model="select_pl_ids" clearable multiple filterable collapse-tags placeholder="全部">
+			<el-select v-model="select_pl_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
 				<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
 				</el-option>
 			</el-select>

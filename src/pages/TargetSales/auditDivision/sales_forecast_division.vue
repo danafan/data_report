@@ -10,13 +10,13 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="一级部门：">
-				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable placeholder="请选择一级部门">
+				<el-select v-model="dept_1_id" :popper-append-to-body="false" clearable filterable reserve-keyword placeholder="请选择一级部门">
 					<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="审核状态：">
-				<el-select v-model="status" :popper-append-to-body="false" filterable placeholder="请选择审核状态">
+				<el-select v-model="status" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择审核状态">
 					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>

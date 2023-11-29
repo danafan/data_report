@@ -14,7 +14,7 @@
 				clearable></el-cascader>
 			</el-form-item>
 			<el-form-item label="店铺：">
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
@@ -32,7 +32,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品类：">
-				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -50,7 +50,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="季节：" v-if="isShow('jj')">
-				<el-select v-model="select_jj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_jj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option label="春" value="春"></el-option>
 					<el-option label="夏" value="夏"></el-option>
 					<el-option label="秋" value="秋"></el-option>
@@ -97,25 +97,25 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="波段：">
-				<el-select v-model="select_bd_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_bd_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in bd_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="买手：" v-if="isShow('ms')">
-				<el-select v-model="select_ms_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_ms_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in ms_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="采购员：" v-if="isShow('cgy')">
-				<el-select v-model="select_cgy_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_cgy_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in cgy_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="采购性质：" v-if="isShow('cgxz')">
-				<el-select v-model="select_cgxz_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_cgxz_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in cgxz_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -152,7 +152,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="自有货品：" v-if="isShow('sfzzk')">
-					<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+					<el-select v-model="select_sfzzk_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option label="CHRISUNO" value="CHRISUNO"></el-option>
 					<el-option label="白坯" value="白坯"></el-option>
 					<el-option label="自主款" value="自主款"></el-option>
@@ -169,25 +169,25 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="选款方式：" v-if="isShow('xkfs')">
-				<el-select v-model="select_xkfs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_xkfs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in xkfs_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="设计师：" v-if="isShow('sjs')">
-				<el-select v-model="select_sjs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_sjs_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in sjs_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="跟单员：" v-if="isShow('gdy')">
-				<el-select v-model="select_gdy_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_gdy_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in gdy_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="价格带：" v-if="isShow('jgd')">
-				<el-select v-model="select_jgd_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_jgd_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in jgd_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -218,7 +218,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="操作人：" v-if="isShow('czr')">
-				<el-select v-model="select_operator_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_operator_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in operator_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

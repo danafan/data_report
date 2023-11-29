@@ -2,19 +2,19 @@
 	<div>
 		<el-form :inline="true" size="mini" class="demo-form-inline">
 			<el-form-item label="批次：">
-				<el-select v-model="start_rq" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="start_rq" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in branth_list" :key="item.start_rq" :label="item.start_rq" :value="item.start_rq">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="部门：">
-				<el-select v-model="select_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in dept_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="季节：">
-				<el-select v-model="select_jj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_jj_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option label="春" value="春"></el-option>
 					<el-option label="夏" value="夏"></el-option>
 					<el-option label="秋" value="秋"></el-option>
@@ -29,7 +29,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品类：">
-				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_pl_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in pl_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -204,7 +204,7 @@
 		<!-- 清仓款近2个月销售明细 -->
 		<el-form :inline="true" size="mini" class="demo-form-inline" style="margin-top: 15px;">
 			<el-form-item label="项目部：">
-				<el-select v-model="jly_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="jly_dept_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in jly_dept" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

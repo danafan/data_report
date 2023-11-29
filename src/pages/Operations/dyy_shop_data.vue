@@ -6,13 +6,13 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="店铺：">
-				<el-select v-model="dp_ids" clearable multiple filterable placeholder="请选择店铺" collapse-tags>
+				<el-select v-model="dp_ids" clearable multiple filterable reserve-keyword placeholder="请选择店铺" collapse-tags>
 					<el-option v-for="item in dp_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="平台：">
-				<el-select v-model="pt_ids" clearable multiple filterable placeholder="请选择平台" collapse-tags>
+				<el-select v-model="pt_ids" clearable multiple filterable reserve-keyword placeholder="请选择平台" collapse-tags>
 					<el-option v-for="item in pt_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

@@ -54,13 +54,13 @@
 					<el-input style="width:220px" clearable v-model="table_name" placeholder="请输入数据库对应表名称" disabled></el-input>
 				</el-form-item>
 				<el-form-item label="数据填报人：" v-if="dialog_type != '3'">
-					<el-select v-model="selected_users" clearable :popper-append-to-body="false" multiple filterable placeholder="选择数据填报人" style="width:280px">
+					<el-select v-model="selected_users" clearable :popper-append-to-body="false" multiple filterable reserve-keyword placeholder="选择数据填报人" style="width:280px">
 						<el-option v-for="item in user_data" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 						</el-option>
 					</el-select>
 				</el-form-item>
 				<el-form-item label="表单管理人：" v-if="dialog_type != '3'">
-					<el-select v-model="selected_admins" clearable :popper-append-to-body="false" multiple filterable placeholder="选择表单管理人" style="width:280px">
+					<el-select v-model="selected_admins" clearable :popper-append-to-body="false" multiple filterable reserve-keyword placeholder="选择表单管理人" style="width:280px">
 						<el-option v-for="item in user_data" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 						</el-option>
 					</el-select>

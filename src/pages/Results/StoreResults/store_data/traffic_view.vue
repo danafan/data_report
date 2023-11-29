@@ -2,7 +2,7 @@
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="流量来源:" style="margin-right: 20px">
-				<el-select v-model="llly_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="llly_list" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in llly" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

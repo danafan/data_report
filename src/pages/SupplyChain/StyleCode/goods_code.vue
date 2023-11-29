@@ -8,13 +8,13 @@
 				<el-input v-model="ksbm" clearable placeholder="请输入款号"></el-input>
 			</el-form-item>
 			<el-form-item label="品类：">
-				<el-select v-model="plbm_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="plbm_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in plbm" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="品牌：">
-				<el-select v-model="ppmc_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="ppmc_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in ppmc" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 					</el-option>
 				</el-select>
@@ -106,31 +106,31 @@
 				<!-- 第一列 -->
 				<el-form label-width="130px" :inline="true" size="small" class="demo-form-inline">
 					<el-form-item label="品牌名称：" required>
-						<el-select v-model="form.ppmc" clearable filterable placeholder="请选择商品品牌">
+						<el-select v-model="form.ppmc" clearable filterable reserve-keyword placeholder="请选择商品品牌">
 							<el-option v-for="item in ppmc" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="年份：" required>
-						<el-select size="small" clearable v-model="form.year" filterable placeholder="请选择年份">
+						<el-select size="small" clearable v-model="form.year" filterable reserve-keyword placeholder="请选择年份">
 							<el-option v-for="item in year_list" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="季节：" required>
-						<el-select size="small" clearable v-model="form.jj" filterable placeholder="请选择季节">
+						<el-select size="small" clearable v-model="form.jj" filterable reserve-keyword placeholder="请选择季节">
 							<el-option v-for="item in jj_list" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="性别：" required>
-						<el-select size="small" clearable v-model="form.xb" filterable placeholder="请选择性别">
+						<el-select size="small" clearable v-model="form.xb" filterable reserve-keyword placeholder="请选择性别">
 							<el-option v-for="item in xb_list" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="品类编码：" required>
-						<el-select v-model="form.plbm" clearable filterable placeholder="请选择品类编码">
+						<el-select v-model="form.plbm" clearable filterable reserve-keyword placeholder="请选择品类编码">
 							<el-option v-for="item in plbm" :key="item.setting_id" :label="item.code_value" :value="item.setting_id">
 							</el-option>
 						</el-select>
@@ -214,7 +214,7 @@
 						<el-input style="width: 192px;" v-model="form.cz" clearable placeholder="请输入材质"></el-input>
 					</el-form-item>
 					<el-form-item label="填写人：">
-						<el-select size="small" clearable v-model="form.fill_user_id" filterable placeholder="请选择填写人">
+						<el-select size="small" clearable v-model="form.fill_user_id" filterable reserve-keyword placeholder="请选择填写人">
 							<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 							</el-option>
 						</el-select>

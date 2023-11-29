@@ -5,13 +5,13 @@
 				<el-input v-model="ksbm" placeholder="供应商款式编码/线上款式编码"></el-input>
 			</el-form-item>
 			<el-form-item label="下架来源：">
-				<el-select v-model="from_type_ids" clearable multiple filterable placeholder="请选择下架来源" collapse-tags>
+				<el-select v-model="from_type_ids" clearable multiple filterable placeholder="请选择下架来源" collapse-tags reserve-keyword>
 					<el-option v-for="item in from_type_list" :key="item.value" :label="item.name" :value="item.value">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="仓库位置：">
-				<el-select v-model="ckwz_ids" clearable multiple filterable placeholder="请选择仓库位置" collapse-tags>
+				<el-select v-model="ckwz_ids" clearable multiple filterable placeholder="请选择仓库位置" collapse-tags reserve-keyword>
 					<el-option v-for="item in ckwz_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

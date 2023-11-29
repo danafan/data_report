@@ -7,19 +7,19 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="二级部门：">
-				<el-select v-model="dept_2_id" :popper-append-to-body="false" filterable placeholder="二级部门">
+				<el-select v-model="dept_2_id" :popper-append-to-body="false" filterable reserve-keyword placeholder="二级部门">
 					<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
-				<el-select v-model="shop_id" :popper-append-to-body="false" clearable filterable placeholder="请选择店铺">
+				<el-select v-model="shop_id" :popper-append-to-body="false" clearable filterable reserve-keyword placeholder="请选择店铺">
 					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_code">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="审核状态：">
-				<el-select v-model="status" :popper-append-to-body="false" filterable placeholder="请选择店铺">
+				<el-select v-model="status" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择店铺">
 					<el-option v-for="item in status_list" :key="item.id" :label="item.name" :value="item.id">
 					</el-option>
 				</el-select>

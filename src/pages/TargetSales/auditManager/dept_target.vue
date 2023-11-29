@@ -6,7 +6,7 @@
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="二级部门：">
-				<el-select v-model="dept_2_id" :popper-append-to-body="false" clearable filterable placeholder="请选择二级部门">
+				<el-select v-model="dept_2_id" :popper-append-to-body="false" clearable filterable reserve-keyword placeholder="请选择二级部门">
 					<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>

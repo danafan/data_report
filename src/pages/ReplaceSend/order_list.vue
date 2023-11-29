@@ -9,12 +9,13 @@
 				:options="dept_list"
 				:props="props"
 				filterable
+				reserve-keyword
 				@change="getIds"
 				@remove-tag="getIds"
 				clearable></el-cascader>
 			</el-form-item>
 			<el-form-item label="店铺：">
-				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="select_store_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in shop_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
 				</el-select>
@@ -51,12 +52,6 @@
 				</el-option>
 			</el-select>
 		</el-form-item>
-		<!-- <el-form-item label="店铺：">
-			<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
-				<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
-				</el-option>
-			</el-select>
-		</el-form-item> -->
 		<el-form-item>
 			<el-button type="primary" size="small" @click="handleCurrentChange(1)">搜索</el-button>
 		</el-form-item>

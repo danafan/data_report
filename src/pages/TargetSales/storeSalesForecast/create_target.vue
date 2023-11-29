@@ -7,19 +7,19 @@
 			<div class="form_widget">
 				<el-form size="small" label-width="95px" label-position="left">
 					<el-form-item label="一级部门：" required>
-						<el-select v-model="dept_1_id" :popper-append-to-body="false" filterable placeholder="请选择一级部门" @change="changeDept" :disabled="closeStep1">
+						<el-select v-model="dept_1_id" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择一级部门" @change="changeDept" :disabled="closeStep1">
 							<el-option v-for="item in level1_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="二级部门：" required>
-						<el-select v-model="dept_2_id" :popper-append-to-body="false" filterable placeholder="请选择二级部门" @change="changeDept2" :disabled="closeStep1">
+						<el-select v-model="dept_2_id" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择二级部门" @change="changeDept2" :disabled="closeStep1">
 							<el-option v-for="item in level2_dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="店铺名称：" required>
-						<el-select v-model="new_code" :popper-append-to-body="false" filterable placeholder="请选择店铺" @change="changeStore" :disabled="closeStep1">
+						<el-select v-model="new_code" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择店铺" @change="changeStore" :disabled="closeStep1">
 							<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_code">
 							</el-option>
 						</el-select>
@@ -42,6 +42,7 @@
 						:popper-append-to-body="false"
 						remote
 						filterable
+						reserve-keyword
 						placeholder="请选择店长"
 						@change="changeUser"
 						:remote-method="getAjaxUser"
@@ -64,7 +65,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="参考店铺：" required>
-				<el-select v-model="shop_code" :popper-append-to-body="false" filterable placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
+				<el-select v-model="shop_code" :popper-append-to-body="false" filterable reserve-keyword placeholder="请选择参考店铺" @change="changeShop" :disabled="closeStep1">
 					<el-option v-for="item in reference_store_list" :key="item.shop_code" :label="item.shop_code" :value="item.shop_code">
 					</el-option>
 				</el-select>

@@ -7,7 +7,7 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="推广负责人：">
-				<el-select v-model="tgfzr_ids" filterable placeholder="请输入推广负责人">
+				<el-select v-model="tgfzr_ids" filterable reserve-keyword placeholder="请输入推广负责人">
 					<el-option v-for="item in tgfzr_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

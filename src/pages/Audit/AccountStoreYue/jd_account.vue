@@ -6,7 +6,7 @@
 		</div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
 			<el-form-item label="店铺:">
-				<el-select v-model="zd_store_ids" clearable multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="zd_store_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in store_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>

@@ -245,7 +245,7 @@
 	<!-- 转交 -->
 	<el-dialog title="转交处理人" :visible.sync="zjDialog" @close="handle_user_id = ''" width="30%">
 		<div>
-			<el-select size="small" clearable v-model="handle_user_id" filterable placeholder="请选择转交人">
+			<el-select size="small" clearable v-model="handle_user_id" filterable reserve-keyword placeholder="请选择转交人">
 				<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 				</el-option>
 			</el-select>

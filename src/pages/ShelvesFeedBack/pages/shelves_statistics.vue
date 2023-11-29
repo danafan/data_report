@@ -11,7 +11,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="店铺名称：">
-				<el-select v-model="dpmc" clearable :popper-append-to-body="false" multiple filterable collapse-tags placeholder="全部">
+				<el-select v-model="dpmc" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.jst_code" :label="item.shop_name" :value="item.jst_code">
 					</el-option>
 				</el-select>

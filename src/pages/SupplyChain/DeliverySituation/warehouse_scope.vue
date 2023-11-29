@@ -15,7 +15,7 @@
 						</el-date-picker>
 					</el-form-item>
 					<el-form-item label="仓库：">
-						<el-select v-model="ckmc" clearable multiple filterable collapse-tags placeholder="全部">
+						<el-select v-model="ckmc" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
 							<el-option v-for="item in ck_list" :key="item.id" :label="item.name" :value="item.id">
 							</el-option>
 						</el-select>

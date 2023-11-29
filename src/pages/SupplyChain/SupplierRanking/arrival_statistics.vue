@@ -12,7 +12,7 @@
 				</el-select>
 			</el-form-item>
 			<el-form-item label="仓库：">
-				<el-select v-model="ck_ids" clearable multiple filterable placeholder="请输入款式" collapse-tags>
+				<el-select v-model="ck_ids" clearable multiple filterable reserve-keyword placeholder="请输入款式" collapse-tags>
 					<el-option v-for="item in ck_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
