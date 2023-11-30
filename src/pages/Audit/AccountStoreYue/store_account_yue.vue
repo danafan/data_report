@@ -135,14 +135,17 @@
 					pagesize:this.pagesize
 				}
 				this.loading = true;
+				this.platform_total = {};
+				this.dept_total = {};
+				this.table_data = {};
 				resource.platformBalanceData(arg).then(res => {
 					if(res.data.code == 1){
 						this.loading = false;
 						let data = res.data.data;
-						this.table_data = data.list;
 						this.title_list = data.title;
-						this.dept_total = data.dept_total;
 						this.platform_total = data.platform_total;
+						this.dept_total = data.dept_total;
+						this.table_data = data.list;
 						this.total_shop_num = data.total_shop_num;//店铺总数
 						this.today_shop_num	= data.today_shop_num;//今日更新店铺数
 						this.button_list = data.button_list;
