@@ -9,6 +9,7 @@
 				<StoreNewStyle v-if="item.web_url == 'store_new_style'"/>
 				<SupplierRankingPage v-if="item.web_url == 'supplier_ranking_page'"/>
 				<InventoryAnalysis v-if="item.web_url == 'inventory_analysis'"/>
+				<CostAnalysis v-if="item.web_url == 'cost_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -26,6 +27,7 @@
 	import StoreNewStyle from '../SupplyChain/store_new_style.vue'
 	import SupplierRankingPage from '../SupplyChain/SupplierRanking/supplier_ranking_page.vue'
 	import InventoryAnalysis from '../SupplyChain/SupplierRanking/inventory_analysis.vue'
+	import CostAnalysis from '../Results/FineOperation/cost_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -70,7 +72,8 @@
 			FocusFollowStyle,
 			StoreNewStyle,
 			SupplierRankingPage,
-			InventoryAnalysis
+			InventoryAnalysis,
+			CostAnalysis
 		}
 	}
 </script>
