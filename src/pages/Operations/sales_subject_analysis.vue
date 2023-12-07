@@ -1,23 +1,11 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
+			<dps @callBack="checkReq"></dps>
 			<el-form-item label="付款日期:">
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
-			<dps @callBack="checkReq"></dps>
-			<!-- <el-form-item label="事业部：">
-				<el-select v-model="dept_ids" multiple filterable collapse-tags reserve-keyword clearable placeholder="全部" @change="ajaxShops">
-					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item>
-			<el-form-item label="店铺名称：">
-				<el-select v-model="store_ids" clearable multiple filterable reserve-keyword collapse-tags placeholder="全部">
-					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.shop_name" :value="item.dept_id">
-					</el-option>
-				</el-select>
-			</el-form-item> -->
 			<el-form-item label="品类：">
 				<el-select v-model="mc_ids" clearable multiple filterable remote reserve-keyword :remote-method="ajaxTopSpmc" collapse-tags placeholder="全部">
 					<el-option v-for="item in mc_list" :key="item" :label="item" :value="item">
@@ -60,10 +48,8 @@
 	export default{
 		data(){
 			return{
-				// dept_list:[],								//事业部列表
 				dept_ids:[],								//选中的事业部
-				platform_ids:[],								//平台列表
-				// store_list:[],								//店铺列表
+				platform_ids:[],							//选中的平台列表
 				store_ids:[],								//选中的店铺列表
 				mc_list:[],									//品类列表
 				mc_ids:[],									//选中的品类列表
@@ -108,10 +94,6 @@
 			}
 		},
 		created(){
-			//部门列表
-			// this.getDept();
-			// 获取店铺
-			// this.ajaxShops();
 			//获取数据
 			this.getData();
 		},
@@ -122,27 +104,6 @@
 				this.platform_ids = reqObj.select_plat_ids;
 				this.store_ids = reqObj.select_store_ids;
 			},
-			//部门列表
-			// getDept(){
-			// 	commonResource.ajaxViewDept().then(res => {
-			// 		if(res.data.code == 1){
-			// 			this.dept_list = res.data.data;
-			// 		}else{
-			// 			this.$message.warning(res.data.msg);
-			// 		}
-			// 	})
-			// },
-			//获取店铺列表
-			// ajaxShops(){
-			// 	this.store_ids = [];
-			// 	commonResource.ajaxViewStore({dept_id:this.dept_ids.join(',')}).then(res => {
-			// 		if(res.data.code == 1){
-			// 			this.store_list = res.data.data;
-			// 		}else{
-			// 			this.$message.warning(res.data.msg);
-			// 		}
-			// 	})
-			// },
 			//品类列表
 			ajaxTopSpmc(e){
 				if(e != ''){
