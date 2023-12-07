@@ -5,7 +5,8 @@
 				<el-date-picker v-model="date" type="daterange" unlink-panels value-format="yyyy-MM-dd" range-separator="至" start-placeholder="开始日期" end-placeholder="结束日期" :picker-options="pickerOptions">
 				</el-date-picker>
 			</el-form-item>
-			<el-form-item label="事业部：">
+			<dps @callBack="checkReq"></dps>
+			<!-- <el-form-item label="事业部：">
 				<el-select v-model="dept_ids" multiple filterable collapse-tags reserve-keyword clearable placeholder="全部" @change="ajaxShops">
 					<el-option v-for="item in dept_list" :key="item.dept_id" :label="item.dept_name" :value="item.dept_id">
 					</el-option>
@@ -14,6 +15,12 @@
 			<el-form-item label="店铺名称：">
 				<el-select v-model="store_ids" clearable multiple filterable reserve-keyword collapse-tags placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.dept_id" :label="item.shop_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item> -->
+			<el-form-item label="品类：">
+				<el-select v-model="mc_ids" clearable multiple filterable remote reserve-keyword :remote-method="ajaxTopSpmc" collapse-tags placeholder="全部">
+					<el-option v-for="item in mc_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -33,7 +40,7 @@
 				<el-button type="primary" size="mini" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
 		</el-form>
-		<div class="flex jse mb-15">
+		<div class="flex jse mb-15" v-if="button_list.export == 1">
 			<el-button type="primary" plain size="mini" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<custom-table v-loading="loading" :isLoading="loading" tableName="sales_subject_analysis" max_height="620px" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
@@ -48,13 +55,18 @@
 	import PageWidget from '../../components/pagination_widget.vue'
 	import operationResource from '../../api/operationResource.js'
 	import commonResource from '../../api/resource.js'
+	import demandResource from '../../api/demandResource.js'
+	import dps from '../../components/results_components/dps.vue'
 	export default{
 		data(){
 			return{
-				dept_list:[],								//事业部列表
+				// dept_list:[],								//事业部列表
 				dept_ids:[],								//选中的事业部
-				store_list:[],								//店铺列表
+				platform_ids:[],								//平台列表
+				// store_list:[],								//店铺列表
 				store_ids:[],								//选中的店铺列表
+				mc_list:[],									//品类列表
+				mc_ids:[],									//选中的品类列表
 				gys_list:[],								//供应商列表
 				gys_ids:[],									//选中的供应商
 				ksbm_list:[],								//款式编码列表
@@ -91,38 +103,57 @@
 				title_list:[],								//表头数据
 				table_data:[],								//表格数据
 				total:0,									//数据总数
+				button_list:{},
 				loading:false,
 			}
 		},
 		created(){
 			//部门列表
-			this.getDept();
+			// this.getDept();
 			// 获取店铺
-			this.ajaxShops();
+			// this.ajaxShops();
 			//获取数据
 			this.getData();
 		},
 		methods:{
-			//部门列表
-			getDept(){
-				commonResource.ajaxViewDept().then(res => {
-					if(res.data.code == 1){
-						this.dept_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			//子组件传递过来的参数
+			checkReq(reqObj){
+				this.dept_ids = reqObj.select_department_ids;
+				this.platform_ids = reqObj.select_plat_ids;
+				this.store_ids = reqObj.select_store_ids;
 			},
+			//部门列表
+			// getDept(){
+			// 	commonResource.ajaxViewDept().then(res => {
+			// 		if(res.data.code == 1){
+			// 			this.dept_list = res.data.data;
+			// 		}else{
+			// 			this.$message.warning(res.data.msg);
+			// 		}
+			// 	})
+			// },
 			//获取店铺列表
-			ajaxShops(){
-				this.store_ids = [];
-				commonResource.ajaxViewStore({dept_id:this.dept_ids.join(',')}).then(res => {
-					if(res.data.code == 1){
-						this.store_list = res.data.data;
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				})
+			// ajaxShops(){
+			// 	this.store_ids = [];
+			// 	commonResource.ajaxViewStore({dept_id:this.dept_ids.join(',')}).then(res => {
+			// 		if(res.data.code == 1){
+			// 			this.store_list = res.data.data;
+			// 		}else{
+			// 			this.$message.warning(res.data.msg);
+			// 		}
+			// 	})
+			// },
+			//品类列表
+			ajaxTopSpmc(e){
+				if(e != ''){
+					demandResource.ajaxTopSpmc({name:e}).then(res => {
+						if(res.data.code == 1){
+							this.mc_list = res.data.data;
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//供应商列表
 			getGys(e){
@@ -169,7 +200,9 @@
 			getData(){
 				let arg = {
 					dept_id:this.dept_ids.join(','),
+					platform:this.platform_ids.join(','),
 					shop_id:this.store_ids.join(','),
+					mc:this.mc_ids.join(','),
 					gys:this.gys_ids.join(','),
 					ksbm:this.ksbm_ids.join(','),
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
@@ -201,7 +234,9 @@
 				}).then(() => {
 					let arg = {
 						dept_id:this.dept_ids.join(','),
+						platform:this.platform_ids.join(','),
 						shop_id:this.store_ids.join(','),
+						mc:this.mc_ids.join(','),
 						gys:this.gys_ids.join(','),
 						ksbm:this.ksbm_ids.join(','),
 						start_date:this.date && this.date.length> 0?this.date[0]:"",
@@ -222,6 +257,7 @@
 			},
 		},
 		components:{
+			dps,
 			CustomTable,
 			PageWidget
 		}
