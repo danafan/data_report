@@ -63,6 +63,8 @@ let path = {
 	dyyShopPlatform:'dyy_shop/ajax_shop',				//代运营店铺数据店铺和平台列表
 	dyyShopList:'dyy_shop/list',						//代运营数据列表
 	dyyShopExport:'dyy_shop/export',					//代运营数据导出
+	salesAnalysisData:'sales_analysis/list',			//销售主题分析
+	salesAnalysisExport:'sales_analysis/export',		//销售主题分析导出
 }						
 export default{
 	//获取款式编码
@@ -316,6 +318,14 @@ export default{
 	//代运营数据导出
 	dyyShopExport(params){
 		return http.post(path.dyyShopExport, params)
+	},
+	//销售主题分析
+	salesAnalysisData(params){
+		return http.get(path.salesAnalysisData, params)
+	},
+	//销售主题分析导出
+	salesAnalysisExport(params){
+		return http.post(path.salesAnalysisExport, params)
 	},
 }
 

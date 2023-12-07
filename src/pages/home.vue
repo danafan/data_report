@@ -95,9 +95,9 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<!-- <el-menu-item index="/promotion_performance">
+				<!-- <el-menu-item index="/sales_subject_analysis">
 					<i class="el-icon-s-promotion"></i>
-					<span slot="title">推广绩效</span>
+					<span slot="title">销售主题分析</span>
 				</el-menu-item> -->
 				<!-- <el-menu-item index="/delist_data">
 					<i class="el-icon-s-finance"></i>
