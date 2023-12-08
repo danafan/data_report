@@ -10,6 +10,7 @@
 				<SupplierRankingPage v-if="item.web_url == 'supplier_ranking_page'"/>
 				<InventoryAnalysis v-if="item.web_url == 'inventory_analysis'"/>
 				<CostAnalysis v-if="item.web_url == 'cost_analysis'"/>
+				<SalesSubjectAnalysis v-if="item.web_url == 'sales_subject_analysis'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -28,6 +29,7 @@
 	import SupplierRankingPage from '../SupplyChain/SupplierRanking/supplier_ranking_page.vue'
 	import InventoryAnalysis from '../SupplyChain/SupplierRanking/inventory_analysis.vue'
 	import CostAnalysis from '../Results/FineOperation/cost_analysis.vue'
+	import SalesSubjectAnalysis from '../Operations/sales_subject_analysis.vue'
 	export default{
 		data(){
 			return{
@@ -73,7 +75,8 @@
 			StoreNewStyle,
 			SupplierRankingPage,
 			InventoryAnalysis,
-			CostAnalysis
+			CostAnalysis,
+			SalesSubjectAnalysis
 		}
 	}
 </script>
