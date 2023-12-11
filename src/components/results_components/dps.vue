@@ -25,21 +25,36 @@
 					<el-option label="店铺ID" :value="2">
 					</el-option>
 				</el-select>：
-				<el-select v-model="select_store_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
-				<el-option v-for="item in store_list" :key="item.dept_id" :label="select_store_key == 1?item.shop_name:item.dept_name" :value="item.dept_id">
-				</el-option>
-			</el-select>
-		</el-form-item>
-	</el-form>
-</div>
+				<el-select popper-class="custom_select" v-model="select_store_ids" clearable multiple filterable :filter-method="filterMethod" collapse-tags reserve-keyword placeholder="全部">
+					<div class="all_select flex ac jse absolute">
+						<el-checkbox v-model="all_selected" @change="changeSelected">全选</el-checkbox>
+					</div>
+					<el-option v-for="item in options" :key="item.dept_id" :label="select_store_key == 1?item.shop_name:item.dept_name" :value="item.dept_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+		</el-form>
+	</div>
 </template>
 <style>
-.input_key{
-	width: 100px!important;
-}
-.input_key input{
-	border:none!important;
-}
+	.input_key{
+		width: 100px!important;
+	}
+	.input_key input{
+		border:none!important;
+	}
+	.custom_select .el-scrollbar{
+		position: relative;
+		padding-top: 34px;
+	}
+	.custom_select .all_select{
+		top:0;
+		left: 0;
+		width: 100%;
+		height: 34px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
 </style>
 <script>
 	import resource from '../../api/resource.js'
@@ -52,23 +67,25 @@
 				select_plat_ids:[],					//选中的平台列表
 				select_store_key:1,					//店铺的key值
 				store_list: [],						//店铺列表	
+				options:[],							//展示的店铺列表
 				select_store_ids:[],				//选中的店铺id列表
 				props:{
 					multiple:true,
 					value:'dept_id',
 					label:'dept_name',
 					children:'list',
-				}
+				},
+				all_selected:false
 			}
 		},
 		props:{
 			show_dept:{
 				type:Boolean,
-				default:true
+			default:true
 			},
 			from:{
 				type:String,
-				default:''
+			default:''
 			}
 		},
 		created(){
@@ -97,6 +114,21 @@
 			},
 		},
 		methods:{
+			filterMethod(query){
+				if (query !== "") {
+					this.options = this.store_list.filter((item) => {
+          				// 这里是用的value选项筛选，默认是label
+          				if(this.select_store_key == 1){
+          					return item.shop_name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+          				}else{
+          					return item.dept_name.toLowerCase().indexOf(query.toLowerCase()) > -1;
+          				}
+					});
+					console.log(this.options)
+				} else {
+					this.options = [];
+				}
+			},
 			getIds(){
 				this.$nextTick(()=>{
 					var arr = [];
@@ -133,8 +165,19 @@
 					this.getStoreList();
 				});
 			},
+			//店铺下拉全选
+			changeSelected(v){
+				if(v){
+					this.select_store_ids = this.options.map(item => {
+						return item.dept_id;
+					})
+				}else{
+					this.select_store_ids = [];
+				}
+			},
 			//向父组件传递参数
 			emitCallBack(){
+				this.all_selected = this.select_store_ids.length > 0 && this.select_store_ids.length == this.options.length;
 				let obj = {
 					select_department_ids:this.select_department_ids,
 					select_plat_ids:this.select_plat_ids,
@@ -169,6 +212,7 @@
 				resource.ajaxViewStore({dept_id:dept_id,platform:this.select_plat_ids.join(','),from:this.from}).then(res => {
 					if(res.data.code == 1){
 						this.store_list = res.data.data;
+						this.options = this.store_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}

@@ -26,6 +26,9 @@
 			<el-form-item>
 				<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 			</el-form-item>
+			<el-form-item>
+				<el-checkbox :true-label="1" :false-label="0" v-model="is_day">查询按天</el-checkbox>
+			</el-form-item>
 		</el-form>
 		<div class="flex">
 			<div class="flex-1 bar_line" id='bar_line' v-loading="chart_loading"></div>
@@ -116,7 +119,8 @@
 				gys_total:0,
 				gys_page:1,
 				gys_pagesize:10,
-				gys_sort:""
+				gys_sort:"",
+				is_day:0,
 			}
 		},
 		created(){
@@ -403,10 +407,12 @@
 					gys:this.select_gys_ids.join(','),
 					ksbm:this.select_ks_ids.join(','),
 					sort:this.ksbm_sort,
+					is_day:this.is_day,
 					page:this.purchase_page,
 					pagesize:this.purchase_pagesize
 				}
 				this.ksbm_purchase_loading = true;
+				this.purchase_title_list = [];
 				operationResource.ksbmPurchaseList(arg).then(res => {
 					if(res.data.code == 1){
 						this.ksbm_purchase_loading = false;
@@ -433,6 +439,7 @@
 						gys:this.select_gys_ids.join(','),
 						ksbm:this.select_ks_ids.join(','),
 						sort:type == 'ksbm'?this.ksbm_sort:this.gys_sort,
+						is_day:this.is_day,
 					}
 					if(type == 'ksbm'){
 						operationResource.ksbmPurchaseListExport(arg).then(res => {

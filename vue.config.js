@@ -12,7 +12,8 @@ module.exports = {
 				ws: true,
 				changOlrigin: true,		
 			}
-		}
+		},
+		// port: '6666',
 	},
 	assetsDir: "web",
 	lintOnSave: true,
