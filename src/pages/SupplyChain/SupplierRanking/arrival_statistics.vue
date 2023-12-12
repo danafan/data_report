@@ -151,7 +151,7 @@
 				//获取顶部两个图表数据
 				this.dayDhlChart();
 				//款式采购明细
-				this.ksbmPurchaseList();
+				this.ksbmPurchaseList(true);
 				//供应商采购明细
 				this.gysPurchaseList();
 			},
@@ -399,7 +399,7 @@
 				}
 			},
 			//款式采购明细
-			ksbmPurchaseList(){
+			ksbmPurchaseList(bool){
 				let arg = {
 					start_date:this.date && this.date.length> 0?this.date[0]:"",
 					end_date:this.date && this.date.length> 0?this.date[1]:"",
@@ -412,7 +412,9 @@
 					pagesize:this.purchase_pagesize
 				}
 				this.ksbm_purchase_loading = true;
-				this.purchase_title_list = [];
+				if(bool){
+					this.purchase_title_list = [];
+				}
 				operationResource.ksbmPurchaseList(arg).then(res => {
 					if(res.data.code == 1){
 						this.ksbm_purchase_loading = false;
