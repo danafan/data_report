@@ -7,6 +7,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
+			<el-form-item label="平台:">
+				<el-select v-model="select_plat_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
+					<el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
+			</el-form-item>
 			<el-form-item label="店铺名称：">
 				<el-select v-model="shop_name_ids" clearable multiple filterable collapse-tags reserve-keyword placeholder="全部">
 					<el-option v-for="item in store_list" :key="item.shop_code" :label="item.shop_name" :value="item.shop_name">
@@ -225,6 +231,8 @@
 			return{
 				dept_list:['事业二部','事业四部'],					//事业部列表
 				dept_name_ids:[],	//选中的事业部列表
+				plat_list:[],		//平台列表
+				select_plat_ids:[],	//选中的平台列表
 				store_list:[],		//店铺列表
 				shop_name_ids:[],	//选中的店铺名称列表
 				shop_code_ids:[],	//选中的店铺ID列表
@@ -303,6 +311,8 @@
 		created(){
 			//部门列表
 			this.getDept();
+			//平台列表
+			this.ajaxPlat();
 			// 获取店铺
 			this.getStoreList();
 			//违规类型列表
@@ -329,6 +339,16 @@
 				resource.ajaxViewDept({from:2}).then(res => {
 					if(res.data.code == 1){
 						this.dept_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
+			//平台列表
+			ajaxPlat(){
+				resource.ajaxPlat().then(res => {
+					if(res.data.code == 1){
+						this.plat_list = res.data.data;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -394,6 +414,7 @@
 					start_time:this.date && this.date.length > 0?this.date[0]:"",
 					end_time:this.date && this.date.length > 0?this.date[1]:"",
 					dept_name:this.dept_name_ids.join(','),
+					platform:this.select_plat_ids.join(','),
 					shop_name:this.shop_name_ids.join(','),
 					shop_code:this.shop_code_ids.join(',')	
 				}
@@ -423,6 +444,7 @@
 						start_time:this.date && this.date.length > 0?this.date[0]:"",
 						end_time:this.date && this.date.length > 0?this.date[1]:"",
 						dept_name:this.dept_name_ids.join(','),
+						platform:this.select_plat_ids.join(','),
 						shop_name:this.shop_name_ids.join(','),
 						shop_code:this.shop_code_ids.join(',')	
 					}
@@ -462,6 +484,7 @@
 						start_time:this.date && this.date.length > 0?this.date[0]:"",
 						end_time:this.date && this.date.length > 0?this.date[1]:"",
 						dept_name:this.dept_name_ids.join(','),
+						platform:this.select_plat_ids.join(','),
 						shop_name:this.shop_name_ids.join(','),
 						shop_code:this.shop_code_ids.join(',')	
 					}

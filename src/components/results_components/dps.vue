@@ -124,7 +124,7 @@
           					return item.dept_name.toLowerCase().indexOf(query.toLowerCase()) > -1;
           				}
 					});
-					console.log(this.options)
+					this.all_selected = false;
 				} else {
 					this.options = [];
 				}

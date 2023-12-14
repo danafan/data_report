@@ -7,7 +7,10 @@
 				</el-date-picker>
 			</el-form-item>
 			<el-form-item label="品类：">
-				<el-select v-model="mc_ids" clearable multiple filterable remote reserve-keyword :remote-method="ajaxTopSpmc" collapse-tags placeholder="全部">
+				<el-select popper-class="custom_select" v-model="mc_ids" clearable multiple filterable remote reserve-keyword :remote-method="ajaxTopSpmc" collapse-tags placeholder="全部">
+					<div class="all_select flex ac jse absolute">
+						<el-checkbox v-model="all_selected" @change="changeSelected">全选</el-checkbox>
+					</div>
 					<el-option v-for="item in mc_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -53,6 +56,7 @@
 				store_ids:[],								//选中的店铺列表
 				mc_list:[],									//品类列表
 				mc_ids:[],									//选中的品类列表
+				all_selected:false,
 				gys_list:[],								//供应商列表
 				gys_ids:[],									//选中的供应商
 				ksbm_list:[],								//款式编码列表
@@ -93,6 +97,15 @@
 				loading:false,
 			}
 		},
+		watch:{
+			mc_ids:function(n,o){
+				if(n != o){
+					if(n.length == 0){
+						this.all_selected = false;
+					}
+				}
+			}
+		},
 		created(){
 			//获取数据
 			this.getData();
@@ -110,10 +123,21 @@
 					demandResource.ajaxTopSpmc({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.mc_list = res.data.data;
+							this.all_selected = false;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
 					})
+				}
+			},
+			//品类下拉全选
+			changeSelected(v){
+				if(v){
+					this.mc_ids = this.mc_list.map(item => {
+						return item;
+					})
+				}else{
+					this.mc_ids = [];
 				}
 			},
 			//供应商列表
@@ -224,6 +248,20 @@
 		}
 	}
 </script>
+<style>
+	.custom_select .el-scrollbar{
+		position: relative;
+		padding-top: 34px;
+	}
+	.custom_select .all_select{
+		top:0;
+		left: 0;
+		width: 100%;
+		height: 34px;
+		padding-left: 20px;
+		padding-right: 20px;
+	}
+</style>
 <style lang="less" scoped>
 	
 </style>
