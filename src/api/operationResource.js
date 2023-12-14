@@ -70,6 +70,11 @@ let path = {
 	mainBodyInfoDetail:'company_main_body/info',		//获取公司主体详情
 	mainBodyAdd:'company_main_body/add',				//添加公司主体
 	mainBodyEdit:'company_main_body/edit',				//编辑公司主体
+	ajaxCompany:'company_main_body/ajax_company',		//获取客户（公司主体）列表
+	companyMainShopList:'company_main_body/shop_list',	//店铺基础授权资料列表
+	companyMainShopListExport:'company_main_body/shop_export',	//店铺基础授权资料列表导出
+	companyMainAddShop:'company_main_body/add_shop',			//创建店铺基础授权资料
+	companyMainEditShop:'company_main_body/edit_shop',			//编辑店铺基础授权资料
 }						
 export default{
 	//获取款式编码
@@ -355,6 +360,26 @@ export default{
 	//编辑公司主体
 	mainBodyEdit(params){
 		return http.post(path.mainBodyEdit, params)
+	},
+	//获取客户(公司主体)列表
+	ajaxCompany(params){
+		return http.get(path.ajaxCompany, params)
+	},
+	//店铺基础授权资料列表
+	companyMainShopList(params){
+		return http.get(path.companyMainShopList, params)
+	},
+	//店铺基础授权资料列表导出
+	companyMainShopListExport(params){
+		return http.post(path.companyMainShopListExport, params)
+	},
+	//创建店铺基础授权资料
+	companyMainAddShop(params){
+		return http.post(path.companyMainAddShop, params)
+	},
+	//编辑店铺基础授权资料
+	companyMainEditShop(params){
+		return http.post(path.companyMainEditShop, params)
 	},
 }
 

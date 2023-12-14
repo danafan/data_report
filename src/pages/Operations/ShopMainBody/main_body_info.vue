@@ -5,7 +5,7 @@
 				<el-input v-model="company_name" placeholder="请输入公司名称"></el-input>
 			</el-form-item>
 			<el-form-item label="授权类型：">
-				<el-select v-model="main_body_type_id" clearable placeholder="请选择主体类型">
+				<el-select v-model="main_body_type_id" clearable placeholder="请选择授权类型">
 					<el-option v-for="item in main_body_type" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
