@@ -65,6 +65,11 @@ let path = {
 	dyyShopExport:'dyy_shop/export',					//代运营数据导出
 	salesAnalysisData:'sales_analysis/list',			//销售主题分析
 	salesAnalysisExport:'sales_analysis/export',		//销售主题分析导出
+	mainBodyInfo:'company_main_body/list',				//主体资料表
+	mainBodyInfoExport:'company_main_body/export',		//主体资料表导出
+	mainBodyInfoDetail:'company_main_body/info',		//获取公司主体详情
+	mainBodyAdd:'company_main_body/add',				//添加公司主体
+	mainBodyEdit:'company_main_body/edit',				//编辑公司主体
 }						
 export default{
 	//获取款式编码
@@ -326,6 +331,30 @@ export default{
 	//销售主题分析导出
 	salesAnalysisExport(params){
 		return http.post(path.salesAnalysisExport, params)
+	},
+	//主体资料表
+	mainBodyInfo(params){
+		return http.get(path.mainBodyInfo, params)
+	},
+	//主体资料表导出
+	mainBodyInfoExport(params){
+		return http.post(path.mainBodyInfoExport, params)
+	},
+	//主体资料详情
+	mainBodyInfoDetail(params){
+		return http.get(path.mainBodyInfoDetail, params)
+	},
+	//添加公司主体
+	mainBodyAdd(params){
+		return http.post(path.mainBodyAdd, params)
+	},
+	//编辑公司主体前获取信息
+	mainBodyEditGet(params){
+		return http.get(path.mainBodyEdit, params)
+	},
+	//编辑公司主体
+	mainBodyEdit(params){
+		return http.post(path.mainBodyEdit, params)
 	},
 }
 

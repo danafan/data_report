@@ -79,7 +79,7 @@
 					<div v-else>暂无</div>
 				</div>
 				<!-- 链接 -->
-				<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
+				<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[i.row_field_name],i.row_field_name)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
 				<!-- 图表 -->
 				<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
 				<!-- 普通文字 -->
@@ -124,7 +124,7 @@
 			<div v-else>暂无</div>
 		</div>
 		<!-- 链接 -->
-		<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
+		<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[item.row_field_name],item.row_field_name)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
 		<!-- 图表 -->
 		<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
 		<!-- 普通文字 -->
@@ -149,6 +149,8 @@
 		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if="tableName == 'option_info' && button_list.del == 1 && scope.row.used_status == '0'">删除</el-button>
 		<!-- 普通【删除】 -->
 		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if="(tableName != 'ksbm_table' && tableName != 'option_info') && button_list.del == 1">删除</el-button>
+		<!-- 普通详情 -->
+		<el-button type="text" size="small" @click="$emit('detailFn',scope.row[fieldName])" v-if='button_list.detail == 1'>详情</el-button>
 		<el-button type="text" size="small" @click="$emit('detailFn',scope.row[fieldName])" v-if='scope.row.detail'>详情</el-button>
 		<el-button type="text" size="small" @click="$emit('handleFn',scope.row[fieldName])" v-if='scope.row.handle'>处理</el-button>
 		<el-button type="text" size="small" @click="$emit('feekbackFn',scope.row[fieldName])" v-if='scope.row.feekback'>反馈</el-button>

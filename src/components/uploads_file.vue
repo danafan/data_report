@@ -3,7 +3,7 @@
 		<div class="dialog_img" v-for="(item,index) in show_img" @mouseenter="item.is_del = true" @mouseleave="item.is_del = false">
 			<!-- <img class="img" :src="item.domain + item.urls"> -->
 			<el-image :z-index="2006" class="img" :src="item.domain + item.urls" fit="scale-down" :preview-src-list="show_images" @click.stop="handleClickStop"></el-image>
-			<div class="modal" v-if="item.is_del == true">
+			<div class="modal" v-if="item.is_del == true && !onlyView">
 				<img src="../static/deleteImg.png" @click="deteleFile(item.urls,index)">
 			</div>
 		</div>
@@ -79,9 +79,7 @@
 							}
 						})
 					}
-					
 				}
-				
 			},
 			//删除文件
 			deteleFile(url,index){
