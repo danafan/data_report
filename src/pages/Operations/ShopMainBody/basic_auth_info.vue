@@ -243,14 +243,16 @@
         </el-dialog>
         <!-- 变更记录 -->
         <el-dialog title="店铺主体变更记录" width="1000px" @close="" :close-on-click-modal="false" :visible.sync="log_dialog">
-            <el-table :data="log_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
-                <!-- <el-table-column prop="supplier" show-overflow-tooltip label="变更次数" align="center">
+            <el-table :data="log_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" border>
+                <el-table-column prop="supplier" show-overflow-tooltip label="变更次数" align="center">
                     <template slot-scope="scope">
-                        <div>{{scope.$index + 1}}次</div>
+                        <div>{{log_data.length - scope.$index}}次</div>
                     </template>
-                </el-table-column> -->
+                </el-table-column>
                 <el-table-column prop="auth_shop_name" width="120" show-overflow-tooltip label="授权名称" align="center"></el-table-column>
                 <el-table-column prop="shop_name" width="120" show-overflow-tooltip label="开店名称" align="center"></el-table-column>
+                <el-table-column prop="add_time" width="160" show-overflow-tooltip label="变更时间" align="center">
+                </el-table-column>
                 <el-table-column prop="company_name" width="180" show-overflow-tooltip label="主体变更" align="center">
                     <template slot-scope="scope">
                         <div>变更前主体：{{scope.row.old_info.company_name}}</div>
@@ -258,74 +260,71 @@
                         <div>现主体：{{scope.row.new_info.company_name}}</div>
                     </template>
                 </el-table-column>
-                <el-table-column prop="add_time" width="120" show-overflow-tooltip label="变更时间" align="center">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.add_time}}</div>
-                        <div class="divider"></div>
-                        <div>{{scope.row.add_time}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="company_alias" width="120" show-overflow-tooltip label="公司简称" align="center">
-                     <template slot-scope="scope">
-                        <div>{{scope.row.old_info.company_alias}}</div>
-                        <div class="divider"></div>
-                        <div>{{scope.row.new_info.company_alias}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="register_address" width="120" show-overflow-tooltip label="主体注册地址" align="center">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.old_info.register_address}}</div>
-                        <div class="divider"></div>
-                        <div>{{scope.row.new_info.register_address}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="legal_person" width="120" show-overflow-tooltip label="法人" align="center">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.old_info.legal_person}}</div>
-                        <div class="divider"></div>
-                        <div>{{scope.row.new_info.legal_person}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="operator_tel" width="120" show-overflow-tooltip label="经营人电话" align="center">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.old_info.operator_tel}}</div>
-                        <div class="divider"></div>
-                        <div>{{scope.row.new_info.operator_tel}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="company_name" width="120" show-overflow-tooltip label="主体归属" align="center">
-                    <template slot-scope="scope">
-                        <div>{{scope.row.old_info.company_name}}</div>
-                        <div class="divider"></div>
-                        <div>{{scope.row.new_info.company_name}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="platform" label="经营人性别" align="center">
-                    <template slot-scope="scope">
-                        <div v-if="scope.row.old_info.operator_gender == 1">男</div>
-                        <div v-if="scope.row.old_info.operator_gender == 2">女</div>
-                        <div v-if="scope.row.old_info.operator_gender == 0">未设置</div>
-                        <div class="divider"></div>
-                        <div v-if="scope.row.new_info.operator_gender == 1">男</div>
-                        <div v-if="scope.row.new_info.operator_gender == 2">女</div>
-                        <div v-if="scope.row.new_info.operator_gender == 0">未设置</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="platform" label="营业执照" align="center">
-                    <template slot-scope="scope">
-                        <el-image :z-index="2006" class="image" :src="filterImage(scope.row.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.business_license_url).length > 0"></el-image>
-                        <div v-else>暂无</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="platform" label="身份证" align="center">
-                    <template slot-scope="scope">
-                        <el-image :z-index="2006" class="image" :src="filterImage(scope.row.operator_id_card)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.operator_id_card)" @click.stop="handleClickStop" v-if="filterImage(scope.row.operator_id_card).length > 0"></el-image>
-                        <div v-else>暂无</div>
-                    </template>
-                </el-table-column>
-            </el-table>
-        </el-dialog>
-    </div>
+                <el-table-column prop="company_alias" width="160" show-overflow-tooltip label="公司简称" align="center">
+                 <template slot-scope="scope">
+                    <div>{{scope.row.old_info.company_alias}}</div>
+                    <div class="divider"></div>
+                    <div>{{scope.row.new_info.company_alias}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="register_address" width="160" show-overflow-tooltip label="主体注册地址" align="center">
+                <template slot-scope="scope">
+                    <div>{{scope.row.old_info.register_address}}</div>
+                    <div class="divider"></div>
+                    <div>{{scope.row.new_info.register_address}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="legal_person" width="120" show-overflow-tooltip label="法人" align="center">
+                <template slot-scope="scope">
+                    <div>{{scope.row.old_info.legal_person}}</div>
+                    <div class="divider"></div>
+                    <div>{{scope.row.new_info.legal_person}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="operator_tel" width="120" show-overflow-tooltip label="经营人电话" align="center">
+                <template slot-scope="scope">
+                    <div>{{scope.row.old_info.operator_tel}}</div>
+                    <div class="divider"></div>
+                    <div>{{scope.row.new_info.operator_tel}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="company_name" width="120" show-overflow-tooltip label="主体归属" align="center">
+                <template slot-scope="scope">
+                    <div>{{scope.row.old_info.company_name}}</div>
+                    <div class="divider"></div>
+                    <div>{{scope.row.new_info.company_name}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="platform" label="经营人性别" align="center">
+                <template slot-scope="scope">
+                    <div v-if="scope.row.old_info.operator_gender == 1">男</div>
+                    <div v-if="scope.row.old_info.operator_gender == 2">女</div>
+                    <div v-if="scope.row.old_info.operator_gender == 0">未设置</div>
+                    <div class="divider"></div>
+                    <div v-if="scope.row.new_info.operator_gender == 1">男</div>
+                    <div v-if="scope.row.new_info.operator_gender == 2">女</div>
+                    <div v-if="scope.row.new_info.operator_gender == 0">未设置</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="platform" width="120" label="营业执照" align="center">
+                <template slot-scope="scope">
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.business_license_url).length > 0"></el-image>
+                    <div v-else>暂无</div>
+                    <div class="divider"></div>
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.business_license_url).length > 0"></el-image>
+                </template>
+            </el-table-column>
+            <el-table-column prop="platform" width="120" label="身份证" align="center">
+                <template slot-scope="scope">
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.id_card_url).length > 0"></el-image>
+                    <div v-else>暂无</div>
+                    <div class="divider"></div>
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.id_card_url).length > 0"></el-image>
+                </template>
+            </el-table-column>
+        </el-table>
+    </el-dialog>
+</div>
 </template>
 <script>
     import {exportPost} from '../../../api/export.js'
@@ -531,6 +530,13 @@
                         let data = res.data.data;
                         this.domain = data.domain;
                         this.title_list = data.title_list;
+                        this.title_list.map(item => {
+                            if(item.row_field_name == 'shop_tel' || item.row_field_name == 'register_address' || item.row_field_name == 'operator_id_card' || item.row_field_name == 'current_belong' || item.row_field_name == 'oa_id' || item.row_field_name == 'auth_file_url' || item.row_field_name == 'shop_situation'){
+                                item['width'] = '160px'
+                            }else{
+                                item['width'] = '100px'
+                            }
+                        })
                         this.table_data = data.table_data.data;
                         this.table_data.map(item => {
                             if(item.id_card_url){
@@ -768,36 +774,47 @@
                     operationResource.companyMainShopChangeList({company_shop_id:field_name}).then(res => {
                         if(res.data.code == 1){
                             let data = res.data.data;
-                            let log_data = [];
                             data.map(item => {
-                                let old_data = {...item,...item.old_info};
-                                let new_data = {...item,...item.new_info};
-                                log_data.push(old_data)
-                                log_data.push(new_data)
-                            })
-                            log_data.map(item => {
-                                if(item.operator_id_card){
+                                if(item.old_info.id_card_url){
                                     let id_card_arr = [];
-                                    item.operator_id_card.split(',').map(id_card_item => {
+                                    item.old_info.id_card_url.split(',').map(id_card_item => {
                                         id_card_arr.push(item.domain + id_card_item);
                                     })
-                                    item['operator_id_card'] = id_card_arr.join(',');
+                                    item.old_info['id_card_url'] = id_card_arr.join(',');
                                 }else{
-                                    item['operator_id_card'] = '';
+                                    item.old_info['id_card_url'] = '';
                                 }
-                                if(item.business_license_url){
+                                if(item.new_info.id_card_url){
+                                    let id_card_arr = [];
+                                    item.new_info.id_card_url.split(',').map(id_card_item => {
+                                        id_card_arr.push(item.domain + id_card_item);
+                                    })
+                                    item.new_info['id_card_url'] = id_card_arr.join(',');
+                                }else{
+                                    item.new_info['id_card_url'] = '';
+                                }
+
+                                if(item.new_info.business_license_url){
                                     let business_license_arr = [];
-                                    item.business_license_url.split(',').map(business_license_item => {
+                                    item.new_info.business_license_url.split(',').map(business_license_item => {
                                         business_license_arr.push(item.domain + business_license_item);
                                     })
-                                    item['business_license_url'] = business_license_arr.join(',');
+                                    item.new_info['business_license_url'] = business_license_arr.join(',');
                                 }else{
-                                    item['business_license_url'] = '';
+                                    item.new_info['business_license_url'] = '';
+                                }
+                                if(item.old_info.business_license_url){
+                                    let business_license_arr = [];
+                                    item.old_info.business_license_url.split(',').map(business_license_item => {
+                                        business_license_arr.push(item.domain + business_license_item);
+                                    })
+                                    item.old_info['business_license_url'] = business_license_arr.join(',');
+                                }else{
+                                    item.old_info['business_license_url'] = '';
                                 }
                             })
-                            this.log_data = log_data;
+                            this.log_data = data;
                             this.log_dialog = true;
-                            console.log(this.log_data)
                         }else{
                             this.$message.warning(res.data.msg);
                         }
@@ -824,17 +841,24 @@
             //大图点击关闭
             handleClickStop() {
                 this.$nextTick(() => {
-                  let domImageView = document.querySelector(".el-image-viewer__mask"); 
-                  // 获取遮罩层dom
-                  if (!domImageView) {
-                    return;
-                }
-                domImageView.addEventListener("click", () => {
+                    let domImageView = document.querySelector(".el-image-viewer__mask"); 
+                        // 获取遮罩层dom
+                    if (!domImageView) {
+                        return;
+                    }
+                    domImageView.addEventListener("click", () => {
                     // 点击遮罩层时调用关闭按钮的 click 事件
-                    document.querySelector(".el-image-viewer__close").click();
+                        document.querySelector(".el-image-viewer__close").click();
+                    });
                 });
-            });
             },
+            //设置变更记录过期状态
+            tableRowClassName({row, rowIndex}) {
+                if (rowIndex > 0) {
+                    return 'expired';
+                }
+                return '';
+            }
         },
         components:{
             CustomTable,
@@ -843,6 +867,12 @@
         }
     }
 </script>
+<style type="text/css">
+    .el-table .expired{
+        background: #F7F7F7;
+        color: #B6B6B6;
+    }
+</style>
 <style lang="less" scoped>
     .image{
         width: 50px;

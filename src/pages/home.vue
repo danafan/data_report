@@ -95,14 +95,14 @@
 						<span slot="title">{{item.menu_name}}</span>
 					</el-menu-item>
 				</template>
-				<el-menu-item index="/main_body_info">
+				<!-- <el-menu-item index="/main_body_info">
 					<i class="el-icon-s-promotion"></i>
 					<span slot="title">主体资料表</span>
 				</el-menu-item>
 				<el-menu-item index="/basic_auth_info">
 					<i class="el-icon-s-finance"></i>
 					<span slot="title">店铺基础授权资料</span>
-				</el-menu-item>
+				</el-menu-item> -->
 			</el-menu>
 		</div>
 		<el-main class="main">

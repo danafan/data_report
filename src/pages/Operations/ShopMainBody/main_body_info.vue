@@ -274,6 +274,13 @@
 						let data = res.data.data;
 						this.domain = data.domain;
 						this.title_list = data.title_list;
+						this.title_list.map(item => {
+							if(item.row_field_name == 'company_name' || item.row_field_name == 'business_license_number' || item.row_field_name == 'register_address' || item.row_field_name == 'operator_id_card' || item.row_field_name == 'original_belong' || item.row_field_name == 'current_belong' || item.row_field_name == 'contract_url'){
+								item['width'] = '160px'
+							}else{
+								item['width'] = '100px'
+							}
+						})
 						this.table_data = data.table_data.data;
 						this.table_data.map(item => {
 							if(item.id_card_url){

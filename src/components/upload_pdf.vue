@@ -4,7 +4,11 @@
 			<el-button size="medium">选择上传pdf<i class="el-icon-upload el-icon--right"></i></el-button>
 			<input type="file" ref="pdfUpload" class="upload_file" accept="application/pdf" @change="uploadPdf">
 		</div>
-		<el-tag :closable="!onlyView" @close="deteleFile" v-else>{{`${!fileName?'未上传':fileName}`}}</el-tag>
+		<el-tag class="flexs" :closable="!onlyView" @close="deteleFile" v-else>
+			<el-tooltip class="item" effect="dark" :content="`${!fileName?'未上传':fileName}`" placement="top">
+				<div class="file_name">{{`${!fileName?'未上传':fileName}`}}</div>
+			</el-tooltip>
+		</el-tag>
 	</div>
 </template>
 <style lang="less" scoped>
@@ -21,6 +25,16 @@
 			height: 100%;
 			opacity: 0;
 		}
+	}
+	.flexs{
+		display: flex;
+		align-items: center;
+	}
+	.file_name{
+		max-width: 224px;
+		overflow: hidden;
+		white-space: nowrap;
+		text-overflow:ellipsis;
 	}
 </style>
 <script>
