@@ -94,8 +94,8 @@
                 </el-form>
                 <el-form style="width: 360px;" size="small" label-width="110px">
                     <el-form-item label="管理员：">
-                        <div v-if="dialog_type == 'detail'">{{info.company_admin_name}}</div>
-                        <el-select v-model="info.shop_admin_id" clearable placeholder="请选择管理员" v-else>
+                        <div v-if="dialog_type == 'detail'">{{detail_data.shop_admin_name}}</div>
+                        <el-select v-model="info.shop_admin_id" clearable filterable placeholder="请选择管理员" v-else>
                             <el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
                             </el-option>
                         </el-select>
@@ -110,7 +110,7 @@
                     </el-form-item>
                     <el-form-item label="号码保管人：">
                         <div v-if="dialog_type == 'detail'">{{info.tel_custodian}}</div>
-                        <el-select v-model="info.tel_custodian" clearable placeholder="请选择号码保管人" v-else>
+                        <el-select v-model="info.tel_custodian" clearable filterable placeholder="请选择号码保管人" v-else>
                             <el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
                             </el-option>
                         </el-select>
@@ -154,7 +154,7 @@
                         <el-input v-model="info.oa_id" placeholder="请输入OA流程编号" v-else></el-input>
                     </el-form-item>
                     <el-form-item label="授权PDF：">
-                        <UploadPdf :fileName="info.auth_file_url" :onlyView="dialog_type == 'detail'" @callbackFn="uploadPdf"/>
+                        <UploadPdf :fileName="auth_file_name" :fileUrl="info.auth_file_url" nameType="1" :onlyView="dialog_type == 'detail'" @callbackFn="uploadPdf"/>
                     </el-form-item>
                     <el-form-item label="平台：">
                         <div v-if="dialog_type == 'detail'">{{info.platform}}</div>
@@ -194,7 +194,7 @@
 
                 <el-form size="small">
                     <el-form-item>
-                        <div>店铺【{{shop_name}}】，现主体【{{company_name}}】</div>
+                        <div>店铺【{{transfer_shop_name}}】，现主体【{{company_name}}】</div>
                     </el-form-item>
                     <el-form-item label="客户：">
                         <el-select v-model="company_id" placeholder="请选择客户">
@@ -306,20 +306,26 @@
                     <div v-if="scope.row.new_info.operator_gender == 0">未设置</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="platform" width="120" label="营业执照" align="center">
+            <el-table-column prop="platform" width="160" label="营业执照" align="center">
                 <template slot-scope="scope">
                     <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.business_license_url).length > 0"></el-image>
-                    <div v-else>暂无</div>
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.business_license_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.business_license_url).length > 1"></el-image>
+                    <div v-if="filterImage(scope.row.old_info.business_license_url).length == 0">暂无</div>
                     <div class="divider"></div>
                     <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.business_license_url).length > 0"></el-image>
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.business_license_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.business_license_url).length > 1"></el-image>
+                    <div v-if="filterImage(scope.row.new_info.business_license_url).length == 0">暂无</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="platform" width="120" label="身份证" align="center">
+            <el-table-column prop="platform" width="160" label="身份证" align="center">
                 <template slot-scope="scope">
                     <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.id_card_url).length > 0"></el-image>
-                    <div v-else>暂无</div>
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.id_card_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.id_card_url).length > 1"></el-image>
+                    <div v-if="filterImage(scope.row.old_info.id_card_url).length == 0">暂无</div>
                     <div class="divider"></div>
                     <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.id_card_url).length > 0"></el-image>
+                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.id_card_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.id_card_url).length > 1"></el-image>
+                    <div v-if="filterImage(scope.row.new_info.id_card_url).length == 0">暂无</div>
                 </template>
             </el-table-column>
         </el-table>
@@ -448,9 +454,10 @@
                 log_dialog:false,                       //变更记录弹窗
                 log_data:[],                            //变更记录数据
                 transfer_dialog:false,                  //转移主体弹窗
-                shop_name:"",                           //开店名称
+                transfer_shop_name:"",                  //开店名称
                 company_name:"",                        //主体现归属
                 company_id:"",                          //变更的主体id
+                auth_file_name:"",                      //授权PDF名称
             }
         },
         created(){
@@ -531,7 +538,7 @@
                         this.domain = data.domain;
                         this.title_list = data.title_list;
                         this.title_list.map(item => {
-                            if(item.row_field_name == 'shop_tel' || item.row_field_name == 'register_address' || item.row_field_name == 'operator_id_card' || item.row_field_name == 'current_belong' || item.row_field_name == 'oa_id' || item.row_field_name == 'auth_file_url' || item.row_field_name == 'shop_situation'){
+                            if(item.row_field_name == 'shop_tel' || item.row_field_name == 'register_address' || item.row_field_name == 'operator_id_card' || item.row_field_name == 'current_belong' || item.row_field_name == 'oa_id' || item.row_field_name == 'auth_file_url' || item.row_field_name == 'shop_situation' || item.row_field_name == 'business_license_url' || item.row_field_name == 'id_card_url'){
                                 item['width'] = '160px'
                             }else{
                                 item['width'] = '100px'
@@ -588,6 +595,7 @@
                                     }
                                 }
                             }
+                            this.auth_file_name = data.auth_file_url;
                         }else{
                             this.$message.warning(res.data.msg);
                         }
@@ -604,6 +612,7 @@
                                     }
                                 }
                             }
+                            this.auth_file_name = this.detail_data.auth_file_url;
                         }else{
                             this.$message.warning(res.data.msg);
                         }
@@ -738,12 +747,13 @@
                 });
             },
             //合同pdf上传回调
-            uploadPdf(urls){
-                this.info.auth_file_url = urls;
+            uploadPdf(arg){
+                this.info.auth_file_url = arg?arg.urls:'';
+                this.auth_file_name = arg?arg.name:'';
             },
             //转移主体
             transferFn(row){
-                this.shop_name = row.shop_name;
+                this.transfer_shop_name = row.shop_name;
                 this.company_name = row.company_name;
                 this.company_id = row.company_id;
                 this.company_shop_id = row.company_shop_id;

@@ -76,7 +76,9 @@
 				<!-- 图片 -->
 				<div v-else-if="i.type == '3'">
 					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[i.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-if="filterImage(scope.row[i.row_field_name]).length > 0" @click.stop="handleClickStop"></el-image>
-					<div v-else>暂无</div>
+					<!-- 主体店铺资料 -->
+					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[i.row_field_name])[1]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-if="filterImage(scope.row[i.row_field_name]).length > 1" @click.stop="handleClickStop"></el-image>
+					<div v-if="filterImage(scope.row[i.row_field_name]).length == 0">暂无</div>
 				</div>
 				<!-- 链接 -->
 				<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[i.row_field_name],i.row_field_name)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
@@ -121,7 +123,9 @@
 		<!-- 图片 -->
 		<div v-else-if="item.type == '3'">
 			<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[item.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" @click.stop="handleClickStop" v-if="filterImage(scope.row[item.row_field_name]).length > 0"></el-image>
-			<div v-else>暂无</div>
+			<!-- 主体店铺资料 -->
+			<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[item.row_field_name])[1]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" @click.stop="handleClickStop" v-if="filterImage(scope.row[item.row_field_name]).length > 1"></el-image>
+			<div v-if="filterImage(scope.row[item.row_field_name]).length == 0">暂无</div>
 		</div>
 		<!-- 链接 -->
 		<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[item.row_field_name],item.row_field_name)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>

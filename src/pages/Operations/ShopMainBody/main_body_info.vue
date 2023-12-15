@@ -66,8 +66,8 @@
 				</el-form>
 				<el-form style="width: 360px;" size="small" label-width="100px">
 					<el-form-item label="管理员：">
-						<div v-if="dialog_type == 'detail'">{{info.company_admin_name}}</div>
-						<el-select v-model="info.user_id" clearable placeholder="请选择管理员" v-else>
+						<div v-if="dialog_type == 'detail'">{{detail_data.company_admin_name}}</div>
+						<el-select v-model="info.company_admin_id" clearable filterable placeholder="请选择管理员" v-else>
 							<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 							</el-option>
 						</el-select>
@@ -128,7 +128,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="合同PDF：">
-						<UploadPdf :fileName="info.contract_url" :onlyView="dialog_type == 'detail'" @callbackFn="uploadPdf"/>
+						<UploadPdf :fileName="contract_name" :fileUrl="info.contract_url" nameType="1" :onlyView="dialog_type == 'detail'" @callbackFn="uploadPdf"/>
 					</el-form-item>
 					<el-form-item label="新客申请：">
 						<div v-if="dialog_type == 'detail'">{{info.new_apply}}</div>
@@ -194,6 +194,7 @@
 					value:5
 				}],											//合同条款列表
 				company_id:"",								//点击的公司
+				detail_data:{},
 				info:{
 					main_body_type:1,
 					company_alias:"",
@@ -201,7 +202,7 @@
 					original_belong:"",	
 					contacts_address:"",
 					contract_terms:"",
-					user_id:"",
+					company_admin_id:"",
 					business_license_number:"",
 					operator_tel:"",
 					operator_gender:"",
@@ -220,7 +221,7 @@
 				},
 				business_license:[],						//营业执照
 				id_card:[],									//身份证
-				
+				contract_name:"",							//上传的合同PDF名称
 			}
 		},
 		created(){
@@ -275,7 +276,7 @@
 						this.domain = data.domain;
 						this.title_list = data.title_list;
 						this.title_list.map(item => {
-							if(item.row_field_name == 'company_name' || item.row_field_name == 'business_license_number' || item.row_field_name == 'register_address' || item.row_field_name == 'operator_id_card' || item.row_field_name == 'original_belong' || item.row_field_name == 'current_belong' || item.row_field_name == 'contract_url'){
+							if(item.row_field_name == 'company_name' || item.row_field_name == 'business_license_number' || item.row_field_name == 'register_address' || item.row_field_name == 'operator_id_card' || item.row_field_name == 'original_belong' || item.row_field_name == 'current_belong' || item.row_field_name == 'contract_url' || item.row_field_name == 'business_license_url' || item.row_field_name == 'id_card_url'){
 								item['width'] = '160px'
 							}else{
 								item['width'] = '100px'
@@ -321,11 +322,15 @@
 							for(let info_k in this.info){
 								for(let data_k in data){
 									if(info_k == data_k){
-										this.info[info_k] = data[data_k]
+										if(info_k == 'operator_gender' || info_k == 'contract_terms'){
+											this.info[info_k] = data[data_k] === 0?'':data[data_k];
+										}else{
+											this.info[info_k] = data[data_k];
+										}
+										
 									}
 								}
 							}
-
 							if(data.id_card_url){
 								data.id_card_url.split(',').map(image_item => {
 									let image_obj = {
@@ -346,6 +351,7 @@
 									this.business_license.push(image_obj);
 								})
 							}
+							this.contract_name = data.contract_url;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -355,6 +361,7 @@
 					operationResource.mainBodyInfoDetail({company_id:company_id}).then(res => {
 						if(res.data.code == 1){
 							let data = res.data.data;
+							this.detail_data = data;
 							for(let info_k in this.info){
 								for(let data_k in data){
 									if(info_k == data_k){
@@ -383,6 +390,7 @@
 									this.business_license.push(image_obj);
 								})
 							}
+							this.contract_name = data.contract_url;
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -402,8 +410,9 @@
 				this.info.id_card_url = v.join(',');
 			},
 			//合同pdf上传回调
-			uploadPdf(urls){
-				this.info.contract_url = urls;
+			uploadPdf(arg){
+				this.info.contract_url = arg?arg.urls:'';
+				this.contract_name = arg?arg.name:'';
 			},
 			// 弹窗关闭
 			closeDialog(){
@@ -414,7 +423,7 @@
 					original_belong:"",	
 					contacts_address:"",
 					contract_terms:"",
-					user_id:"",
+					company_admin_id:"",
 					business_license_number:"",
 					operator_tel:"",
 					operator_gender:"",
@@ -479,7 +488,7 @@
 				}).then(() => {
 					let arg = {
 						company_name:this.company_name,
-						main_body_type:this.main_body_type,
+						main_body_type:this.main_body_type_id,
 						company_admin_id:this.user_ids.join(','),
 						sort:this.sort
 					}
