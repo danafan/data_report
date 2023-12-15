@@ -4,7 +4,7 @@
 			<el-button size="medium">选择上传pdf<i class="el-icon-upload el-icon--right"></i></el-button>
 			<input type="file" ref="pdfUpload" class="upload_file" accept="application/pdf" @change="uploadPdf">
 		</div>
-		<el-tag class="custom_tag" :closable="!onlyView" @close="deteleFile" v-else>
+		<el-tag class="custom_tag" :closable="!onlyView" @close="deteleFile" @click="$emit('viewPdf',fileName)" v-else>
 			<el-tooltip class="item" effect="dark" :content="`${!fileName?'未上传':fileName}`" placement="top">
 				<div class="file_name">{{`${!fileName?'未上传':fileName}`}}</div>
 			</el-tooltip>
@@ -29,6 +29,7 @@
 	.custom_tag{
 		display: flex;
 		align-items: center;
+		cursor: pointer;
 	}
 	.file_name{
 		width: 224px;
@@ -43,11 +44,6 @@
 		props:{
 			//文件名称
 			fileName:{
-				type:String,
-			default:''
-			},
-			//文件url
-			fileUrl:{
 				type:String,
 			default:''
 			},
@@ -67,15 +63,10 @@
 			uploadPdf(){
 				if (this.$refs.pdfUpload.files.length > 0) {
 					let files = this.$refs.pdfUpload.files;
-					var name = files[0].name;
 					resource.uploadImage({image:files[0],name_type:this.nameType,type:5}).then(res => {
 						this.$refs.pdfUpload.value = null;
 						if(res.data.code == 1){
-							let arg = {
-								name:this.nameType == '1'?name:res.data.data.urls,
-								urls:res.data.data.urls
-							}
-							this.$emit('callbackFn',arg);
+							this.$emit('callbackFn',res.data.data.urls);
 						}else{
 							this.$message.warning(res.data.msg);
 						}
@@ -84,9 +75,9 @@
 			},
 			//删除文件
 			deteleFile(){
-				resource.delImage({url:this.fileUrl}).then(res => {
+				resource.delImage({url:this.fileName}).then(res => {
 					if(res.data.code == 1){
-						this.$emit('callbackFn',null);
+						this.$emit('callbackFn','');
 					}else{
 						this.$message.warning(res.data.msg);
 					}

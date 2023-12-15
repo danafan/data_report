@@ -9,6 +9,10 @@ import Vue2OrgTree from 'vue2-org-tree'
 import './styles/org-tree.less'
 import VueClipboards from 'vue-clipboard2'
 
+import directive from './utils/directive'
+Vue.use(directive)
+
+
 Vue.use(VueClipboards);
 Vue.use(Vue2OrgTree)
 Vue.use(VueContextMenu)

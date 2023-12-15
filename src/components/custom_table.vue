@@ -77,7 +77,7 @@
 				<div v-else-if="i.type == '3'">
 					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[i.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-if="filterImage(scope.row[i.row_field_name]).length > 0" @click.stop="handleClickStop"></el-image>
 					<!-- 主体店铺资料 -->
-					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[i.row_field_name])[1]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-if="filterImage(scope.row[i.row_field_name]).length > 1" @click.stop="handleClickStop"></el-image>
+					<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`,marginLeft:'5px'}" :src="filterImage(scope.row[i.row_field_name])[1]" fit="scale-down" :preview-src-list="filterImage(scope.row[i.row_field_name])" v-if="filterImage(scope.row[i.row_field_name]).length > 1" @click.stop="handleClickStop"></el-image>
 					<div v-if="filterImage(scope.row[i.row_field_name]).length == 0">暂无</div>
 				</div>
 				<!-- 链接 -->
@@ -124,7 +124,7 @@
 		<div v-else-if="item.type == '3'">
 			<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[item.row_field_name])[0]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" @click.stop="handleClickStop" v-if="filterImage(scope.row[item.row_field_name]).length > 0"></el-image>
 			<!-- 主体店铺资料 -->
-			<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`}" :src="filterImage(scope.row[item.row_field_name])[1]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" @click.stop="handleClickStop" v-if="filterImage(scope.row[item.row_field_name]).length > 1"></el-image>
+			<el-image :z-index="2006" :style="{width:`${image_size}`,height:`${image_size}`,marginLeft:'5px'}" :src="filterImage(scope.row[item.row_field_name])[1]" fit="scale-down" :preview-src-list="filterImage(scope.row[item.row_field_name])" @click.stop="handleClickStop" v-if="filterImage(scope.row[item.row_field_name]).length > 1"></el-image>
 			<div v-if="filterImage(scope.row[item.row_field_name]).length == 0">暂无</div>
 		</div>
 		<!-- 链接 -->
