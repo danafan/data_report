@@ -75,6 +75,9 @@ let path = {
 	companyMainShopListExport:'company_main_body/shop_export',	//店铺基础授权资料列表导出
 	companyMainAddShop:'company_main_body/add_shop',			//创建店铺基础授权资料
 	companyMainEditShop:'company_main_body/edit_shop',			//编辑店铺基础授权资料
+	companyMainShopInfo:'company_main_body/shop_info',			//获取店铺基础授权资料详情
+	companyMainShopChangeList:'company_main_body/change_list',	//店铺主体变更记录列表
+	companyMainBodyTransfer:'company_main_body/transfer',		//店铺主体转移
 }						
 export default{
 	//获取款式编码
@@ -378,8 +381,24 @@ export default{
 		return http.post(path.companyMainAddShop, params)
 	},
 	//编辑店铺基础授权资料
+	companyMainEditShopGet(params){
+		return http.get(path.companyMainEditShop, params)
+	},
+	//编辑店铺基础授权资料
 	companyMainEditShop(params){
 		return http.post(path.companyMainEditShop, params)
+	},
+	//获取店铺基础授权资料详情
+	companyMainShopInfo(params){
+		return http.get(path.companyMainShopInfo, params)
+	},
+	//店铺主体变更记录列表
+	companyMainShopChangeList(params){
+		return http.get(path.companyMainShopChangeList, params)
+	},
+	//店铺主体转移
+	companyMainBodyTransfer(params){
+		return http.post(path.companyMainBodyTransfer, params)
 	},
 }
 

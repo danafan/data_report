@@ -151,6 +151,8 @@
 		<el-button type="text" size="small" @click="$emit('deleteFn',scope.row[fieldName])" v-if="(tableName != 'ksbm_table' && tableName != 'option_info') && button_list.del == 1">删除</el-button>
 		<!-- 普通详情 -->
 		<el-button type="text" size="small" @click="$emit('detailFn',scope.row[fieldName])" v-if='button_list.detail == 1'>详情</el-button>
+		<!-- 转移主体（店铺基础授权资料） -->
+		<el-button type="text" size="small" @click="$emit('transferFn',scope.row)" v-if='button_list.transfer == 1'>转移主体</el-button>
 		<el-button type="text" size="small" @click="$emit('detailFn',scope.row[fieldName])" v-if='scope.row.detail'>详情</el-button>
 		<el-button type="text" size="small" @click="$emit('handleFn',scope.row[fieldName])" v-if='scope.row.handle'>处理</el-button>
 		<el-button type="text" size="small" @click="$emit('feekbackFn',scope.row[fieldName])" v-if='scope.row.feekback'>反馈</el-button>

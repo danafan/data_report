@@ -36,7 +36,7 @@
             <el-button type="primary" plain icon="el-icon-plus" size="small" @click="editFn('','add')" v-if="button_list.add == 1">添加</el-button>
             <el-button type="primary" plain size="mini" @click="exportFn" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
         </div>
-        <CustomTable v-loading="loading" :isLoading="loading" tableName="basic_auth_info" max_height="620px" :table_data="table_data" :title_list="title_list" :is_setting="true" :button_list="button_list" fieldName="company_id" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFn="editFn($event,'edit')" @detailFn="editFn($event,'detail')" @tableCallBack="viewPdf"/>
+        <CustomTable v-loading="loading" :isLoading="loading" tableName="basic_auth_info" max_height="620px" setting_width="160px" :table_data="table_data" :title_list="title_list" :is_setting="true" :button_list="button_list" fieldName="company_shop_id" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFn="editFn($event,'edit')" @detailFn="editFn($event,'detail')" @tableCallBack="tableCallBack" @transferFn="transferFn"/>
         <page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
         <!-- 添加/编辑/详情 -->
         <el-dialog :title="dialog_title" width="1200px" @close="closeDialog" :close-on-click-modal="false" :visible.sync="dialog">
@@ -76,7 +76,7 @@
                     </el-form-item>
                     <el-form-item label="授权提交日：">
                         <div v-if="dialog_type == 'detail'">{{info.auth_date}}</div>
-                        <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_date" type="date" placeholder="选择日期">
+                        <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_date" type="date" placeholder="选择日期" v-else>
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="开店情况：">
@@ -117,12 +117,12 @@
                     </el-form-item>
                     <el-form-item label="授权到期日：">
                         <div v-if="dialog_type == 'detail'">{{info.auth_expires_date}}</div>
-                        <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_expires_date" type="date" placeholder="选择日期">
+                        <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_expires_date" type="date" placeholder="选择日期" v-else>
                         </el-date-picker>
                     </el-form-item>
                     <el-form-item label="账号ID：">
                         <div v-if="dialog_type == 'detail'">{{info.account_id}}</div>
-                        <el-input type="number" v-model="info.account_id" placeholder="请输入授权名称" v-else></el-input>
+                        <el-input type="number" v-model="info.account_id" placeholder="请输入账号ID" v-else></el-input>
                     </el-form-item>
                     <el-form-item label="子账号：">
                         <div v-if="dialog_type == 'detail'">{{info.sub_account}}</div>
@@ -139,7 +139,7 @@
                 </el-form>
                 <el-form style="width: 360px;" size="small" label-width="110px">
                     <el-form-item label="客户：">
-                        <div v-if="dialog_type == 'detail'">{{info.company_id}}</div>
+                        <div v-if="dialog_type == 'detail'">{{detail_data.company_name}}</div>
                         <el-select v-model="info.company_id" clearable placeholder="请选择客户" @change="getCompany" v-else>
                             <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
                             </el-option>
@@ -164,7 +164,8 @@
                         </el-select>
                     </el-form-item>
                     <el-form-item label="开店状态：">
-                        <el-select v-model="info.shop_status" clearable placeholder="请选择开店状态">
+                        <div v-if="dialog_type == 'detail'">{{info.shop_status}}</div>
+                        <el-select v-model="info.shop_status" clearable placeholder="请选择开店状态" v-else>
                             <el-option v-for="item in shop_status_list" :key="item.value" :label="item.label" :value="item.value">
                             </el-option>
                         </el-select>
@@ -186,6 +187,143 @@
             <div slot="footer" class="dialog-footer flex jc" v-if="dialog_type != 'detail'">
                 <el-button type="primary" size="small" @click="commitAduit">保存</el-button>
             </div>
+        </el-dialog>
+        <!-- 转移主体 -->
+        <el-dialog title="转移主体" width="450px" :close-on-click-modal="false" :visible.sync="transfer_dialog">
+            <div>
+
+                <el-form size="small">
+                    <el-form-item>
+                        <div>店铺【{{shop_name}}】，现主体【{{company_name}}】</div>
+                    </el-form-item>
+                    <el-form-item label="客户：">
+                        <el-select v-model="company_id" placeholder="请选择客户">
+                            <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
+                </el-form>
+            </div>
+            <div slot="footer" class="dialog-footer" >
+                <el-button size="small" @click="transfer_dialog = false">取消</el-button>
+                <el-button type="primary" size="small" @click="transferConfirm">确认</el-button>
+            </div>
+        </el-dialog>
+        <!-- 账号信息 -->
+        <el-dialog title="账号信息" width="350px" @close="detail_data = {}" :close-on-click-modal="false" :visible.sync="account_dialog">
+            <el-form size="small" label-width="110px">
+                <el-form-item label="平台：">
+                    <div>{{detail_data.platform}}</div>
+                </el-form-item>
+                <el-form-item label="授权名称：">
+                    <div>{{detail_data.auth_shop_name}}</div>
+                </el-form-item>
+                <el-form-item label="开店名称：">
+                    <div>{{detail_data.shop_name}}</div>
+                </el-form-item>
+                <el-form-item label="账号ID：">
+                    <div>{{detail_data.account_id}}</div>
+                </el-form-item>
+                <el-form-item label="子账号：">
+                    <div>{{detail_data.sub_account}}</div>
+                </el-form-item>
+                <el-form-item label="子账号密码：">
+                    <div>{{detail_data.sub_account_password}}</div>
+                </el-form-item>
+                <el-form-item label="子账号电话：">
+                    <div>{{detail_data.sub_account_tel}}</div>
+                </el-form-item>
+                <el-form-item label="聚水潭账号：">
+                    <div>{{detail_data.jst_id}}</div>
+                </el-form-item>
+                <el-form-item label="聚水潭密码：">
+                    <div>{{detail_data.jst_password}}</div>
+                </el-form-item>
+            </el-form>
+        </el-dialog>
+        <!-- 变更记录 -->
+        <el-dialog title="店铺主体变更记录" width="1000px" @close="" :close-on-click-modal="false" :visible.sync="log_dialog">
+            <el-table :data="log_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}">
+                <!-- <el-table-column prop="supplier" show-overflow-tooltip label="变更次数" align="center">
+                    <template slot-scope="scope">
+                        <div>{{scope.$index + 1}}次</div>
+                    </template>
+                </el-table-column> -->
+                <el-table-column prop="auth_shop_name" width="120" show-overflow-tooltip label="授权名称" align="center"></el-table-column>
+                <el-table-column prop="shop_name" width="120" show-overflow-tooltip label="开店名称" align="center"></el-table-column>
+                <el-table-column prop="company_name" width="180" show-overflow-tooltip label="主体变更" align="center">
+                    <template slot-scope="scope">
+                        <div>变更前主体：{{scope.row.old_info.company_name}}</div>
+                        <div class="divider"></div>
+                        <div>现主体：{{scope.row.new_info.company_name}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="add_time" width="120" show-overflow-tooltip label="变更时间" align="center">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.add_time}}</div>
+                        <div class="divider"></div>
+                        <div>{{scope.row.add_time}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="company_alias" width="120" show-overflow-tooltip label="公司简称" align="center">
+                     <template slot-scope="scope">
+                        <div>{{scope.row.old_info.company_alias}}</div>
+                        <div class="divider"></div>
+                        <div>{{scope.row.new_info.company_alias}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="register_address" width="120" show-overflow-tooltip label="主体注册地址" align="center">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.old_info.register_address}}</div>
+                        <div class="divider"></div>
+                        <div>{{scope.row.new_info.register_address}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="legal_person" width="120" show-overflow-tooltip label="法人" align="center">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.old_info.legal_person}}</div>
+                        <div class="divider"></div>
+                        <div>{{scope.row.new_info.legal_person}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="operator_tel" width="120" show-overflow-tooltip label="经营人电话" align="center">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.old_info.operator_tel}}</div>
+                        <div class="divider"></div>
+                        <div>{{scope.row.new_info.operator_tel}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="company_name" width="120" show-overflow-tooltip label="主体归属" align="center">
+                    <template slot-scope="scope">
+                        <div>{{scope.row.old_info.company_name}}</div>
+                        <div class="divider"></div>
+                        <div>{{scope.row.new_info.company_name}}</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="platform" label="经营人性别" align="center">
+                    <template slot-scope="scope">
+                        <div v-if="scope.row.old_info.operator_gender == 1">男</div>
+                        <div v-if="scope.row.old_info.operator_gender == 2">女</div>
+                        <div v-if="scope.row.old_info.operator_gender == 0">未设置</div>
+                        <div class="divider"></div>
+                        <div v-if="scope.row.new_info.operator_gender == 1">男</div>
+                        <div v-if="scope.row.new_info.operator_gender == 2">女</div>
+                        <div v-if="scope.row.new_info.operator_gender == 0">未设置</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="platform" label="营业执照" align="center">
+                    <template slot-scope="scope">
+                        <el-image :z-index="2006" class="image" :src="filterImage(scope.row.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.business_license_url).length > 0"></el-image>
+                        <div v-else>暂无</div>
+                    </template>
+                </el-table-column>
+                <el-table-column prop="platform" label="身份证" align="center">
+                    <template slot-scope="scope">
+                        <el-image :z-index="2006" class="image" :src="filterImage(scope.row.operator_id_card)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.operator_id_card)" @click.stop="handleClickStop" v-if="filterImage(scope.row.operator_id_card).length > 0"></el-image>
+                        <div v-else>暂无</div>
+                    </template>
+                </el-table-column>
+            </el-table>
         </el-dialog>
     </div>
 </template>
@@ -264,7 +402,8 @@
                 },{
                     value:4,
                     label:'工厂店'
-                }],                                         //店铺类型
+                }],                                     //店铺类型
+                company_shop_id:"",                     //当前选中的店铺ID
                 info:{
                     auth_type:1,
                     is_new:"",
@@ -304,7 +443,15 @@
                     current_belong:"",
                     business_license_url:"",
                     id_card_url:"",
-                }
+                },
+                detail_data:{},                         //详情信息
+                account_dialog:false,                   //账号信息弹窗
+                log_dialog:false,                       //变更记录弹窗
+                log_data:[],                            //变更记录数据
+                transfer_dialog:false,                  //转移主体弹窗
+                shop_name:"",                           //开店名称
+                company_name:"",                        //主体现归属
+                company_id:"",                          //变更的主体id
             }
         },
         created(){
@@ -413,12 +560,12 @@
                 })
             },
             //添加/编辑/详情
-            editFn(company_id,type){
+            editFn(company_shop_id,type){
                 this.dialog_type = type;
                 this.dialog = true;
                 if(type == 'edit'){
-                    this.company_id = company_id;
-                    operationResource.mainBodyEditGet({company_id:company_id}).then(res => {
+                    this.company_shop_id = company_shop_id;
+                    operationResource.companyMainEditShopGet({company_shop_id:company_shop_id}).then(res => {
                         if(res.data.code == 1){
                             let data = res.data.data;
                             for(let info_k in this.info){
@@ -428,50 +575,36 @@
                                     }
                                 }
                             }
-                        }else{
-                            this.$message.warning(res.data.msg);
-                        }
-                    })
-                    this.dialog_title = '编辑主体';
-                }else if(type == 'detail'){     //主体详情
-                    operationResource.mainBodyInfoDetail({company_id:company_id}).then(res => {
-                        if(res.data.code == 1){
-                            let data = res.data.data;
-                            for(let info_k in this.info){
+                            for(let info_k in this.new_info){
                                 for(let data_k in data){
                                     if(info_k == data_k){
-                                        this.info[info_k] = data[data_k]
+                                        this.new_info[info_k] = data[data_k]
                                     }
                                 }
                             }
-
-                            if(data.id_card_url){
-                                data.id_card_url.split(',').map(image_item => {
-                                    let image_obj = {
-                                        domain:this.domain,
-                                        urls:image_item,
-                                        is_del:false
+                        }else{
+                            this.$message.warning(res.data.msg);
+                        }
+                    })
+                    this.dialog_title = '编辑店铺主体授权资料';
+                }else if(type == 'detail'){     
+                    operationResource.companyMainShopInfo({company_shop_id:company_shop_id}).then(res => {
+                        if(res.data.code == 1){
+                            this.detail_data = res.data.data;
+                            for(let info_k in this.info){
+                                for(let data_k in this.detail_data){
+                                    if(info_k == data_k){
+                                        this.info[info_k] = this.detail_data[data_k]
                                     }
-                                    this.id_card.push(image_obj);
-                                })
-                            }
-                            if(data.business_license_url){
-                                data.business_license_url.split(',').map(image_item => {
-                                    let image_obj = {
-                                        domain:this.domain,
-                                        urls:image_item,
-                                        is_del:false
-                                    }
-                                    this.business_license.push(image_obj);
-                                })
+                                }
                             }
                         }else{
                             this.$message.warning(res.data.msg);
                         }
                     })
-                    this.dialog_title = '主体详情';
+                    this.dialog_title = '店铺主体授权资料详情';
                 }else{
-                    this.dialog_title = '添加主体';
+                    this.dialog_title = '添加店铺主体授权资料';
                 }
 
             },
@@ -523,23 +656,30 @@
                     auth_confirm:"",
                     remark:""
                 }
+                this.new_info = {
+                    company_name:"",
+                    company_alias:"",
+                    business_license_number:"",
+                    register_address:"",
+                    operator_tel:"",
+                    operator_id_card:"",
+                    current_belong:"",
+                    business_license_url:"",
+                    id_card_url:"",
+                }
             },
             //弹窗底部保存
             commitAduit(){
                 let arg = JSON.parse(JSON.stringify(this.info));
-                console.log(arg)
                 let new_info = JSON.parse(JSON.stringify(this.new_info));
-                console.log(new_info)
                 if(arg.auth_shop_name == ''){
                     this.$message.warning('请输入授权名称!')
                 }else{
                     arg.is_new = arg.is_new == ''?0:arg.is_new;
                     arg.shop_type = arg.shop_type == ''?0:arg.shop_type;
                     var new_arg = {...arg,...new_info};
-                    console.log(new_arg)
-                    return;
                     if(this.dialog_type == 'add'){      //添加
-                        operationResource.companyMainAddShop(arg).then(res => {
+                        operationResource.companyMainAddShop(new_arg).then(res => {
                             if(res.data.code == 1){
                                 this.$message.success(res.data.msg);
                                 //获取数据
@@ -550,7 +690,8 @@
                             }
                         })
                     }else if(this.dialog_type == 'edit'){   //编辑
-                        operationResource.companyMainEditShop(arg).then(res => {
+                        new_arg['company_shop_id'] = this.company_shop_id;
+                        operationResource.companyMainEditShop(new_arg).then(res => {
                             if(res.data.code == 1){
                                 this.$message.success(res.data.msg);
                                 //获取数据
@@ -594,12 +735,106 @@
             uploadPdf(urls){
                 this.info.auth_file_url = urls;
             },
-            //pdf预览
-            viewPdf(field_name,table_name,value,row_field_name){
-                if(row_field_name == 'contract_url'){
-                    window.open(this.domain + value)
+            //转移主体
+            transferFn(row){
+                this.shop_name = row.shop_name;
+                this.company_name = row.company_name;
+                this.company_id = row.company_id;
+                this.company_shop_id = row.company_shop_id;
+                this.transfer_dialog = true;
+            },
+            //转移主体提交
+            transferConfirm(){
+                let arg = {
+                    company_id:this.company_id,
+                    company_shop_id:this.company_shop_id,
                 }
-            }
+                operationResource.companyMainBodyTransfer(arg).then(res => {
+                    if(res.data.code == 1){
+                        this.$message.success(res.data.msg);
+                        //获取数据
+                        this.getData();
+                        this.transfer_dialog = false;
+                    }else{
+                        this.$message.warning(res.data.msg);
+                    }
+                })
+            },
+            //表格除操作栏之外的操作
+            tableCallBack(field_name,table_name,value,row_field_name){
+                if(row_field_name == 'auth_file_url'){  //预览pdf
+                    window.open(this.domain + value)
+                }else if(row_field_name == 'shop_name'){    //开店名称
+                    operationResource.companyMainShopChangeList({company_shop_id:field_name}).then(res => {
+                        if(res.data.code == 1){
+                            let data = res.data.data;
+                            let log_data = [];
+                            data.map(item => {
+                                let old_data = {...item,...item.old_info};
+                                let new_data = {...item,...item.new_info};
+                                log_data.push(old_data)
+                                log_data.push(new_data)
+                            })
+                            log_data.map(item => {
+                                if(item.operator_id_card){
+                                    let id_card_arr = [];
+                                    item.operator_id_card.split(',').map(id_card_item => {
+                                        id_card_arr.push(item.domain + id_card_item);
+                                    })
+                                    item['operator_id_card'] = id_card_arr.join(',');
+                                }else{
+                                    item['operator_id_card'] = '';
+                                }
+                                if(item.business_license_url){
+                                    let business_license_arr = [];
+                                    item.business_license_url.split(',').map(business_license_item => {
+                                        business_license_arr.push(item.domain + business_license_item);
+                                    })
+                                    item['business_license_url'] = business_license_arr.join(',');
+                                }else{
+                                    item['business_license_url'] = '';
+                                }
+                            })
+                            this.log_data = log_data;
+                            this.log_dialog = true;
+                            console.log(this.log_data)
+                        }else{
+                            this.$message.warning(res.data.msg);
+                        }
+                    })
+                }else if(row_field_name == 'account_info'){    //账号信息
+                    operationResource.companyMainShopInfo({company_shop_id:field_name}).then(res => {
+                        if(res.data.code == 1){
+                            this.detail_data = res.data.data;
+                            this.account_dialog = true;
+                        }else{
+                            this.$message.warning(res.data.msg);
+                        }
+                    })
+                }
+            },
+            //过滤图片
+            filterImage(image){
+                if(image){
+                    return image.split(',');
+                }else{
+                    return [];
+                }
+            },
+            //大图点击关闭
+            handleClickStop() {
+                this.$nextTick(() => {
+                  let domImageView = document.querySelector(".el-image-viewer__mask"); 
+                  // 获取遮罩层dom
+                  if (!domImageView) {
+                    return;
+                }
+                domImageView.addEventListener("click", () => {
+                    // 点击遮罩层时调用关闭按钮的 click 事件
+                    document.querySelector(".el-image-viewer__close").click();
+                });
+            });
+            },
         },
         components:{
             CustomTable,
@@ -609,5 +844,15 @@
     }
 </script>
 <style lang="less" scoped>
-
+    .image{
+        width: 50px;
+        height: 50px;
+    }
+    .divider{
+        margin-top: 12px;
+        margin-bottom: 12px;
+        background: #DCDFE6;
+        width: 100%;
+        height: 1px;
+    }
 </style>
