@@ -885,7 +885,6 @@
 			}
 		}
 		.bhtj_item{
-			width: 25%;
 			.val_item{
 				.bhtj_val{
 					color: #5575EB;
