@@ -17,7 +17,7 @@
 		</div>
 		<el-card v-loading="info_loading">
 			<div slot="header">
-				<span class="card_title">数据更新日：{{update_date}}</span>
+				<PopoverWidget :title="`数据更新日：${update_date}`" keys="supplier_data_dg"/>
 			</div>
 			<div class="content_row">
 				<div class="row_item">
@@ -59,7 +59,7 @@
 		</el-card>
 		<el-card class="margin_top" v-loading="info_loading">
 			<div slot="header">
-				<span class="card_title">库存报货统计</span>
+				<PopoverWidget title="库存报货统计" keys="supplier_data_kcbhtj"/>
 			</div>
 			<div class="content_row">
 				<div class="bhtj_item">
@@ -68,18 +68,8 @@
 						<div class="bhtj_label">缺货数</div>
 					</div>
 					<div class="val_item margin_top">
-						<div class="bhtj_val">{{top_info.zrdhl}}</div>
-						<div class="bhtj_label">昨日到货率</div>
-					</div>
-				</div>
-				<div class="bhtj_item">
-					<div class="val_item">
 						<div class="bhtj_val">{{top_info.xykc}}</div>
 						<div class="bhtj_label">库存数</div>
-					</div>
-					<div class="val_item margin_top">
-						<div class="bhtj_val">{{top_info.pbh_dhl_1}}</div>
-						<div class="bhtj_label">昨日排除备货到货率</div>
 					</div>
 				</div>
 				<div class="bhtj_item">
@@ -88,25 +78,65 @@
 						<div class="bhtj_label">7天采购数量</div>
 					</div>
 					<div class="val_item margin_top">
+						<div class="bhtj_val">{{top_info.rksl_7}}</div>
+						<div class="bhtj_label">7天入库数量</div>
+					</div>
+				</div>
+				<div class="bhtj_item">
+					<div class="val_item">
+						<div class="bhtj_val">{{top_info.zrdhl}}</div>
+						<div class="bhtj_label">昨日到货率</div>
+					</div>
+					<div class="val_item margin_top">
 						<div class="bhtj_val">{{top_info.dhl_7}}</div>
 						<div class="bhtj_label">7天到货率</div>
 					</div>
 				</div>
 				<div class="bhtj_item">
 					<div class="val_item">
-						<div class="bhtj_val">{{top_info.rksl_7}}</div>
-						<div class="bhtj_label">到货数</div>
+						<div class="bhtj_val">{{top_info.pbh_dhl_1}}</div>
+						<div class="bhtj_label">昨日排除备货到货率</div>
 					</div>
 					<div class="val_item margin_top">
 						<div class="bhtj_val">{{top_info.pbh_dhl_7}}</div>
 						<div class="bhtj_label">7天排除备货到货率</div>
 					</div>
 				</div>
+				<div class="bhtj_item">
+					<div class="val_item">
+						<div class="bhtj_val">{{top_info.dhs_30}}</div>
+						<div class="bhtj_label">30天到货数</div>
+					</div>
+					<div class="val_item margin_top">
+						<div class="bhtj_val">{{top_info.dhs_90}}</div>
+						<div class="bhtj_label">90天到货数</div>
+					</div>
+				</div>
+				<div class="bhtj_item">
+					<div class="val_item">
+						<div class="bhtj_val">{{top_info.gys_ths_30}}</div>
+						<div class="bhtj_label">30天供应商退货数</div>
+					</div>
+					<div class="val_item margin_top">
+						<div class="bhtj_val">{{top_info.gys_ths_90}}</div>
+						<div class="bhtj_label">90天供应商退货数</div>
+					</div>
+				</div>
+				<div class="bhtj_item">
+					<div class="val_item">
+						<div class="bhtj_val">{{top_info.gys_thl_30}}</div>
+						<div class="bhtj_label">30天供应商退货率</div>
+					</div>
+					<div class="val_item margin_top">
+						<div class="bhtj_val">{{top_info.gys_thl_90}}</div>
+						<div class="bhtj_label">90天供应商退货率</div>
+					</div>
+				</div>
 			</div>
 		</el-card>
 		<el-card class="margin_top">
 			<div slot="header">
-				<span class="card_title">销量统计</span>
+				<PopoverWidget title="销量统计" keys="supplier_data_xltj"/>
 			</div>
 			<div class="xltj_row">
 				<div class="left_total">
@@ -145,7 +175,7 @@
 		</el-card>
 		<el-card class="margin_top">
 			<div class="header_row" slot="header">
-				<span class="card_title">款式信息</span>
+				<PopoverWidget title="款式信息" keys="supplier_data_ksxx"/>
 				<el-button type="primary" plain size="small" @click="commitExport">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 			<div>
@@ -189,6 +219,7 @@
 		</el-card>
 		<!-- 下钻 -->
 		<el-dialog title="SKU信息" width="70%" @close="closeDetail" :visible.sync="detailDialog">
+			<PopoverWidget class="mb15" title="数据列表" keys="supplier_data_skuxx"/>
 			<el-table size="small" :data="sku_table_data" tooltip-effect="dark" style="width: 100%" :header-cell-style="{'background':'#f4f4f4'}"  @sort-change="skuSortChange" ref="sku_table" v-loading="sku_loading">
 				<el-table-column :prop="item.prop" :label="item.label" width="100" align="center" show-overflow-tooltip :sort-orders="['descending', 'ascending', null]" :sortable="item.is_fixed?'custom':false" :render-header="renderHeader" v-for="item in sku_column_list"></el-table-column>
 			</el-table>
@@ -206,6 +237,8 @@
 
 	import {exportPost} from '../../../api/export.js'
 	import { MessageBox,Message } from 'element-ui';
+
+	import PopoverWidget from '../../../components/popover_widget'
 
 	export default{
 		data(){
@@ -722,6 +755,9 @@
 					}
 				})
 			}
+		},
+		components:{
+			PopoverWidget
 		}
 	}
 </script>
@@ -926,6 +962,9 @@
 		}
 		
 	}
+}
+.mb15{
+	margin-bottom: 15px;
 }
 </style>
 
