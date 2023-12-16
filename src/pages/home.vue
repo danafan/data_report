@@ -321,7 +321,6 @@
       			if (window.navigator.connection) {
         			// 使用connection属性获取网络连接信息，适用于现代浏览器
       				let ipAddress = window.navigator.connection.localAddress;
-      				console.log(ipAddress)
       			} else if (window.navigator.getStats) {
         			// 使用getStats方法获取网络连接信息，适用于旧版浏览器
       				window.navigator.getStats(function(stats) {

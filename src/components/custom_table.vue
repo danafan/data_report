@@ -81,7 +81,7 @@
 					<div v-if="filterImage(scope.row[i.row_field_name]).length == 0">暂无</div>
 				</div>
 				<!-- 链接 -->
-				<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[i.row_field_name],i.row_field_name)">{{scope.row[i.row_field_name]}}{{i.unit}}</el-button>
+				<el-button type="text" size="small" v-else-if="i.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[i.row_field_name],i.row_field_name)">{{(tableName == 'main_body_info' && i.row_field_name == 'contract_url') || (tableName == 'basic_auth_info' && i.row_field_name == 'auth_file_url')?'查看':scope.row[i.row_field_name]}}{{i.unit}}</el-button>
 				<!-- 图表 -->
 				<div class="chart" v-else-if="i.type == '8'" :id="`${i.row_field_name}-${scope.row.id}`"></div>
 				<!-- 普通文字 -->
@@ -128,7 +128,7 @@
 			<div v-if="filterImage(scope.row[item.row_field_name]).length == 0">暂无</div>
 		</div>
 		<!-- 链接 -->
-		<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[item.row_field_name],item.row_field_name)">{{scope.row[item.row_field_name]}}{{item.unit}}</el-button>
+		<el-button type="text" size="small" v-else-if="item.type == '4'" @click="$emit('tableCallBack',scope.row[fieldName],tableName,scope.row[item.row_field_name],item.row_field_name)">{{(tableName == 'main_body_info' && item.row_field_name == 'contract_url') || (tableName == 'basic_auth_info' && item.row_field_name == 'auth_file_url')?'查看':scope.row[item.row_field_name]}}{{item.unit}}</el-button>
 		<!-- 图表 -->
 		<div class="chart" v-else-if="item.type == '8'" :id="`${item.row_field_name}-${scope.row.id}`"></div>
 		<!-- 普通文字 -->

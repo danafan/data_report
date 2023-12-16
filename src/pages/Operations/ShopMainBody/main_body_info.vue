@@ -30,35 +30,35 @@
 		<CustomTable v-loading="loading" :isLoading="loading" tableName="main_body_info" max_height="620px" :table_data="table_data" :title_list="title_list" :is_setting="true" :button_list="button_list" fieldName="company_id" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFn="editFn($event,'edit')" @detailFn="editFn($event,'detail')" @tableCallBack="viewPdf"/>
 		<page-widget :page="page" :pagesize="pagesize" :total="total" @handleSizeChange="handleSizeChange" @handlePageChange="handlePageChange"/>
 		<!-- 添加/编辑/详情 -->
-		<el-dialog :title="dialog_title" width="1200px" :close-on-click-modal="false" :visible.sync="dialog">
+		<el-dialog v-el-drag-dialog :title="dialog_title" width="1200px" top="30px" :close-on-click-modal="false" :visible.sync="dialog">
 			<div class="flex jsb">
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
 					<el-form-item label="主体类型：" required>
 						<div v-if="dialog_type == 'detail'">{{info.main_body_type}}</div>
-						<el-select v-model="info.main_body_type" placeholder="请选择主体类型" v-else>
+						<el-select v-model="info.main_body_type" placeholder="请选择主体类型" @change="setLocalStorage" v-else>
 							<el-option v-for="item in main_body_type" :key="item.value" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="公司简称：" required>
 						<div v-if="dialog_type == 'detail'">{{info.company_alias}}</div>
-						<el-input v-model="info.company_alias" placeholder="请输入公司简称" v-else></el-input>
+						<el-input v-model="info.company_alias" placeholder="请输入公司简称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="法人：" required>
 						<div v-if="dialog_type == 'detail'">{{info.legal_person}}</div>
-						<el-input v-model="info.legal_person" placeholder="请输入法人" v-else></el-input>
+						<el-input v-model="info.legal_person" placeholder="请输入法人" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="主体原归属：" required>
 						<div v-if="dialog_type == 'detail'">{{info.original_belong}}</div>
-						<el-input v-model="info.original_belong" placeholder="请输入主体原归属" v-else></el-input>
+						<el-input v-model="info.original_belong" placeholder="请输入主体原归属" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="联系地址：" required>
 						<div v-if="dialog_type == 'detail'">{{info.contacts_address}}</div>
-						<el-input v-model="info.contacts_address" placeholder="请输入联系地址" v-else></el-input>
+						<el-input v-model="info.contacts_address" placeholder="请输入联系地址" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="合同条款：" required>
 						<div v-if="dialog_type == 'detail'">{{info.contract_terms}}</div>
-						<el-select v-model="info.contract_terms" clearable placeholder="请选择合同条款" v-else>
+						<el-select v-model="info.contract_terms" clearable placeholder="请选择合同条款" @change="setLocalStorage" v-else>
 							<el-option v-for="item in contract_terms_list" :key="item.value" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
@@ -68,39 +68,39 @@
 					</el-form-item>
 					<el-form-item label="备注：" required>
 						<div v-if="dialog_type == 'detail'">{{info.remark}}</div>
-						<el-input type="textarea" :rows="3" v-model="info.remark" placeholder="请输入备注" v-else></el-input>
+						<el-input type="textarea" :rows="3" v-model="info.remark" placeholder="请输入备注" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 				</el-form>
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
 					<el-form-item label="管理员：" required>
 						<div v-if="dialog_type == 'detail'">{{detail_data.company_admin_name}}</div>
-						<el-select v-model="info.company_admin_id" clearable filterable placeholder="请选择管理员" v-else>
+						<el-select v-model="info.company_admin_id" clearable filterable placeholder="请选择管理员" @change="setLocalStorage" v-else>
 							<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="营业执照号：" required>
 						<div v-if="dialog_type == 'detail'">{{info.business_license_number}}</div>
-						<el-input v-model="info.business_license_number" placeholder="请输入营业执照号" v-else></el-input>
+						<el-input v-model="info.business_license_number" placeholder="请输入营业执照号" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="经营人电话：" required>
 						<div v-if="dialog_type == 'detail'">{{info.operator_tel}}</div>
-						<el-input type="number" v-model="info.operator_tel" placeholder="请输入经营人电话" v-else></el-input>
+						<el-input type="number" v-model="info.operator_tel" placeholder="请输入经营人电话" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="经营人性别：" required>
 						<div v-if="dialog_type == 'detail'">{{info.operator_gender}}</div>
-						<el-select v-model="info.operator_gender" clearable placeholder="请选择经营人性别" v-else>
+						<el-select v-model="info.operator_gender" clearable placeholder="请选择经营人性别" @change="setLocalStorage" v-else>
 							<el-option label="男" :value="1"></el-option>
 							<el-option label="女" :value="2"></el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="联系人：" required>
 						<div v-if="dialog_type == 'detail'">{{info.contacts}}</div>
-						<el-input v-model="info.contacts" placeholder="请输入联系人" v-else></el-input>
+						<el-input v-model="info.contacts" placeholder="请输入联系人" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="主体现归属：" required>
 						<div v-if="dialog_type == 'detail'">{{info.current_belong}}</div>
-						<el-input v-model="info.current_belong" placeholder="请输入主体现归属" v-else></el-input>
+						<el-input v-model="info.current_belong" placeholder="请输入主体现归属" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="身份证照片：" required>
 						<uploads-file :current_images="id_card" :max_num="2" @callback="idCardCallBack" :onlyView="dialog_type == 'detail'" v-if="dialog"/>
@@ -109,23 +109,23 @@
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
 					<el-form-item label="公司全称：" required>
 						<div v-if="dialog_type == 'detail'">{{info.company_name}}</div>
-						<el-input v-model="info.company_name" placeholder="请输入公司全称" v-else></el-input>
+						<el-input v-model="info.company_name" placeholder="请输入公司全称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="注册地址：" required>
 						<div v-if="dialog_type == 'detail'">{{info.register_address}}</div>
-						<el-input type="textarea" :rows="2" v-model="info.register_address" placeholder="请输入注册地址：" v-else></el-input>
+						<el-input type="textarea" :rows="2" v-model="info.register_address" placeholder="请输入注册地址：" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="经营人身份证：" required>
 						<div v-if="dialog_type == 'detail'">{{info.operator_id_card}}</div>
-						<el-input type="number" v-model="info.operator_id_card" placeholder="请输入经营人身份证" v-else></el-input>
+						<el-input type="number" v-model="info.operator_id_card" placeholder="请输入经营人身份证" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="联系人电话：" required>
 						<div v-if="dialog_type == 'detail'">{{info.contacts_tel}}</div>
-						<el-input type="number" v-model="info.contacts_tel" placeholder="请输入联系人电话" v-else></el-input>
+						<el-input type="number" v-model="info.contacts_tel" placeholder="请输入联系人电话" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="是否转出：" required>
 						<div v-if="dialog_type == 'detail'">{{info.is_transfer_out}}</div>
-						<el-select v-model="info.is_transfer_out" placeholder="请选择" v-else>
+						<el-select v-model="info.is_transfer_out" placeholder="请选择" @change="setLocalStorage" v-else>
 							<el-option label="是" :value="1"></el-option>
 							<el-option label="否" :value="0"></el-option>
 						</el-select>
@@ -135,7 +135,7 @@
 					</el-form-item>
 					<el-form-item label="新客申请：" required>
 						<div v-if="dialog_type == 'detail'">{{info.new_apply}}</div>
-						<el-input v-model="info.new_apply" placeholder="请输入新客申请" v-else></el-input>
+						<el-input v-model="info.new_apply" placeholder="请输入新客申请" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 				</el-form>
 			</div>
@@ -248,15 +248,15 @@
 				})
 			},
 			//获取用户列表
-            ajaxUser(){
-                formDataResource.ajaxUser().then(res => {
-                    if(res.data.code == 1){
-                        this.user_list = res.data.data;
-                    }else{
-                        this.$message.warning(res.data.msg);
-                    }
-                })
-            },
+			ajaxUser(){
+				formDataResource.ajaxUser().then(res => {
+					if(res.data.code == 1){
+						this.user_list = res.data.data;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//排序回调
 			sortCallBack(sort){
 				this.sort = sort;
@@ -413,7 +413,32 @@
 					})
 					this.dialog_title = '主体详情';
 				}else{
-					if(this.dialog_type != 'add'){
+					let mainBodyInfo = localStorage.getItem('mainBodyInfo');
+					if(mainBodyInfo){
+						this.info = JSON.parse(mainBodyInfo);
+						if(this.info.id_card_url){
+							this.id_card = [];
+							this.info.id_card_url.split(',').map(image_item => {
+								let image_obj = {
+									domain:this.domain,
+									urls:image_item,
+									is_del:false
+								}
+								this.id_card.push(image_obj);
+							})
+						}
+						if(this.info.business_license_url){
+							this.business_license = [];
+							this.info.business_license_url.split(',').map(image_item => {
+								let image_obj = {
+									domain:this.domain,
+									urls:image_item,
+									is_del:false
+								}
+								this.business_license.push(image_obj);
+							})
+						}
+					}else{
 						this.closeDialog();
 					}
 					this.dialog_type = type;
@@ -421,17 +446,26 @@
 				}
 
 			},
+			//设置添加信息缓存
+			setLocalStorage(){
+				if(this.dialog_type == 'add'){
+					localStorage.setItem('mainBodyInfo',JSON.stringify(this.info));
+				}
+			},
 			//营业执照上传回调
 			businessLicenseCallBack(v){
 				this.info.business_license_url = v.join(',');
+				this.setLocalStorage();
 			},
 			//身份证上传回调
 			idCardCallBack(v){
 				this.info.id_card_url = v.join(',');
+				this.setLocalStorage();
 			},
 			//合同pdf上传回调
 			uploadPdf(urls){
 				this.info.contract_url = urls;
+				this.setLocalStorage();
 			},
 			// 弹窗关闭
 			closeDialog(){
@@ -475,8 +509,8 @@
 					this.$message.warning('请输入联系地址!')
 				}else if(arg.contract_terms == ''){
 					this.$message.warning('请选择合同条款!')
-				}else if(this.business_license.length < 2){
-					this.$message.warning('请上传两张营业执照!')
+				}else if(this.business_license.length == 0){
+					this.$message.warning('至少上传一张营业执照!')
 				}else if(arg.remark == ''){
 					this.$message.warning('请输入备注!')
 				}else if(arg.company_admin_id == ''){
@@ -491,8 +525,8 @@
 					this.$message.warning('请输入联系人!')
 				}else if(arg.current_belong == ''){
 					this.$message.warning('请输入主体现归属!')
-				}else if(this.id_card.length < 2){
-					this.$message.warning('请上传两张身份证照片!')
+				}else if(this.id_card.length == 0){
+					this.$message.warning('至少上传一张身份证照片!')
 				}else if(arg.company_name == ''){
 					this.$message.warning('请输入公司全称!')
 				}else if(arg.register_address == ''){
@@ -516,6 +550,7 @@
 								this.getData();
 								this.dialog = false;
 								this.closeDialog();
+								localStorage.removeItem('mainBodyInfo');
 							}else{
 								this.$message.warning(res.data.msg);
 							}
@@ -583,6 +618,6 @@
 </script>
 <style type="text/css">
 	.label_bold .el-form-item__label{
-        font-weight: bold;
-    }
+		font-weight: bold;
+	}
 </style>
