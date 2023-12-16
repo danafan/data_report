@@ -27,23 +27,33 @@
 			//当前默认的图片列表
 			current_images:{
 				type:Array,
-				default:()=>[]
+			default:()=>[]
 			},
 			//最多图片数量
 			max_num:{
 				type:Number,
-				default:1
+			default:1
 			},
 			//是否只读
 			onlyView:{
 				type:Boolean,
-				default:false
+			default:false
 			},
 			//是否多选
 			multiple:{
 				type:Boolean,
-				default:true
+			default:true
 			},
+		},
+		watch:{
+			current_images:function(n,o){
+				this.show_img = n;
+				this.show_images = [];
+				this.show_img.map(item => {
+					let url = item.domain + item.urls;
+					this.show_images.push(url)
+				}) 
+			}
 		},
 		created(){
 			this.show_img = this.current_images;
@@ -52,7 +62,6 @@
 				let url = item.domain + item.urls;
 				this.show_images.push(url)
 			}) 
-			console.log(this.show_images)
 		},
 		methods:{
 			// 上传图片
@@ -110,72 +119,72 @@
 		          }
 		          domImageView.addEventListener("click", () => {
 		            // 点击遮罩层时调用关闭按钮的 click 事件
-		            document.querySelector(".el-image-viewer__close").click();
-		        });
+		          	document.querySelector(".el-image-viewer__close").click();
+		          });
 		      });
 			},
 		}
 	}
 </script>
 <style lang="less" scoped>
-.imgBox{
-	border:1px solid #D9D9D9;
-	position: relative;
-	display: flex;
-	flex-direction: column;
-	justify-content:center;
-	align-items:center;
-	width: 120px;
-	height: 120px;
-	color: #666666;
-	.upload_icon{
-		width: 40px;
-		height: 40px;
-	}
-	.upload_text{
-		font-size: 12px;
-	}
-	.upload_file {
-		position: absolute;
-		top: 0;
-		bottom: 0;
-		left: 0;
-		right: 0;
-		width: 100%;
-		height: 100%;
-		opacity: 0;
-	}
-}
-.img_list{
-	display:flex;
-	flex-wrap: wrap;
-	.dialog_img{
-		margin-right: 10px;
-		margin-bottom: 10px;
+	.imgBox{
+		border:1px solid #D9D9D9;
 		position: relative;
+		display: flex;
+		flex-direction: column;
+		justify-content:center;
+		align-items:center;
 		width: 120px;
 		height: 120px;
-		.img{
-			width: 100%;
-			height: 100%;
+		color: #666666;
+		.upload_icon{
+			width: 40px;
+			height: 40px;
 		}
-		.modal{
-			background: rgba(0,0,0,.6);
+		.upload_text{
+			font-size: 12px;
+		}
+		.upload_file {
 			position: absolute;
 			top: 0;
+			bottom: 0;
 			left: 0;
+			right: 0;
 			width: 100%;
 			height: 100%;
-			img{
+			opacity: 0;
+		}
+	}
+	.img_list{
+		display:flex;
+		flex-wrap: wrap;
+		.dialog_img{
+			margin-right: 10px;
+			margin-bottom: 10px;
+			position: relative;
+			width: 120px;
+			height: 120px;
+			.img{
+				width: 100%;
+				height: 100%;
+			}
+			.modal{
+				background: rgba(0,0,0,.6);
 				position: absolute;
-				top: 50%;
-				left: 50%;
-				transform: translate(-50%,-50%);
-				display:block;
-				width: 30px;
-				height: 30px;
+				top: 0;
+				left: 0;
+				width: 100%;
+				height: 100%;
+				img{
+					position: absolute;
+					top: 50%;
+					left: 50%;
+					transform: translate(-50%,-50%);
+					display:block;
+					width: 30px;
+					height: 30px;
+				}
 			}
 		}
 	}
-}
 </style>

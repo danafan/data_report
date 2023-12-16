@@ -139,8 +139,8 @@
                 </el-form>
                 <el-form class="label_bold" style="width: 360px;" size="small" label-width="120px">
                     <el-form-item label="主体简称：" required>
-                        <div v-if="dialog_type == 'detail'">{{detail_data.company_name}}</div>
-                        <el-select v-model="info.company_id" clearable filterable placeholder="请选择主体简称" @change="getCompany" v-else>
+                        <div v-if="dialog_type == 'detail'">{{detail_data.company_alias}}</div>
+                        <el-select v-model="info.company_id" :disabled="dialog_type == 'edit'" clearable filterable placeholder="请选择主体简称" @change="getCompany" v-else>
                             <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
                             </el-option>
                         </el-select>
@@ -297,9 +297,9 @@
             </el-table-column>
             <el-table-column prop="company_name" width="120" show-overflow-tooltip label="主体归属" align="center">
                 <template slot-scope="scope">
-                    <div>{{scope.row.old_info.company_name}}</div>
+                    <div>{{scope.row.old_info.current_belong}}</div>
                     <div class="divider"></div>
-                    <div>{{scope.row.new_info.company_name}}</div>
+                    <div>{{scope.row.new_info.current_belong}}</div>
                 </template>
             </el-table-column>
             <el-table-column prop="platform" label="经营人性别" align="center">
@@ -763,7 +763,7 @@
                 }else if(arg.sub_account_password == ''){
                     this.$message.warning('请输入子账号密码!')
                 }else if(arg.company_id == ''){
-                    this.$message.warning('请选择客户!')
+                    this.$message.warning('请选择主体!')
                 }else if(arg.store_requisition == ''){
                     this.$message.warning('请输入店铺领用!')
                 }else if(arg.oa_id == ''){

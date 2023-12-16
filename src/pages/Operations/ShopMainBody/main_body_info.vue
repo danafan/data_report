@@ -40,9 +40,9 @@
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="公司简称：" required>
+					<el-form-item label="主体简称：" required>
 						<div v-if="dialog_type == 'detail'">{{info.company_alias}}</div>
-						<el-input v-model="info.company_alias" placeholder="请输入公司简称" @change="setLocalStorage" v-else></el-input>
+						<el-input v-model="info.company_alias" placeholder="请输入主体简称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="法人：" required>
 						<div v-if="dialog_type == 'detail'">{{info.legal_person}}</div>
@@ -349,6 +349,7 @@
 								}
 							}
 							if(data.id_card_url){
+								this.id_card = [];
 								data.id_card_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -359,6 +360,7 @@
 								})
 							}
 							if(data.business_license_url){
+								this.business_license = [];
 								data.business_license_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -388,6 +390,7 @@
 							}
 
 							if(data.id_card_url){
+								this.id_card = [];
 								data.id_card_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -398,6 +401,7 @@
 								})
 							}
 							if(data.business_license_url){
+								this.business_license = [];
 								data.business_license_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -499,8 +503,9 @@
 			//弹窗底部保存
 			commitAduit(){
 				let arg = JSON.parse(JSON.stringify(this.info));
+				console.log(this.business_license)
 				if(arg.company_alias == ''){
-					this.$message.warning('请输入公司简称!')
+					this.$message.warning('请输入主体简称!')
 				}else if(arg.legal_person == ''){
 					this.$message.warning('请输入法人!')
 				}else if(arg.original_belong == ''){
