@@ -98,10 +98,10 @@
 				<!-- <el-menu-item index="/main_body_info">
 					<i class="el-icon-s-promotion"></i>
 					<span slot="title">主体资料表</span>
-				</el-menu-item>
-				<el-menu-item index="/basic_auth_info">
+				</el-menu-item> -->
+				<!-- <el-menu-item index="/executive_standard">
 					<i class="el-icon-s-finance"></i>
-					<span slot="title">店铺基础授权资料</span>
+					<span slot="title">商品执行标准</span>
 				</el-menu-item> -->
 			</el-menu>
 		</div>

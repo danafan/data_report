@@ -154,7 +154,7 @@
                         <el-input v-model="info.oa_id" placeholder="请输入OA流程编号" @change="setLocalStorage" v-else></el-input>
                     </el-form-item>
                     <el-form-item label="授权PDF：" required>
-                        <UploadPdf :fileName="info.auth_file_url" :onlyView="dialog_type == 'detail'" @callbackFn="uploadPdf" @viewPdf="openPdf"/>
+                        <UploadPdf :fileName="info.auth_file_url" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" @callbackFn="uploadPdf" @viewPdf="openPdf"/>
                     </el-form-item>
                     <el-form-item label="平台：" required>
                         <div v-if="dialog_type == 'detail'">{{info.platform}}</div>

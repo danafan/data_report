@@ -39,6 +39,11 @@
 				type:Boolean,
 			default:false
 			},
+			//是否调用删除接口
+			requestDel:{
+				type:Boolean,
+			default:true
+			},
 			//是否多选
 			multiple:{
 				type:Boolean,
@@ -93,15 +98,21 @@
 			},
 			//删除文件
 			deteleFile(url,index){
-				resource.delImage({url:url}).then(res => {
-					if(res.data.code == 1){
-						this.show_img.splice(index,1);
-						//向组件传递参数
-						this.callbackFn(this.show_img);
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				});
+				if(this.requestDel){
+					resource.delImage({url:url}).then(res => {
+						if(res.data.code == 1){
+							this.show_img.splice(index,1);
+							//向组件传递参数
+							this.callbackFn(this.show_img);
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					});
+				}else{
+					this.show_img.splice(index, 1);
+    				//向父组件传递已选的图片列表
+					this.callbackFn(this.show_img);
+				}
 			},
 			//向组件传递参数
 			callbackFn(){

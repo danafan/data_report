@@ -64,7 +64,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="营业执照：" required>
-						<uploads-file :current_images="business_license" :max_num="2" @callback="businessLicenseCallBack" :onlyView="dialog_type == 'detail'" v-if="dialog"/>
+						<uploads-file :current_images="business_license" :max_num="2" @callback="businessLicenseCallBack" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" v-if="dialog"/>
 					</el-form-item>
 					<el-form-item label="备注：" required>
 						<div v-if="dialog_type == 'detail'">{{info.remark}}</div>
@@ -103,7 +103,7 @@
 						<el-input v-model="info.current_belong" placeholder="请输入主体现归属" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="身份证照片：" required>
-						<uploads-file :current_images="id_card" :max_num="2" @callback="idCardCallBack" :onlyView="dialog_type == 'detail'" v-if="dialog"/>
+						<uploads-file :current_images="id_card" :max_num="2" @callback="idCardCallBack" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" v-if="dialog"/>
 					</el-form-item>
 				</el-form>
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
@@ -131,7 +131,7 @@
 						</el-select>
 					</el-form-item>
 					<el-form-item label="合同PDF：" required>
-						<UploadPdf :fileName="info.contract_url" :onlyView="dialog_type == 'detail'" @callbackFn="uploadPdf" @viewPdf="openPdf"/>
+						<UploadPdf :fileName="info.contract_url" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" @callbackFn="uploadPdf" @viewPdf="openPdf"/>
 					</el-form-item>
 					<el-form-item label="新客申请：" required>
 						<div v-if="dialog_type == 'detail'">{{info.new_apply}}</div>

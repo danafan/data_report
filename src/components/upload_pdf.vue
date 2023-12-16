@@ -52,6 +52,11 @@
 				type:Boolean,
 			default:false
 			},
+			//是否调用删除接口
+			requestDel:{
+				type:Boolean,
+			default:true
+			},
 			//是否上传原文件名
 			nameType:{
 				type:String,
@@ -75,13 +80,17 @@
 			},
 			//删除文件
 			deteleFile(){
-				resource.delImage({url:this.fileName}).then(res => {
-					if(res.data.code == 1){
-						this.$emit('callbackFn','');
-					}else{
-						this.$message.warning(res.data.msg);
-					}
-				});
+				if(this.requestDel){
+					resource.delImage({url:this.fileName}).then(res => {
+						if(res.data.code == 1){
+							this.$emit('callbackFn','');
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					});
+				}else{
+					this.$emit('callbackFn','');
+				}
 			},
 
 		}
