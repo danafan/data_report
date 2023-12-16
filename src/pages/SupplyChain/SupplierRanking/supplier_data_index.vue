@@ -85,7 +85,7 @@
 				<div class="bhtj_item">
 					<div class="val_item">
 						<div class="bhtj_val">{{top_info.cgsl_7}}</div>
-						<div class="bhtj_label">报货数</div>
+						<div class="bhtj_label">7天采购数量</div>
 					</div>
 					<div class="val_item margin_top">
 						<div class="bhtj_val">{{top_info.dhl_7}}</div>
