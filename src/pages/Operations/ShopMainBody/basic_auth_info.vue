@@ -128,7 +128,7 @@
                 </el-form-item>
                 <el-form-item label="开店状态：" required>
                     <div v-if="dialog_type == 'detail'">{{info.shop_status}}</div>
-                    <el-select v-model="info.shop_status" clearable placeholder="请选择开店状态" @change="setLocalStorage" v-else>
+                    <el-select v-model="info.shop_status" clearable placeholder="请选择开店情况" @change="setLocalStorage" v-else>
                         <el-option v-for="item in shop_status_list" :key="item.value" :label="item.label" :value="item.value">
                         </el-option>
                     </el-select>
@@ -808,14 +808,13 @@
                     this.$message.warning('请选择店铺类型!')
                 }else if(arg.operational_status === ''){
                     this.$message.warning('请选择运营状态!')
-                }else if(arg.company_id == ''){
+                }else if(this.dialog_type == 'add' && arg.company_id == ''){
                     this.$message.warning('请选择主体简称!')
                 }else if(arg.platform == ''){
                     this.$message.warning('请选择平台!')
                 }else if(arg.shop_status === ''){
                     this.$message.warning('请选择开店状态!')
                 }else{
-
                     arg.auth_type = arg.auth_type === ''?0:arg.auth_type;
                     arg.is_new = arg.is_new === ''?0:arg.is_new;
                     arg.shop_type = arg.shop_type ===''?0:arg.shop_type;
@@ -840,6 +839,7 @@
                     }else if(this.dialog_type == 'edit'){   //编辑
                         new_arg['company_shop_id'] = this.company_shop_id;
                         delete new_arg.company_id;
+                        console.log(new_arg)
                         operationResource.companyMainEditShop(new_arg).then(res => {
                             if(res.data.code == 1){
                                 this.$message.success(res.data.msg);
