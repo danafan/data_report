@@ -7,8 +7,8 @@
 			<el-form-item label="公司简称：">
 				<el-input v-model="company_alias" placeholder="请输入公司简称"></el-input>
 			</el-form-item>
-			<el-form-item label="授权类型：">
-				<el-select v-model="main_body_type_id" clearable placeholder="请选择授权类型">
+			<el-form-item label="主体类型：">
+				<el-select v-model="main_body_type_id" clearable placeholder="请选择主体类型">
 					<el-option v-for="item in main_body_type" :key="item.value" :label="item.label" :value="item.value">
 					</el-option>
 				</el-select>
@@ -25,6 +25,10 @@
 		</el-form>
 		<div class="flex jse mb-15">
 			<el-button type="primary" plain icon="el-icon-plus" size="small" @click="editFn('','add')" v-if="button_list.add == 1">添加</el-button>
+			<el-button type="primary" size="small" @click="import_dialog = true">
+				导入
+				<i class="el-icon-upload el-icon--right"></i>
+			</el-button>
 			<el-button type="primary" plain size="mini" @click="exportFn" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 		</div>
 		<CustomTable v-loading="loading" :isLoading="loading" tableName="main_body_info" max_height="620px" :table_data="table_data" :title_list="title_list" :is_setting="true" :button_list="button_list" fieldName="company_id" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFn="editFn($event,'edit')" @detailFn="editFn($event,'detail')" @tableCallBack="viewPdf"/>
@@ -33,107 +37,107 @@
 		<el-dialog v-el-drag-dialog :title="dialog_title" width="1200px" top="30px" :close-on-click-modal="false" :visible.sync="dialog">
 			<div class="flex jsb">
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
-					<el-form-item label="主体类型：" required>
+					<el-form-item label="主体类型：">
 						<div v-if="dialog_type == 'detail'">{{info.main_body_type}}</div>
 						<el-select v-model="info.main_body_type" placeholder="请选择主体类型" @change="setLocalStorage" v-else>
 							<el-option v-for="item in main_body_type" :key="item.value" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="主体简称：" required>
+					<el-form-item label="主体简称：">
 						<div v-if="dialog_type == 'detail'">{{info.company_alias}}</div>
 						<el-input v-model="info.company_alias" placeholder="请输入主体简称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="法人：" required>
+					<el-form-item label="经营人：">
 						<div v-if="dialog_type == 'detail'">{{info.legal_person}}</div>
-						<el-input v-model="info.legal_person" placeholder="请输入法人" @change="setLocalStorage" v-else></el-input>
+						<el-input v-model="info.legal_person" placeholder="请输入经营人" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="主体原归属：" required>
+					<el-form-item label="主体原归属：">
 						<div v-if="dialog_type == 'detail'">{{info.original_belong}}</div>
 						<el-input v-model="info.original_belong" placeholder="请输入主体原归属" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="联系地址：" required>
+					<el-form-item label="联系地址：">
 						<div v-if="dialog_type == 'detail'">{{info.contacts_address}}</div>
 						<el-input v-model="info.contacts_address" placeholder="请输入联系地址" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="合同条款：" required>
+					<el-form-item label="合同条款：">
 						<div v-if="dialog_type == 'detail'">{{info.contract_terms}}</div>
 						<el-select v-model="info.contract_terms" clearable placeholder="请选择合同条款" @change="setLocalStorage" v-else>
 							<el-option v-for="item in contract_terms_list" :key="item.value" :label="item.label" :value="item.value">
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="营业执照：" required>
+					<el-form-item label="营业执照：">
 						<uploads-file :current_images="business_license" :max_num="2" @callback="businessLicenseCallBack" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" v-if="dialog"/>
 					</el-form-item>
-					<el-form-item label="备注：" required>
+					<el-form-item label="备注：">
 						<div v-if="dialog_type == 'detail'">{{info.remark}}</div>
 						<el-input type="textarea" :rows="3" v-model="info.remark" placeholder="请输入备注" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 				</el-form>
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
-					<el-form-item label="管理员：" required>
+					<el-form-item label="管理员：">
 						<div v-if="dialog_type == 'detail'">{{detail_data.company_admin_name}}</div>
 						<el-select v-model="info.company_admin_id" clearable filterable placeholder="请选择管理员" @change="setLocalStorage" v-else>
 							<el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="营业执照号：" required>
+					<el-form-item label="营业执照号：">
 						<div v-if="dialog_type == 'detail'">{{info.business_license_number}}</div>
 						<el-input v-model="info.business_license_number" placeholder="请输入营业执照号" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="经营人电话：" required>
+					<el-form-item label="经营人电话：">
 						<div v-if="dialog_type == 'detail'">{{info.operator_tel}}</div>
 						<el-input type="number" v-model="info.operator_tel" placeholder="请输入经营人电话" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="经营人性别：" required>
+					<el-form-item label="经营人性别：">
 						<div v-if="dialog_type == 'detail'">{{info.operator_gender}}</div>
 						<el-select v-model="info.operator_gender" clearable placeholder="请选择经营人性别" @change="setLocalStorage" v-else>
 							<el-option label="男" :value="1"></el-option>
 							<el-option label="女" :value="2"></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="联系人：" required>
+					<el-form-item label="联系人：">
 						<div v-if="dialog_type == 'detail'">{{info.contacts}}</div>
 						<el-input v-model="info.contacts" placeholder="请输入联系人" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="主体现归属：" required>
+					<el-form-item label="归属客户：">
 						<div v-if="dialog_type == 'detail'">{{info.current_belong}}</div>
-						<el-input v-model="info.current_belong" placeholder="请输入主体现归属" @change="setLocalStorage" v-else></el-input>
+						<el-input v-model="info.current_belong" placeholder="请输入归属客户" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="身份证照片：" required>
+					<el-form-item label="身份证照片：">
 						<uploads-file :current_images="id_card" :max_num="2" @callback="idCardCallBack" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" v-if="dialog"/>
 					</el-form-item>
 				</el-form>
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
-					<el-form-item label="公司全称：" required>
+					<el-form-item label="公司全称：">
 						<div v-if="dialog_type == 'detail'">{{info.company_name}}</div>
 						<el-input v-model="info.company_name" placeholder="请输入公司全称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="注册地址：" required>
+					<el-form-item label="注册地址：">
 						<div v-if="dialog_type == 'detail'">{{info.register_address}}</div>
 						<el-input type="textarea" :rows="2" v-model="info.register_address" placeholder="请输入注册地址：" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="经营人身份证：" required>
+					<el-form-item label="经营人身份证：">
 						<div v-if="dialog_type == 'detail'">{{info.operator_id_card}}</div>
 						<el-input type="number" v-model="info.operator_id_card" placeholder="请输入经营人身份证" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="联系人电话：" required>
+					<el-form-item label="联系人电话：">
 						<div v-if="dialog_type == 'detail'">{{info.contacts_tel}}</div>
 						<el-input type="number" v-model="info.contacts_tel" placeholder="请输入联系人电话" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="是否转出：" required>
+					<el-form-item label="是否转出：">
 						<div v-if="dialog_type == 'detail'">{{info.is_transfer_out}}</div>
 						<el-select v-model="info.is_transfer_out" placeholder="请选择" @change="setLocalStorage" v-else>
 							<el-option label="是" :value="1"></el-option>
 							<el-option label="否" :value="0"></el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="合同PDF：" required>
+					<el-form-item label="合同PDF：">
 						<UploadPdf :fileName="info.contract_url" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" @callbackFn="uploadPdf" @viewPdf="openPdf"/>
 					</el-form-item>
-					<el-form-item label="新客申请：" required>
+					<el-form-item label="新客申请：">
 						<div v-if="dialog_type == 'detail'">{{info.new_apply}}</div>
 						<el-input v-model="info.new_apply" placeholder="请输入新客申请" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
@@ -141,6 +145,22 @@
 			</div>
 			<div slot="footer" class="dialog-footer flex jc" v-if="dialog_type != 'detail'">
 				<el-button type="primary" size="small" @click="commitAduit">保存</el-button>
+			</div>
+		</el-dialog>
+		<!-- 导入 -->
+		<el-dialog title="导入" :visible.sync="import_dialog" width="30%">
+			<div class="down_box">
+				<el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
+				<div class="upload_box">
+					<el-button type="primary" size="small">
+						导入
+						<i class="el-icon-upload el-icon--right"></i>
+					</el-button>
+					<input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+				</div>
+			</div>
+			<div slot="footer" class="dialog-footer">
+				<el-button size="small" @click="import_dialog = false">取 消</el-button>
 			</div>
 		</el-dialog>
 	</div>
@@ -201,7 +221,7 @@
 				company_id:"",								//点击的公司
 				detail_data:{},
 				info:{
-					main_body_type:1,
+					main_body_type:"",
 					company_alias:"",
 					legal_person:"",
 					original_belong:"",	
@@ -218,7 +238,7 @@
 					register_address:"",
 					operator_id_card:"",
 					contacts_tel:"",
-					is_transfer_out:1,
+					is_transfer_out:"",
 					new_apply:"",
 					business_license_url:"",
 					id_card_url:"",
@@ -226,6 +246,7 @@
 				},
 				business_license:[],						//营业执照
 				id_card:[],									//身份证
+				import_dialog:false,						//导入弹窗
 			}
 		},
 		created(){
@@ -273,6 +294,28 @@
 				this.page = val;
 				//获取列表
 				this.getData();
+			},
+			//下载模版
+			downTemplate(){
+				window.open(`${this.downLoadUrl}/主体资料导入模板.xlsx`);
+			},
+			//导入
+			uploadCsv(e){
+				let files = e.target.files;
+				if (files.length > 0) {
+					operationResource.importCompany({file:files[0]}).then(res => {
+						this.$refs.csvUpload.value = null;
+						if(res.data.code == 1){
+							this.$message.success(res.data.msg);
+							this.import_dialog = false;
+							this.page = 1;
+							//获取列表
+							this.getData();
+						}else{
+							this.$message.warning(res.data.msg);
+						}
+					})
+				}
 			},
 			//获取数据
 			getData(){
@@ -339,7 +382,7 @@
 							for(let info_k in this.info){
 								for(let data_k in data){
 									if(info_k == data_k){
-										if(info_k == 'operator_gender' || info_k == 'contract_terms'){
+										if(info_k == 'main_body_type' || info_k == 'is_transfer_out' || info_k == 'operator_gender' || info_k == 'contract_terms'){
 											this.info[info_k] = data[data_k] === 0?'':data[data_k];
 										}else{
 											this.info[info_k] = data[data_k];
@@ -474,7 +517,7 @@
 			// 弹窗关闭
 			closeDialog(){
 				this.info = {
-					main_body_type:1,
+					main_body_type:"",
 					company_alias:"",
 					legal_person:"",
 					original_belong:"",	
@@ -491,7 +534,7 @@
 					register_address:"",
 					operator_id_card:"",
 					contacts_tel:"",
-					is_transfer_out:1,
+					is_transfer_out:"",
 					new_apply:"",
 					business_license_url:"",
 					id_card_url:"",
@@ -503,50 +546,51 @@
 			//弹窗底部保存
 			commitAduit(){
 				let arg = JSON.parse(JSON.stringify(this.info));
-				console.log(this.business_license)
-				if(arg.company_alias == ''){
-					this.$message.warning('请输入主体简称!')
-				}else if(arg.legal_person == ''){
-					this.$message.warning('请输入法人!')
-				}else if(arg.original_belong == ''){
-					this.$message.warning('请输入主体原归属!')
-				}else if(arg.contacts_address == ''){
-					this.$message.warning('请输入联系地址!')
-				}else if(arg.contract_terms == ''){
-					this.$message.warning('请选择合同条款!')
-				}else if(this.business_license.length == 0){
-					this.$message.warning('至少上传一张营业执照!')
-				}else if(arg.remark == ''){
-					this.$message.warning('请输入备注!')
-				}else if(arg.company_admin_id == ''){
-					this.$message.warning('请选择管理员!')
-				}else if(arg.business_license_number == ''){
-					this.$message.warning('请输入营业执照号!')
-				}else if(arg.operator_tel == ''){
-					this.$message.warning('请输入经营人电话!')
-				}else if(arg.operator_gender == ''){
-					this.$message.warning('请选择经营人性别!')
-				}else if(arg.contacts == ''){
-					this.$message.warning('请输入联系人!')
-				}else if(arg.current_belong == ''){
-					this.$message.warning('请输入主体现归属!')
-				}else if(this.id_card.length == 0){
-					this.$message.warning('至少上传一张身份证照片!')
-				}else if(arg.company_name == ''){
-					this.$message.warning('请输入公司全称!')
-				}else if(arg.register_address == ''){
-					this.$message.warning('请输入注册地址!')
-				}else if(arg.operator_id_card == ''){
-					this.$message.warning('请输入经营人身份证!')
-				}else if(arg.contacts_tel == ''){
-					this.$message.warning('请输入联系人电话!')
-				}else if(arg.contract_url == ''){
-					this.$message.warning('请上传合同PDF!')
-				}else if(arg.new_apply == ''){
-					this.$message.warning('请输入新客申请!')
-				}else{
-					arg.operator_gender = arg.operator_gender == ''?0:arg.operator_gender;
-					arg.contract_terms = arg.contract_terms == ''?0:arg.contract_terms;
+				// if(arg.company_alias == ''){
+				// 	this.$message.warning('请输入主体简称!')
+				// }else if(arg.legal_person == ''){
+				// 	this.$message.warning('请输入法人!')
+				// }else if(arg.original_belong == ''){
+				// 	this.$message.warning('请输入主体原归属!')
+				// }else if(arg.contacts_address == ''){
+				// 	this.$message.warning('请输入联系地址!')
+				// }else if(arg.contract_terms == ''){
+				// 	this.$message.warning('请选择合同条款!')
+				// }else if(this.business_license.length == 0){
+				// 	this.$message.warning('至少上传一张营业执照!')
+				// }else if(arg.remark == ''){
+				// 	this.$message.warning('请输入备注!')
+				// }else if(arg.company_admin_id == ''){
+				// 	this.$message.warning('请选择管理员!')
+				// }else if(arg.business_license_number == ''){
+				// 	this.$message.warning('请输入营业执照号!')
+				// }else if(arg.operator_tel == ''){
+				// 	this.$message.warning('请输入经营人电话!')
+				// }else if(arg.operator_gender == ''){
+				// 	this.$message.warning('请选择经营人性别!')
+				// }else if(arg.contacts == ''){
+				// 	this.$message.warning('请输入联系人!')
+				// }else if(arg.current_belong == ''){
+				// 	this.$message.warning('请输入主体现归属!')
+				// }else if(this.id_card.length == 0){
+				// 	this.$message.warning('至少上传一张身份证照片!')
+				// }else if(arg.company_name == ''){
+				// 	this.$message.warning('请输入公司全称!')
+				// }else if(arg.register_address == ''){
+				// 	this.$message.warning('请输入注册地址!')
+				// }else if(arg.operator_id_card == ''){
+				// 	this.$message.warning('请输入经营人身份证!')
+				// }else if(arg.contacts_tel == ''){
+				// 	this.$message.warning('请输入联系人电话!')
+				// }else if(arg.contract_url == ''){
+				// 	this.$message.warning('请上传合同PDF!')
+				// }else if(arg.new_apply == ''){
+				// 	this.$message.warning('请输入新客申请!')
+				// }else{
+				arg.main_body_type = arg.main_body_type === ''?0:arg.main_body_type;
+				arg.is_transfer_out = arg.is_transfer_out === ''?0:arg.is_transfer_out;
+				arg.operator_gender = arg.operator_gender === ''?0:arg.operator_gender;
+				arg.contract_terms = arg.contract_terms === ''?0:arg.contract_terms;
 					if(this.dialog_type == 'add'){		//添加
 						operationResource.mainBodyAdd(arg).then(res => {
 							if(res.data.code == 1){
@@ -574,55 +618,76 @@
 							}
 						})
 					}
-				}
-			},
+				// }
+				},
 			//导出
-			exportFn(){
-				MessageBox.confirm('确认导出?', '提示', {
-					confirmButtonText: '确定',
-					cancelButtonText: '取消',
-					type: 'warning'
-				}).then(() => {
-					let arg = {
-						company_name:this.company_name,
-						company_alias:this.company_alias,
-						main_body_type:this.main_body_type_id,
-						company_admin_id:this.user_ids.join(','),
-						sort:this.sort
-					}
-					operationResource.mainBodyInfoExport(arg).then(res => {
-						if(res){
-							exportPost("\ufeff" + res.data,'公司主体资料表');
+				exportFn(){
+					MessageBox.confirm('确认导出?', '提示', {
+						confirmButtonText: '确定',
+						cancelButtonText: '取消',
+						type: 'warning'
+					}).then(() => {
+						let arg = {
+							company_name:this.company_name,
+							company_alias:this.company_alias,
+							main_body_type:this.main_body_type_id,
+							company_admin_id:this.user_ids.join(','),
+							sort:this.sort
 						}
-					})
-				}).catch(() => {
-					Message({
-						type: 'info',
-						message: '取消导出'
-					});          
-				});
-			},
+						operationResource.mainBodyInfoExport(arg).then(res => {
+							if(res){
+								exportPost("\ufeff" + res.data,'公司主体资料表');
+							}
+						})
+					}).catch(() => {
+						Message({
+							type: 'info',
+							message: '取消导出'
+						});          
+					});
+				},
 			//pdf预览
-			viewPdf(field_name,table_name,value,row_field_name){
-				if(row_field_name == 'contract_url'){
-					window.open(this.domain + value)
+				viewPdf(field_name,table_name,value,row_field_name){
+					if(row_field_name == 'contract_url'){
+						window.open(this.domain + value)
+					}
+				},
+			//详情pdf预览
+				openPdf(value){
+					if(row_field_name == 'contract_url' && value != ''){
+						window.open(this.domain + value)
+					}
 				}
 			},
-			//详情pdf预览
-			openPdf(value){
-				window.open(this.domain + value)
+			components:{
+				CustomTable,
+				PageWidget,
+				UploadsFile,
+				UploadPdf
 			}
-		},
-		components:{
-			CustomTable,
-			PageWidget,
-			UploadsFile,
-			UploadPdf
 		}
-	}
-</script>
-<style type="text/css">
-	.label_bold .el-form-item__label{
-		font-weight: bold;
-	}
-</style>
+	</script>
+	<style type="text/css">
+		.label_bold .el-form-item__label{
+			font-weight: bold;
+		}
+	</style>
+	<style lang="less" scoped>
+		.down_box{
+			display:flex;
+			.upload_box{
+				margin-left: 10px;
+				position: relative;
+				.upload_file{
+					position: absolute;
+					top: 0;
+					bottom: 0;
+					left: 0;
+					right: 0;
+					width: 100%;
+					height: 100%;
+					opacity: 0;
+				}
+			}
+		}
+	</style>

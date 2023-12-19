@@ -80,6 +80,8 @@ let path = {
 	companyMainBodyTransfer:'company_main_body/transfer',		//店铺主体转移
 	ajaxCompanyAdmin:'company_main_body/ajax_company_admin',	//公司主体管理员列表
 	ajaxCompanyShopAdmin:'company_main_body/ajax_company_shop_admin',	//店铺基础资料管理员列表
+	importCompany:'company_main_body/import_company',			//导入公司主体资料
+	importShop:'company_main_body/import_shop',					//导入店铺基础资料
 }						
 export default{
 	//获取款式编码
@@ -409,6 +411,14 @@ export default{
 	//店铺主体资料管理员列表
 	ajaxCompanyShopAdmin(params){
 		return http.get(path.ajaxCompanyShopAdmin, params)
+	},
+	//导入公司主体资料
+	importCompany(params){
+		return http.post(path.importCompany, params)
+	},
+	//导入店铺基础资料
+	importShop(params){
+		return http.post(path.importShop, params)
 	},
 }
 

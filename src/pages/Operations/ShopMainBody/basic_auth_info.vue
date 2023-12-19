@@ -16,8 +16,8 @@
                     </el-option>
                 </el-select>
             </el-form-item>
-            <el-form-item label="客户：">
-                <el-select v-model="company_ids" clearable multiple filterable reserve-keyword placeholder="请选择客户" collapse-tags>
+            <el-form-item label="主体简称：">
+                <el-select v-model="company_ids" clearable multiple filterable reserve-keyword placeholder="请选择主体简称" collapse-tags>
                     <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
                     </el-option>
                 </el-select>
@@ -34,6 +34,10 @@
         </el-form>
         <div class="flex jse mb-15">
             <el-button type="primary" plain icon="el-icon-plus" size="small" @click="editFn('','add')" v-if="button_list.add == 1">添加</el-button>
+            <el-button type="primary" size="small" @click="import_dialog = true">
+                导入
+                <i class="el-icon-upload el-icon--right"></i>
+            </el-button>
             <el-button type="primary" plain size="mini" @click="exportFn" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
         </div>
         <CustomTable v-loading="loading" :isLoading="loading" tableName="basic_auth_info" max_height="620px" setting_width="160px" :table_data="table_data" :title_list="title_list" :is_setting="true" :button_list="button_list" fieldName="company_shop_id" :is_custom_sort="false" @sortCallBack="sortCallBack" @editFn="editFn($event,'edit')" @detailFn="editFn($event,'detail')" @tableCallBack="tableCallBack" @transferFn="transferFn"/>
@@ -70,275 +74,309 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="店铺手机号码：" required>
+                    <el-form-item label="店铺手机号码：">
                         <div v-if="dialog_type == 'detail'">{{info.shop_tel}}</div>
                         <el-input type="number" v-model="info.shop_tel" @change="setLocalStorage" placeholder="请输入店铺手机号码" v-else></el-input>
                     </el-form-item>
-                    <el-form-item label="授权提交日：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.auth_date}}</div>
-                        <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_date" type="date" placeholder="选择日期" @change="setLocalStorage" v-else>
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="开店情况：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.shop_situation}}</div>
-                        <el-input v-model="info.shop_situation" placeholder="请输入开店情况" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="聚水潭账号：" required> 
-                        <div v-if="dialog_type == 'detail'">{{info.jst_id}}</div>
-                        <el-input v-model="info.jst_id" placeholder="请输入聚水潭账号" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="聚水潭密码：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.jst_password}}</div>
-                        <el-input v-model="info.jst_password" placeholder="请输入聚水潭密码" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
                 </el-form>
                 <el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
-                    <el-form-item label="管理员：" required>
+                    <el-form-item label="管理员：">
                         <div v-if="dialog_type == 'detail'">{{detail_data.shop_admin_name}}</div>
                         <el-select v-model="info.shop_admin_id" clearable filterable placeholder="请选择管理员" @change="setLocalStorage" v-else>
                             <el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="授权名称：" required>
+                    <el-form-item label="授权名称：">
                         <div v-if="dialog_type == 'detail'">{{info.auth_shop_name}}</div>
                         <el-input v-model="info.auth_shop_name" placeholder="请输入授权名称" @change="setLocalStorage" v-else></el-input>
                     </el-form-item>
-                    <el-form-item label="开店名称：" required>
+                    <el-form-item label="开店名称：">
                         <div v-if="dialog_type == 'detail'">{{info.shop_name}}</div>
                         <el-input v-model="info.shop_name" placeholder="请输入开店名称" @change="setLocalStorage" v-else></el-input>
                     </el-form-item>
-                    <el-form-item label="号码保管人：" required>
+                    <el-form-item label="号码保管人：">
                         <div v-if="dialog_type == 'detail'">{{info.tel_custodian}}</div>
                         <el-select v-model="info.tel_custodian" clearable filterable placeholder="请选择号码保管人" @change="setLocalStorage" v-else>
                             <el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="授权到期日：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.auth_expires_date}}</div>
-                        <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_expires_date" type="date" placeholder="选择日期" @change="setLocalStorage" v-else>
-                        </el-date-picker>
-                    </el-form-item>
-                    <el-form-item label="账号ID：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.account_id}}</div>
-                        <el-input type="number" v-model="info.account_id" placeholder="请输入账号ID" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="子账号：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.sub_account}}</div>
-                        <el-input v-model="info.sub_account" placeholder="请输入子账号" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="子账号电话：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.sub_account_tel}}</div>
-                        <el-input type="number" v-model="info.sub_account_tel" placeholder="请输入授权名称" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="子账号密码：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.sub_account_password}}</div>
-                        <el-input v-model="info.sub_account_password" placeholder="请输入子账号密码" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                </el-form>
-                <el-form class="label_bold" style="width: 360px;" size="small" label-width="120px">
-                    <el-form-item label="主体简称：" required>
-                        <div v-if="dialog_type == 'detail'">{{detail_data.company_alias}}</div>
-                        <el-select v-model="info.company_id" :disabled="dialog_type == 'edit'" clearable filterable placeholder="请选择主体简称" @change="getCompany" v-else>
-                            <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="店铺领用：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.store_requisition}}</div>
-                        <el-input v-model="info.store_requisition" placeholder="请输入店铺领用" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="OA流程编号：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.oa_id}}</div>
-                        <el-input v-model="info.oa_id" placeholder="请输入OA流程编号" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="授权PDF：" required>
-                        <UploadPdf :fileName="info.auth_file_url" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" @callbackFn="uploadPdf" @viewPdf="openPdf"/>
-                    </el-form-item>
-                    <el-form-item label="平台：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.platform}}</div>
-                        <el-select v-model="info.platform" clearable placeholder="请选择平台" @change="setLocalStorage" v-else>
-                            <el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="开店状态：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.shop_status}}</div>
-                        <el-select v-model="info.shop_status" clearable placeholder="请选择开店状态" @change="setLocalStorage" v-else>
-                            <el-option v-for="item in shop_status_list" :key="item.value" :label="item.label" :value="item.value">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                    <el-form-item label="店铺分销：" required>
+                    <el-form-item label="店铺分销：">
                         <div v-if="dialog_type == 'detail'">{{info.store_distribution}}</div>
                         <el-input v-model="info.store_distribution" placeholder="请输入店铺分销" @change="setLocalStorage" v-else></el-input>
                     </el-form-item>
-                    <el-form-item label="授权确认：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.auth_confirm}}</div>
-                        <el-input v-model="info.auth_confirm" placeholder="请输入授权确认" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
-                    <el-form-item label="备注：" required>
-                        <div v-if="dialog_type == 'detail'">{{info.remark}}</div>
-                        <el-input type="textarea" :rows="3" v-model="info.remark" placeholder="请输入备注" @change="setLocalStorage" v-else></el-input>
-                    </el-form-item>
                 </el-form>
-            </div>
-            <div slot="footer" class="dialog-footer flex jc" v-if="dialog_type != 'detail'">
-                <el-button type="primary" size="small" @click="commitAduit">保存</el-button>
-            </div>
-        </el-dialog>
-        <!-- 转移主体 -->
-        <el-dialog v-el-drag-dialog title="转移主体" width="450px" :close-on-click-modal="false" :visible.sync="transfer_dialog">
-            <div>
-
-                <el-form size="small">
-                    <el-form-item>
-                        <div>店铺【{{transfer_shop_name}}】，现主体【{{company_name}}】</div>
-                    </el-form-item>
-                    <el-form-item label="主体简称：">
-                        <el-select v-model="company_id" filterable placeholder="请选择主体简称">
-                            <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
-                            </el-option>
-                        </el-select>
-                    </el-form-item>
-                </el-form>
-            </div>
-            <div slot="footer" class="dialog-footer" >
-                <el-button size="small" @click="transfer_dialog = false">取消</el-button>
-                <el-button type="primary" size="small" @click="transferConfirm">确认</el-button>
-            </div>
-        </el-dialog>
-        <!-- 账号信息 -->
-        <el-dialog v-el-drag-dialog title="账号信息" width="350px" @close="detail_data = {}" :close-on-click-modal="false" :visible.sync="account_dialog">
-            <el-form class="label_bold" size="small" label-width="110px">
-                <el-form-item label="平台：">
-                    <div>{{detail_data.platform}}</div>
+                <el-form class="label_bold" style="width: 360px;" size="small" label-width="120px" v-if="dialog">
+                 <el-form-item label="主体简称：" required>
+                    <div v-if="dialog_type == 'detail' || dialog_type == 'edit'">{{detail_data.company_alias}}</div>
+                    <el-select v-model="info.company_id" :disabled="dialog_type == 'edit'" clearable filterable placeholder="请选择主体简称" @change="getCompany" v-else>
+                        <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="授权名称：">
-                    <div>{{detail_data.auth_shop_name}}</div>
+                <el-form-item label="店铺领用：">
+                    <div v-if="dialog_type == 'detail'">{{info.store_requisition}}</div>
+                    <el-input v-model="info.store_requisition" placeholder="请输入店铺领用" @change="setLocalStorage" v-else></el-input>
                 </el-form-item>
-                <el-form-item label="开店名称：">
-                    <div>{{detail_data.shop_name}}</div>
+                <el-form-item label="平台：" required>
+                    <div v-if="dialog_type == 'detail'">{{info.platform}}</div>
+                    <el-select v-model="info.platform" clearable placeholder="请选择平台" @change="setLocalStorage" v-else>
+                        <el-option v-for="item in plat_list" :key="item" :label="item" :value="item">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
-                <el-form-item label="账号ID：">
-                    <div>{{detail_data.account_id}}</div>
-                </el-form-item>
-                <el-form-item label="子账号：">
-                    <div>{{detail_data.sub_account}}</div>
-                </el-form-item>
-                <el-form-item label="子账号密码：">
-                    <div>{{detail_data.sub_account_password}}</div>
-                </el-form-item>
-                <el-form-item label="子账号电话：">
-                    <div>{{detail_data.sub_account_tel}}</div>
-                </el-form-item>
-                <el-form-item label="聚水潭账号：">
-                    <div>{{detail_data.jst_id}}</div>
-                </el-form-item>
-                <el-form-item label="聚水潭密码：">
-                    <div>{{detail_data.jst_password}}</div>
+                <el-form-item label="开店状态：" required>
+                    <div v-if="dialog_type == 'detail'">{{info.shop_status}}</div>
+                    <el-select v-model="info.shop_status" clearable placeholder="请选择开店状态" @change="setLocalStorage" v-else>
+                        <el-option v-for="item in shop_status_list" :key="item.value" :label="item.label" :value="item.value">
+                        </el-option>
+                    </el-select>
                 </el-form-item>
             </el-form>
-        </el-dialog>
-        <!-- 变更记录 -->
-        <el-dialog v-el-drag-dialog title="店铺主体变更记录" width="1240px" top="30px" @close="" :close-on-click-modal="false" :visible.sync="log_dialog">
-            <el-table :data="log_data" tooltip-effect="dark" style="width: 100%" max-height="600" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" border>
-                <el-table-column prop="supplier" show-overflow-tooltip label="变更次数" align="center">
-                    <template slot-scope="scope">
-                        <div>{{log_data.length - scope.$index}}次</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="auth_shop_name" width="120" show-overflow-tooltip label="授权名称" align="center"></el-table-column>
-                <el-table-column prop="shop_name" width="120" show-overflow-tooltip label="开店名称" align="center"></el-table-column>
-                <el-table-column prop="add_user_name" width="160" show-overflow-tooltip label="变更操作人" align="center">
-                </el-table-column>
-                <el-table-column prop="company_name" width="180" show-overflow-tooltip label="主体变更" align="center">
-                    <template slot-scope="scope">
-                        <div>变更前主体：{{scope.row.old_info.company_name}}</div>
-                        <div class="divider"></div>
-                        <div>现主体：{{scope.row.new_info.company_name}}</div>
-                    </template>
-                </el-table-column>
-                <el-table-column prop="company_alias" width="160" show-overflow-tooltip label="公司简称" align="center">
-                 <template slot-scope="scope">
-                    <div>{{scope.row.old_info.company_alias}}</div>
-                    <div class="divider"></div>
-                    <div>{{scope.row.new_info.company_alias}}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="register_address" width="160" show-overflow-tooltip label="主体注册地址" align="center">
-                <template slot-scope="scope">
-                    <div>{{scope.row.old_info.register_address}}</div>
-                    <div class="divider"></div>
-                    <div>{{scope.row.new_info.register_address}}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="legal_person" width="120" show-overflow-tooltip label="法人" align="center">
-                <template slot-scope="scope">
-                    <div>{{scope.row.old_info.legal_person}}</div>
-                    <div class="divider"></div>
-                    <div>{{scope.row.new_info.legal_person}}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="operator_tel" width="120" show-overflow-tooltip label="经营人电话" align="center">
-                <template slot-scope="scope">
-                    <div>{{scope.row.old_info.operator_tel}}</div>
-                    <div class="divider"></div>
-                    <div>{{scope.row.new_info.operator_tel}}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="operator_tel" width="160" show-overflow-tooltip label="经营人身份证号" align="center">
-                <template slot-scope="scope">
-                    <div>{{scope.row.old_info.operator_id_card}}</div>
-                    <div class="divider"></div>
-                    <div>{{scope.row.new_info.operator_id_card}}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="company_name" width="120" show-overflow-tooltip label="主体归属" align="center">
-                <template slot-scope="scope">
-                    <div>{{scope.row.old_info.current_belong}}</div>
-                    <div class="divider"></div>
-                    <div>{{scope.row.new_info.current_belong}}</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="platform" label="经营人性别" align="center">
-                <template slot-scope="scope">
-                    <div v-if="scope.row.old_info.operator_gender == 1">男</div>
-                    <div v-if="scope.row.old_info.operator_gender == 2">女</div>
-                    <div v-if="scope.row.old_info.operator_gender == 0">未设置</div>
-                    <div class="divider"></div>
-                    <div v-if="scope.row.new_info.operator_gender == 1">男</div>
-                    <div v-if="scope.row.new_info.operator_gender == 2">女</div>
-                    <div v-if="scope.row.new_info.operator_gender == 0">未设置</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="platform" width="160" label="营业执照" align="center">
-                <template slot-scope="scope">
-                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.business_license_url).length > 0"></el-image>
-                    <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.old_info.business_license_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.business_license_url).length > 1"></el-image>
-                    <div v-if="filterImage(scope.row.old_info.business_license_url).length == 0">暂无</div>
-                    <div class="divider"></div>
-                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.business_license_url).length > 0"></el-image>
-                    <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.new_info.business_license_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.business_license_url).length > 1"></el-image>
-                    <div v-if="filterImage(scope.row.new_info.business_license_url).length == 0">暂无</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="platform" width="160" label="身份证" align="center">
-                <template slot-scope="scope">
-                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.id_card_url).length > 0"></el-image>
-                    <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.old_info.id_card_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.id_card_url).length > 1"></el-image>
-                    <div v-if="filterImage(scope.row.old_info.id_card_url).length == 0">暂无</div>
-                    <div class="divider"></div>
-                    <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.id_card_url).length > 0"></el-image>
-                    <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.new_info.id_card_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.id_card_url).length > 1"></el-image>
-                    <div v-if="filterImage(scope.row.new_info.id_card_url).length == 0">暂无</div>
-                </template>
-            </el-table-column>
-            <el-table-column prop="add_time" width="160" show-overflow-tooltip label="变更时间" align="center">
-            </el-table-column>
-        </el-table>
+        </div>
+        <el-divider></el-divider>
+        <div class="flex jsb">
+            <el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
+                <el-form-item label="授权提交日：">
+                    <div v-if="dialog_type == 'detail'">{{info.auth_date}}</div>
+                    <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_date" type="date" placeholder="选择日期" @change="setLocalStorage" v-else>
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="开店情况：">
+                    <div v-if="dialog_type == 'detail'">{{info.shop_situation}}</div>
+                    <el-input v-model="info.shop_situation" placeholder="请输入开店情况" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+                <el-form-item label="授权确认：">
+                    <div v-if="dialog_type == 'detail'">{{info.auth_confirm}}</div>
+                    <el-input v-model="info.auth_confirm" placeholder="请输入授权确认" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
+                <el-form-item label="授权到期日：">
+                    <div v-if="dialog_type == 'detail'">{{info.auth_expires_date}}</div>
+                    <el-date-picker value-format="yyyy-MM-dd" v-model="info.auth_expires_date" type="date" placeholder="选择日期" @change="setLocalStorage" v-else>
+                    </el-date-picker>
+                </el-form-item>
+                <el-form-item label="备注：">
+                    <div v-if="dialog_type == 'detail'">{{info.remark}}</div>
+                    <el-input type="textarea" :rows="3" v-model="info.remark" placeholder="请输入备注" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form class="label_bold" style="width: 360px;" size="small" label-width="120px">
+                <el-form-item label="授权PDF：">
+                    <UploadPdf :fileName="info.auth_file_url" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" @callbackFn="uploadPdf" @viewPdf="openPdf"/>
+                </el-form-item>
+                <el-form-item label="OA流程编号：">
+                    <div v-if="dialog_type == 'detail'">{{info.oa_id}}</div>
+                    <el-input v-model="info.oa_id" placeholder="请输入OA流程编号" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <el-divider></el-divider>
+        <div class="flex jsb">
+            <el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
+                <el-form-item label="账号ID：">
+                    <div v-if="dialog_type == 'detail'">{{info.account_id}}</div>
+                    <el-input type="number" v-model="info.account_id" placeholder="请输入账号ID" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+                <el-form-item label="子账号电话：">
+                    <div v-if="dialog_type == 'detail'">{{info.sub_account_tel}}</div>
+                    <el-input type="number" v-model="info.sub_account_tel" placeholder="请输入授权名称" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
+                <el-form-item label="子账号：">
+                    <div v-if="dialog_type == 'detail'">{{info.sub_account}}</div>
+                    <el-input v-model="info.sub_account" placeholder="请输入子账号" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+                <el-form-item label="聚水潭账号："> 
+                    <div v-if="dialog_type == 'detail'">{{info.jst_id}}</div>
+                    <el-input v-model="info.jst_id" placeholder="请输入聚水潭账号" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+            </el-form>
+            <el-form class="label_bold" style="width: 360px;" size="small" label-width="120px">
+                <el-form-item label="子账号密码：">
+                    <div v-if="dialog_type == 'detail'">{{info.sub_account_password}}</div>
+                    <el-input v-model="info.sub_account_password" placeholder="请输入子账号密码" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+                <el-form-item label="聚水潭密码：">
+                    <div v-if="dialog_type == 'detail'">{{info.jst_password}}</div>
+                    <el-input v-model="info.jst_password" placeholder="请输入聚水潭密码" @change="setLocalStorage" v-else></el-input>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer flex jc" v-if="dialog_type != 'detail'">
+            <el-button type="primary" size="small" @click="commitAduit">保存</el-button>
+        </div>
     </el-dialog>
+    <!-- 转移主体 -->
+    <el-dialog v-el-drag-dialog title="转移主体" width="450px" :close-on-click-modal="false" :visible.sync="transfer_dialog">
+        <div>
+
+            <el-form size="small">
+                <el-form-item>
+                    <div>店铺【{{transfer_shop_name}}】，现主体【{{company_name}}】</div>
+                </el-form-item>
+                <el-form-item label="主体简称：">
+                    <el-select v-model="company_id" filterable placeholder="请选择主体简称">
+                        <el-option v-for="item in company_list" :key="item.company_id" :label="item.company_name" :value="item.company_id">
+                        </el-option>
+                    </el-select>
+                </el-form-item>
+            </el-form>
+        </div>
+        <div slot="footer" class="dialog-footer" >
+            <el-button size="small" @click="transfer_dialog = false">取消</el-button>
+            <el-button type="primary" size="small" @click="transferConfirm">确认</el-button>
+        </div>
+    </el-dialog>
+    <!-- 账号信息 -->
+    <el-dialog v-el-drag-dialog title="账号信息" width="350px" @close="detail_data = {}" :close-on-click-modal="false" :visible.sync="account_dialog">
+        <el-form class="label_bold" size="small" label-width="110px">
+            <el-form-item label="平台：">
+                <div>{{detail_data.platform}}</div>
+            </el-form-item>
+            <el-form-item label="授权名称：">
+                <div>{{detail_data.auth_shop_name}}</div>
+            </el-form-item>
+            <el-form-item label="开店名称：">
+                <div>{{detail_data.shop_name}}</div>
+            </el-form-item>
+            <el-form-item label="账号ID：">
+                <div>{{detail_data.account_id}}</div>
+            </el-form-item>
+            <el-form-item label="子账号：">
+                <div>{{detail_data.sub_account}}</div>
+            </el-form-item>
+            <el-form-item label="子账号密码：">
+                <div>{{detail_data.sub_account_password}}</div>
+            </el-form-item>
+            <el-form-item label="子账号电话：">
+                <div>{{detail_data.sub_account_tel}}</div>
+            </el-form-item>
+            <el-form-item label="聚水潭账号：">
+                <div>{{detail_data.jst_id}}</div>
+            </el-form-item>
+            <el-form-item label="聚水潭密码：">
+                <div>{{detail_data.jst_password}}</div>
+            </el-form-item>
+        </el-form>
+    </el-dialog>
+    <!-- 变更记录 -->
+    <el-dialog v-el-drag-dialog title="店铺主体变更记录" width="1240px" top="30px" @close="" :close-on-click-modal="false" :visible.sync="log_dialog">
+        <el-table :data="log_data" tooltip-effect="dark" style="width: 100%" max-height="600" :header-cell-style="{'background':'#f4f4f4'}" :row-class-name="tableRowClassName" border>
+            <el-table-column prop="supplier" show-overflow-tooltip label="变更次数" align="center">
+                <template slot-scope="scope">
+                    <div>{{log_data.length - scope.$index}}次</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="auth_shop_name" width="120" show-overflow-tooltip label="授权名称" align="center"></el-table-column>
+            <el-table-column prop="shop_name" width="120" show-overflow-tooltip label="开店名称" align="center"></el-table-column>
+            <el-table-column prop="add_user_name" width="160" show-overflow-tooltip label="变更操作人" align="center">
+            </el-table-column>
+            <el-table-column prop="company_name" width="180" show-overflow-tooltip label="主体变更" align="center">
+                <template slot-scope="scope">
+                    <div>变更前主体：{{scope.row.old_info.company_name}}</div>
+                    <div class="divider"></div>
+                    <div>现主体：{{scope.row.new_info.company_name}}</div>
+                </template>
+            </el-table-column>
+            <el-table-column prop="company_alias" width="160" show-overflow-tooltip label="公司简称" align="center">
+               <template slot-scope="scope">
+                <div>{{scope.row.old_info.company_alias}}</div>
+                <div class="divider"></div>
+                <div>{{scope.row.new_info.company_alias}}</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="register_address" width="160" show-overflow-tooltip label="主体注册地址" align="center">
+            <template slot-scope="scope">
+                <div>{{scope.row.old_info.register_address}}</div>
+                <div class="divider"></div>
+                <div>{{scope.row.new_info.register_address}}</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="legal_person" width="120" show-overflow-tooltip label="经营人" align="center">
+            <template slot-scope="scope">
+                <div>{{scope.row.old_info.legal_person}}</div>
+                <div class="divider"></div>
+                <div>{{scope.row.new_info.legal_person}}</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="operator_tel" width="120" show-overflow-tooltip label="经营人电话" align="center">
+            <template slot-scope="scope">
+                <div>{{scope.row.old_info.operator_tel}}</div>
+                <div class="divider"></div>
+                <div>{{scope.row.new_info.operator_tel}}</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="operator_tel" width="160" show-overflow-tooltip label="经营人身份证号" align="center">
+            <template slot-scope="scope">
+                <div>{{scope.row.old_info.operator_id_card}}</div>
+                <div class="divider"></div>
+                <div>{{scope.row.new_info.operator_id_card}}</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="company_name" width="120" show-overflow-tooltip label="主体归属" align="center">
+            <template slot-scope="scope">
+                <div>{{scope.row.old_info.current_belong}}</div>
+                <div class="divider"></div>
+                <div>{{scope.row.new_info.current_belong}}</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="platform" label="经营人性别" align="center">
+            <template slot-scope="scope">
+                <div v-if="scope.row.old_info.operator_gender == 1">男</div>
+                <div v-if="scope.row.old_info.operator_gender == 2">女</div>
+                <div v-if="scope.row.old_info.operator_gender == 0">未设置</div>
+                <div class="divider"></div>
+                <div v-if="scope.row.new_info.operator_gender == 1">男</div>
+                <div v-if="scope.row.new_info.operator_gender == 2">女</div>
+                <div v-if="scope.row.new_info.operator_gender == 0">未设置</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="platform" width="160" label="营业执照" align="center">
+            <template slot-scope="scope">
+                <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.business_license_url).length > 0"></el-image>
+                <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.old_info.business_license_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.business_license_url).length > 1"></el-image>
+                <div v-if="filterImage(scope.row.old_info.business_license_url).length == 0">暂无</div>
+                <div class="divider"></div>
+                <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.business_license_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.business_license_url).length > 0"></el-image>
+                <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.new_info.business_license_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.business_license_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.business_license_url).length > 1"></el-image>
+                <div v-if="filterImage(scope.row.new_info.business_license_url).length == 0">暂无</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="platform" width="160" label="身份证" align="center">
+            <template slot-scope="scope">
+                <el-image :z-index="2006" class="image" :src="filterImage(scope.row.old_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.id_card_url).length > 0"></el-image>
+                <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.old_info.id_card_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.old_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.old_info.id_card_url).length > 1"></el-image>
+                <div v-if="filterImage(scope.row.old_info.id_card_url).length == 0">暂无</div>
+                <div class="divider"></div>
+                <el-image :z-index="2006" class="image" :src="filterImage(scope.row.new_info.id_card_url)[0]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.id_card_url).length > 0"></el-image>
+                <el-image :z-index="2006" class="image ml5" :src="filterImage(scope.row.new_info.id_card_url)[1]" fit="scale-down" :preview-src-list="filterImage(scope.row.new_info.id_card_url)" @click.stop="handleClickStop" v-if="filterImage(scope.row.new_info.id_card_url).length > 1"></el-image>
+                <div v-if="filterImage(scope.row.new_info.id_card_url).length == 0">暂无</div>
+            </template>
+        </el-table-column>
+        <el-table-column prop="add_time" width="160" show-overflow-tooltip label="变更时间" align="center">
+        </el-table-column>
+    </el-table>
+</el-dialog>
+<!-- 导入 -->
+<el-dialog title="导入" :visible.sync="import_dialog" width="30%">
+    <div class="down_box">
+        <el-button type="primary" plain size="small" @click="downTemplate">下载模版<i class="el-icon-download el-icon--right"></i></el-button>
+        <div class="upload_box">
+            <el-button type="primary" size="small">
+                导入
+                <i class="el-icon-upload el-icon--right"></i>
+            </el-button>
+            <input type="file" ref="csvUpload" class="upload_file" accept=".csv, application/vnd.ms-excel, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" @change="uploadCsv">
+        </div>
+    </div>
+    <div slot="footer" class="dialog-footer">
+        <el-button size="small" @click="import_dialog = false">取 消</el-button>
+    </div>
+</el-dialog>
 </div>
 </template>
 <script>
@@ -373,10 +411,10 @@
                     label:'开店成功'
                 },{
                     value:2,
-                    label:'开店中'
-                },{
-                    value:0,
                     label:'开店失败'
+                },{
+                    value:3,
+                    label:'开店中'
                 }],                                         //开店状态列表
                 shop_status_ids:[],                         //选中的开店状态
                 page:1,
@@ -399,10 +437,16 @@
                 }],                                         //新开/授权列表
                 operational_status_list:[{
                     value:1,
+                    label:'待运营'
+                },{
+                    value:2,
                     label:'运营中'
                 },{
-                    value:0,
-                    label:'待运营'
+                    value:3,
+                    label:'代运营'
+                },{
+                    value:4,
+                    label:'取消开店'
                 }],                                         //运营状态
                 plat_list:[],                               //平台列表
                 shop_type_list:[{
@@ -420,7 +464,7 @@
                 }],                                     //店铺类型
                 company_shop_id:"",                     //当前选中的店铺ID
                 info:{
-                    auth_type:1,
+                    auth_type:"",
                     is_new:"",
                     shop_type:"",
                     operational_status:"",
@@ -467,6 +511,7 @@
                 transfer_shop_name:"",                  //开店名称
                 company_name:"",                        //主体现归属
                 company_id:"",                          //变更的主体id
+                import_dialog:false
             }
         },
         created(){
@@ -593,6 +638,28 @@
                     }
                 })
             },
+            //下载模版
+            downTemplate(){
+                window.open(`${this.downLoadUrl}/店铺基础授权资料导入模板.xlsx`);
+            },
+            //导入
+            uploadCsv(e){
+                let files = e.target.files;
+                if (files.length > 0) {
+                    operationResource.importShop({file:files[0]}).then(res => {
+                        this.$refs.csvUpload.value = null;
+                        if(res.data.code == 1){
+                            this.$message.success(res.data.msg);
+                            this.import_dialog = false;
+                            this.page = 1;
+                            //获取列表
+                            this.getData();
+                        }else{
+                            this.$message.warning(res.data.msg);
+                        }
+                    })
+                }
+            },
             //添加/编辑/详情
             editFn(company_shop_id,type){
                 this.dialog = true;
@@ -602,10 +669,15 @@
                     operationResource.companyMainEditShopGet({company_shop_id:company_shop_id}).then(res => {
                         if(res.data.code == 1){
                             let data = res.data.data;
+                            this.detail_data = data;
                             for(let info_k in this.info){
                                 for(let data_k in data){
                                     if(info_k == data_k){
-                                        this.info[info_k] = data[data_k]
+                                        if(info_k == 'auth_type' || info_k == 'is_new' || info_k == 'shop_type' || info_k == 'shop_status' || info_k == 'operational_status'){
+                                            this.info[info_k] = data[data_k] === 0?'':data[data_k];
+                                        }else{
+                                            this.info[info_k] = data[data_k];
+                                        }
                                     }
                                 }
                             }
@@ -684,7 +756,7 @@
             // 弹窗关闭
             closeDialog(){
                 this.info = {
-                    auth_type:1,
+                    auth_type:"",
                     is_new:"",
                     shop_type:"",
                     operational_status:"",
@@ -728,61 +800,28 @@
             commitAduit(){
                 let arg = JSON.parse(JSON.stringify(this.info));
                 let new_info = JSON.parse(JSON.stringify(this.new_info));
-                if(arg.is_new === ''){
+                if(arg.auth_type === ''){
+                    this.$message.warning('请选择授权类型!')
+                }else if(arg.is_new === ''){
                     this.$message.warning('请选择新开/授权!')
                 }else if(arg.shop_type == ''){
                     this.$message.warning('请选择店铺类型!')
                 }else if(arg.operational_status === ''){
                     this.$message.warning('请选择运营状态!')
-                }else if(arg.shop_tel == ''){
-                    this.$message.warning('请输入店铺手机号码!')
-                }else if(arg.auth_date == ''){
-                    this.$message.warning('请选择授权提交日!')
-                }else if(arg.shop_situation == ''){
-                    this.$message.warning('请输入开店情况!')
-                }else if(arg.jst_id == ''){
-                    this.$message.warning('请输入聚水潭账号!')
-                }else if(arg.jst_password == ''){
-                    this.$message.warning('请输入聚水潭密码!')
-                }else if(arg.shop_admin_id == ''){
-                    this.$message.warning('请选择管理员!')
-                }else if(arg.auth_shop_name == ''){
-                    this.$message.warning('请输入授权名称!')
-                }else if(arg.shop_name == ''){
-                    this.$message.warning('请输入开店名称!')
-                }else if(arg.tel_custodian == ''){
-                    this.$message.warning('请选择号码保管人!')
-                }else if(arg.auth_expires_date == ''){
-                    this.$message.warning('请选择授权到期日!')
-                }else if(arg.account_id == ''){
-                    this.$message.warning('请输入账号ID!')
-                }else if(arg.sub_account == ''){
-                    this.$message.warning('请输入子账号!')
-                }else if(arg.sub_account_tel == ''){
-                    this.$message.warning('请输入子账号电话!')
-                }else if(arg.sub_account_password == ''){
-                    this.$message.warning('请输入子账号密码!')
                 }else if(arg.company_id == ''){
-                    this.$message.warning('请选择主体!')
-                }else if(arg.store_requisition == ''){
-                    this.$message.warning('请输入店铺领用!')
-                }else if(arg.oa_id == ''){
-                    this.$message.warning('请输入OA流程编号!')
-                }else if(arg.auth_file_url == ''){
-                    this.$message.warning('请上传授权PDF!')
+                    this.$message.warning('请选择主体简称!')
                 }else if(arg.platform == ''){
                     this.$message.warning('请选择平台!')
                 }else if(arg.shop_status === ''){
                     this.$message.warning('请选择开店状态!')
-                }else if(arg.store_distribution == ''){
-                    this.$message.warning('请输入店铺分销!')
-                }else if(arg.auth_confirm == ''){
-                    this.$message.warning('请输入授权确认!')
-                }else if(arg.remark == ''){
-                    this.$message.warning('请输入备注!')
                 }else{
-                    arg.is_new = arg.is_new == ''?0:arg.is_new;
-                    arg.shop_type = arg.shop_type == ''?0:arg.shop_type;
+
+                    arg.auth_type = arg.auth_type === ''?0:arg.auth_type;
+                    arg.is_new = arg.is_new === ''?0:arg.is_new;
+                    arg.shop_type = arg.shop_type ===''?0:arg.shop_type;
+                    arg.shop_status = arg.shop_status ===''?0:arg.shop_status;
+                    arg.operational_status = arg.operational_status ===''?0:arg.operational_status;
+
                     var new_arg = {...arg,...new_info};
                     if(this.dialog_type == 'add'){      //添加
                         operationResource.companyMainAddShop(new_arg).then(res => {
@@ -800,6 +839,7 @@
                         })
                     }else if(this.dialog_type == 'edit'){   //编辑
                         new_arg['company_shop_id'] = this.company_shop_id;
+                        delete new_arg.company_id;
                         operationResource.companyMainEditShop(new_arg).then(res => {
                             if(res.data.code == 1){
                                 this.$message.success(res.data.msg);
@@ -966,7 +1006,9 @@
             },
             //详情pdf预览
             openPdf(value){
-                window.open(this.domain + value)
+                if(value != ''){
+                    window.open(this.domain + value)
+                }
             }
         },
         components:{
@@ -999,5 +1041,22 @@
     }
     .ml5{
         margin-left: 5px;
+    }
+    .down_box{
+        display:flex;
+        .upload_box{
+            margin-left: 10px;
+            position: relative;
+            .upload_file{
+                position: absolute;
+                top: 0;
+                bottom: 0;
+                left: 0;
+                right: 0;
+                width: 100%;
+                height: 100%;
+                opacity: 0;
+            }
+        }
     }
 </style>
