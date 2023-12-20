@@ -25,7 +25,7 @@
 		</el-form>
 		<div class="flex jse mb-15">
 			<el-button type="primary" plain icon="el-icon-plus" size="small" @click="editFn('','add')" v-if="button_list.add == 1">添加</el-button>
-			<el-button type="primary" size="small" @click="import_dialog = true">
+			<el-button type="primary" size="small" @click="import_dialog = true" v-if="button_list.import == 1">
 				导入
 				<i class="el-icon-upload el-icon--right"></i>
 			</el-button>
@@ -121,7 +121,7 @@
 					</el-form-item>
 					<el-form-item label="经营人身份证：">
 						<div v-if="dialog_type == 'detail'">{{info.operator_id_card}}</div>
-						<el-input type="number" v-model="info.operator_id_card" placeholder="请输入经营人身份证" @change="setLocalStorage" v-else></el-input>
+						<el-input v-model="info.operator_id_card" placeholder="请输入经营人身份证" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="联系人电话：">
 						<div v-if="dialog_type == 'detail'">{{info.contacts_tel}}</div>

@@ -34,7 +34,7 @@
         </el-form>
         <div class="flex jse mb-15">
             <el-button type="primary" plain icon="el-icon-plus" size="small" @click="editFn('','add')" v-if="button_list.add == 1">添加</el-button>
-            <el-button type="primary" size="small" @click="import_dialog = true">
+            <el-button type="primary" size="small" @click="import_dialog = true" v-if="button_list.import == 1">
                 导入
                 <i class="el-icon-upload el-icon--right"></i>
             </el-button>
@@ -326,13 +326,9 @@
         </el-table-column>
         <el-table-column prop="platform" label="经营人性别" align="center">
             <template slot-scope="scope">
-                <div v-if="scope.row.old_info.operator_gender == 1">男</div>
-                <div v-if="scope.row.old_info.operator_gender == 2">女</div>
-                <div v-if="scope.row.old_info.operator_gender == 0">未设置</div>
+                <div>{{scope.row.old_info.operator_gender}}</div>
                 <div class="divider"></div>
-                <div v-if="scope.row.new_info.operator_gender == 1">男</div>
-                <div v-if="scope.row.new_info.operator_gender == 2">女</div>
-                <div v-if="scope.row.new_info.operator_gender == 0">未设置</div>
+                <div>{{scope.row.new_info.operator_gender}}</div>
             </template>
         </el-table-column>
         <el-table-column prop="platform" width="160" label="营业执照" align="center">
@@ -862,7 +858,7 @@
             },
             //转移主体
             transferFn(row){
-                this.transfer_shop_name = row.shop_name;
+                this.transfer_shop_name = row.auth_shop_name;
                 this.company_name = row.company_name;
                 this.company_id = row.company_id;
                 this.company_shop_id = row.company_shop_id;

@@ -134,14 +134,8 @@ const router = new Router({
     { path: '/pdd_sales',name:"拼多多销售统计", component: pdd_sales},
     { path: '/dyy_shop_data',name:"代运营店铺数据", component: dyy_shop_data},
     { path: '/sales_subject_analysis',name:"销售主题分析", component: sales_subject_analysis},
-    { path: '/main_body_info',name:"主体资料表", meta:{
-        isUseCache:false,
-        keepAlive:true
-    }, component: main_body_info},
-    { path: '/basic_auth_info',name:"店铺基础授权资料", meta:{
-        isUseCache:false,
-        keepAlive:true
-    }, component: basic_auth_info},
+    { path: '/main_body_info',name:"主体资料表", component: main_body_info},
+    { path: '/basic_auth_info',name:"店铺基础授权资料", component: basic_auth_info},
     { path: '/goods_cate',name:"商品分类", component: goods_cate},
     { path: '/goods_analysis',name:"商品分析", component: goods_analysis},
     { path: '/supplier_ranking',name:"供应商排行", component: supplier_ranking},
