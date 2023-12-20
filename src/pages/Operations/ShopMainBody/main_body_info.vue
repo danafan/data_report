@@ -4,8 +4,8 @@
 			<el-form-item label="主体全称（公司）：">
 				<el-input v-model="company_name" placeholder="请输入主体全称"></el-input>
 			</el-form-item>
-			<el-form-item label="公司简称：">
-				<el-input v-model="company_alias" placeholder="请输入公司简称"></el-input>
+			<el-form-item label="主体简称：">
+				<el-input v-model="company_alias" placeholder="请输入主体简称"></el-input>
 			</el-form-item>
 			<el-form-item label="主体类型：">
 				<el-select v-model="main_body_type_id" clearable placeholder="请选择主体类型">

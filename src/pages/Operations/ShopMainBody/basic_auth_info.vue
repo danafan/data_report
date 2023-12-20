@@ -282,7 +282,7 @@
                     <div>现主体：{{scope.row.new_info.company_name}}</div>
                 </template>
             </el-table-column>
-            <el-table-column prop="company_alias" width="160" show-overflow-tooltip label="公司简称" align="center">
+            <el-table-column prop="company_alias" width="160" show-overflow-tooltip label="主体简称" align="center">
                <template slot-scope="scope">
                 <div>{{scope.row.old_info.company_alias}}</div>
                 <div class="divider"></div>
