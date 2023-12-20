@@ -1,8 +1,8 @@
 <template>
 	<div>
 		<el-form :inline="true" size="small" class="demo-form-inline">
-			<el-form-item label="公司名称：">
-				<el-input v-model="company_name" placeholder="请输入公司名称"></el-input>
+			<el-form-item label="主体全称（公司）：">
+				<el-input v-model="company_name" placeholder="请输入主体全称"></el-input>
 			</el-form-item>
 			<el-form-item label="公司简称：">
 				<el-input v-model="company_alias" placeholder="请输入公司简称"></el-input>
@@ -110,10 +110,10 @@
 						<uploads-file :current_images="id_card" :max_num="2" @callback="idCardCallBack" :onlyView="dialog_type == 'detail'" :requestDel="dialog_type == 'add'" v-if="dialog"/>
 					</el-form-item>
 				</el-form>
-				<el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
-					<el-form-item label="公司全称：" required>
+				<el-form class="label_bold" style="width: 360px;" size="small" label-width="150px">
+					<el-form-item label="主体全称（公司）：" required>
 						<div v-if="dialog_type == 'detail'">{{info.company_name}}</div>
-						<el-input v-model="info.company_name" placeholder="请输入公司全称" @change="setLocalStorage" v-else></el-input>
+						<el-input v-model="info.company_name" placeholder="请输入主体全称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="注册地址：">
 						<div v-if="dialog_type == 'detail'">{{info.register_address}}</div>
@@ -559,7 +559,7 @@
 				// }else if(this.id_card.length == 0){
 				// 	this.$message.warning('至少上传一张身份证照片!')
 				}else if(arg.company_name == ''){
-					this.$message.warning('请输入公司全称!')
+					this.$message.warning('请输入主体全称!')
 				// }
 				// else if(arg.register_address == ''){
 				// 	this.$message.warning('请输入注册地址!')
