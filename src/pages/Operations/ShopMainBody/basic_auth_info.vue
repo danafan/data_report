@@ -12,7 +12,7 @@
             </el-form-item>
             <el-form-item label="授权类型：">
                 <el-select v-model="auth_type_id" clearable placeholder="请选择授权类型">
-                    <el-option v-for="item in auth_type_list" :key="item.value" :label="item.label" :value="item.value">
+                    <el-option v-for="item in auth_type_list" :key="item" :label="item" :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -24,7 +24,7 @@
             </el-form-item>
             <el-form-item label="开店状态：">
                 <el-select v-model="shop_status_ids" clearable multiple filterable reserve-keyword placeholder="请选择开店状态" collapse-tags>
-                    <el-option v-for="item in shop_status_list" :key="item.value" :label="item.label" :value="item.value">
+                    <el-option v-for="item in shop_status_list" :key="item" :label="item" :value="item">
                     </el-option>
                 </el-select>
             </el-form-item>
@@ -48,29 +48,29 @@
                 <el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
                     <el-form-item label="授权类型：" required>
                         <div v-if="dialog_type == 'detail'">{{info.auth_type}}</div>
-                        <el-select v-model="info.auth_type" placeholder="请选择授权类型" @change="setLocalStorage" v-else>
-                            <el-option v-for="item in auth_type_list" :key="item.value" :label="item.label" :value="item.value">
+                        <el-select v-model="info.auth_type" clearable placeholder="请选择授权类型" @change="setLocalStorage" v-else>
+                            <el-option v-for="item in auth_type_list" :key="item" :label="item" :value="item">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="新开/授权：" required>
                         <div v-if="dialog_type == 'detail'">{{info.is_new}}</div>
                         <el-select v-model="info.is_new" clearable placeholder="新开/授权" @change="setLocalStorage" v-else>
-                            <el-option v-for="item in is_new_list" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in is_new_list" :key="item" :label="item" :value="item">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="店铺类型：" required>
                         <div v-if="dialog_type == 'detail'">{{info.shop_type}}</div>
                         <el-select v-model="info.shop_type" clearable placeholder="请选择店铺类型" @change="setLocalStorage" v-else>
-                            <el-option v-for="item in shop_type_list" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in shop_type_list" :key="item" :label="item" :value="item">
                             </el-option>
                         </el-select>
                     </el-form-item>
                     <el-form-item label="运营状态：" required>
                         <div v-if="dialog_type == 'detail'">{{info.operational_status}}</div>
                         <el-select v-model="info.operational_status" clearable placeholder="请选择运营状态" @change="setLocalStorage" v-else>
-                            <el-option v-for="item in operational_status_list" :key="item.value" :label="item.label" :value="item.value">
+                            <el-option v-for="item in operational_status_list" :key="item" :label="item" :value="item">
                             </el-option>
                         </el-select>
                     </el-form-item>
@@ -87,7 +87,7 @@
                             </el-option>
                         </el-select>
                     </el-form-item>
-                    <el-form-item label="授权名称：">
+                    <el-form-item label="授权名称：" required>
                         <div v-if="dialog_type == 'detail'">{{info.auth_shop_name}}</div>
                         <el-input v-model="info.auth_shop_name" placeholder="请输入授权名称" @change="setLocalStorage" v-else></el-input>
                     </el-form-item>
@@ -129,7 +129,7 @@
                 <el-form-item label="开店状态：" required>
                     <div v-if="dialog_type == 'detail'">{{info.shop_status}}</div>
                     <el-select v-model="info.shop_status" clearable placeholder="请选择开店情况" @change="setLocalStorage" v-else>
-                        <el-option v-for="item in shop_status_list" :key="item.value" :label="item.label" :value="item.value">
+                        <el-option v-for="item in shop_status_list" :key="item" :label="item" :value="item">
                         </el-option>
                     </el-select>
                 </el-form-item>
@@ -393,29 +393,14 @@
             return{
                 domain:"",
                 shop_name:"",                               //店铺名称/授权名称
-                auth_type_list:[{
-                    value:1,
-                    label:'店铺授权'
-                },{
-                    value:2,
-                    label:'生产授权'
-                }],                                         //授权类型列表
+                auth_type_list:[],                          //授权类型列表
                 auth_type_id:"",                            //选中的授权类型
                 admin_list:[],                              //管理员列表
                 user_list:[],                               //用户列表
                 user_ids:[],                                //选中的管理员列表
                 company_list:[],                            //客户列表
                 company_ids:[],                             //选中的客户列表
-                shop_status_list:[{
-                    value:1,
-                    label:'开店成功'
-                },{
-                    value:2,
-                    label:'开店失败'
-                },{
-                    value:3,
-                    label:'开店中'
-                }],                                         //开店状态列表
+                shop_status_list:[],                        //开店状态列表
                 shop_status_ids:[],                         //选中的开店状态
                 page:1,
                 pagesize:10,
@@ -428,41 +413,11 @@
                 dialog:false,                               //添加/编辑/详情弹窗
                 dialog_type:'',                             //弹窗类型
                 dialog_title:'',                            //弹窗标题
-                is_new_list:[{
-                    value:1,
-                    label:'新开'
-                },{
-                    value:0,
-                    label:'续授权'
-                }],                                         //新开/授权列表
-                operational_status_list:[{
-                    value:1,
-                    label:'待运营'
-                },{
-                    value:2,
-                    label:'运营中'
-                },{
-                    value:3,
-                    label:'代运营'
-                },{
-                    value:4,
-                    label:'取消开店'
-                }],                                         //运营状态
+                is_new_list:[],                             //新开/授权列表
+                operational_status_list:[],                 //运营状态
                 plat_list:[],                               //平台列表
-                shop_type_list:[{
-                    value:1,
-                    label:'旗舰店'
-                },{
-                    value:2,
-                    label:'企业店'
-                },{
-                    value:3,
-                    label:'专卖店'
-                },{
-                    value:4,
-                    label:'工厂店'
-                }],                                     //店铺类型
-                company_shop_id:"",                     //当前选中的店铺ID
+                shop_type_list:[],                          //店铺类型
+                company_shop_id:"",                         //当前选中的店铺ID
                 info:{
                     auth_type:"",
                     is_new:"",
@@ -515,6 +470,8 @@
             }
         },
         created(){
+            //获取所有下拉选项列表
+            this.ajaxParams();
             //管理员列表
             this.ajaxCompanyShopAdmin();
             //获取用户列表
@@ -527,6 +484,21 @@
             this.getData();
         },
         methods:{
+            //获取所有下拉选项列表
+            ajaxParams(){
+                operationResource.ajaxParams().then(res => {
+                    if(res.data.code == 1){
+                        let data = res.data.data;
+                        this.auth_type_list = data.auth_type;
+                        this.shop_status_list = data.shop_status;
+                        this.is_new_list = data.is_new;
+                        this.operational_status_list = data.operational_status;
+                        this.shop_type_list = data.shop_type;
+                    }else{
+                        this.$message.warning(res.data.msg);
+                    }
+                })
+            },
             //管理员列表
             ajaxCompanyShopAdmin(){
                 operationResource.ajaxCompanyShopAdmin().then(res => {
@@ -671,22 +643,24 @@
                             let data = res.data.data;
                             this.detail_data = data;
                             for(let info_k in this.info){
-                                for(let data_k in data){
-                                    if(info_k == data_k){
-                                        if(info_k == 'auth_type' || info_k == 'is_new' || info_k == 'shop_type' || info_k == 'shop_status' || info_k == 'operational_status'){
-                                            this.info[info_k] = data[data_k] === 0?'':data[data_k];
-                                        }else{
-                                            this.info[info_k] = data[data_k];
-                                        }
-                                    }
-                                }
+                                this.info[info_k] = data[info_k];
+                                // for(let data_k in data){
+                                //     if(info_k == data_k){
+                                //         if(info_k == 'auth_type' || info_k == 'is_new' || info_k == 'shop_type' || info_k == 'shop_status' || info_k == 'operational_status'){
+                                //             this.info[info_k] = data[data_k] === 0?'':data[data_k];
+                                //         }else{
+                                //             this.info[info_k] = data[data_k];
+                                //         }
+                                //     }
+                                // }
                             }
                             for(let info_k in this.new_info){
-                                for(let data_k in data){
-                                    if(info_k == data_k){
-                                        this.new_info[info_k] = data[data_k]
-                                    }
-                                }
+                                this.new_info[info_k] = data[info_k];
+                                // for(let data_k in data){
+                                //     if(info_k == data_k){
+                                //         this.new_info[info_k] = data[data_k]
+                                //     }
+                                // }
                             }
                             this.auth_file_name = data.auth_file_url;
                         }else{
@@ -700,11 +674,12 @@
                         if(res.data.code == 1){
                             this.detail_data = res.data.data;
                             for(let info_k in this.info){
-                                for(let data_k in this.detail_data){
-                                    if(info_k == data_k){
-                                        this.info[info_k] = this.detail_data[data_k]
-                                    }
-                                }
+                                this.info[info_k] = this.detail_data[info_k]
+                                // for(let data_k in this.detail_data){
+                                //     if(info_k == data_k){
+                                //         this.info[info_k] = this.detail_data[data_k]
+                                //     }
+                                // }
                             }
                             this.auth_file_name = this.detail_data.auth_file_url;
                         }else{
@@ -737,6 +712,9 @@
             },
             //根据客户切换获取信息
             getCompany(company_id){
+                if(!company_id){
+                    return;
+                }
                 operationResource.mainBodyEditGet({company_id:company_id}).then(res => {
                     if(res.data.code == 1){
                         let data = res.data.data;
@@ -808,6 +786,8 @@
                     this.$message.warning('请选择店铺类型!')
                 }else if(arg.operational_status === ''){
                     this.$message.warning('请选择运营状态!')
+                }else if(arg.auth_shop_name === ''){
+                    this.$message.warning('请输入授权名称!')
                 }else if(this.dialog_type == 'add' && arg.company_id == ''){
                     this.$message.warning('请选择主体简称!')
                 }else if(arg.platform == ''){
@@ -815,12 +795,6 @@
                 }else if(arg.shop_status === ''){
                     this.$message.warning('请选择开店状态!')
                 }else{
-                    arg.auth_type = arg.auth_type === ''?0:arg.auth_type;
-                    arg.is_new = arg.is_new === ''?0:arg.is_new;
-                    arg.shop_type = arg.shop_type ===''?0:arg.shop_type;
-                    arg.shop_status = arg.shop_status ===''?0:arg.shop_status;
-                    arg.operational_status = arg.operational_status ===''?0:arg.operational_status;
-
                     var new_arg = {...arg,...new_info};
                     if(this.dialog_type == 'add'){      //添加
                         operationResource.companyMainAddShop(new_arg).then(res => {

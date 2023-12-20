@@ -82,6 +82,7 @@ let path = {
 	ajaxCompanyShopAdmin:'company_main_body/ajax_company_shop_admin',	//店铺基础资料管理员列表
 	importCompany:'company_main_body/import_company',			//导入公司主体资料
 	importShop:'company_main_body/import_shop',					//导入店铺基础资料
+	ajaxParams:'company_main_body/ajax_params',				//获取所有下拉选项列表
 }						
 export default{
 	//获取款式编码
@@ -419,6 +420,10 @@ export default{
 	//导入店铺基础资料
 	importShop(params){
 		return http.post(path.importShop, params)
+	},
+	//获取所有下拉选项列表
+	ajaxParams(params){
+		return http.get(path.ajaxParams, params)
 	},
 }
 

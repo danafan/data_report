@@ -9,7 +9,7 @@
 			</el-form-item>
 			<el-form-item label="主体类型：">
 				<el-select v-model="main_body_type_id" clearable placeholder="请选择主体类型">
-					<el-option v-for="item in main_body_type" :key="item.value" :label="item.label" :value="item.value">
+					<el-option v-for="item in main_body_type" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -39,12 +39,12 @@
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="110px">
 					<el-form-item label="主体类型：">
 						<div v-if="dialog_type == 'detail'">{{info.main_body_type}}</div>
-						<el-select v-model="info.main_body_type" placeholder="请选择主体类型" @change="setLocalStorage" v-else>
-							<el-option v-for="item in main_body_type" :key="item.value" :label="item.label" :value="item.value">
+						<el-select v-model="info.main_body_type"clearable placeholder="请选择主体类型" @change="setLocalStorage" v-else>
+							<el-option v-for="item in main_body_type" :key="item" :label="item" :value="item">
 							</el-option>
 						</el-select>
 					</el-form-item>
-					<el-form-item label="主体简称：">
+					<el-form-item label="主体简称：" required>
 						<div v-if="dialog_type == 'detail'">{{info.company_alias}}</div>
 						<el-input v-model="info.company_alias" placeholder="请输入主体简称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
@@ -63,7 +63,7 @@
 					<el-form-item label="合同条款：">
 						<div v-if="dialog_type == 'detail'">{{info.contract_terms}}</div>
 						<el-select v-model="info.contract_terms" clearable placeholder="请选择合同条款" @change="setLocalStorage" v-else>
-							<el-option v-for="item in contract_terms_list" :key="item.value" :label="item.label" :value="item.value">
+							<el-option v-for="item in contract_terms_list" :key="item" :label="item" :value="item">
 							</el-option>
 						</el-select>
 					</el-form-item>
@@ -93,9 +93,9 @@
 					</el-form-item>
 					<el-form-item label="经营人性别：">
 						<div v-if="dialog_type == 'detail'">{{info.operator_gender}}</div>
-						<el-select v-model="info.operator_gender" clearable placeholder="请选择经营人性别" @change="setLocalStorage" v-else>
-							<el-option label="男" :value="1"></el-option>
-							<el-option label="女" :value="2"></el-option>
+						<el-select v-model="info.operator_gender" clearable filterable placeholder="请选择经营人性别" @change="setLocalStorage" v-else>
+							<el-option v-for="item in operator_gender_list" :key="item" :label="item" :value="item">
+							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="联系人：">
@@ -111,7 +111,7 @@
 					</el-form-item>
 				</el-form>
 				<el-form class="label_bold" style="width: 360px;" size="small" label-width="130px">
-					<el-form-item label="公司全称：">
+					<el-form-item label="公司全称：" required>
 						<div v-if="dialog_type == 'detail'">{{info.company_name}}</div>
 						<el-input v-model="info.company_name" placeholder="请输入公司全称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
@@ -129,9 +129,9 @@
 					</el-form-item>
 					<el-form-item label="是否转出：">
 						<div v-if="dialog_type == 'detail'">{{info.is_transfer_out}}</div>
-						<el-select v-model="info.is_transfer_out" placeholder="请选择" @change="setLocalStorage" v-else>
-							<el-option label="是" :value="1"></el-option>
-							<el-option label="否" :value="0"></el-option>
+						<el-select v-model="info.is_transfer_out" clearable filterable placeholder="请选择是否转出" @change="setLocalStorage" v-else>
+							<el-option v-for="item in is_transfer_out_list" :key="item" :label="item" :value="item">
+							</el-option>
 						</el-select>
 					</el-form-item>
 					<el-form-item label="合同PDF：">
@@ -180,13 +180,7 @@
 				domain:"",
 				company_name:"",							//公司名称
 				company_alias:"",							//公司简称
-				main_body_type:[{
-					value:1,
-					label:'授权主体'
-				},{
-					value:2,
-					label:'合同主体'
-				}],											//主体类型列表
+				main_body_type:[],							//主体类型列表
 				main_body_type_id:"",						//选中的主体类型
 				admin_list:[],								//管理员列表
 				user_list:[],								//用户列表
@@ -202,22 +196,9 @@
 				dialog:false,								//添加/编辑/详情弹窗
 				dialog_type:'',								//弹窗类型
 				dialog_title:'',							//弹窗标题
-				contract_terms_list:[{
-					label:"保证金",
-					value:1
-				},{
-					label:"开店费",
-					value:2
-				},{
-					label:"授权费",
-					value:3
-				},{
-					label:"品牌管理费",
-					value:4
-				},{
-					label:"店铺数量",
-					value:5
-				}],											//合同条款列表
+				contract_terms_list:[],						//合同条款列表
+				is_transfer_out_list:[],					//是否转出列表
+				operator_gender_list:[],					//经营人性别列表
 				company_id:"",								//点击的公司
 				detail_data:{},
 				info:{
@@ -250,6 +231,8 @@
 			}
 		},
 		created(){
+			//获取所有下拉选项列表
+			this.ajaxParams();
 			//获取管理员列表
 			this.ajaxCompanyAdmin();
 			//获取用户列表
@@ -258,6 +241,20 @@
 			this.getData();
 		},
 		methods:{
+			//获取所有下拉选项列表
+			ajaxParams(){
+				operationResource.ajaxParams().then(res => {
+					if(res.data.code == 1){
+						let data = res.data.data;
+						this.main_body_type = data.main_body_type;
+						this.contract_terms_list = data.contract_terms;
+						this.is_transfer_out_list = data.is_transfer_out;
+						this.operator_gender_list = data.operator_gender;
+					}else{
+						this.$message.warning(res.data.msg);
+					}
+				})
+			},
 			//获取管理员列表
 			ajaxCompanyAdmin(){
 				operationResource.ajaxCompanyAdmin().then(res => {
@@ -380,19 +377,10 @@
 						if(res.data.code == 1){
 							let data = res.data.data;
 							for(let info_k in this.info){
-								for(let data_k in data){
-									if(info_k == data_k){
-										if(info_k == 'main_body_type' || info_k == 'is_transfer_out' || info_k == 'operator_gender' || info_k == 'contract_terms'){
-											this.info[info_k] = data[data_k] === 0?'':data[data_k];
-										}else{
-											this.info[info_k] = data[data_k];
-										}
-										
-									}
-								}
+								this.info[info_k] = data[info_k];
 							}
+							this.id_card = [];
 							if(data.id_card_url){
-								this.id_card = [];
 								data.id_card_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -402,8 +390,8 @@
 									this.id_card.push(image_obj);
 								})
 							}
+							this.business_license = [];
 							if(data.business_license_url){
-								this.business_license = [];
 								data.business_license_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -425,15 +413,10 @@
 							let data = res.data.data;
 							this.detail_data = data;
 							for(let info_k in this.info){
-								for(let data_k in data){
-									if(info_k == data_k){
-										this.info[info_k] = data[data_k]
-									}
-								}
+								this.info[info_k] = data[info_k]
 							}
-
+							this.id_card = [];
 							if(data.id_card_url){
-								this.id_card = [];
 								data.id_card_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -443,8 +426,8 @@
 									this.id_card.push(image_obj);
 								})
 							}
+							this.business_license = [];
 							if(data.business_license_url){
-								this.business_license = [];
 								data.business_license_url.split(',').map(image_item => {
 									let image_obj = {
 										domain:this.domain,
@@ -546,9 +529,10 @@
 			//弹窗底部保存
 			commitAduit(){
 				let arg = JSON.parse(JSON.stringify(this.info));
-				// if(arg.company_alias == ''){
-				// 	this.$message.warning('请输入主体简称!')
-				// }else if(arg.legal_person == ''){
+				if(arg.company_alias == ''){
+					this.$message.warning('请输入主体简称!')
+				// }
+				// else if(arg.legal_person == ''){
 				// 	this.$message.warning('请输入法人!')
 				// }else if(arg.original_belong == ''){
 				// 	this.$message.warning('请输入主体原归属!')
@@ -574,9 +558,10 @@
 				// 	this.$message.warning('请输入主体现归属!')
 				// }else if(this.id_card.length == 0){
 				// 	this.$message.warning('至少上传一张身份证照片!')
-				// }else if(arg.company_name == ''){
-				// 	this.$message.warning('请输入公司全称!')
-				// }else if(arg.register_address == ''){
+				}else if(arg.company_name == ''){
+					this.$message.warning('请输入公司全称!')
+				// }
+				// else if(arg.register_address == ''){
 				// 	this.$message.warning('请输入注册地址!')
 				// }else if(arg.operator_id_card == ''){
 				// 	this.$message.warning('请输入经营人身份证!')
@@ -586,11 +571,7 @@
 				// 	this.$message.warning('请上传合同PDF!')
 				// }else if(arg.new_apply == ''){
 				// 	this.$message.warning('请输入新客申请!')
-				// }else{
-				arg.main_body_type = arg.main_body_type === ''?0:arg.main_body_type;
-				arg.is_transfer_out = arg.is_transfer_out === ''?0:arg.is_transfer_out;
-				arg.operator_gender = arg.operator_gender === ''?0:arg.operator_gender;
-				arg.contract_terms = arg.contract_terms === ''?0:arg.contract_terms;
+				}else{
 					if(this.dialog_type == 'add'){		//添加
 						operationResource.mainBodyAdd(arg).then(res => {
 							if(res.data.code == 1){
@@ -618,7 +599,7 @@
 							}
 						})
 					}
-				// }
+				}
 				},
 			//导出
 				exportFn(){
@@ -654,7 +635,7 @@
 				},
 			//详情pdf预览
 				openPdf(value){
-					if(row_field_name == 'contract_url' && value != ''){
+					if(value != ''){
 						window.open(this.domain + value)
 					}
 				}
