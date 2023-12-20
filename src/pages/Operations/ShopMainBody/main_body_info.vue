@@ -13,12 +13,12 @@
 					</el-option>
 				</el-select>
 			</el-form-item>
-			<el-form-item label="管理员：">
+			<!-- <el-form-item label="管理员：">
 				<el-select v-model="user_ids" clearable multiple filterable reserve-keyword placeholder="请选择管理员" collapse-tags>
 					<el-option v-for="item in admin_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
 					</el-option>
 				</el-select>
-			</el-form-item>
+			</el-form-item> -->
 			<el-form-item>
 				<el-button type="primary" size="mini" @click="handlePageChange(1)">搜索</el-button>
 			</el-form-item>
@@ -184,7 +184,7 @@
 				main_body_type_id:"",						//选中的主体类型
 				admin_list:[],								//管理员列表
 				user_list:[],								//用户列表
-				user_ids:[],								//选中的用户列表
+				// user_ids:[],								//选中的用户列表
 				page:1,
 				pagesize:10,
 				sort:"",									//排序
@@ -320,7 +320,7 @@
 					company_name:this.company_name,
 					company_alias:this.company_alias,
 					main_body_type:this.main_body_type_id,
-					company_admin_id:this.user_ids.join(','),
+					// company_admin_id:this.user_ids.join(','),
 					page:this.page,
 					pagesize:this.pagesize,
 					sort:this.sort
@@ -612,7 +612,7 @@
 							company_name:this.company_name,
 							company_alias:this.company_alias,
 							main_body_type:this.main_body_type_id,
-							company_admin_id:this.user_ids.join(','),
+							// company_admin_id:this.user_ids.join(','),
 							sort:this.sort
 						}
 						operationResource.mainBodyInfoExport(arg).then(res => {

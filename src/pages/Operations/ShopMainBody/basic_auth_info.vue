@@ -4,12 +4,12 @@
             <el-form-item label="店铺：">
                 <el-input v-model="shop_name" placeholder="开店名称/授权名称"></el-input>
             </el-form-item>
-            <el-form-item label="管理员：">
+            <!-- <el-form-item label="管理员：">
                 <el-select v-model="user_ids" clearable multiple filterable reserve-keyword placeholder="请选择管理员" collapse-tags>
                     <el-option v-for="item in admin_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
                     </el-option>
                 </el-select>
-            </el-form-item>
+            </el-form-item> -->
             <el-form-item label="授权类型：">
                 <el-select v-model="auth_type_id" clearable placeholder="请选择授权类型">
                     <el-option v-for="item in auth_type_list" :key="item" :label="item" :value="item">
@@ -393,7 +393,7 @@
                 auth_type_id:"",                            //选中的授权类型
                 admin_list:[],                              //管理员列表
                 user_list:[],                               //用户列表
-                user_ids:[],                                //选中的管理员列表
+                // user_ids:[],                                //选中的管理员列表
                 company_list:[],                            //客户列表
                 company_ids:[],                             //选中的客户列表
                 shop_status_list:[],                        //开店状态列表
@@ -555,7 +555,7 @@
             //获取数据
             getData(){
                 let arg = {
-                    shop_admin_id:this.user_ids.join(','),
+                    // shop_admin_id:this.user_ids.join(','),
                     company_id:this.company_ids.join(','),
                     shop_name:this.shop_name,
                     shop_status:this.shop_status_ids.join(','),
@@ -832,7 +832,7 @@
                     type: 'warning'
                 }).then(() => {
                     let arg = {
-                        shop_admin_id:this.user_ids.join(','),
+                        // shop_admin_id:this.user_ids.join(','),
                         company_id:this.company_ids.join(','),
                         shop_name:this.shop_name,
                         shop_status:this.shop_status_ids.join(','),
