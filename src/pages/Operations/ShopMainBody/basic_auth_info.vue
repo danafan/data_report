@@ -95,12 +95,8 @@
                         <div v-if="dialog_type == 'detail'">{{info.shop_name}}</div>
                         <el-input v-model="info.shop_name" placeholder="请输入开店名称" @change="setLocalStorage" v-else></el-input>
                     </el-form-item>
-                    <el-form-item label="号码保管人：">
-                        <div v-if="dialog_type == 'detail'">{{info.tel_custodian}}</div>
-                        <el-select v-model="info.tel_custodian" clearable filterable placeholder="请选择号码保管人" @change="setLocalStorage" v-else>
-                            <el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
-                            </el-option>
-                        </el-select>
+                    <el-form-item label="名称一致：" v-if="dialog_type == 'detail'">
+                        <div>{{detail_data.is_same}}</div>
                     </el-form-item>
                     <el-form-item label="店铺分销：">
                         <div v-if="dialog_type == 'detail'">{{info.store_distribution}}</div>
@@ -126,6 +122,13 @@
                         </el-option>
                     </el-select>
                 </el-form-item>
+                <el-form-item label="号码保管人：">
+                        <div v-if="dialog_type == 'detail'">{{info.tel_custodian}}</div>
+                        <el-select v-model="info.tel_custodian" clearable filterable placeholder="请选择号码保管人" @change="setLocalStorage" v-else>
+                            <el-option v-for="item in user_list" :key="item.ding_user_id" :label="item.ding_user_name" :value="item.ding_user_id">
+                            </el-option>
+                        </el-select>
+                    </el-form-item>
                 <el-form-item label="开店状态：" required>
                     <div v-if="dialog_type == 'detail'">{{info.shop_status}}</div>
                     <el-select v-model="info.shop_status" clearable placeholder="请选择开店情况" @change="setLocalStorage" v-else>

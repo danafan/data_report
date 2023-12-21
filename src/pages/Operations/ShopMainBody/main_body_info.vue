@@ -52,9 +52,8 @@
 						<div v-if="dialog_type == 'detail'">{{info.legal_person}}</div>
 						<el-input v-model="info.legal_person" placeholder="请输入经营人" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="主体原归属：">
-						<div v-if="dialog_type == 'detail'">{{info.original_belong}}</div>
-						<el-input v-model="info.original_belong" placeholder="请输入主体原归属" @change="setLocalStorage" v-else></el-input>
+					<el-form-item label="开店数量：" v-if="dialog_type == 'detail'">
+						<div>{{detail_data.num}}</div>
 					</el-form-item>
 					<el-form-item label="联系地址：">
 						<div v-if="dialog_type == 'detail'">{{info.contacts_address}}</div>
@@ -91,6 +90,10 @@
 						<div v-if="dialog_type == 'detail'">{{info.operator_tel}}</div>
 						<el-input type="number" v-model="info.operator_tel" placeholder="请输入经营人电话" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
+					<el-form-item label="主体原归属：">
+						<div v-if="dialog_type == 'detail'">{{info.original_belong}}</div>
+						<el-input v-model="info.original_belong" placeholder="请输入主体原归属" @change="setLocalStorage" v-else></el-input>
+					</el-form-item>
 					<el-form-item label="经营人性别：">
 						<div v-if="dialog_type == 'detail'">{{info.operator_gender}}</div>
 						<el-select v-model="info.operator_gender" clearable filterable placeholder="请选择经营人性别" @change="setLocalStorage" v-else>
@@ -115,9 +118,9 @@
 						<div v-if="dialog_type == 'detail'">{{info.company_name}}</div>
 						<el-input v-model="info.company_name" placeholder="请输入主体全称" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
-					<el-form-item label="注册地址：">
+					<el-form-item label="主体注册地址：">
 						<div v-if="dialog_type == 'detail'">{{info.register_address}}</div>
-						<el-input type="textarea" :rows="2" v-model="info.register_address" placeholder="请输入注册地址：" @change="setLocalStorage" v-else></el-input>
+						<el-input type="textarea" :rows="2" v-model="info.register_address" placeholder="请输入主体注册地址：" @change="setLocalStorage" v-else></el-input>
 					</el-form-item>
 					<el-form-item label="经营人身份证：">
 						<div v-if="dialog_type == 'detail'">{{info.operator_id_card}}</div>
