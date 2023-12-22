@@ -169,7 +169,7 @@
 			</div>
 		</el-dialog>
 		<!-- 自定义列表 -->
-		<el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
+		<el-dialog title="（单击取消列表名保存直接修改）" @close="selected_ids = data_selected_ids" :visible.sync="show_custom">
 			<div class="select_box">
 				<el-checkbox-group v-model="selected_ids">
 					<el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
@@ -511,8 +511,8 @@
 					let mainBodyInfo = localStorage.getItem('mainBodyInfo');
 					if(mainBodyInfo){
 						this.info = JSON.parse(mainBodyInfo);
+						this.id_card = [];
 						if(this.info.id_card_url){
-							this.id_card = [];
 							this.info.id_card_url.split(',').map(image_item => {
 								let image_obj = {
 									domain:this.domain,
@@ -522,8 +522,8 @@
 								this.id_card.push(image_obj);
 							})
 						}
+						this.business_license = [];
 						if(this.info.business_license_url){
-							this.business_license = [];
 							this.info.business_license_url.split(',').map(image_item => {
 								let image_obj = {
 									domain:this.domain,
@@ -542,10 +542,13 @@
 			},
 			//判断详情是否展示字段
 			filterShow(field_name){
-				let field_arr = this.title_list.filter(item => {
-					return item.row_field_name == field_name;
-				})
-				return field_arr.length > 0 || this.dialog_type == 'add' || this.dialog_type == 'edit';
+				if(this.dialog){
+					if(this.dialog_type == 'detail'){
+						return (field_name in this.detail_data)
+					}else{
+						return true
+					}
+				}
 			},
 			//设置添加信息缓存
 			setLocalStorage(){
@@ -578,6 +581,7 @@
 					contacts_address:"",
 					contract_terms:"",
 					company_admin_id:"",
+					brand_id:"",
 					business_license_number:"",
 					operator_tel:"",
 					operator_gender:"",
@@ -592,10 +596,10 @@
 					new_apply:"",
 					business_license_url:"",
 					id_card_url:"",
-					contract_url:"",							
+					contract_url:"",								
 				}
 				this.business_license = [];						//营业执照
-				this.id_card = [];									//身份证
+				this.id_card = [];								//身份证
 			},
 			//弹窗底部保存
 			commitAduit(){

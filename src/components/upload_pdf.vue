@@ -27,7 +27,7 @@
 		}
 	}
 	.custom_tag{
-		max-width: 218px;
+		max-width: 167.5px;
 		display: flex;
 		align-items: center;
 		cursor: pointer;

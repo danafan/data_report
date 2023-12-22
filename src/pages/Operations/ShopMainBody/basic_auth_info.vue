@@ -272,7 +272,7 @@
                     </template>
                 </el-table-column>
                 <el-table-column prop="company_alias" width="160" show-overflow-tooltip label="主体简称" align="center">
-                 <template slot-scope="scope">
+                   <template slot-scope="scope">
                     <div>{{scope.row.old_info.company_alias}}</div>
                     <div class="divider"></div>
                     <div>{{scope.row.new_info.company_alias}}</div>
@@ -363,7 +363,7 @@
         </div>
     </el-dialog>
     <!-- 自定义列表 -->
-    <el-dialog title="（单击取消列表名保存直接修改）" :visible.sync="show_custom">
+    <el-dialog title="（单击取消列表名保存直接修改）" @close="selected_ids = data_selected_ids" :visible.sync="show_custom">
         <div class="select_box">
             <el-checkbox-group v-model="selected_ids">
                 <el-checkbox style="width:28%;margin-bottom: 15px" :label="item.row_id" :key="item.row_id" v-for="item in view_row">{{item.row_name}}</el-checkbox>
@@ -727,10 +727,13 @@
             },
             //判断详情是否展示字段
             filterShow(field_name){
-                let field_arr = this.title_list.filter(item => {
-                    return item.row_field_name == field_name;
-                })
-                return field_arr.length > 0 || this.dialog_type == 'add' || this.dialog_type == 'edit';
+                if(this.dialog){
+                    if(this.dialog_type == 'detail'){
+                        return (field_name in this.detail_data)
+                    }else{
+                        return true
+                    }
+                }
             },
             //设置添加信息缓存
             setLocalStorage(){
