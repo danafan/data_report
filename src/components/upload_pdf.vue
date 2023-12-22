@@ -27,6 +27,7 @@
 		}
 	}
 	.custom_tag{
+		max-width: 218px;
 		display: flex;
 		align-items: center;
 		cursor: pointer;

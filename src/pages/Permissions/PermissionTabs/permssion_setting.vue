@@ -24,6 +24,7 @@
 				</template>
 			</el-table-column>
 			<el-table-column prop="data_role_name" label="数据权限" align="center"></el-table-column>
+			<el-table-column prop="brand_name" label="品牌" align="center"></el-table-column>
 			<el-table-column label="操作" align="center">
 				<template slot-scope="scope">
 					<el-button type="text" size="small" @click="settingFun('2',scope.row.user_id)" v-if="dataObj.button_list.setting == '1' && scope.row.is_self == '0'">设置</el-button>
@@ -47,14 +48,20 @@
 	<el-dialog title="设置" width="30%" :visible.sync="show_setting">
 		<el-form>
 			<el-form-item label="访问权限：">
-				<el-select v-model="menu_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
+				<el-select v-model="menu_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="请选择">
 					<el-option v-for="item in menu_list" :key="item.menu_role_id" :label="item.menu_role_name" :value="item.menu_role_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
 			<el-form-item label="数据权限">
-				<el-select v-model="data_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="全部">
+				<el-select v-model="data_role_ids" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="请选择">
 					<el-option v-for="item in data_list" :key="item.data_role_id" :label="item.data_role_name" :value="item.data_role_id">
+					</el-option>
+				</el-select>
+			</el-form-item>
+			<el-form-item label="分销品牌">
+				<el-select v-model="brand_id" clearable :popper-append-to-body="false" multiple filterable collapse-tags reserve-keyword placeholder="请选择">
+					<el-option v-for="item in brand_list" :key="item.brand_id" :label="item.brand_name" :value="item.brand_id">
 					</el-option>
 				</el-select>
 			</el-form-item>
@@ -90,6 +97,10 @@
 			<div class="item_val">{{user_detail.data_role_name}}</div>
 		</div>
 		<div class="detail_item">
+			<div class="item_label">分销品牌：</div>
+			<div class="item_val">{{user_detail.brand_name}}</div>
+		</div>
+		<div class="detail_item">
 			<div class="item_label">所属部门：</div>
 			<div class="item_val">{{user_detail.dept_name}}</div>
 		</div>
@@ -121,6 +132,7 @@
 </style>
 <script>
 	import resource from '../../../api/resource.js'
+	import operationResource from '../../../api/operationResource.js'
 	export default{
 		data(){
 			return{
@@ -138,10 +150,13 @@
 				data_list:[],			//数据权限
 				menu_role_ids:[],
 				data_role_ids:[],
+				brand_list:[],			//品牌列表
+				brand_id:[],			//选中的品牌列表
 				setting_req:{
 					user_id:"",
 					menu_role_id:"",
 					data_role_id:"",
+					brand_id:"",
 					status:'0'
 				},						//设置数据
 				show_detail:false,		//成员详情
@@ -203,6 +218,7 @@
 				resource.userSetGet(setReq).then(res => {
 					if(res.data.code == 1){
 						this.show_setting = true;
+						this.brand_list = res.data.data.brand_list;
 						if(type == '1'){		//批量设置
 							this.setting_req = {
 								data_role_id: 0,
@@ -210,9 +226,11 @@
 							};
 							this.menu_role_ids = [0];
 							this.data_role_ids = [0];
+							this.brand_id = [];
 						}else{					//单个设置
 							this.menu_role_ids = res.data.data.info.menu_role_id;
 							this.data_role_ids = res.data.data.info.data_role_id;
+							this.brand_id = res.data.data.info.brand_id.length == 1 && res.data.data.info.brand_id[0] == 0?[]:res.data.data.info.brand_id;
 							this.setting_req = res.data.data.info;
 						}
 						this.setting_req.user_id = setReq.user_id;
@@ -239,6 +257,7 @@
 			submitSetting(){
 				this.setting_req.menu_role_id = this.menu_role_ids.join(',');
 				this.setting_req.data_role_id = this.data_role_ids.join(',');
+				this.setting_req.brand_id = this.brand_id.join(',');
 				resource.userSetPost(this.setting_req).then(res => {
 					if(res.data.code == 1){
 						this.show_setting = false;
