@@ -316,6 +316,12 @@
 			addFn(){
 				this.dialog_type = '1';
 				this.showDialog = true;
+				//获取店铺列表
+				this.gsViolationSearch('shop_name');
+				//获取公司列表
+				this.gsViolationSearch('company');
+				//获取违规类型列表
+				this.gsViolationSearch('type');
 			},
 			//点击编辑
 			editFn(id){
@@ -326,7 +332,6 @@
 							this.info[k] = data[k];
 						}
 						this.id = data.id;
-
 						if(data.image){
 							data.image.split(',').map(image_item => {
 								let image_obj = {
@@ -337,7 +342,6 @@
 								this.current_images.push(image_obj);
 							})
 						}
-
 						if(data.handle_voucher){
 							data.handle_voucher.split(',').map(voucher_item => {
 								let voucher_obj = {
@@ -350,6 +354,12 @@
 						}
 						this.dialog_type = '2';
 						this.showDialog = true;
+						//获取店铺列表
+						this.gsViolationSearch('shop_name');
+						//获取公司列表
+						this.gsViolationSearch('company');
+						//获取违规类型列表
+						this.gsViolationSearch('type');
 					}else{
 						this.$message.warning(res.data.msg);
 					}
