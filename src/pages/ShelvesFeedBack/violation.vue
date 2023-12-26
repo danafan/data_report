@@ -29,11 +29,11 @@
 			</el-date-picker>
 		</el-form-item>
 		<el-form-item label="处理进度：">
-				<el-select v-model="handle_status" clearable placeholder="全部">
-					<el-option v-for="item in handle_list" :key="item.id" :label="item.name" :value="item.id">
-					</el-option>
-				</el-select>
-			</el-form-item>
+			<el-select v-model="handle_status" clearable placeholder="全部">
+				<el-option v-for="item in handle_list" :key="item.id" :label="item.name" :value="item.id">
+				</el-option>
+			</el-select>
+		</el-form-item>
 		<el-form-item>
 			<el-button type="primary" size="small" @click="searchFn">搜索</el-button>
 		</el-form-item>
@@ -52,16 +52,22 @@
 	<el-dialog :title="`${dialog_type == '1'?'添加':'编辑'}违规店铺`" @close="closeDialog" width="45%" :visible.sync="showDialog">
 		<el-form size="small" label-width="100px">
 			<el-form-item label="店铺名称：" required>
-				<el-input v-model="info.shop_name" style="width: 192px" placeholder="店铺名称"></el-input>
+				<el-select v-model="info.shop_name" filterable allow-create default-first-option placeholder="请选择店铺名称">
+					<el-option v-for="item in shop_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item label="公司名称：" required>
-				<el-input v-model="info.company" style="width: 192px" placeholder="公司名称"></el-input>
+				<el-select v-model="info.company" filterable allow-create default-first-option placeholder="请选择公司">
+					<el-option v-for="item in company_list" :key="item" :label="item" :value="item">
+					</el-option>
+				</el-select>
 			</el-form-item>
 			<el-form-item label="订单编号：" required>
 				<el-input v-model="info.order_no" style="width: 192px" placeholder="订单编号"></el-input>
 			</el-form-item>
 			<el-form-item label="类型：" required>
-				<el-select v-model="info.type" clearable placeholder="请选择类型">
+				<el-select v-model="info.type" filterable allow-create default-first-option placeholder="请选择类型">
 					<el-option v-for="item in type_list" :key="item" :label="item" :value="item">
 					</el-option>
 				</el-select>
@@ -139,6 +145,8 @@
 				order_no:"",					//订单编号
 				shop_list:[],					//店铺列表
 				shop_list_ids:[],				//选中的店铺列表
+				company_list:[],				//公司列表
+				company_ids:[],					//选中的公司列表
 				type_list:[],					//类型列表
 				type_list_ids:[],				//选中的类型列表
 				page:1,
@@ -177,6 +185,8 @@
 		created(){
 			//获取店铺列表
 			this.gsViolationSearch('shop_name');
+			//获取公司列表
+			this.gsViolationSearch('company');
 			//获取违规类型列表
 			this.gsViolationSearch('type');
 			//获取列表
@@ -189,6 +199,8 @@
 					if(res.data.code == 1){
 						if(type == 'shop_name'){	//店铺列表
 							this.shop_list = res.data.data;
+						}else if(type == 'company'){				//公司
+							this.company_list = res.data.data;
 						}else{						//违规类型
 							this.type_list = res.data.data;
 						}
