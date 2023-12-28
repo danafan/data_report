@@ -447,6 +447,42 @@
 							if(item.row_field_name == 'lsgzfk'){
 								item.type = '96';
 							}
+							if(item.row_field_name == 'xlqk'){
+								item['color'] = '#97A1AB';
+								item.list.map(i => {
+									i['color'] = '#97A1AB';
+								})
+							}
+							if(item.row_field_name == 'cgsl'){
+								item['color'] = '#DCECD0';
+								item.list.map(i => {
+									i['color'] = '#DCECD0';
+								})
+							}
+							if(item.row_field_name == 'dhs'){
+								item['color'] = '#FDF0BF';
+								item.list.map(i => {
+									i['color'] = '#FDF0BF';
+								})
+							}
+							if(item.row_field_name == 'dhl'){
+								item['color'] = '#FADECB';
+								item.list.map(i => {
+									i['color'] = '#FADECB';
+								})
+							}
+							if(item.row_field_name == 'gys_dhl'){
+								item['color'] = '#B0C4DE';
+								item.list.map(i => {
+									i['color'] = '#B0C4DE';
+								})
+							}
+							if(item.row_field_name == 'qhghqk'){
+								item['color'] = '#E1FFFF';
+								item.list.map(i => {
+									i['color'] = '#E1FFFF';
+								})
+							}
 						})
 
 						this.title_list = title_list;
