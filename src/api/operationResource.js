@@ -83,349 +83,359 @@ let path = {
 	importCompany:'company_main_body/import_company',			//导入公司主体资料
 	importShop:'company_main_body/import_shop',					//导入店铺基础资料
 	ajaxParams:'company_main_body/ajax_params',				//获取所有下拉选项列表
-}						
-export default{
+	supplierManagerStock:'supplier/stock',        			//库存信息（分仓）列表
+	supplierStockExport:'supplier/stock_export',			//库存信息（分仓）列表导出
+  }							
+  export default{
 	//获取款式编码
-	ksbmList(params){
-		return http.get(path.ksbmList, params)
-	},
+  	ksbmList(params){
+  		return http.get(path.ksbmList, params)
+  	},
 	//获取上新数据列表
-	newOnshelfList(params){
-		return http.get(path.newOnshelfList, params)
-	},
+  	newOnshelfList(params){
+  		return http.get(path.newOnshelfList, params)
+  	},
 	//上新数据导出
-	newOnshelfExport(params){
-		return http.post(path.newOnshelfExport, params)
-	},
+  	newOnshelfExport(params){
+  		return http.post(path.newOnshelfExport, params)
+  	},
 	//款式销量（发货）接口
-	operateFhSale(params){
-		return http.get(path.operateFhSale, params)
-	},
+  	operateFhSale(params){
+  		return http.get(path.operateFhSale, params)
+  	},
 	//款式销量（发货）数据导出接口
-	fhSaleExport(params){
-		return http.post(path.fhSaleExport, params)
-	},
+  	fhSaleExport(params){
+  		return http.post(path.fhSaleExport, params)
+  	},
 	//款式销量（付款）接口
-	operateFkSale(params){
-		return http.get(path.operateFkSale, params)
-	},
+  	operateFkSale(params){
+  		return http.get(path.operateFkSale, params)
+  	},
 	//款式销量（付款）数据导出接口
-	fkSaleExport(params){
-		return http.post(path.fkSaleExport, params)
-	},
+  	fkSaleExport(params){
+  		return http.post(path.fkSaleExport, params)
+  	},
 	//数据分析/销售分析表格
-	saleAnalysisTable(params){
-		return http.get(path.saleAnalysisTable, params)
-	},
+  	saleAnalysisTable(params){
+  		return http.get(path.saleAnalysisTable, params)
+  	},
 	//数据分析/销售分析图表
-	saleAnalysisChart(params){
-		return http.get(path.saleAnalysisChart, params)
-	},
+  	saleAnalysisChart(params){
+  		return http.get(path.saleAnalysisChart, params)
+  	},
 	//数据分析/数据统计
-	dataStatistics(params){
-		return http.get(path.dataStatistics, params)
-	},
+  	dataStatistics(params){
+  		return http.get(path.dataStatistics, params)
+  	},
 	//收入分析
-	incomeAnalysisDelivery(params){
-		return http.get(path.incomeAnalysisDelivery, params)
-	},
+  	incomeAnalysisDelivery(params){
+  		return http.get(path.incomeAnalysisDelivery, params)
+  	},
 	//供应商销量
-	getGysSalenum(params){
-		return http.get(path.getGysSalenum, params)
-	},
+  	getGysSalenum(params){
+  		return http.get(path.getGysSalenum, params)
+  	},
 	//供应商销量排行导出
-	gysSalenumExport(params){
-		return http.post(path.gysSalenumExport, params)
-	},
+  	gysSalenumExport(params){
+  		return http.post(path.gysSalenumExport, params)
+  	},
 	//款式销量排行
-	getKsSalenum(params){
-		return http.get(path.getKsSalenum, params)
-	},
+  	getKsSalenum(params){
+  		return http.get(path.getKsSalenum, params)
+  	},
 	//款式销量排行导出
-	ksSalenumExport(params){
-		return http.post(path.ksSalenumExport, params)
-	},
+  	ksSalenumExport(params){
+  		return http.post(path.ksSalenumExport, params)
+  	},
 	//款式缺货排行
-	getKsOutstock(params){
-		return http.get(path.getKsOutstock, params)
-	},
+  	getKsOutstock(params){
+  		return http.get(path.getKsOutstock, params)
+  	},
 	//款式缺货排行导出
-	ksOutstockExport(params){
-		return http.post(path.ksOutstockExport, params)
-	},
+  	ksOutstockExport(params){
+  		return http.post(path.ksOutstockExport, params)
+  	},
 	//查询条件列表
-	selectType(params){
-		return http.get(path.selectType, params)
-	},
+  	selectType(params){
+  		return http.get(path.selectType, params)
+  	},
 	//商品品类列表
-	operateIndex(params){
-		return http.get(path.operateIndex, params)
-	},
+  	operateIndex(params){
+  		return http.get(path.operateIndex, params)
+  	},
 	//商品品类编辑
-	operateEdit(params){
-		return http.post(path.operateEdit, params)
-	},
+  	operateEdit(params){
+  		return http.post(path.operateEdit, params)
+  	},
 	//商品品类列表导出
-	operateExport(params){
-		return http.get(path.operateExport, params)
-	},
+  	operateExport(params){
+  		return http.get(path.operateExport, params)
+  	},
 	//月度日均单数
-	monthlyDailyNumber(params){
-		return http.get(path.monthlyDailyNumber, params)
-	},
+  	monthlyDailyNumber(params){
+  		return http.get(path.monthlyDailyNumber, params)
+  	},
 	//订单分析-图表
-	jstOrderAnalyse(params){
-		return http.get(path.jstOrderAnalyse, params)
-	},
+  	jstOrderAnalyse(params){
+  		return http.get(path.jstOrderAnalyse, params)
+  	},
 	//店铺昨日订单数
-	orderYesterday(params){
-		return http.get(path.orderYesterday, params)
-	},
+  	orderYesterday(params){
+  		return http.get(path.orderYesterday, params)
+  	},
 	//毛利分析--头部汇总数据列表
-	mlAnalysisTop(params){
-		return http.get(path.mlAnalysisTop, params)
-	},
+  	mlAnalysisTop(params){
+  		return http.get(path.mlAnalysisTop, params)
+  	},
 	//毛利分析--店铺分组数据列表
-	mlStore(params){
-		return http.get(path.mlStore, params)
-	},
+  	mlStore(params){
+  		return http.get(path.mlStore, params)
+  	},
 	//毛利分析--品类分组数据列表
-	mlCpfl(params){
-		return http.get(path.mlCpfl, params)
-	},
+  	mlCpfl(params){
+  		return http.get(path.mlCpfl, params)
+  	},
 	//毛利分析--店铺品类分组数据列表
-	mlStoreCpfl(params){
-		return http.get(path.mlStoreCpfl, params)
-	},
+  	mlStoreCpfl(params){
+  		return http.get(path.mlStoreCpfl, params)
+  	},
 	//毛利分析--款式分组数据列表
-	mlKs(params){
-		return http.get(path.mlKs, params)
-	},
+  	mlKs(params){
+  		return http.get(path.mlKs, params)
+  	},
 	//毛利分析--供应商分组数据列表
-	mlGys(params){
-		return http.get(path.mlGys, params)
-	},
+  	mlGys(params){
+  		return http.get(path.mlGys, params)
+  	},
 	//毛利分析--颜色分组数据列表
-	mlColor(params){
-		return http.get(path.mlColor, params)
-	},
+  	mlColor(params){
+  		return http.get(path.mlColor, params)
+  	},
 	//毛利分析--颜色分组数据列表
-	mlSize(params){
-		return http.get(path.mlSize, params)
-	},
+  	mlSize(params){
+  		return http.get(path.mlSize, params)
+  	},
 	//毛利分析导出
-	mlExport(params){
-		return http.post(path.mlExport, params)
-	},
+  	mlExport(params){
+  		return http.post(path.mlExport, params)
+  	},
 	// 部门、平台GMV详情
-	deptPlatformGmvList(params){
-		return http.get(path.deptPlatformGmvList, params)
-	},
+  	deptPlatformGmvList(params){
+  		return http.get(path.deptPlatformGmvList, params)
+  	},
 	//品类GMV详情
-	cpflGmvList(params){
-		return http.get(path.cpflGmvList, params)
-	},
+  	cpflGmvList(params){
+  		return http.get(path.cpflGmvList, params)
+  	},
 	//店铺商品明细
-	goodsDetails(params){
-		return http.get(path.goodsDetails, params)
-	},
+  	goodsDetails(params){
+  		return http.get(path.goodsDetails, params)
+  	},
 	//库存占比
-	stockRate(params){
-		return http.get(path.stockRate, params)
-	},
+  	stockRate(params){
+  		return http.get(path.stockRate, params)
+  	},
 	//供应商库存分析检索列表
-	stockSelect(params){
-		return http.get(path.stockSelect, params)
-	},
+  	stockSelect(params){
+  		return http.get(path.stockSelect, params)
+  	},
 	//明细表
-	stockDetail(params){
-		return http.get(path.stockDetail, params)
-	},
+  	stockDetail(params){
+  		return http.get(path.stockDetail, params)
+  	},
 	//明细导出
-	exportDetail(params){
-		return http.get(path.exportDetail, params)
-	},
+  	exportDetail(params){
+  		return http.get(path.exportDetail, params)
+  	},
 	//编辑明细
-	stockEdit(params){
-		return http.post(path.stockEdit, params)
-	},
+  	stockEdit(params){
+  		return http.post(path.stockEdit, params)
+  	},
 	//库存分布情况图表
-	distriBution(params){
-		return http.get(path.distriBution, params)
-	},
+  	distriBution(params){
+  		return http.get(path.distriBution, params)
+  	},
 	//退货率图表
-	thlChart(params){
-		return http.get(path.thlChart, params)
-	},
+  	thlChart(params){
+  		return http.get(path.thlChart, params)
+  	},
 	//添加账号
-	accountAdd(params){
-		return http.post(path.accountAdd, params)
-	},
+  	accountAdd(params){
+  		return http.post(path.accountAdd, params)
+  	},
 	//查看账号列表
-	accountList(params){
-		return http.get(path.accountList, params)
-	},
+  	accountList(params){
+  		return http.get(path.accountList, params)
+  	},
 	//删除账号
-	accountDel(params){
-		return http.post(path.accountDel, params)
-	},
+  	accountDel(params){
+  		return http.post(path.accountDel, params)
+  	},
 	//使用记录
-	usedRecord(params){
-		return http.get(path.usedRecord, params)
-	},
+  	usedRecord(params){
+  		return http.get(path.usedRecord, params)
+  	},
 	//登录统计
-	loginLog(params){
-		return http.get(path.loginLog, params)
-	},
+  	loginLog(params){
+  		return http.get(path.loginLog, params)
+  	},
 	//登录明细
-	loginRecord(params){
-		return http.get(path.loginRecord, params)
-	},
+  	loginRecord(params){
+  		return http.get(path.loginRecord, params)
+  	},
 	//获取账号默认密码
-	getDefaultPassword(params){
-		return http.get(path.getDefaultPassword, params)
-	},
+  	getDefaultPassword(params){
+  		return http.get(path.getDefaultPassword, params)
+  	},
 	//公司京东抖音退款表格
-	returnBoardTable(params){
-		return http.get(path.returnBoardTable, params)
-	},
+  	returnBoardTable(params){
+  		return http.get(path.returnBoardTable, params)
+  	},
 	//公司京东抖音退款表格导出
-	exportReturnBoardTable(params){
-		return http.post(path.exportReturnBoardTable, params)
-	},
+  	exportReturnBoardTable(params){
+  		return http.post(path.exportReturnBoardTable, params)
+  	},
 	//库存分析导入
-	importData(params){
-		return http.post(path.importData, params)
-	},
+  	importData(params){
+  		return http.post(path.importData, params)
+  	},
 	//拼多多项目部销售统计
-	pddDeptSales(params){
-		return http.get(path.pddDeptSales, params)
-	},
+  	pddDeptSales(params){
+  		return http.get(path.pddDeptSales, params)
+  	},
 	//店铺商品明细导出
-	goodsDetailsExport(params){
-		return http.post(path.goodsDetailsExport, params)
-	},
+  	goodsDetailsExport(params){
+  		return http.post(path.goodsDetailsExport, params)
+  	},
 	//到货率每日波动和采购数量仓库分布
-	dayDhlChart(params){
-		return http.get(path.dayDhlChart, params)
-	},
+  	dayDhlChart(params){
+  		return http.get(path.dayDhlChart, params)
+  	},
 	//档口到货统计-款式采购明细
-	ksbmPurchaseList(params){
-		return http.get(path.ksbmPurchaseList, params)
-	},
+  	ksbmPurchaseList(params){
+  		return http.get(path.ksbmPurchaseList, params)
+  	},
 	//档口到货统计-款式采购明细（导出）
-	ksbmPurchaseListExport(params){
-		return http.post(path.ksbmPurchaseListExport, params)
-	},
+  	ksbmPurchaseListExport(params){
+  		return http.post(path.ksbmPurchaseListExport, params)
+  	},
 	//档口到货统计-供应商采购明细
-	gysPurchaseList(params){
-		return http.get(path.gysPurchaseList, params)
-	},
+  	gysPurchaseList(params){
+  		return http.get(path.gysPurchaseList, params)
+  	},
 	//档口到货统计-供应商采购明细（导出）
-	gysPurchaseListExport(params){
-		return http.post(path.gysPurchaseListExport, params)
-	},
+  	gysPurchaseListExport(params){
+  		return http.post(path.gysPurchaseListExport, params)
+  	},
 	//代运营店铺数据店铺和平台列表
-	dyyShopPlatform(params){
-		return http.get(path.dyyShopPlatform, params)
-	},
+  	dyyShopPlatform(params){
+  		return http.get(path.dyyShopPlatform, params)
+  	},
 	//代运营数据列表
-	dyyShopList(params){
-		return http.get(path.dyyShopList, params)
-	},
+  	dyyShopList(params){
+  		return http.get(path.dyyShopList, params)
+  	},
 	//代运营数据导出
-	dyyShopExport(params){
-		return http.post(path.dyyShopExport, params)
-	},
+  	dyyShopExport(params){
+  		return http.post(path.dyyShopExport, params)
+  	},
 	//销售主题分析
-	salesAnalysisData(params){
-		return http.get(path.salesAnalysisData, params)
-	},
+  	salesAnalysisData(params){
+  		return http.get(path.salesAnalysisData, params)
+  	},
 	//销售主题分析导出
-	salesAnalysisExport(params){
-		return http.post(path.salesAnalysisExport, params)
-	},
+  	salesAnalysisExport(params){
+  		return http.post(path.salesAnalysisExport, params)
+  	},
 	//主体资料表
-	mainBodyInfo(params){
-		return http.get(path.mainBodyInfo, params)
-	},
+  	mainBodyInfo(params){
+  		return http.get(path.mainBodyInfo, params)
+  	},
 	//主体资料表导出
-	mainBodyInfoExport(params){
-		return http.post(path.mainBodyInfoExport, params)
-	},
+  	mainBodyInfoExport(params){
+  		return http.post(path.mainBodyInfoExport, params)
+  	},
 	//主体资料详情
-	mainBodyInfoDetail(params){
-		return http.get(path.mainBodyInfoDetail, params)
-	},
+  	mainBodyInfoDetail(params){
+  		return http.get(path.mainBodyInfoDetail, params)
+  	},
 	//添加公司主体
-	mainBodyAdd(params){
-		return http.post(path.mainBodyAdd, params)
-	},
+  	mainBodyAdd(params){
+  		return http.post(path.mainBodyAdd, params)
+  	},
 	//编辑公司主体前获取信息
-	mainBodyEditGet(params){
-		return http.get(path.mainBodyEdit, params)
-	},
+  	mainBodyEditGet(params){
+  		return http.get(path.mainBodyEdit, params)
+  	},
 	//编辑公司主体
-	mainBodyEdit(params){
-		return http.post(path.mainBodyEdit, params)
-	},
+  	mainBodyEdit(params){
+  		return http.post(path.mainBodyEdit, params)
+  	},
 	//获取客户(公司主体)列表
-	ajaxCompany(params){
-		return http.get(path.ajaxCompany, params)
-	},
+  	ajaxCompany(params){
+  		return http.get(path.ajaxCompany, params)
+  	},
 	//店铺基础授权资料列表
-	companyMainShopList(params){
-		return http.get(path.companyMainShopList, params)
-	},
+  	companyMainShopList(params){
+  		return http.get(path.companyMainShopList, params)
+  	},
 	//店铺基础授权资料列表导出
-	companyMainShopListExport(params){
-		return http.post(path.companyMainShopListExport, params)
-	},
+  	companyMainShopListExport(params){
+  		return http.post(path.companyMainShopListExport, params)
+  	},
 	//创建店铺基础授权资料
-	companyMainAddShop(params){
-		return http.post(path.companyMainAddShop, params)
-	},
+  	companyMainAddShop(params){
+  		return http.post(path.companyMainAddShop, params)
+  	},
 	//编辑店铺基础授权资料
-	companyMainEditShopGet(params){
-		return http.get(path.companyMainEditShop, params)
-	},
+  	companyMainEditShopGet(params){
+  		return http.get(path.companyMainEditShop, params)
+  	},
 	//编辑店铺基础授权资料
-	companyMainEditShop(params){
-		return http.post(path.companyMainEditShop, params)
-	},
+  	companyMainEditShop(params){
+  		return http.post(path.companyMainEditShop, params)
+  	},
 	//获取店铺基础授权资料详情
-	companyMainShopInfo(params){
-		return http.get(path.companyMainShopInfo, params)
-	},
+  	companyMainShopInfo(params){
+  		return http.get(path.companyMainShopInfo, params)
+  	},
 	//店铺主体变更记录列表
-	companyMainShopChangeList(params){
-		return http.get(path.companyMainShopChangeList, params)
-	},
+  	companyMainShopChangeList(params){
+  		return http.get(path.companyMainShopChangeList, params)
+  	},
 	//店铺主体转移
-	companyMainBodyTransfer(params){
-		return http.post(path.companyMainBodyTransfer, params)
-	},
+  	companyMainBodyTransfer(params){
+  		return http.post(path.companyMainBodyTransfer, params)
+  	},
 	//公司主体管理员列表
-	ajaxCompanyAdmin(params){
-		return http.get(path.ajaxCompanyAdmin, params)
-	},
+  	ajaxCompanyAdmin(params){
+  		return http.get(path.ajaxCompanyAdmin, params)
+  	},
 	//店铺主体资料管理员列表
-	ajaxCompanyShopAdmin(params){
-		return http.get(path.ajaxCompanyShopAdmin, params)
-	},
+  	ajaxCompanyShopAdmin(params){
+  		return http.get(path.ajaxCompanyShopAdmin, params)
+  	},
 	//导入公司主体资料
-	importCompany(params){
-		return http.post(path.importCompany, params)
-	},
+  	importCompany(params){
+  		return http.post(path.importCompany, params)
+  	},
 	//导入店铺基础资料
-	importShop(params){
-		return http.post(path.importShop, params)
-	},
+  	importShop(params){
+  		return http.post(path.importShop, params)
+  	},
 	//获取所有下拉选项列表
-	ajaxParams(params){
-		return http.get(path.ajaxParams, params)
-	},
-}
+  	ajaxParams(params){
+  		return http.get(path.ajaxParams, params)
+  	},
+	//库存信息（分仓）列表
+  	supplierManagerStock(params) {
+  		return http.get(path.supplierManagerStock, params);
+  	},
+  	//库存信息（分仓）列表导出
+  	supplierStockExport(params) {
+  		return http.post(path.supplierStockExport, params);
+  	},
+  }
 
 
 

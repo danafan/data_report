@@ -8,6 +8,7 @@
 				<InventoryAnalysis v-if="item.web_url == 'inventory_analysis'"/>
 				<UseRecord v-if="item.web_url == 'use_record'"/>
 				<ArrivalStatistics v-if="item.web_url == 'arrival_statistics'"/>
+				<InventoryInfo v-if="item.web_url == 'inventory_info'"/>
 			</el-tab-pane>
 		</el-tabs>
 	</div>
@@ -24,6 +25,7 @@
 	import InventoryAnalysis from './SupplierRanking/inventory_analysis.vue'
 	import UseRecord from './SupplierRanking/use_record.vue'
 	import ArrivalStatistics from './SupplierRanking/arrival_statistics.vue'
+	import InventoryInfo from './SupplierRanking/inventory_info.vue'
 	export default{
 		data(){
 			return{
@@ -67,7 +69,8 @@
 			StyleRankingPage,
 			InventoryAnalysis,
 			UseRecord,
-			ArrivalStatistics
+			ArrivalStatistics,
+			InventoryInfo
 		}
 	}
 </script>
