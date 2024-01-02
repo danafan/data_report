@@ -106,7 +106,7 @@
 			},
 			//仓库列表
 			getCk(){
-				demandResource.ajaxOffshelfWms().then(res => {
+				operationResource.ajaxCkwz().then(res => {
 					if(res.data.code == 1){
 						this.ck_list = res.data.data;
 					}else{

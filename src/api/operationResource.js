@@ -85,6 +85,7 @@ let path = {
 	ajaxParams:'company_main_body/ajax_params',				//获取所有下拉选项列表
 	supplierManagerStock:'supplier/stock',        			//库存信息（分仓）列表
 	supplierStockExport:'supplier/stock_export',			//库存信息（分仓）列表导出
+	ajaxCkwz:'Common/ajax_ckwz',							//获取仓库位置列表接口
   }							
   export default{
 	//获取款式编码
@@ -434,6 +435,10 @@ let path = {
   	//库存信息（分仓）列表导出
   	supplierStockExport(params) {
   		return http.post(path.supplierStockExport, params);
+  	},
+  	//获取仓库位置列表接口
+  	ajaxCkwz(params) {
+  		return http.get(path.ajaxCkwz, params);
   	},
   }
 
