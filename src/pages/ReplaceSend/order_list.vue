@@ -394,7 +394,7 @@
 					}
 					replaceSend.orderSkuExport(arg).then(res => {
 						if(res){
-							exportPost("\ufeff" + res.data,'代发订单列表');
+							exportPost("\ufeff" + res.data,'分仓订单列表');
 						}
 					})
 				}).catch(() => {

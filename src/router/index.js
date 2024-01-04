@@ -86,7 +86,7 @@ const erdept_internal = resolve=>require(['@/pages/SupplyChain/erdept_internal']
 const style_code = resolve=>require(['@/pages/SupplyChain/style_code'],resolve)
 const delist_data = resolve=>require(['@/pages/SupplyChain/delist_data'],resolve)
 const executive_standard = resolve=>require(['@/pages/SupplyChain/executive_standard'],resolve)
-//代发系统
+//分仓系统
 const replace_send = resolve=>require(['@/pages/ReplaceSend/index'],resolve)
 //人效看板
 const human_effect = resolve=>require(['@/pages/HumanEffect/human_effect'],resolve)
@@ -150,7 +150,7 @@ const router = new Router({
     { path: '/style_code',name:"商品编码", component: style_code},
     { path: '/delist_data',name:"下架款数据", component: delist_data},
     { path: '/executive_standard',name:"商品执行标准", component: executive_standard},
-    { path: '/replace_send',name:"代发系统", component: replace_send},
+    { path: '/replace_send',name:"分仓系统", component: replace_send},
     { path: '/store_sales_forecast',name:"店长销售收入预估", meta:{
         isUseCache:false,
         keepAlive:true

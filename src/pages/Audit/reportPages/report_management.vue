@@ -175,7 +175,7 @@
 		</el-table-column>
 		<el-table-column prop="is_warehousing" label="是否进仓" show-overflow-tooltip align="center">
 		</el-table-column>
-		<el-table-column prop="is_send" label="代发-是否发货" show-overflow-tooltip align="center">
+		<el-table-column prop="is_send" label="分仓-是否发货" show-overflow-tooltip align="center">
 		</el-table-column>
 		<el-table-column prop="ykbdh" label="易快报单号" width="100" show-overflow-tooltip align="center"></el-table-column>
 		<el-table-column prop="apply_user_name" label="申请人" width="100" show-overflow-tooltip align="center"></el-table-column>

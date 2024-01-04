@@ -4,11 +4,11 @@
 		<div class="top_content relative flex ac jsa mb-10" v-loading="title_total_loading">
 			<div class="top_item background_color height-100 flex fc ac">
 				<div class="width-100 flex ac jsb">
-					<div class="red_color f12">今日代发订单监控</div>
+					<div class="red_color f12">今日分仓订单监控</div>
 					<PopoverWidget keys="jrdfddjk" :use_icon="true"/>
 				</div>
 				<div class="color_item relative flex fc ac jc fw-500 f16 dfdds" @click="getOrderList(1)">
-					<div class="mb-17">代发订单数</div>
+					<div class="mb-17">分仓订单数</div>
 					<div>{{top_info.total_num}}</div>
 					<div class="l_line absolute"></div>
 					<div class="r_line absolute"></div>
@@ -16,15 +16,15 @@
 				<div class="c_c_line"></div>
 				<div class="width-100 flex jsb">
 					<div class="color_item flex fc ac jc fw-500 f16 wsh" @click="getOrderList(2)">
-						<div class="mb-17">代发订单未审核</div>
+						<div class="mb-17">分仓订单未审核</div>
 						<div>{{top_info.today_uncheck_num}}</div>
 					</div>
 					<div class="color_item flex fc ac jc fw-500 f16 fhs" @click="getOrderList(3)">
-						<div class="mb-17">代发订单发货数</div>
+						<div class="mb-17">分仓订单发货数</div>
 						<div>{{top_info.today_order_sented_num}}</div>
 					</div>
 					<div class="color_item flex fc ac jc fw-500 f16 ysh" @click="getOrderList(4)">
-						<div class="mb-17">代发订单已审核</div>
+						<div class="mb-17">分仓订单已审核</div>
 						<div>{{top_info.today_checked_num}}</div>
 					</div>
 				</div>
@@ -62,18 +62,18 @@
 				</div>
 				<div class="center_box flex fc ac jc" @click="getOrderList(5)">
 					<div class="normal f22 white_color mb-13">{{top_info.today_sented_num}}</div>
-					<div class="f16 fw-600 white_color">代发今日已发货</div>
+					<div class="f16 fw-600 white_color">分仓今日已发货</div>
 				</div>
 			</div>
 			<div class="top_item background_color height-100 flex fc ac">
 				<div class="width-100 flex ac jsb">
-					<div class="red_color f12">截至当前代发订单监控</div>
+					<div class="red_color f12">截至当前分仓订单监控</div>
 					<PopoverWidget keys="dfkb" :use_icon="true"/>
 				</div>
 				<div class="r_item relative flex ac pl-14 mb-40" @click="getOrderList(7)">
 					<img class="send_view_icon mr-14" src="../../static/send_view_02.png">
 					<div class="r_content flex fc as jsb">
-						<div class="dark_color f16">代发未发货</div>
+						<div class="dark_color f16">分仓未发货</div>
 						<div class="bold f22">{{top_info.unsent_num}}</div>
 					</div>
 					<div class="r_l_line absolute"></div>
@@ -98,21 +98,21 @@
 			</div>
 			<i class="refresh el-icon-refresh" @click="refreshFn"></i>
 		</div>
-		<!-- 今日/30日代发图表 -->
+		<!-- 今日/30日分仓图表 -->
 		<div class="white_back p10 mb-10">
 			<div class="flex ac jsb f16">
 				<el-radio-group v-model="charts_type" size="mini">
-					<el-radio-button label="today">今日代发概览</el-radio-button>
-					<el-radio-button label="month">30日代发订单</el-radio-button>
+					<el-radio-button label="today">今日分仓概览</el-radio-button>
+					<el-radio-button label="month">30日分仓订单</el-radio-button>
 				</el-radio-group>
 				<div class="f12 red_color" v-if="charts_type == 'today'">更新时间：{{today_update_time}}</div>
 			</div>
 			<div class="charts" id="send_chart_view" v-loading="charts_loading"></div>
 		</div>
-		<!-- 地区代发图表 -->
+		<!-- 地区分仓图表 -->
 		<div class="white_back p10 mb-10">
 			<div class="flex ac jsb f16 mb-10">
-				<div class="bold">地区代发趋势图</div>
+				<div class="bold">地区分仓趋势图</div>
 				<div class="f12 red_color">更新时间：{{area_data.update_time}}</div>
 			</div>
 			<div class="area_charts" id="area_chart_view" v-loading="area_loading"></div>
@@ -121,7 +121,7 @@
 		<div class="flex jsb mb-10">
 			<div class="white_back p10" style="width: 50%">
 				<div class="flex ac jsb f16 mb-10">
-					<div class="bold">店铺代发明细表</div>
+					<div class="bold">店铺分仓明细表</div>
 					<div class="f12 red_color">更新时间：{{store_update_time}}</div>
 				</div>
 				<div class="flex ac jsb mb-10">
@@ -129,14 +129,14 @@
 						<el-button slot="append" icon="el-icon-search" @click="dfShopGysList('shop_name')"></el-button>
 					</el-input>
 					<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
-						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('shop_name',store_name,'店铺代发明细表')">
+						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('shop_name',store_name,'店铺分仓明细表')">
 					</el-tooltip>
 				</div>
 				<custom-table v-loading="store_record_loading" :show_index="true" :table_data="store_record_table_list" :title_list="store_record_title_list" fieldName="shop_id" tableName="shop" @tableCallBack="tableCallBack"/>
 			</div>
 			<div class="ml-15 white_back p10" style="width: 50%">
 				<div class="flex ac jsb f16 mb-10">
-					<div class="bold">供应商代发明细表</div>
+					<div class="bold">供应商分仓明细表</div>
 					<div class="f12 red_color">更新时间：{{supplier_update_time}}</div>
 				</div>
 				<div class="flex ac jsb mb-10">
@@ -144,7 +144,7 @@
 						<el-button slot="append" icon="el-icon-search" @click="dfShopGysList('supplier_name')"></el-button>
 					</el-input>
 					<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
-						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('supplier_name',supplier_name,'供应商代发明细表')">
+						<img class="export_icon" src="../../static/export_icon.png" @click="exportRecordFn('supplier_name',supplier_name,'供应商分仓明细表')">
 					</el-tooltip>
 				</div>
 				<custom-table v-loading="supplier_record_loading" :show_index="true" :table_data="supplier_record_table_list" :title_list="supplier_record_title_list" fieldName="name" tableName="supplier" @tableCallBack="tableCallBack"/>
@@ -155,7 +155,7 @@
 			<!-- 商品 -->
 			<div class="white_back p10" style="width: 33%">
 				<div class="flex ac jsb f16 mb-10">
-					<div class="bold">商品代发排行</div>
+					<div class="bold">商品分仓排行</div>
 					<div class="f12 red_color">实时更新</div>
 				</div>
 				<div class="flex ac jsb mb-10">
@@ -165,7 +165,7 @@
 						<el-radio-button label="month">本月</el-radio-button>
 					</el-radio-group>
 					<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
-						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('i_id',i_date_type,'商品代发排行')">
+						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('i_id',i_date_type,'商品分仓排行')">
 					</el-tooltip>
 				</div>
 				<custom-table v-loading="sp_loading" :isLoading="sp_loading" :show_index="true" :table_data="i_table_data" :title_list="i_title_list" :is_wrap="true"/>
@@ -173,7 +173,7 @@
 			<!-- 供应商 -->
 			<div class="white_back p10 ml-15 mr-15" style="width: 33%">
 				<div class="flex ac jsb f16 mb-10">
-					<div class="bold">供应商代发排行</div>
+					<div class="bold">供应商分仓排行</div>
 					<div class="f12 red_color">实时更新</div>
 				</div>
 				<div class="flex ac jsb mb-10">
@@ -183,7 +183,7 @@
 						<el-radio-button label="month">本月</el-radio-button>
 					</el-radio-group>
 					<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
-						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('supplier_name',gys_date_type,'供应商代发排行')">
+						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('supplier_name',gys_date_type,'供应商分仓排行')">
 					</el-tooltip>
 				</div>
 				<custom-table v-loading="gys_loading" :show_index="true" :table_data="gys_table_data" :title_list="gys_title_list" :is_wrap="true"/>
@@ -191,7 +191,7 @@
 			<!-- 店铺 -->
 			<div class="white_back p10" style="width: 33%">
 				<div class="flex ac jsb f16 mb-10">
-					<div class="bold">店铺代发排行</div>
+					<div class="bold">店铺分仓排行</div>
 					<div class="f12 red_color">实时更新</div>
 				</div>
 				<div class="flex ac jsb mb-10">
@@ -201,7 +201,7 @@
 						<el-radio-button label="month">本月</el-radio-button>
 					</el-radio-group>
 					<el-tooltip class="item" effect="dark" content="导出" placement="top-end">
-						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('shop_name',dp_date_type,'店铺代发排行')">
+						<img class="export_icon" src="../../static/export_icon.png" @click="exportFn('shop_name',dp_date_type,'店铺分仓排行')">
 					</el-tooltip>
 				</div>
 				<custom-table v-loading="dp_loading" :show_index="true" :table_data="dp_table_data" :title_list="dp_title_list" :is_wrap="true"/>
@@ -296,10 +296,10 @@
 				title_total_loading:false,
 				top_info:{},						//头部数据
 				charts_loading:false,
-				charts_type:'today',				//今日/30日代发概览
-				month_data:{},						//30日代发订单图表
-				today_data:{},						//今日代发概览图表
-				today_update_time:"",				//今日代发图表更新时间
+				charts_type:'today',				//今日/30日分仓概览
+				month_data:{},						//30日分仓订单图表
+				today_data:{},						//今日分仓概览图表
+				today_update_time:"",				//今日分仓图表更新时间
 				store_name:"",						//店铺明细（店铺名称）
 				store_record_loading:false,			
 				store_record_title_list:[],			//店铺明细表格头部列表
@@ -355,43 +355,43 @@
 			this.refreshFn();
 		},
 		watch:{
-			//今日/30日代发概览
+			//今日/30日分仓概览
 			charts_type:function(n,o){
 				if(this.viewChart){
 					this.viewChart.clear();
 					this.viewChart = null;
 				}
 				if(n == 'today'){	//今日
-					//今日代发概览图表渲染
+					//今日分仓概览图表渲染
 					this.todayChart();
 				}else{				//30日
-					//30天代发订单图表渲染
+					//30天分仓订单图表渲染
 					this.monthChart();
 				}
 			},
 			//切换商品时间类型
 			i_date_type:function(n,o){
-				//商品代发排行
+				//商品分仓排行
 				this.dfSpData();
 			},
 			//切换供应商时间类型
 			gys_date_type:function(n,o){
-				//供应商代发排行
+				//供应商分仓排行
 				this.gysData();
 			},
 			//切换店铺时间类型
 			dp_date_type:function(n,o){
-				//店铺代发排行
+				//店铺分仓排行
 				this.dpData();
 			},
 			//切换发货平均时效时间类型
 			pjsx_date_type:function(n,o){
-				//代发看板发货平均时效统计
+				//分仓看板发货平均时效统计
 				this.dfAverageDelivery();
 			},
 			//切换发货超时未发时间类型
 			jjcs_date_type:function(n,o){
-				//代发看板发货超时未发统计
+				//分仓看板发货超时未发统计
 				this.dfOverTime();
 			},
 		},
@@ -400,10 +400,10 @@
 			async refreshFn(){
 				this.top_info = {};						//头部数据
 				this.charts_loading = false;
-				this.charts_type = 'today';				//今日/30日代发概览
-				this.month_data = {};						//30日代发订单图表
-				this.today_data = {};						//今日代发概览图表
-				this.today_update_time = "";				//今日代发图表更新时间
+				this.charts_type = 'today';				//今日/30日分仓概览
+				this.month_data = {};						//30日分仓订单图表
+				this.today_data = {};						//今日分仓概览图表
+				this.today_update_time = "";				//今日分仓图表更新时间
 				this.store_name = "";						//店铺明细（店铺名称）
 				this.store_record_loading = false;			
 				this.store_record_title_list = [];			//店铺明细表格头部列表
@@ -447,23 +447,23 @@
 				this.supplier_record_loading = true;
 				//头部信息
 				await this.dfOrderTotal();
-				//今天代发订单图表
+				//今天分仓订单图表
 				await this.todayChart();
 				//地区图表数据
 				await this.dfAreaChart()
-				//店铺代发明细
+				//店铺分仓明细
 				await this.dfShopGysList('shop_name');
-				//供应商代发明细
+				//供应商分仓明细
 				await this.dfShopGysList('supplier_name');
-				//商品代发排行
+				//商品分仓排行
 				await this.dfSpData();
-				//供应商代发排行
+				//供应商分仓排行
 				await this.gysData();
-				//店铺代发排行
+				//店铺分仓排行
 				await this.dpData();
-				//代发看板发货平均时效统计
+				//分仓看板发货平均时效统计
 				await this.dfAverageDelivery();
-				//代发看板发货超时未发统计
+				//分仓看板发货超时未发统计
 				await this.dfOverTime();
 			},
 			//头部信息
@@ -485,7 +485,7 @@
 			getOrderList(type,params){
 				var arg = {};
 				switch(type){
-					case 1: //代发订单数
+					case 1: //分仓订单数
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
@@ -494,7 +494,7 @@
 						}
 						this.$emit('callback',arg);
 						break;
-					case 2: //代发订单未审核
+					case 2: //分仓订单未审核
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
@@ -503,7 +503,7 @@
 						}
 						this.$emit('callback',arg);
 						break;
-					case 3: //代发订单发货数
+					case 3: //分仓订单发货数
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
@@ -512,7 +512,7 @@
 						}
 						this.$emit('callback',arg);
 						break;
-					case 4: //代发订单已审核
+					case 4: //分仓订单已审核
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
@@ -521,7 +521,7 @@
 						}
 						this.$emit('callback',arg);
 						break;
-					case 5: //代发今日已发货
+					case 5: //分仓今日已发货
 						arg = {
 							start_date:getNowDate() + ' 00:00:00',
 							end_date:getNowDate() + ' 23:59:59',
@@ -539,7 +539,7 @@
 						}
 						this.$emit('callback',arg);
 						break;
-					case 7: //代发今日未发货
+					case 7: //分仓今日未发货
 						arg = {
 							start_date:'',
 							end_date:'',
@@ -568,7 +568,7 @@
 						return;
 					}
 				},
-			//今天代发订单图表
+			//今天分仓订单图表
 				todayChart(){
 					this.charts_loading = true;
 					return new Promise((resolve)=>{
@@ -578,7 +578,7 @@
 								this.charts_loading = false;
 								this.today_data = res.data.data;
 								this.today_update_time = this.today_data.update_time;
-						//今日代发概览图表渲染
+						//今日分仓概览图表渲染
 								this.todayCharts();
 							}else{
 								this.$message.warning(res.data.msg);
@@ -586,7 +586,7 @@
 						})
 					})
 				},
-			//30天代发订单图表
+			//30天分仓订单图表
 				monthChart(){
 					this.charts_loading = true;
 					return new Promise((resolve)=>{
@@ -595,7 +595,7 @@
 							if(res.data.code == 1){
 								this.charts_loading = false;
 								this.month_data = res.data.data;
-							//30天代发订单图表渲染
+							//30天分仓订单图表渲染
 								this.monthCharts()
 							}else{
 								this.$message.warning(res.data.msg);
@@ -603,7 +603,7 @@
 						})
 					})
 				},
-			//今日代发概览图表渲染
+			//今日分仓概览图表渲染
 				todayCharts(){
 					var echarts = require("echarts");
 					var send_chart_view = document.getElementById('send_chart_view');
@@ -702,7 +702,7 @@
 						}]
 					});
 				},
-			//30天代发订单图表渲染
+			//30天分仓订单图表渲染
 				monthCharts(){
 					var echarts = require("echarts");
 					var send_chart_view = document.getElementById('send_chart_view');
@@ -739,7 +739,7 @@
 							right:80
 						},
 						legend: {
-							data: ['代发订单', '代发金额']
+							data: ['分仓订单', '分仓金额']
 						},
 						xAxis: [{
 							type: 'category',
@@ -747,19 +747,19 @@
 						}],
 						yAxis:[{
 							type: 'value',
-							name:'代发订单（单）',
+							name:'分仓订单（单）',
 							axisLabel: {
 								formatter: '{value}'
 							}
 						},{
 							type: 'value',
-							name:'代发金额（元）',
+							name:'分仓金额（元）',
 							axisLabel: {
 								formatter: '{value}'
 							}
 						}],
 						series: [{
-							name: '代发订单',
+							name: '分仓订单',
 							type: 'bar',
 							yAxisIndex:0,
 							emphasis: {
@@ -767,7 +767,7 @@
 							},
 							data: order_num_list
 						},{
-							name: '代发金额',
+							name: '分仓金额',
 							type: 'line',
 							yAxisIndex:1,
 							lineStyle: { 
@@ -835,7 +835,7 @@
 						tooltip: {
 							trigger: 'item',
 							formatter: function (params) {
-								let tip = `${params.seriesName}</br>${x_data[params.dataIndex]}</br>代发订单：${params.data.name}</br>代发金额：${params.data.value}</br>`;
+								let tip = `${params.seriesName}</br>${x_data[params.dataIndex]}</br>分仓订单：${params.data.name}</br>分仓金额：${params.data.value}</br>`;
 
 								return tip;
 							},
@@ -870,7 +870,7 @@
 						series: series
 					});
 				},
-			//店铺/供应商代发明细
+			//店铺/供应商分仓明细
 				dfShopGysList(type){
 					let arg = {
 						type:type,
@@ -1147,7 +1147,7 @@
 					}
 				})
 			},
-			//店铺/供应商代发明细导出
+			//店铺/供应商分仓明细导出
 			exportRecordFn(type,search,title){
 				MessageBox.confirm('确认导出?', '提示', {
 					confirmButtonText: '确定',
@@ -1170,7 +1170,7 @@
 					});          
 				});
 			},
-			//商品代发排行
+			//商品分仓排行
 			dfSpData(){
 				let arg = {
 					type:'i_id',
@@ -1193,7 +1193,7 @@
 					})
 				})
 			},
-			//供应商代发排行
+			//供应商分仓排行
 			gysData(){
 				let arg = {
 					type:'supplier_name',
@@ -1213,7 +1213,7 @@
 					})
 				})
 			},
-			//店铺代发排行
+			//店铺分仓排行
 			dpData(){
 				let arg = {
 					type:'shop_name',
@@ -1233,7 +1233,7 @@
 					})
 				})
 			},
-			//店铺、商品、供应商代发排行导出
+			//店铺、商品、供应商分仓排行导出
 			exportFn(type,date_type,title){
 				MessageBox.confirm('确认导出?', '提示', {
 					confirmButtonText: '确定',
@@ -1256,7 +1256,7 @@
 					});          
 				});
 			},
-			//代发看板发货平均时效统计
+			//分仓看板发货平均时效统计
 			dfAverageDelivery(){
 				let arg = {
 					date_type:this.pjsx_date_type
@@ -1275,7 +1275,7 @@
 					})
 				})
 			},
-			//代发看板发货平均时效统计导出
+			//分仓看板发货平均时效统计导出
 			exportPjsxFn(){
 				MessageBox.confirm('确认导出?', '提示', {
 					confirmButtonText: '确定',
@@ -1287,7 +1287,7 @@
 					}
 					resource.dfAverageDeliveryExport(arg).then(res => {
 						if(res){
-							exportPost("\ufeff" + res.data,'代发看板发货平均时效统计');
+							exportPost("\ufeff" + res.data,'分仓看板发货平均时效统计');
 						}
 					})
 				}).catch(() => {
@@ -1297,7 +1297,7 @@
 					});          
 				});
 			},
-			//代发看板发货即将超时统计
+			//分仓看板发货即将超时统计
 			dfOverTime(){
 				let arg = {
 					date_type:this.jjcs_date_type
@@ -1316,7 +1316,7 @@
 					})
 				})
 			},
-			//代发看板发货即将超时统计导出
+			//分仓看板发货即将超时统计导出
 			exportJjcsFn(){
 				MessageBox.confirm('确认导出?', '提示', {
 					confirmButtonText: '确定',
@@ -1328,7 +1328,7 @@
 					}
 					resource.dfOverTimeExport(arg).then(res => {
 						if(res){
-							exportPost("\ufeff" + res.data,'代发看板发货即将超时统计');
+							exportPost("\ufeff" + res.data,'分仓看板发货即将超时统计');
 						}
 					})
 				}).catch(() => {

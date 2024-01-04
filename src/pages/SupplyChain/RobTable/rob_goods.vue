@@ -60,7 +60,7 @@
 			</el-table-column>
 			<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
-			<el-table-column prop="df_qhs" label="缺货数(包含代发)" align="center" show-overflow-tooltip sortable="custom">
+			<el-table-column prop="df_qhs" label="缺货数(包含分仓)" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
 			<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 			</el-table-column>
@@ -95,7 +95,7 @@
 					<el-table-column align="center" prop="size" label="尺码"></el-table-column>
 					<el-table-column prop="qhs" label="缺货数" align="center" show-overflow-tooltip sortable="custom">
 					</el-table-column>
-					<el-table-column prop="df_qhs" label="缺货数(包含代发)" align="center" width="120px" show-overflow-tooltip sortable="custom">
+					<el-table-column prop="df_qhs" label="缺货数(包含分仓)" align="center" width="120px" show-overflow-tooltip sortable="custom">
 					</el-table-column>
 					<el-table-column prop="3_xssl" label="3天销量" align="center" show-overflow-tooltip sortable="custom">
 					</el-table-column>

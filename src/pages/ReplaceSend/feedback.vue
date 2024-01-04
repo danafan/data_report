@@ -185,7 +185,7 @@
 						arg['status'] = this.status;
 					}
 					resource.ksbmFeedbackExport(arg).then(res => {
-						exportPost("\ufeff" + res.data,'代发反馈');
+						exportPost("\ufeff" + res.data,'分仓反馈');
 					})
 				}).catch(() => {
 					Message({
