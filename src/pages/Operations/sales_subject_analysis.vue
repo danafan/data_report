@@ -155,7 +155,7 @@
 			//款式编码列表
 			ajaxKsbm(e){
 				if(e != ''){
-					commonResource.ajaxKsbm({name:e}).then(res => {
+					operationResource.ajaxSaleKsbm({name:e}).then(res => {
 						if(res.data.code == 1){
 							this.ksbm_list = res.data.data;
 						}else{

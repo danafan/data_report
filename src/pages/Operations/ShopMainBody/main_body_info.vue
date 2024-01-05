@@ -203,7 +203,6 @@
 				main_body_type_id:"",						//选中的主体类型
 				admin_list:[],								//管理员列表
 				user_list:[],								//用户列表
-				// user_ids:[],								//选中的用户列表
 				page:1,
 				pagesize:10,
 				sort:"",									//排序
@@ -608,45 +607,8 @@
 					this.$message.warning('请输入主体简称!')
 				}else if(arg.brand_id == ''){
 					this.$message.warning('请选择品牌!')
-				// else if(arg.legal_person == ''){
-				// 	this.$message.warning('请输入法人!')
-				// }else if(arg.original_belong == ''){
-				// 	this.$message.warning('请输入主体原归属!')
-				// }else if(arg.contacts_address == ''){
-				// 	this.$message.warning('请输入联系地址!')
-				// }else if(arg.contract_terms == ''){
-				// 	this.$message.warning('请选择合同条款!')
-				// }else if(this.business_license.length == 0){
-				// 	this.$message.warning('至少上传一张营业执照!')
-				// }else if(arg.remark == ''){
-				// 	this.$message.warning('请输入备注!')
-				// }else if(arg.company_admin_id == ''){
-				// 	this.$message.warning('请选择管理员!')
-				// }else if(arg.business_license_number == ''){
-				// 	this.$message.warning('请输入营业执照号!')
-				// }else if(arg.operator_tel == ''){
-				// 	this.$message.warning('请输入经营人电话!')
-				// }else if(arg.operator_gender == ''){
-				// 	this.$message.warning('请选择经营人性别!')
-				// }else if(arg.contacts == ''){
-				// 	this.$message.warning('请输入联系人!')
-				// }else if(arg.current_belong == ''){
-				// 	this.$message.warning('请输入主体现归属!')
-				// }else if(this.id_card.length == 0){
-				// 	this.$message.warning('至少上传一张身份证照片!')
 				}else if(arg.company_name == ''){
 					this.$message.warning('请输入主体全称!')
-				// }
-				// else if(arg.register_address == ''){
-				// 	this.$message.warning('请输入注册地址!')
-				// }else if(arg.operator_id_card == ''){
-				// 	this.$message.warning('请输入经营人身份证!')
-				// }else if(arg.contacts_tel == ''){
-				// 	this.$message.warning('请输入联系人电话!')
-				// }else if(arg.contract_url == ''){
-				// 	this.$message.warning('请上传合同PDF!')
-				// }else if(arg.new_apply == ''){
-				// 	this.$message.warning('请输入新客申请!')
 				}else{
 					if(this.dialog_type == 'add'){		//添加
 						operationResource.mainBodyAdd(arg).then(res => {
@@ -688,7 +650,6 @@
 						company_name:this.company_name,
 						company_alias:this.company_alias,
 						main_body_type:this.main_body_type_id,
-							// company_admin_id:this.user_ids.join(','),
 						sort:this.sort
 					}
 					operationResource.mainBodyInfoExport(arg).then(res => {
