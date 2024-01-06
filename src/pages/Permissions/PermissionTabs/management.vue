@@ -10,7 +10,7 @@
 			</el-table-column>
 			<el-table-column width="150" label="操作" align="center">
 				<template slot-scope="scope">
-					<el-button type="text" size="small" @click="edior(scope.row.id)" v-if="dataObj.button_list.edit == '1'">编辑</el-button>
+					<el-button type="text" size="small" @click="edior(scope.row.id,scope.row.menu_id)" v-if="dataObj.button_list.edit == '1'">编辑</el-button>
 					<el-button type="text" size="small" @click="deleteIs(scope.row.id)" v-if="dataObj.button_list.del == '1'">删除</el-button>
 				</template>
 			</el-table-column>
@@ -124,6 +124,7 @@
 				selMethod:"",			//当前选择的方法名称
 				accessCodes:[],			//选中的所有权限吗列表
 				id:"",
+				menu_id:"",
 				loading:false
 			}
 		},
@@ -214,7 +215,7 @@
 			},
 			//选择按钮的列表
 			ajaxAccess(menu_id,button_access_ids){
-				resource.ajaxAccess({menu_id}).then(res => {
+				resource.ajaxAccess({menu_id:menu_id}).then(res => {
 					if(res.data.code == 1){
 						this.access_buts = res.data.data;
     					if (button_access_ids) {
@@ -241,8 +242,9 @@
 				this.accessCodes.splice(index,1);
 			},
 			//点击编辑
-			edior(id){
+			edior(id,menu_id){
 				this.id = id;
+				this.menu_id = menu_id;
 				this.dislogType = "2";
 				//获取所有菜单列表
 				this.getMenu();
@@ -263,7 +265,7 @@
           					return +item;
           				});
 						//选择按钮的列表
-          				this.ajaxAccess(this.id, intArr);
+          				this.ajaxAccess(this.menu_id, intArr);
 					}else{
 						this.$message.warning(res.data.msg);
 					}

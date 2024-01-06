@@ -12,7 +12,7 @@
 			<div class="f12 red_color">数据更新时间：{{update_time}}</div>
 			<div class="flex ac">
 				<el-button type="primary" size="small" @click="customFun">自定义列表</el-button>
-				<el-button type="primary" plain size="small" @click="exportFn">导出<i class="el-icon-download el-icon--right"></i></el-button>
+				<el-button type="primary" plain size="small" @click="exportFn" v-if="button_list.export == 1">导出<i class="el-icon-download el-icon--right"></i></el-button>
 			</div>
 		</div>
 		<custom-table v-loading="loading" :isLoading="loading" tableName="supplier_board_index" max_height="680" :table_data="table_data" :title_list="title_list" :is_custom_sort="false" @sortCallBack="sortCallBack"/>
@@ -64,6 +64,7 @@
 				row_ids:[],									//可提交的自定义ids
 				view_row:[],								//所有列表-指标汇总
 				update_time:"",
+				button_list:{}
 			}
 		},
 		created(){
@@ -98,6 +99,7 @@
 						this.selected_ids = data.selected_ids;	//自定义已选中的id
 						this.view_row = data.view_row;			//自定义
 						this.update_time = data.date;
+						this.button_list = data.button_list;
 					}else{
 						this.$message.warning(res.data.msg);
 					}
