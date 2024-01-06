@@ -213,10 +213,13 @@
 				})
 			},
 			//选择按钮的列表
-			ajaxAccess(menu_id){
+			ajaxAccess(menu_id,button_access_ids){
 				resource.ajaxAccess({menu_id}).then(res => {
 					if(res.data.code == 1){
 						this.access_buts = res.data.data;
+    					if (button_access_ids) {
+    						this.button_access_ids = button_access_ids;
+    					}
 					}else{
 						this.$message.warning(res.data.msg);
 					}
@@ -255,7 +258,12 @@
 						this.selMethod = "";			//当前选择的方法名称
 						this.accessReq.is_button = res.data.data.is_button;	//是否按钮
 						this.accessReq.button_name = res.data.data.button_name;
-						this.button_access_ids = res.data.data.button_access_ids.split(',');
+						let strArr = res.data.data.button_access_ids.split(",");
+          				let intArr = strArr.map((item) => {
+          					return +item;
+          				});
+						//选择按钮的列表
+          				this.ajaxAccess(this.id, intArr);
 					}else{
 						this.$message.warning(res.data.msg);
 					}

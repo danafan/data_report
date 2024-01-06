@@ -163,6 +163,9 @@
 			}
 		},
 		created(){
+			if(localStorage.getItem('accessPermssionReq')){
+				this.req = JSON.parse(localStorage.getItem('accessPermssionReq'));
+			}
 			//获取列表
 			this.getData();
 		},
@@ -306,6 +309,7 @@
 			},
 			//查看用户列表
 			roleUser(menu_role_id){
+				localStorage.setItem('accessPermssionReq',JSON.stringify(this.req));
 				this.$store.commit('checkPerTab','access_permssion');
 				this.$router.push(`/role_user?role_id=${menu_role_id}`);
 			},

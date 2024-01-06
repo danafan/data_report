@@ -314,6 +314,12 @@
       					this.activeIndex = '/data_fill';
       				}
       			};
+      			if(n.path != '/permssions_index' && n.path != '/role_user'){
+      				localStorage.removeItem("accessPermssionReq");
+      			};
+      			if(n.path != '/permssions_index' && n.path != '/data_role_user'){
+      				localStorage.removeItem("dataPermssionReq");
+      			};
       		}
       	},
       	methods:{

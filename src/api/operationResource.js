@@ -87,6 +87,8 @@ let path = {
 	supplierStockExport:'supplier/stock_export',			//库存信息（分仓）列表导出
 	ajaxCkwz:'Common/ajax_ckwz',							//获取仓库位置列表接口
 	ajaxSaleKsbm:'sales_analysis/ajax_sale_ksbm',			//获取销售主题分析款式编码
+	gysBoardList:'supply_chain/gys_board_list',				//供应商看板分板列表
+	gysBoardExport:'supply_chain/gys_board_export',			//供应商看板分板导出
   }							
   export default{
 	//获取款式编码
@@ -444,6 +446,14 @@ let path = {
   	// 获取销售主题分析款式编码
   	ajaxSaleKsbm(params) {
   		return http.get(path.ajaxSaleKsbm, params);
+  	},
+  	//供应商看板分板
+  	gysBoardList(params) {
+  		return http.get(path.gysBoardList, params);
+  	},
+  	//供应商看板分板导出
+  	gysBoardExport(params) {
+  		return http.post(path.gysBoardExport, params);
   	},
   }
 

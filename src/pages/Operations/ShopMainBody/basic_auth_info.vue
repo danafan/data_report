@@ -839,7 +839,6 @@
                     }else if(this.dialog_type == 'edit'){   //编辑
                         new_arg['company_shop_id'] = this.company_shop_id;
                         delete new_arg.company_id;
-                        console.log(new_arg)
                         operationResource.companyMainEditShop(new_arg).then(res => {
                             if(res.data.code == 1){
                                 this.$message.success(res.data.msg);

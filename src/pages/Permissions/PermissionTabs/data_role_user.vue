@@ -119,7 +119,7 @@
 					page:1
 				},
 				dataObj:{},				//列表数据
-				user_id:"",		//选择的用户id
+				user_id:"",				//选择的用户id
 				show_setting:false,		//设置弹框
 				ding_user_name:"",		//姓名
 				set_time_id:'-1',		//单选框组
