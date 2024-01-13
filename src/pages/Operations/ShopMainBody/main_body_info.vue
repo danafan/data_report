@@ -248,10 +248,10 @@
 				business_license:[],						//营业执照
 				id_card:[],									//身份证
 				import_dialog:false,						//导入弹窗
-				show_custom:false,						//自定义列表
-				selected_ids:[],			//当前选中的所有ID
+				show_custom:false,							//自定义列表
+				selected_ids:[],							//当前选中的所有ID
 				data_selected_ids:[],
-				view_row:[],				//当前的列表
+				view_row:[],								//当前的列表
 			}
 		},
 		created(){

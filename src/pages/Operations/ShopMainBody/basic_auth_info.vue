@@ -390,7 +390,6 @@
                 auth_type_id:"",                            //选中的授权类型
                 admin_list:[],                              //管理员列表
                 user_list:[],                               //用户列表
-                // user_ids:[],                                //选中的管理员列表
                 company_list:[],                            //客户列表
                 company_ids:[],                             //选中的客户列表
                 shop_status_list:[],                        //开店状态列表
@@ -475,8 +474,6 @@
             this.ajaxUser();
             //获取客户(公司主体)列表
             this.ajaxCompany();
-            //平台列表
-            this.ajaxPlatform();
             //获取数据
             this.getData();
         },
@@ -491,6 +488,7 @@
                         this.is_new_list = data.is_new;
                         this.operational_status_list = data.operational_status;
                         this.shop_type_list = data.shop_type;
+                        this.plat_list = data.platform;
                     }else{
                         this.$message.warning(res.data.msg);
                     }
@@ -521,16 +519,6 @@
                 operationResource.ajaxCompany().then(res => {
                     if(res.data.code == 1){
                         this.company_list = res.data.data;
-                    }else{
-                        this.$message.warning(res.data.msg);
-                    }
-                })
-            },
-            //平台列表
-            ajaxPlatform(){
-                auditResource.ajaxPlatform().then(res => {
-                    if(res.data.code == 1){
-                        this.plat_list = res.data.data;
                     }else{
                         this.$message.warning(res.data.msg);
                     }
