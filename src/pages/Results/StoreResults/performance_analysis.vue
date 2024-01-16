@@ -216,6 +216,7 @@
 	justify-content: space-between;
 }
 .text_content{
+	width:30px;
 	overflow:hidden;
 	text-overflow:ellipsis;
 	white-space:nowrap

@@ -155,9 +155,8 @@
 		<div class="table_list" v-if="data_list.length >= 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in data_list" :key="index">
 				<div class="column_item_text" :class="[{'toast_red':i.id == 5 || i.id == 17},{'toast_yellow':i.id == 6 || i.id == 10 || i.id == 18}]" v-for="i in item">
-					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 1 || i.id == 183">
+					<el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 1 || i.id == 183 || i.id == 919">
 						<div class='tab_text tooltip_but' @dblclick="doCopy(i.val)">{{i.val}}</div>
-						<!-- <el-button type="text" class="tooltip_but">{{i.val}}</el-button> -->
 					</el-tooltip>
 					<div class='tab_text' @dblclick="doCopy(i.val)" v-else>{{i.val}}</div>
 				</div>
@@ -209,14 +208,8 @@
 		<div class="table_list" v-if="week_data_list.length >= 1">
 			<div class="column_item" :class="{'column_item_odd':index%2 == 1}" v-for="(item,index) in week_data_list" :key="index">
 				<div class="column_item_text" v-for="i in item">
-					<!-- <el-tooltip effect="dark" :content="i.val.toString()" placement="top" v-if="i.id == 170 || i.id == 171">
-						<el-button type="text" class="tooltip_but">{{i.val}}</el-button>
-					</el-tooltip>
-					<div class='tab_text' v-else>{{i.val}}</div> -->
-
-					<el-tooltip effect="dark" :content="i.val.toString()" placement="top"  v-if="i.id == 170 || i.id == 171">
+					<el-tooltip effect="dark" :content="i.val.toString()" placement="top"  v-if="i.id == 170 || i.id == 171 || i.id == 922">
 						<div class='tab_text tooltip_but' @dblclick="doCopy(i.val)">{{i.val}}</div>
-						<!-- <el-button type="text" class="tooltip_but">{{i.val}}</el-button> -->
 					</el-tooltip>
 					<div class='tab_text' @dblclick="doCopy(i.val)" v-else>{{i.val}}</div>
 				</div>
